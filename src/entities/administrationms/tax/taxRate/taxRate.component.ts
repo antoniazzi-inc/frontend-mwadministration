@@ -1,0 +1,41 @@
+import { Component, Vue } from 'vue-property-decorator'
+import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
+import TaxRateService from '@/shared/services/taxRateService'
+import { AxiosResponse } from 'axios'
+import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
+@Component({
+  components: {
+    'simple-search': SimpleSearchComponent,
+    PaginationTableComponent
+  }
+})
+export default class TaxRateComponent extends Vue {
+  $refs!: {
+    paginationTable: PaginationTableComponent;
+  }
+
+  public taxRateService: any
+  constructor () {
+    super()
+    this.taxRateService = TaxRateService.getInstance()
+  }
+
+  public searchTaxRate (q: any) {}
+  public editTaxRate (tax: any) {
+    this.$router.push({ name: 'EditTaxRate', params: { id: tax.id } })
+  }
+
+  public removeTaxRate (tax: any) {
+    this.taxRateService.delete(tax.id).then((resp: AxiosResponse) => {
+      if (resp) {
+        // @ts-ignore
+        this.$vueOnToast.pop('success', this.$t('toastMessages.taxRateRemoved'))
+        // @ts-ignore
+        this.$refs.paginationTable.retrieveData()
+      } else {
+        // @ts-ignore
+        this.$vueOnToast.pop('error', this.$t('toastMessages.taxRateError'))
+      }
+    })
+  }
+}

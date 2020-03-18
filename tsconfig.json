@@ -9,10 +9,12 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strictFunctionTypes": false,
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "jquery"
     ],
     "paths": {
       "@/*": [
@@ -31,7 +33,9 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "node_modules/@types/jquery/misc.d.ts",
+    "node_modules/@types/jquery/misc.d.ts"
   ],
   "exclude": [
     "node_modules"
