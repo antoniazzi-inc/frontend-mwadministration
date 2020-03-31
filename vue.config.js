@@ -41,6 +41,33 @@ module.exports = {
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
         changeOrigin: true
+      },
+      '/socket': {
+        target: {
+          // host: '192.168.100.25',
+          host: 'localhost',
+          protocol: 'http:',
+          port: 18081
+        },
+        onProxyReq: proxyReq => {
+          // proxyReq.setHeader('origin', 'http://192.168.100.25:180801')
+          proxyReq.setHeader('origin', 'http://localhost:8080')
+          proxyReq.setHeader('sec-fetch-mode', 'no-cors')
+          proxyReq.setHeader('Sec-Fetch-Site', 'none')
+        },
+        changeOrigin: true
+      },
+      '/render': {
+        target: 'https://api.mjml.io/v1',
+        pathRewrite: {
+          '^/render': '/render'
+        },
+        onProxyReq: proxyReq => {
+          const token = Buffer.from('1a336b03-7c52-49a5-9f5f-b669dbf13c06:dfd53576-0500-4694-904f-1b8b526ac1ee', 'utf8').toString('base64')
+          proxyReq.setHeader('Authorization', `Basic ${token}`)
+          console.log(proxyReq)
+        },
+        changeOrigin: true
       }
     }
   }
