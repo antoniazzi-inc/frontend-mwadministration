@@ -11,6 +11,7 @@
       :ref="'paginationTable'"
       :active="$props.active"
       :table="'deliveryMethod'"
+      :noDataLabel="'labels.noData'"
       @onEdit="editDeliveryMethod"
       @onDelete="removeDeliveryMethod"
       :service="deliveryMethodService"/>

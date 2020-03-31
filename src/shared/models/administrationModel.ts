@@ -5,8 +5,8 @@ import { ITagEntity } from '@/shared/models/tagModel'
 import {
   IAdministrationSettings
 } from '@/shared/models/administrationSettingsModel'
-import {ICountry} from "@/shared/models/country.model";
-import {IExternalSystem} from "@/shared/models/externalSystem.model";
+import { ICountry } from '@/shared/models/country.model'
+import { IExternalSystem } from '@/shared/models/externalSystem.model'
 export interface IAdministration extends IBaseEntity{
   name?: string;
   accessCode?: string;
@@ -22,7 +22,7 @@ export interface IAdministration extends IBaseEntity{
   categories?: ICategoryEntity[];
   tags?: ITagEntity[];
   externalSystems?: ITagEntity[];
-  langKey?: string
+  langKey?: string;
 }
 
 export class AdministrationEntity implements IAdministration {

@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import {IPaymentMethod} from "@/shared/models/payment-method.model";
+import { IPaymentMethod } from '@/shared/models/payment-method.model'
 
 export default class PaymentMethodService extends BaseEntityService<IPaymentMethod> {
   private static instance: PaymentMethodService;

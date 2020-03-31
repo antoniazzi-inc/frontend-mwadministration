@@ -12,6 +12,7 @@
       :ref="'paginationTable'"
       :active="$props.active"
       :table="'roles'"
+      :noDataLabel="'labels.noData'"
       @onEdit="editRole"
       @onCopy="copyRole"
       @onDelete="deleteRole"

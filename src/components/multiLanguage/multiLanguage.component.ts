@@ -27,7 +27,7 @@ export default class MultiLanguageComponent extends Vue {
   @Watch('selectedValue', { immediate: true, deep: true })
   public onChangeVal () {
     this.$validator.validateAll().then(success => {
-    success ? this.$emit('onChange', this.selectedValue) : null
+      if (success) this.$emit('onChange', this.selectedValue)
     })
   }
 

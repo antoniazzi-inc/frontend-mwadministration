@@ -3,5 +3,8 @@
   "save": "Save",
   "close": "Close",
   "confirm": "Confirm",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "createNewCompany": "Create New Company",
+  "addNewCompany": "Add New Company",
+  "backToList": "Back To List"
 }

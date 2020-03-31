@@ -12,6 +12,7 @@
     <PaginationTableComponent
       :ref="'paginationTable'"
       :active="true"
+      :noDataLabel="'labels.noData'"
       :table="'administration'"
       @onEdit="editAdministration"
       @onDelete="removeAdministration"

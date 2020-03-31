@@ -29,7 +29,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <template v-for="(item, index) in mainMenu">
-          <li class="nav-item" v-if="item.children.length === 0 && hasAuthority()" :key="index">
+          <li class="nav-item" v-if="item.children.length === 0 && hasAuthority(item.authorities)" :key="index">
             <router-link class="nav-link" :to="item.path" role="button" data-toggle="dropdown"
                          aria-haspopup="true" aria-expanded="false">
               <div class="main-menu-icon">
@@ -37,15 +37,16 @@
               </div>
             </router-link>
           </li>
-          <li class="nav-item dropdown" :key="index" v-else>
+          <li class="nav-item dropdown" :key="index" v-if="item.children.length > 0 && hasAuthority(item.authorities)">
             <router-link class="nav-link" :id="item.name" to="" role="button"
                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i :class="item.icon"></i>
             </router-link>
-            <div class="dropdown-menu" :aria-labelledby="item.name">
+            <div class="dropdown-menu" :aria-labelledby="item.name" v-if="hasAuthority(item.authorities)">
               <h3 class="menu-title">{{$t(item.name)}}</h3>
               <template v-for="(child, childInd) in item.children">
-                <router-link :key="childInd" :to="child.path" class="dropdown-item child-link">
+                <router-link :key="childInd" :to="child.path" class="dropdown-item child-link"
+                             v-if="hasAuthority(child.authorities)">
                   <div class="dropdown-icon">
                     <i :class="child.icon"></i>
                   </div>
@@ -53,7 +54,7 @@
                     {{$t(child.name)}}
                   </div>
                 </router-link>
-                <hr :key="childInd + 'hr'" v-if="childInd < item.children.length-1"/>
+                <hr :key="childInd + 'hr'" v-if="childInd < item.children.length-1 && hasAuthority(child.authorities)"/>
               </template>
             </div>
           </li>
@@ -115,17 +116,12 @@
             $store.state.userIdentity.email : ''" :size="100"></v-gravatar>
           </router-link>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user">
-              <div class="row menu-title-small">
-                <div class="col-md-2">
-                  <v-gravatar class="avatar-sm" :email="$store.state.userIdentity && $store.state.userIdentity.email ?
+              <div class="row menu-title-dropdown">
+                <v-gravatar class="avatar-sm" :email="$store.state.userIdentity && $store.state.userIdentity.email ?
             $store.state.userIdentity.email : ''" :size="100"></v-gravatar>
-                </div>
-                <div class="col-md-9">
-                  <div class="col-md-12 font-weight-bold">Administrator{{getUserName()}}</div>
-                  <div class="col-md-12 font-weight-bold">ROLE_SUPER_ADMIN{{getUserRole()}}</div>
-                </div>
+                <div class="font-weight-bold ml-2">{{getUserName()}}</div>
+                <div class="small">{{getUserRole()}}</div>
               </div>
-            <hr/>
             <router-link to="" data-toggle="modal" data-target="#userProfileModal" class="dropdown-item child-link">
               <div class="row">
                 <div class="col-md-2 ml-2">
@@ -221,10 +217,10 @@
                   </div>
                   <div class="form-group">
                     <label for="birthdate" v-html="$t('labels.birthDate')"></label>
-                    <flat-pickr :config="dateConfig"
-                                class="form-control"
-                                placeholder="Select date"
-                                id="birthdate" v-model="user.relationProfile.birthDate"></flat-pickr>
+                    <div class="date-input">
+                      <flat-pickr :config="dateConfig" class="single-daterange form-control"
+                                  id="birthdate" v-model="user.relationProfile.birthDate"></flat-pickr>
+                    </div>
                   </div>
                   <div class="form-group">
                     <label for="website" v-html="$t('labels.website')"></label>
@@ -342,6 +338,22 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     font-family: 'Avenir Next W01', 'Proxima Nova W01', 'Rubik', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-weight: 500;
+  }
+  .menu-title-dropdown .small{
+    font-size: 0.9em;
+  }
+  .menu-title-dropdown{
+    color: rgba(255, 255, 255, 0.2);
+    padding: 5px 45px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-family: 'Avenir Next W01', 'Proxima Nova W01', 'Rubik', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 1.6em;
+    align-items: center;
   }
   .dropdown-menu{
     z-index: 9999;

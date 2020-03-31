@@ -15,11 +15,14 @@ import * as esTranslations from '@/i18n/es'
 import * as frTranslations from '@/i18n/fr'
 import * as nlTranslations from '@/i18n/nl'
 import setupAxiosInterceptors from '@/shared/axios-interceptors'
+import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import ServerErrorsHandler from '@/shared/serverErrorsHandler'
+import VueFormWizard from 'vue-form-wizard'
 // @ts-ignore
 window.$ = require('jquery')
 
 Vue.use(VeeValidate)
+Vue.use(VueFormWizard)
 Vue.config.productionTip = false
 Vue.use(VueI18n)
 filters.initFilters()
@@ -38,6 +41,7 @@ const errorHandler = new ServerErrorsHandler()
 setupAxiosInterceptors((err: object) => {
   errorHandler.handleError(err)
 })
+
 new Vue({
   router,
   store,

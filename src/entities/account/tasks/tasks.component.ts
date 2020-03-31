@@ -5,7 +5,5 @@ import { Component, Vue } from 'vue-property-decorator'
   }
 })
 export default class TasksComponent extends Vue {
-  constructor() {
-    super();
-  }
+
 }

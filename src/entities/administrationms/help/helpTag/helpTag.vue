@@ -11,6 +11,7 @@
     <PaginationTableComponent
       :ref="'paginationTable'"
       :active="true"
+      :noDataLabel="'labels.noData'"
       :table="'helpTag'"
       @onEdit="editHelpTag"
       @onCopy="copyHelpTag"

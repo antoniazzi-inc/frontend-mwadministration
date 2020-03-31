@@ -44,7 +44,7 @@ export default class MjmlFullActionComponent extends mixins(Vue, CommonHelpers){
       this.$props.value.value.socialMedia.forEach((item:any, index:any)=>{
         if(item.visible)
         social.push(`<mj-social-element name="${item.name.toLowerCase()}" href="${item.url}">&nbsp;&nbsp;&nbsp;&nbsp;
-        </mj-social-element>`)
+</mj-social-element>`)
       })
     }
     this.htmlOutput = `<mjml>

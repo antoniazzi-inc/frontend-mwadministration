@@ -3,13 +3,15 @@ import TaxRateLinkService from '@/shared/services/taxRateLinkService'
 import { AxiosResponse } from 'axios'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
+import {mixins} from "vue-class-component";
+import CommonHelpers from "@/shared/commonHelpers";
 @Component({
   components: {
     'simple-search': SimpleSearchComponent,
     PaginationTableComponent
   }
 })
-export default class TaxRateLinkComponent extends Vue {
+export default class TaxRateLinkComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
@@ -28,13 +30,9 @@ export default class TaxRateLinkComponent extends Vue {
   public removeTaxRateLink (taxLink: any) {
     this.taxRateLinkService.delete(taxLink.id).then((resp: AxiosResponse) => {
       if (resp) {
-        // @ts-ignore
-        this.$vueOnToast.pop('success', this.$t('toastMessages.taxRateLinkRemoved'))
-        // @ts-ignore
-        this.$refs.paginationTable.retrieveData()
+        this.setAlert('taxRateLinkRemoved', 'success')
       } else {
-        // @ts-ignore
-        this.$vueOnToast.pop('error', this.$t('toastMessages.taxRateLinkError'))
+        this.setAlert('taxRateLinkError', 'error')
       }
     })
   }

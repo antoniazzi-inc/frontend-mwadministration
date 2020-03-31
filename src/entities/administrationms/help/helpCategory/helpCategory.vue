@@ -11,6 +11,7 @@
     <PaginationTableComponent
       :ref="'paginationTable'"
       :active="true"
+      :noDataLabel="'labels.noData'"
       :table="'helpCategory'"
       @onEdit="editHelpCategory"
       @onDelete="deleteHelpCategory"

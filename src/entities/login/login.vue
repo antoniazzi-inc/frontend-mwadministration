@@ -26,7 +26,7 @@
                       <i class="fas fa-user-tie"></i>
                     </i>
                   </div>
-                  <input type="text" v-model="username" id="username" class="form-control">
+                  <input type="text" autocomplete="current-username" v-model="username" id="username" class="form-control">
                 </div>
               </div>
               <div class="form-group">
@@ -37,7 +37,7 @@
                       <i class="fa fa-fingerprint"></i>
                     </i>
                   </div>
-                  <input id="password" type="password" v-model="password" class="form-control">
+                  <input id="password" autocomplete="current-password" type="password" v-model="password" class="form-control">
                 </div>
               </div>
               <div class="form-group">

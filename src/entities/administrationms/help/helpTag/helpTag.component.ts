@@ -3,13 +3,15 @@ import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
 import { AxiosResponse } from 'axios'
 import HelpTagService from '@/shared/services/helpTagService'
+import {mixins} from "vue-class-component";
+import CommonHelpers from "@/shared/commonHelpers";
 @Component({
   components: {
     'simple-search': SimpleSearchComponent,
     PaginationTableComponent
   }
 })
-export default class HelpTagComponent extends Vue {
+export default class HelpTagComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
@@ -37,13 +39,9 @@ export default class HelpTagComponent extends Vue {
     })
     this.helpTagService.post(tag).then((resp: AxiosResponse) => {
       if (resp) {
-        // @ts-ignore
-        this.$vueOnToast.pop('success', this.$t('toastMessages.helpTagCreated'))
-        // @ts-ignore
-        this.$refs.paginationTable.retrieveData()
+        this.setAlert('helpTagCreated', 'success')
       } else {
-        // @ts-ignore
-        this.$vueOnToast.pop('error', this.$t('toastMessages.helpTagError'))
+        this.setAlert('helpTagError', 'error')
       }
     })
   }
@@ -51,13 +49,9 @@ export default class HelpTagComponent extends Vue {
   public deleteHelpTag (tag: any) {
     this.helpTagService.delete(tag.id).then((resp: AxiosResponse) => {
       if (resp) {
-        // @ts-ignore
-        this.$vueOnToast.pop('success', this.$t('toastMessages.helpTagRemoved'))
-        // @ts-ignore
-        this.$refs.paginationTable.retrieveData()
+        this.setAlert('helpTagRemoved', 'success')
       } else {
-        // @ts-ignore
-        this.$vueOnToast.pop('error', this.$t('toastMessages.helpTagError'))
+        this.setAlert('helpTagError', 'error')
       }
     })
   }

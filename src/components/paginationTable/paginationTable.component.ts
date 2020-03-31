@@ -18,6 +18,9 @@ import PaginationComponent from '@/components/paginationTable/pagination.vue'
     },
     table: {
       type: String
+    },
+    noDataLabel: {
+      type: String
     }
   }
 })
@@ -33,11 +36,11 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
 
   public totalItems: number;
   public nextPage: number;
-  public itemsPerPage: number|string;
+  public itemsPerPage: any;
   public currentPage: number;
   public totalPages: number;
-  public helpers: object;
-  public tables: object;
+  public tables: any;
+  public tableFields: any;
   public itemToDelete: object|any;
   public allData: any[];
   public data: any[];
@@ -54,11 +57,7 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
     this.tables = Tables
     this.itemToDelete = null
     this.isLoading = true
-    this.helpers = new CommonHelpers()
-  }
-
-  public checkAuthority (authority: []) {
-    return this.hasAuthority(authority)
+    this.tableFields = {}
   }
 
   @Watch('active', { immediate: true, deep: true })
@@ -79,10 +78,15 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
         this.data = resp.data.content
         this.allData = resp.data.content
         this.isLoading = false
-      }).catch((err:any)=>{
+      }).catch(() => {
         this.isLoading = false
       })
     }
+  }
+
+  public created () {
+    this.tableFields = this.getTableVisibilityFields(this.$props.table)
+    this.itemsPerPage = this.tableFields.itemsPerPage
   }
 
   public itemAction (action: string, item: any) {
@@ -104,26 +108,12 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
     }
   }
 
-  public  getMultiLangFieldName (col: any, item: any) {
-    let result: any = []
-    if (col.subField === null) {
-      result =  this.getMultiLangName(item[col.field]).name
-    } else {
-      // @ts-ignore
-      result = this.getMultiLangName(item[col.field])[col.subField]
-    }
-    if (Array.isArray(result)) {
-      if (result.length > 0) {
-        result = result.join(', ')
-      } else {
-        result = ''
-      }
-    }
-    return result
+  public async rerenderPage () {
+    this.tableFields = await this.getTableVisibilityFields(this.$props.table)
+    this.$forceUpdate()
   }
 
   public onChangePage (pagination: any) {
-    console.log('onChangePage')
     this.retrieveData('api/administrationms/api/categories', pagination)
   }
 
@@ -134,5 +124,10 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
   public closeDeleteModal () {
     // @ts-ignore
     $(this.$refs.deleteModal).modal('hide')
+  }
+
+  public checkVisibility (col: any) {
+    const tableFields = this.getTableVisibilityFields(this.$props.table)
+    return tableFields[col.field]
   }
 }

@@ -31,7 +31,7 @@ export default class NewHelpTagComponent extends mixins(CommonHelpers, Vue) {
   public colors: any[]
   constructor () {
     super()
-    this.multiLangConfig = new MultiLanguageConfig(true,true,'labels.name',
+    this.multiLangConfig = new MultiLanguageConfig(true, true, 'labels.name',
       'labels.description', false,
       false, false, true, true, false)
     this.helpTagLanguages = []
@@ -66,37 +66,31 @@ export default class NewHelpTagComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public async save () {
-    if(this.helpTagLanguages && this.helpTagLanguages.length > 0 && this.helpTagLanguages[0].name !==''){
-    const helpTagLangs: IHelpTagLanguage[] = []
-    await this.helpTagLanguages.forEach(lang => {
-      const langToAdd = new HelpTagLanguage(lang.id, lang.administrationId, lang.version, lang.createdOn,
-        lang.updatedOn, lang.langKey, lang.name, lang.description, lang.helpCategory)
-      helpTagLangs.push(langToAdd)
-    })
-    this.helpTag.helpTagLanguages = helpTagLangs
-    if (this.helpTag.id) {
-      this.helpTagService.put(this.helpTag).then((resp: AxiosResponse) => {
-        if (resp) {
-          // @ts-ignore
-          this.$vueOnToast.pop('success', this.$t('toastMessages.helpTagUpdated'))
-          this.cancel()
-        } else {
-          // @ts-ignore
-          this.$vueOnToast.pop('error', this.$t('toastMessages.helpTagError'))
-        }
+    if (this.helpTagLanguages && this.helpTagLanguages.length > 0 && this.helpTagLanguages[0].name !== '') {
+      const helpTagLangs: IHelpTagLanguage[] = []
+      await this.helpTagLanguages.forEach(lang => {
+        const langToAdd = new HelpTagLanguage(lang.id, lang.administrationId, lang.version, lang.createdOn,
+          lang.updatedOn, lang.langKey, lang.name, lang.description, lang.helpCategory)
+        helpTagLangs.push(langToAdd)
       })
-    } else {
-      this.helpTagService.post(this.helpTag).then((resp: AxiosResponse) => {
-        if (resp) {
-          // @ts-ignore
-          this.$vueOnToast.pop('success', this.$t('toastMessages.helpTagCreated'))
-          this.cancel()
-        } else {
-          // @ts-ignore
-          this.$vueOnToast.pop('error', this.$t('toastMessages.helpTagError'))
-        }
-      })
-    }
+      this.helpTag.helpTagLanguages = helpTagLangs
+      if (this.helpTag.id) {
+        this.helpTagService.put(this.helpTag).then((resp: AxiosResponse) => {
+          if (resp) {
+            this.setAlert('helpTagUpdated', 'success')
+          } else {
+            this.setAlert('helpTagError', 'error')
+          }
+        })
+      } else {
+        this.helpTagService.post(this.helpTag).then((resp: AxiosResponse) => {
+          if (resp) {
+            this.setAlert('helpTagUpdated', 'success')
+          } else {
+            this.setAlert('helpTagError', 'error')
+          }
+        })
+      }
     }
   }
 

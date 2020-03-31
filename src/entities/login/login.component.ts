@@ -35,7 +35,7 @@ export default class LoginComponent extends Vue {
   }
 
   public doLogin () {
-    const dto:any = {
+    const dto: any = {
       administrationKey: this.accessCode ? this.accessCode : undefined,
       username: this.username,
       password: this.password,

@@ -1,11 +1,8 @@
-// @ts-ignore
 import HomeComponent from './entities/home/home.vue'
-// @ts-ignore
 import LoginComponent from '@/entities/login/login.vue'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import RelationService from '@/shared/services/relationService'
 import 'vue-on-toast/dist/vue-on-toast.css'
-// @ts-ignore
 import VueOnToast from 'vue-on-toast'
 import CategoryService from '@/shared/services/categoryService'
 import CountryService from '@/shared/services/CountryService'
@@ -14,7 +11,14 @@ import TagService from '@/shared/services/tagService'
 import TimeZoneService from '@/shared/services/timeZoneService'
 import TaxRateService from '@/shared/services/taxRateService'
 import money from 'v-money'
-Vue.use(money, {precision: 2})
+import { columnsVisibility } from '@/shared/tabelsDefinitions'
+import { MenuDefinitions } from '@/shared/menuDefinitions'
+import { mixins } from 'vue-class-component'
+import CommonHelpers from '@/shared/commonHelpers'
+import CompanyService from "@/shared/services/companyService";
+import BusinessService from "@/shared/services/businessService";
+import Sockets from "@/shared/sockets";
+Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
     components: {
@@ -22,14 +26,18 @@ Vue.use(VueOnToast, {})
       LoginComponent
     }
   })
-export default class App extends Vue {
+export default class App extends mixins(Vue, CommonHelpers) {
     accountService = RelationService.getInstance();
     categoryService = CategoryService.getInstance();
     timeZoneService = TimeZoneService.getInstance();
     countryService = CountryService.getInstance();
     tagService = TagService.getInstance();
     taxRateService = TaxRateService.getInstance();
+    companyService = CompanyService.getInstance();
+    businessService = BusinessService.getInstance();
     loading = true;
+    sockets = new Sockets({url:'http://localhost:18081/'});
+    mainMenu = MenuDefinitions;
     customConfig = {
       timeout: 2500,
       preventDuplicates: true
@@ -37,185 +45,12 @@ export default class App extends Vue {
 
     columns: any = []
     mounted () {
+      this.sockets.connect();
       this.populateLookups()
       const conf = localStorage.getItem('tableColumns')
       const columns = conf ? JSON.parse(conf) : null
       if (columns == null) {
-        this.columns = {
-          relation: {
-            id: true,
-            name: true,
-            createdOn: false,
-            postalCode: false,
-            city: false,
-            country: false,
-            company: false,
-            points: false,
-            relationType: false,
-            groups: false,
-            email: true,
-            tags: true,
-            showing: 20
-          },
-          order: {
-            id: true,
-            createdOn: true,
-            customer: true,
-            description: true,
-            productFeatures: true,
-            nettoAmount: true,
-            invoiceNumber: true,
-            paymentStatus: true,
-            showing: 20
-          },
-          helpTag: {
-            id: true,
-            name: true,
-            color: true,
-            createdOn: true,
-            updatedOn: true,
-            showing: 20
-          },
-          helpCategory: {
-            id: true,
-            title: true,
-            color: true,
-            createdOn: true,
-            updatedOn: true,
-            children: true,
-            parent: true,
-            showing: 20
-          },
-          helpMaterials: {
-            id: true,
-            type: true,
-            title: true,
-            tag: true,
-            language: true,
-            category: true,
-            fieldCode: true,
-            screenCode: true,
-            tabCode: true,
-            popUpCode: true,
-            showing: 20
-          },
-          category: {
-            id: true,
-            code: true,
-            createdOn: true,
-            color: true,
-            showing: 20
-          },
-          tag: {
-            id: true,
-            name: true,
-            points: true,
-            createdOn: true,
-            showing: 20
-          },
-          roles: {
-            id: true,
-            code: true,
-            name: true,
-            updatedOn: true,
-            description: true,
-            showing: 20
-          },
-          users: {
-            id: true,
-            login: true,
-            name: true,
-            activated: true,
-            lastLogin: true,
-            roles: true,
-            showing: 20
-          },
-          customField: {
-            id: true,
-            code: true,
-            userVisible: true,
-            userEditable: true,
-            gdprSpecialField: true,
-            customFieldType: true,
-            createdOn: true,
-            updatedOn: true,
-            showing: 20
-          },
-          group: {
-            id: true,
-            label: true,
-            createdOn: true,
-            category: true,
-            showing: 20
-          },
-          promotion: {
-            id: true,
-            name: true,
-            availableFrom: true,
-            availableTo: true,
-            promotionType: true,
-            discount: true,
-            promotionProducts: true,
-            showing: 20
-          },
-          taxRate: {
-            id: true,
-            level: true,
-            validFrom: true,
-            validTo: true,
-            createdOn: true,
-            country: true,
-            showing: 20
-          },
-          taxRateLink: {
-            id: true,
-            validFrom: true,
-            validTo: true,
-            createdOn: true,
-            fromTaxRate: true,
-            toTaxRate: true,
-            showing: 20
-          },
-          taxRule: {
-            id: true,
-            customerType: true,
-            customerRegion: true,
-            ruleType: true,
-            createdOn: true,
-            country: true,
-            showing: 20
-          },
-          deliveryMethod: {
-            id: true,
-            name: true,
-            description: true,
-            type: true,
-            createdOn: true,
-            showing: 20
-          },
-          paymentMethod: {
-            id: true,
-            name: true,
-            administrativeCosts: true,
-            available: true,
-            createdOn: true,
-            showing: 20
-          },
-          administration: {
-            id: true,
-            name: true,
-            accessCode: true,
-            useShop: true,
-            useAutomation: true,
-            locked: true,
-            trial: true,
-            relationsLimit: true,
-            validFrom: true,
-            validTo: true,
-            language: true,
-            showing: 20
-          }
-        }
+        this.columns = columnsVisibility
         localStorage.setItem('tableColumns', JSON.stringify(this.columns))
       }
     }
@@ -245,6 +80,49 @@ export default class App extends Vue {
       this.tagService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.$store.commit('tags', resp.data.content)
       })
+      this.companyService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.$store.commit('companies', resp.data.content)
+      })
+      this.businessService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        if(resp && resp.data.content.length > 0) {
+          this.$store.commit('administrationBusiness', resp.data.content)
+        } else {
+          let createBussinessDto = {
+            name: 'DefaultBusiness' + this.$store.state.userIdentity.id,
+            description: 'default Business',
+            website: 'default.com'
+          }
+          this.businessService.post(createBussinessDto).then((resp:AxiosResponse)=>{
+            if(resp){
+              this.$store.commit('administrationBusiness', resp.data)
+            }
+          })
+        }
+      })
+    }
+
+    @Watch('$route', { immediate: true, deep: true })
+    checkRouteAuthority (to: any, from: any, next: any) {
+      const self = this
+      let notFound = false
+      this.mainMenu.forEach((item: any) => {
+        item.children.forEach((child: any) => {
+          if (item.path === to.path) {
+            const canVisit = this.$store.state.userIdentity ? self.hasAuthority(item.authorities) : true
+            if (!canVisit) {
+              notFound = true
+            }
+          } else if (to.path === child.path) {
+            const canVisit = this.$store.state.userIdentity ? self.hasAuthority(child.authorities) : true
+            if (!canVisit) {
+              notFound = true
+            }
+          }
+        })
+      })
+      if (notFound) {
+        self.$router.push({ name: 'NotFound' })
+      }
     }
 
     retrieveAccount () {

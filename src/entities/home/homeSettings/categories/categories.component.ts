@@ -70,22 +70,18 @@ export default class CategoriesComponent extends mixins(CommonHelpers, Vue) {
           if(this.category.id){
             this.categoryService.put(this.category).then(resp => {
               if (resp) {
-                // @ts-ignore
-                this.$vueOnToast.pop('success', '' ,this.$t('toastMessages.categoryUpdated'))
+                this.setAlert('categoryUpdated', 'success')
               } else {
-                //@ts-ignore
-                this.$vueOnToast.pop('error', this.$t('toastMessages.error'), this.$t('toastMessages.categoryError'))
+                this.setAlert('categoryError', 'error')
               }
               this.closeModal();
             })
           } else {
             this.categoryService.post(this.category).then(resp => {
               if (resp) {
-                // @ts-ignore
-                this.$vueOnToast.pop('success', '' ,this.$t('toastMessages.categorySaved'))
+                this.setAlert('categorySaved', 'success')
               } else {
-                //@ts-ignore
-                this.$vueOnToast.pop('error', this.$t('toastMessages.error'), this.$t('toastMessages.categoryError'))
+                this.setAlert('categoryError', 'error')
               }
               this.closeModal();
             })
@@ -110,14 +106,12 @@ export default class CategoriesComponent extends mixins(CommonHelpers, Vue) {
     if(cat.id){
       this.categoryService.delete(cat.id).then(resp => {
         if (resp) {
-          // @ts-ignore
-          this.$vueOnToast.pop('success', '' ,this.$t('toastMessages.categoryDeleted'))
+          this.setAlert('categoryDeleted', 'success')
         } else {
-          //@ts-ignore
-          this.$vueOnToast.pop('error', this.$t('toastMessages.error'), this.$t('toastMessages.categoryError'))
+          this.setAlert('categoryError', 'error')
         }
         // @ts-ignore
-        this.$refs.paginationTable.retrieveData('api/administrationms/api/categories');
+        this.$refs.paginationTable.retrieveData();
       })
     }
   }

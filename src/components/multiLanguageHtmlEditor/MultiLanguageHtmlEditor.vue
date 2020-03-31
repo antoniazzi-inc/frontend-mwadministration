@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid pl-0 pr-0 text-left">
+  <div class="pl-0 pr-0 text-left">
     <div class="col-md-12 pl-0 pr-0">
       <div class="form-group">
         <trumbowyg v-model="selectedContent" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>

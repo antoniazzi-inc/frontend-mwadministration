@@ -13,6 +13,7 @@
       :ref="'paginationTable'"
       :active="true"
       :table="'taxRule'"
+      :noDataLabel="'labels.noData'"
       @onEdit="editTaxRule"
       @onDelete="removeTaxRule"
       :service="taxRuleService"/>

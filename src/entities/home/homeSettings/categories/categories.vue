@@ -11,6 +11,7 @@
       :ref="'paginationTable'"
       :active="$props.active"
       :table="'category'"
+      :noDataLabel="'labels.noData'"
       @onEdit="editCategory"
       @onCopy="copyCategory"
       @onDelete="deleteCategory"

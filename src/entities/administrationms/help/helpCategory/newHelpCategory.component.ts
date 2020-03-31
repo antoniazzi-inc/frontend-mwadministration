@@ -121,45 +121,39 @@ export default class NewHelpCategoryComponent extends mixins(CommonHelpers, Vue)
   }
 
   public async save () {
-    if(this.helpCategoryLanguages && this.helpCategoryLanguages.length > 0 && this.helpCategoryLanguages[0].name !==''){
-    const helpCatLangs: IHelpCategoryLanguage[] = []
-    await this.helpCategoryLanguages.forEach(lang => {
-      helpCatLangs.push(new HelpCategoryLanguage(lang.id, lang.administrationId, lang.langKey, lang.name,
-        lang.description, lang.helpCategory, lang.version, lang.createdOn, lang.updatedOn))
-    })
-    this.newHelpCategory.helpCategoryLanguages = helpCatLangs
-    if (this.parentHelpCategory && this.parentHelpCategory.item && this.parentHelpCategory.item.id) {
-      this.newHelpCategory.parent = {
-        id: this.parentHelpCategory.item.id,
-        version: this.parentHelpCategory.item.version
+    if (this.helpCategoryLanguages && this.helpCategoryLanguages.length > 0 && this.helpCategoryLanguages[0].name !== '') {
+      const helpCatLangs: IHelpCategoryLanguage[] = []
+      await this.helpCategoryLanguages.forEach(lang => {
+        helpCatLangs.push(new HelpCategoryLanguage(lang.id, lang.administrationId, lang.langKey, lang.name,
+          lang.description, lang.helpCategory, lang.version, lang.createdOn, lang.updatedOn))
+      })
+      this.newHelpCategory.helpCategoryLanguages = helpCatLangs
+      if (this.parentHelpCategory && this.parentHelpCategory.item && this.parentHelpCategory.item.id) {
+        this.newHelpCategory.parent = {
+          id: this.parentHelpCategory.item.id,
+          version: this.parentHelpCategory.item.version
+        }
+      } else {
+        this.newHelpCategory.parent = null
       }
-    } else {
-      this.newHelpCategory.parent = null
-    }
 
-    if (this.newHelpCategory.id) {
-      this.helpCategoryService.put(this.newHelpCategory).then((resp: AxiosResponse) => {
-        if (resp) {
-          // @ts-ignore
-          this.$vueOnToast.pop('success', this.$t('toastMessages.helpCategoryUpdated'))
-          this.cancel()
-        } else {
-          // @ts-ignore
-          this.$vueOnToast.pop('error', this.$t('toastMessages.helpCategoryError'))
-        }
-      })
-    } else {
-      this.helpCategoryService.post(this.newHelpCategory).then((resp: AxiosResponse) => {
-        if (resp) {
-          // @ts-ignore
-          this.$vueOnToast.pop('success', this.$t('toastMessages.helpCategoryCreated'))
-          this.cancel()
-        } else {
-          // @ts-ignore
-          this.$vueOnToast.pop('error', this.$t('toastMessages.helpCategoryError'))
-        }
-      })
-    }
+      if (this.newHelpCategory.id) {
+        this.helpCategoryService.put(this.newHelpCategory).then((resp: AxiosResponse) => {
+          if (resp) {
+            this.setAlert('helpCategoryUpdated', 'success')
+          } else {
+            this.setAlert('helpCategoryError', 'error')
+          }
+        })
+      } else {
+        this.helpCategoryService.post(this.newHelpCategory).then((resp: AxiosResponse) => {
+          if (resp) {
+            this.setAlert('helpCategoryCreated', 'success')
+          } else {
+            this.setAlert('helpCategoryError', 'error')
+          }
+        })
+      }
     }
   }
 

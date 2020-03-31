@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row font-size-small">
     <div class="col-md-3">
       <div>
         <span>
@@ -29,7 +29,7 @@
     </div>
     <div class="col-md-3 d-inline-flex align-items-baseline">
         <label for="itemsPerPage" class="mr-2">{{$t('labels.itemsPerPage')}}</label>
-        <select v-model="itemsPerPage" id="itemsPerPage" @input="changeItemsPerPage">
+        <select v-model="itemsPerPage" id="itemsPerPage" @change="changeItemsPerPage">
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
@@ -43,7 +43,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="columnConfig">
           <template v-for="(item, index) in columnsConfig">
-            <div class="dropdown-item ml-2" v-if="item.visible !== undefined" @click.prevent.stop="changeVisibility(!item.visible, item)" :key="index">
+            <div class="dropdown-item ml-2" v-if="item.visible !== undefined" @click.prevent.stop="changeVisibility(item)" :key="index">
               <input v-model="item.visible"
                      type="checkbox" class="custom-control-input" :id="'item'+index">
               <label class="custom-control-label" :for="'item'+index">{{$t('labels.'+item.id)}}</label>
@@ -65,5 +65,8 @@
   .page-item{
     cursor: pointer;
     user-select: none;
+  }
+  .font-size-small{
+    font-size: 0.9em!important;
   }
 </style>

@@ -21,7 +21,6 @@ export class SearchableSelectConfig implements ISearchableSelectConfig {
     public internalSearch?: boolean
   ) {
     this.trackBy = this.trackBy ? this.trackBy : 'label'
-    this.required = this.required
     this.placeholder = this.placeholder ? this.placeholder : 'selectValue'
     this.addCaption = this.addCaption ? this.addCaption : ''
     this.enableAdd = this.enableAdd ? this.enableAdd : false

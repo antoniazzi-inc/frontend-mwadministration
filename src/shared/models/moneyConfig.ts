@@ -1,10 +1,10 @@
 export interface IMoneyConfig {
-  decimal?: string,
-  thousands?: string,
-  prefix?: string,
-  suffix?: string,
-  precision?: number,
-  masked?: boolean
+  decimal?: string;
+  thousands?: string;
+  prefix?: string;
+  suffix?: string;
+  precision?: number;
+  masked?: boolean;
 }
 
 export class MoneyConfig implements IMoneyConfig {

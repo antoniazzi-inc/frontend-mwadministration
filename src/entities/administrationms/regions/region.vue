@@ -12,6 +12,7 @@
     <PaginationTableComponent
       :ref="'paginationTable'"
       :active="true"
+      :noDataLabel="'labels.noData'"
       :table="'regions'"
       @onEdit="editRegion"
       @onDelete="removeRegion"

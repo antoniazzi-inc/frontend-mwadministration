@@ -30,12 +30,19 @@ import NewTaxRuleComponent from '@/entities/administrationms/tax/taxRule/newTaxR
 import NewTaxRateLinkComponent from '@/entities/administrationms/tax/taxRateLink/newTaxRateLink.vue'
 import RegionComponent from '@/entities/administrationms/regions/region.vue'
 import NewRegionComponent from '@/entities/administrationms/regions/newRegion.vue'
-import NewAdministrationComponent from "@/entities/administrationms/administrations/newAdministration.vue";
+import NewAdministrationComponent from '@/entities/administrationms/administrations/newAdministration.vue'
+import NotFoundComponent from '@/entities/notFound/notFound.vue'
+import NewRelationComponent from '@/entities/relationms/relation/newRelation/newRelation.vue'
+import EditRelationComponent from '@/entities/relationms/relation/editRelation/editRelation.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    name: 'HomeDash',
+    component: HomeDashboard
+  }, {
     path: '/login',
     name: 'Login',
     component: LoginComponent
@@ -75,6 +82,15 @@ const routes = [
     path: '/relations',
     name: 'Relations',
     component: RelationComponent
+  }, {
+    path: '/relations/new',
+    name: 'NewRelations',
+    component: NewRelationComponent
+  }, {
+    path: '/relations/edit/:id',
+    name: 'EditRelations',
+    component: EditRelationComponent,
+    params: { id: null }
   }, {
     path: '/relations-dashboard',
     name: 'RelationsDashboard',
@@ -183,11 +199,11 @@ const routes = [
     path: '/maintenance/help-material/new',
     name: 'NewHelpMaterial',
     component: NewHelpMaterialComponent
-  },{
+  }, {
     path: '/maintenance/help-material/edit/:id',
     name: 'EditHelpMaterial',
     component: NewHelpMaterialComponent,
-    params: {id: null}
+    params: { id: null }
   }, {
     path: '/maintenance/help-category',
     name: 'HelpCategory',
@@ -270,11 +286,11 @@ const routes = [
     path: '/maintenance/administrations',
     name: 'Administrations',
     component: AdministrationsComponent
-  },{
+  }, {
     path: '/maintenance/administrations/new',
     name: 'NewAdministration',
     component: NewAdministrationComponent
-  },{
+  }, {
     path: '/maintenance/administrations/edit/:id',
     name: 'EditAdministration',
     component: NewAdministrationComponent,
@@ -283,6 +299,13 @@ const routes = [
     path: '/maintenance/migrations',
     name: 'Migrations',
     component: MigrationsComponent
+  }, {
+    path: '/notFound',
+    name: 'NotFound',
+    component: NotFoundComponent
+  }, {
+    path: '*',
+    component: NotFoundComponent
   }
 
 ]

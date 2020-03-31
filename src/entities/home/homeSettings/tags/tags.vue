@@ -11,6 +11,7 @@
       :ref="'paginationTable'"
       :active="$props.active"
       :table="'tag'"
+      :noDataLabel="'labels.noData'"
       @onEdit="editTag"
       @onCopy="copyTag"
       @onDelete="deleteTag"

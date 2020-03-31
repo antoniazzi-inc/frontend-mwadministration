@@ -3,8 +3,8 @@ import CategoriesComponent from '@/entities/home/homeSettings/categories/categor
 import TagsComponent from '@/entities/home/homeSettings/tags/tags.vue'
 import DefaultTextsComponent from '@/entities/home/homeSettings/defaultTexts/defaultTexts.vue'
 import { mixins } from 'vue-class-component'
-import DeliveryMethodsComponent from "@/entities/home/homeSettings/deliveryMethods/deliveryMethods.vue";
-import PaymentMethodsComponent from "@/entities/home/homeSettings/paymentMethods/paymentMethods.vue";
+import DeliveryMethodsComponent from '@/entities/home/homeSettings/deliveryMethods/deliveryMethods.vue'
+import PaymentMethodsComponent from '@/entities/home/homeSettings/paymentMethods/paymentMethods.vue'
 
 @Component({
   props: {

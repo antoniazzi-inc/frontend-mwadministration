@@ -1,5 +1,5 @@
 import Component, { mixins } from 'vue-class-component'
-import { Vue } from 'vue-property-decorator'
+import { Vue, Watch } from 'vue-property-decorator'
 import * as Tables from '@/shared/tabelsDefinitions'
 import CommonHelpers from '@/shared/commonHelpers'
 
@@ -8,7 +8,9 @@ import CommonHelpers from '@/shared/commonHelpers'
     page: Number,
     total: Number,
     totalPages: Number,
-    table: String
+    table: String,
+    perPage: Number,
+    tableFields: Object
   }
 })
 export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
@@ -49,7 +51,7 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   }
 
   mounted () {
-    this.fillTableConfig(this.tables[this.$props.table])
+    this.fillTableConfig(this.$props.tableFields)
   }
 
   /*
@@ -58,39 +60,32 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: render list of table columns visibility
   * Author: Nick Dam
   */
+  @Watch('tableFields', { immediate: true, deep: true })
   public fillTableConfig (config: any) {
     const columns: any = []
     if (config) {
-      this.itemsPerPage = config.itemsPerPage
-      config.cols.forEach((column: any) => {
-        columns.push({
-          visible: column.visible,
-          id: column.field
-        })
-      })
+      this.itemsPerPage = this.$props.perPage
+      for (const key in config) {
+        if (config.hasOwnProperty(key) && key !== 'itemsPerPage') {
+          columns.push({
+            visible: config[key],
+            id: key
+          })
+        }
+      }
       this.columnsConfig = columns
     }
   }
 
   /*
-  * Name: changeColumnVisibility
-  * arg: e => event
+  * Name: changeVisibility
+  * arg: item => item to be changed
   * description: change specific column visibility
   * Author: Nick Dam
   */
-  public async changeVisibility (visibility: any, item: any) {
-    this.changeColumnVisibility(item, this.$props.table, visibility)
-    const conf: any = []
-    this.columnsConfig.forEach((e: any) => {
-      if (e.visible) {
-        const newItem: any = e
-        if (newItem.field === item.id) {
-          newItem.visible = visibility
-        }
-        conf.push(newItem)
-      }
-    })
-    this.columnsConfig = conf
+  public async changeVisibility (item: any) {
+    await this.changeColumnVisibility(item, this.$props.table)
+    this.$emit('update')
   }
 
   /*
@@ -99,8 +94,13 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: Change items per page displayed
   * Author: Nick Dam
   */
+  @Watch('perPage', { immediate: true, deep: true })
   public changeItemsPerPage (e: any) {
-    this.itemsPerPage = e.currentTarget.value
+    let config: any = localStorage.getItem('tableColumns')
+    if (config) config = JSON.parse(config)
+    this.itemsPerPage = e.currentTarget ? parseInt(e.currentTarget.value) : this.$props.perPage
+    config[this.$props.table].itemsPerPage = this.itemsPerPage
+    localStorage.setItem('tableColumns', JSON.stringify(config))
     this.changePage(0)
   }
 

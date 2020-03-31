@@ -16,17 +16,12 @@
           </div>
           <div class="form-group">
             <label>{{$t('labels.validFrom')}}</label>
-            <flat-pickr :config="validFromConfig"
-                        class="form-control"
-                        placeholder="Select date"
+            <flat-pickr :config="validFromConfig" class="single-daterange form-control"
                         id="validFromDate" v-model="validFromDate"></flat-pickr>
           </div>
           <div class="form-group">
             <label>{{$t('labels.validTo')}}</label>
-            <flat-pickr :config="validToConfig"
-                        class="form-control"
-                        placeholder="Select date"
-                        name="validTo"
+            <flat-pickr :config="validToConfig" class="single-daterange form-control"
                         id="validToDate" v-model="validToDate"></flat-pickr>
           </div>
           <div class="form-group">

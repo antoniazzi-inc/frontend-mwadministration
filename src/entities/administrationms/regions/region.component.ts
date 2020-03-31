@@ -3,13 +3,15 @@ import PaginationTableComponent from '@/components/paginationTable/paginationTab
 import { AxiosResponse } from 'axios'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import RegionService from '@/shared/services/regionService'
+import {mixins} from "vue-class-component";
+import CommonHelpers from "@/shared/commonHelpers";
 @Component({
   components: {
     'simple-search': SimpleSearchComponent,
     PaginationTableComponent
   }
 })
-export default class RegionComponent extends Vue {
+export default class RegionComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
@@ -28,13 +30,9 @@ export default class RegionComponent extends Vue {
   public removeRegion (tax: any) {
     this.regionService.delete(tax.id).then((resp: AxiosResponse) => {
       if (resp) {
-        // @ts-ignore
-        this.$vueOnToast.pop('success', this.$t('toastMessages.regionRemoved'))
-        // @ts-ignore
-        this.$refs.paginationTable.retrieveData()
+        this.setAlert('regionRemoved', 'success')
       } else {
-        // @ts-ignore
-        this.$vueOnToast.pop('error', this.$t('toastMessages.regionError'))
+        this.setAlert('regionError', 'error')
       }
     })
   }

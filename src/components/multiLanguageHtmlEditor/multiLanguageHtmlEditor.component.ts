@@ -1,6 +1,9 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import Trumbowyg from 'vue-trumbowyg'
 import 'trumbowyg/dist/ui/trumbowyg.css'
+import 'trumbowyg/dist/plugins/colors/trumbowyg.colors';
+
+import 'trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.css'
 @Component({
   components: {
     trumbowyg: Trumbowyg
@@ -20,7 +23,6 @@ export default class MultiLanguageHtmlEditorComponent extends Vue {
     langKey: '',
     name: ''
   };
-
   public langToDelete: any = {};
   public selectedContent = '';
   public allContent: any = {};
@@ -30,6 +32,24 @@ export default class MultiLanguageHtmlEditorComponent extends Vue {
   public allAvailableLanguages: Array<any> = [];
   constructor () {
     super()
+    this.editorConfig={
+      btnsAdd: ['foreColor', 'backColor'],
+      btns: [
+        ['viewHTML'],
+        ['undo', 'redo'], // Only supported in Blink browsers
+        ['formatting'],
+        ['strong', 'em', 'del'],
+        ['superscript', 'subscript'],
+        ['link'],
+        ['insertImage'],
+        ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+        ['unorderedList', 'orderedList'],
+        ['horizontalRule'],
+        ['removeformat'],
+        ['foreColor'], ['backColor'],
+        ['fullscreen']
+      ]
+    }
     for (const key in this.$store.state.languages) {
       if (this.$store.state.languages.hasOwnProperty(key)) {
         this.allAvailableLanguages.push({

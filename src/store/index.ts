@@ -18,7 +18,9 @@ export default new Vuex.Store({
       regions: [],
       products: [],
       timeZones: [],
-      taxRates: []
+      taxRates: [],
+      companies: [],
+      administrationBusiness: [],
     },
     languages: {
       nl: { name: 'Nederlands' },
@@ -71,8 +73,14 @@ export default new Vuex.Store({
     regions (state, newState) {
       state.lookups.regions = newState
     },
+    companies (state, newState) {
+      state.lookups.companies = newState
+    },
     products (state, newState) {
       state.lookups.products = newState
+    },
+    administrationBusiness (state, newState) {
+      state.lookups.administrationBusiness = newState
     },
     authorities (state, authorities) {
       state.authorities = authorities

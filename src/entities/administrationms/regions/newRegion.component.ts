@@ -57,33 +57,26 @@ export default class NewRegionComponent extends mixins(CommonHelpers, Vue) {
   public async save () {
     this.$validator.validateAll().then(success => {
       if (success && this.countries && this.countries.length > 0) {
-    this.region.countriesJson = JSON.stringify({ countries: this.countries })
-    if (this.region.id) {
-      this.regionService.put(this.region).then((resp: AxiosResponse) => {
-        if (resp) {
-          // @ts-ignore
-          this.$vueOnToast.pop('success', this.$t('toastMessages.regionUpdated'))
-          this.cancel()
+        this.region.countriesJson = JSON.stringify({ countries: this.countries })
+        if (this.region.id) {
+          this.regionService.put(this.region).then((resp: AxiosResponse) => {
+            if (resp) {
+              this.setAlert('regionUpdated', 'success')
+            } else {
+              this.setAlert('regionError', 'error')
+            }
+          })
         } else {
-          // @ts-ignore
-          this.$vueOnToast.pop('error', this.$t('toastMessages.regionError'))
+          this.regionService.post(this.region).then((resp: AxiosResponse) => {
+            if (resp) {
+              this.setAlert('regionCreated', 'success')
+            } else {
+              this.setAlert('regionError', 'error')
+            }
+          })
         }
-      })
-    } else {
-      this.regionService.post(this.region).then((resp: AxiosResponse) => {
-        if (resp) {
-          // @ts-ignore
-          this.$vueOnToast.pop('success', this.$t('toastMessages.regionCreated'))
-          this.cancel()
-        } else {
-          // @ts-ignore
-          this.$vueOnToast.pop('error', this.$t('toastMessages.regionError'))
-        }
-      })
-    }
-      }else {
-        // @ts-ignore
-        this.$vueOnToast.pop('error', this.$t('toastMessages.fillRequiredFields'))
+      } else {
+        this.setAlert('fillRequiredFields', 'error')
       }
     })
   }

@@ -15,6 +15,7 @@
           :ref="'paginationTable'"
           :active="true"
           :table="'helpMaterials'"
+          :noDataLabel="'labels.noData'"
           @onEdit="editHelp"
           @onCopy="copyHelp"
           @onDelete="deleteHelp"

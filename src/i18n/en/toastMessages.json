@@ -42,6 +42,10 @@
   "administrationUpdated": "Administration Updated",
   "administrationError": "Administration Error",
   "administrationRemoved": "Administration Removed",
+  "defaultTextsCreated": "Default Texts Created",
+  "defaultTextsUpdated": "Default Texts Updated",
+  "defaultTextsError": "Default Texts Error",
+  "defaultTextsRemoved": "Default Texts Removed",
   "paymentMethodCreated": "Payment Method Created",
   "paymentMethodUpdated": "Payment Method Updated",
   "paymentMethodError": "Payment Method Error",
@@ -50,5 +54,10 @@
   "deliveryMethodUpdated": "Delivery Method Updated",
   "deliveryMethodError": "Delivery Method Error",
   "deliveryMethodRemoved": "Delivery Method Removed",
+  "relationsCreated": "Relation(s) Created",
+  "relationsUpdated": "Relation Updated",
+  "relationsError": "Relations Error",
+  "relationUpdateError": "Relation Update Error",
+  "relationsRemoved": "Relation Removed",
   "fillRequiredFields": "Please fill in all Required fields"
 }

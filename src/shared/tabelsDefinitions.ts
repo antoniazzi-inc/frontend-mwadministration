@@ -1,8 +1,50 @@
+import { ILanguage, Language } from '@/shared/models/language.model'
+import Store from '../store'
+import moment from 'moment'
 const local = localStorage.getItem('tableColumns') ? localStorage.getItem('tableColumns') : ''
 const currentSettings = local ? JSON.parse(local) : {}
-console.log('currentSettings')
-console.log(currentSettings)
-console.log('currentSettings')
+
+/*
+   * Name: getCountryById
+   * arg: id -> Country ID
+   * description: Returns a country object
+   * Author: Nick Dam
+   */
+function getCountryById (id: number) {
+  let result = {
+    enName: ''
+  }
+  Store.state.allCountries.forEach((country: any) => {
+    if (country.id === id) {
+      result = country
+    }
+  })
+  return result
+}
+/*
+   * Name: getMultiLangName
+   * arg: langs -> array of all languages
+   * description: Returns a language object depending of the administration default language
+   * Author: Nick Dam
+   */
+function getMultiLangName (langs: ILanguage[] | undefined | null) {
+  if (langs && langs.length > 0) {
+    let result = null
+    langs.forEach(lang => {
+      if (lang.langKey === Store.state.currentLanguage) {
+        result = lang
+      }
+    })
+    if (result) {
+      return result
+    } else {
+      return new Language()
+    }
+  } else {
+    return new Language()
+  }
+}
+
 export const category = {
   actions: {
     copy: true,
@@ -27,16 +69,16 @@ export const category = {
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.category ? currentSettings.category.id : true
+      method: null
     },
     {
-      name: 'labels.name',
+      name: 'labels.code',
       field: 'code',
       authorities: ['*'],
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.category ? currentSettings.category.code : true
+      method: null
     },
     {
       name: 'labels.color',
@@ -45,7 +87,7 @@ export const category = {
       type: 'color',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.category ? currentSettings.category.color : true
+      method: null
     },
     {
       name: 'labels.createdOn',
@@ -54,7 +96,7 @@ export const category = {
       type: 'date',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.category ? currentSettings.category.createdOn : true
+      method: null
     }
   ]
 }
@@ -83,24 +125,24 @@ export const tag = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.tag ? currentSettings.tag.id : true
+      method: null
     },
     {
-      name: 'labels.name',
+      name: 'labels.code',
       field: 'code',
       subField: null,
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.tag ? currentSettings.tag.name : true
-    },{
+      method: null
+    }, {
       name: 'labels.points',
       field: 'points',
       subField: null,
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.tag ? currentSettings.tag.points : true
+      method: null
     },
     {
       name: 'labels.createdOn',
@@ -109,7 +151,7 @@ export const tag = {
       type: 'date',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.tag ? currentSettings.tag.createdOn : true
+      method: null
     }
   ]
 }
@@ -137,7 +179,7 @@ export const roles = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.roles ? currentSettings.roles.id : true
+      method: null
     },
     {
       name: 'labels.name',
@@ -146,7 +188,7 @@ export const roles = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.roles ? currentSettings.roles.name : true
+      method: null
     },
     {
       name: 'labels.code',
@@ -155,7 +197,7 @@ export const roles = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.roles ? currentSettings.roles.code : true
+      method: null
     },
     {
       name: 'labels.description',
@@ -164,7 +206,7 @@ export const roles = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.roles ? currentSettings.roles.description : true
+      method: null
     },
     {
       name: 'labels.updatedOn',
@@ -173,7 +215,7 @@ export const roles = {
       type: 'date',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.roles ? currentSettings.roles.updatedOn : true
+      method: null
     }
   ]
 }
@@ -201,7 +243,7 @@ export const users = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.users ? currentSettings.users.id : true
+      method: null
     },
     {
       name: 'labels.name',
@@ -210,7 +252,7 @@ export const users = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.users ? currentSettings.users.name : true
+      method: null
     },
     {
       name: 'labels.login',
@@ -219,7 +261,7 @@ export const users = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.users ? currentSettings.users.code : true
+      method: null
     },
     {
       name: 'labels.activated',
@@ -228,7 +270,7 @@ export const users = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.users ? currentSettings.users.activated : true
+      method: null
     },
     {
       name: 'labels.lastLogin',
@@ -237,7 +279,7 @@ export const users = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.users ? currentSettings.users.lastLogin : true
+      method: null
     },
     {
       name: 'labels.roles',
@@ -246,7 +288,7 @@ export const users = {
       type: '',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.users ? currentSettings.users.roles : true
+      method: null
     }
   ]
 }
@@ -267,7 +309,7 @@ export const helpMaterials = {
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.id : true
+      method: null
     },
     {
       name: 'labels.helpType',
@@ -276,25 +318,33 @@ export const helpMaterials = {
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.name : true
+      method: null
     },
     {
       name: 'labels.title',
-      field: 'helpContentLanguages',
+      field: 'title',
       authorities: ['*'],
       subField: null,
-      type: 'multiLang',
+      type: null,
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.code : true
+      method: function (item: any) {
+        return getMultiLangName(item.helpContentLanguages).name
+      }
     },
     {
       name: 'labels.tag',
       field: 'tags',
       authorities: ['*'],
-      subField: 'helpTagLanguages',
-      type: 'multiLang',
+      subField: null,
+      type: null,
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.tag : true
+      method: function (item: any) {
+        const result: any = []
+        item.tags.forEach((tag: any) => {
+          result.push(getMultiLangName(tag.helpTagLanguages).name)
+        })
+        return result.join(', ')
+      }
     },
     {
       name: 'labels.category',
@@ -303,7 +353,13 @@ export const helpMaterials = {
       subField: 'helpCategoryLanguages',
       type: 'multiLang',
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.roles : true
+      method: function (item: any) {
+        const result: any = []
+        item.categories.forEach((cat: any) => {
+          result.push(getMultiLangName(cat.helpCategoryLanguages).name)
+        })
+        return result.join(', ')
+      }
     },
     {
       name: 'labels.fieldCode',
@@ -312,7 +368,7 @@ export const helpMaterials = {
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.roles : true
+      method: null
     },
     {
       name: 'labels.screenCode',
@@ -321,7 +377,7 @@ export const helpMaterials = {
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.roles : true
+      method: null
     },
     {
       name: 'labels.tabCode',
@@ -330,7 +386,7 @@ export const helpMaterials = {
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.roles : true
+      method: null
     },
     {
       name: 'labels.popupCode',
@@ -339,7 +395,7 @@ export const helpMaterials = {
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.helpMaterials ? currentSettings.helpMaterials.roles : true
+      method: null
     }
   ]
 }
@@ -360,16 +416,18 @@ export const helpCategory = {
       subField: null,
       type: '',
       sort: false,
-      visible: currentSettings.helpCategory ? currentSettings.helpCategory.id : true
+      method: null
     },
     {
       name: 'labels.title',
-      field: 'helpCategoryLanguages',
+      field: 'title',
       authorities: ['*'],
       subField: null,
-      type: 'multiLang',
+      type: null,
       sort: false,
-      visible: currentSettings.helpCategory ? currentSettings.helpCategory.title : true
+      method: function (item: any) {
+        return getMultiLangName(item.helpCategoryLanguages).name
+      }
     },
     {
       name: 'labels.color',
@@ -378,7 +436,7 @@ export const helpCategory = {
       type: 'color',
       subField: null,
       sort: false,
-      visible: currentSettings.helpCategory ? currentSettings.helpCategory.color : true
+      method: null
     },
     {
       name: 'labels.createdOn',
@@ -387,7 +445,8 @@ export const helpCategory = {
       authorities: ['*'],
       subField: null,
       sort: false,
-      visible: currentSettings.helpCategory ? currentSettings.helpCategory.createdOn : true
+      method: null
+
     },
     {
       name: 'labels.updatedOn',
@@ -396,7 +455,8 @@ export const helpCategory = {
       type: 'date',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.helpCategory ? currentSettings.helpCategory.updatedOn : true
+      method: null
+
     },
     {
       name: 'labels.children',
@@ -405,16 +465,29 @@ export const helpCategory = {
       type: 'multiLang',
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.helpCategory ? currentSettings.helpCategory.children : true
+      method: function (item: any) {
+        const result: any = []
+        if (item.children.length) {
+          item.children.forEach((cat: any) => {
+            result.push(getMultiLangName(cat.helpCategoryLanguages).name)
+          })
+        }
+        return result.length ? result.join(', ') : '-'
+      }
+
     },
     {
       name: 'labels.parent',
       field: 'parent',
-      subField: 'helpCategoryLanguages',
-      type: 'multiLang',
+      subField: null,
+      type: null,
       authorities: ['*'],
       sort: false,
-      visible: currentSettings.helpCategory ? currentSettings.helpCategory.parent : true
+      method: function (item: any) {
+        if (item.parent) return getMultiLangName(item.parent.helpCategoryLanguages).name
+        return '-'
+      }
+
     }
   ]
 }
@@ -435,16 +508,20 @@ export const helpTag = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.helpTag ? currentSettings.helpTag.id : true
+      method: null
+
     },
     {
       name: 'labels.title',
-      field: 'helpTagLanguages',
+      field: 'title',
       authorities: ['*'],
-      type: 'multiLang',
+      type: null,
       subField: null,
       sort: false,
-      visible: currentSettings.helpTag ? currentSettings.helpTag.title : true
+      method: function (item: any) {
+        return getMultiLangName(item.helpTagLanguages).name
+      }
+
     },
     {
       name: 'labels.color',
@@ -453,7 +530,8 @@ export const helpTag = {
       type: 'color',
       subField: null,
       sort: false,
-      visible: currentSettings.helpTag ? currentSettings.helpTag.color : true
+      method: null
+
     },
     {
       name: 'labels.createdOn',
@@ -462,7 +540,8 @@ export const helpTag = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.helpTag ? currentSettings.helpTag.createdOn : true
+      method: null
+
     },
     {
       name: 'labels.updatedOn',
@@ -471,7 +550,8 @@ export const helpTag = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.helpTag ? currentSettings.helpTag.updatedOn : true
+      method: null
+
     }
   ]
 }
@@ -499,7 +579,8 @@ export const taxRate = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRate ? currentSettings.taxRate.id : true
+      method: null
+
     },
     {
       name: 'labels.level',
@@ -508,7 +589,18 @@ export const taxRate = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRate ? currentSettings.taxRate.level : true
+      method: null
+
+    },
+    {
+      name: 'labels.rate',
+      field: 'rate',
+      authorities: ['*'],
+      type: 'percentage',
+      subField: null,
+      sort: false,
+      method: null
+
     },
     {
       name: 'labels.validFrom',
@@ -517,7 +609,8 @@ export const taxRate = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRate ? currentSettings.taxRate.validFrom : true
+      method: null
+
     },
     {
       name: 'labels.validTo',
@@ -526,7 +619,8 @@ export const taxRate = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRate ? currentSettings.taxRate.validTo : true
+      method: null
+
     },
     {
       name: 'labels.createdOn',
@@ -535,16 +629,20 @@ export const taxRate = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRate ? currentSettings.taxRate.createdOn : true
+      method: null
+
     },
     {
       name: 'labels.country',
       field: 'country',
       authorities: ['*'],
       type: '',
-      subField: 'enName',
+      subField: null,
       sort: false,
-      visible: currentSettings.taxRate ? currentSettings.taxRate.country : true
+      method: function (item: any) {
+        return item.country ? item.country.enName : ''
+      }
+
     }
   ]
 }
@@ -566,49 +664,21 @@ export const taxRateLink = {
       sort: false
     },
     {
-      name: 'labels.id',
-      field: 'id',
-      authorities: ['*'],
-      type: '',
-      subField: null,
-      sort: false,
-      visible: currentSettings.taxRateLink ? currentSettings.taxRateLink.id : true
-    },
-    {
-      name: 'labels.validFrom',
-      field: 'validFrom',
-      authorities: ['*'],
-      type: 'date',
-      subField: null,
-      sort: false,
-      visible: currentSettings.taxRateLink ? currentSettings.taxRateLink.validFrom : true
-    },
-    {
-      name: 'labels.validTo',
-      field: 'validTo',
-      authorities: ['*'],
-      type: 'date',
-      subField: null,
-      sort: false,
-      visible: currentSettings.taxRateLink ? currentSettings.taxRateLink.validTo : true
-    },
-    {
-      name: 'labels.createdOn',
-      field: 'createdOn',
-      authorities: ['*'],
-      type: 'date',
-      subField: null,
-      sort: false,
-      visible: currentSettings.taxRateLink ? currentSettings.taxRateLink.createdOn : true
-    },
-    {
       name: 'labels.fromTaxRate',
       field: 'fromTaxRate',
       authorities: ['*'],
       type: '',
+      method: function (item: any) {
+        const level = item.fromTaxRate.level
+        const taxRate = item.fromTaxRate.rate
+        const country = item.fromTaxRate.country.enName
+        const validFrom = moment(item.fromTaxRate.validFrom).format('MM/YYYY')
+        const validTo = moment(item.fromTaxRate.validTo).format('MM/YYYY')
+        return `Level ${level}, Rate ${taxRate}%, Country ${country}, Validity ${validFrom} - ${validTo}`
+      },
       subField: 'rate',
-      sort: false,
-      visible: currentSettings.taxRateLink ? currentSettings.taxRateLink.fromTaxRate : true
+      sort: false
+
     },
     {
       name: 'labels.toTaxRate',
@@ -617,7 +687,15 @@ export const taxRateLink = {
       type: '',
       subField: 'rate',
       sort: false,
-      visible: currentSettings.taxRateLink ? currentSettings.taxRateLink.toTaxRate : true
+      method: function (item: any) {
+        const level = item.toTaxRate.level
+        const taxRate = item.toTaxRate.rate
+        const country = item.toTaxRate.country.enName
+        const validFrom = moment(item.toTaxRate.validFrom).format('MM/YYYY')
+        const validTo = moment(item.toTaxRate.validTo).format('MM/YYYY')
+        return `Level ${level}, Rate ${taxRate}%, Country ${country}, Validity ${validFrom} - ${validTo}`
+      }
+
     }
   ]
 }
@@ -645,7 +723,8 @@ export const taxRule = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRule ? currentSettings.taxRule.id : true
+      method: null
+
     },
     {
       name: 'labels.customerType',
@@ -654,7 +733,8 @@ export const taxRule = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRule ? currentSettings.taxRule.customerType : true
+      method: null
+
     },
     {
       name: 'labels.customerRegion',
@@ -663,7 +743,8 @@ export const taxRule = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRule ? currentSettings.taxRule.customerRegion : true
+      method: null
+
     },
     {
       name: 'labels.ruleType',
@@ -672,7 +753,8 @@ export const taxRule = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRule ? currentSettings.taxRule.ruleType : true
+      method: null
+
     },
     {
       name: 'labels.createdOn',
@@ -681,7 +763,8 @@ export const taxRule = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.taxRule ? currentSettings.taxRule.createdOn : true
+      method: null
+
     },
     {
       name: 'labels.country',
@@ -690,7 +773,12 @@ export const taxRule = {
       type: '',
       subField: 'enName',
       sort: false,
-      visible: currentSettings.taxRule ? currentSettings.taxRule.country : true
+      method: function (item: any) {
+        if (item && item.country) {
+          return item.country.enName
+        }
+      }
+
     }
   ]
 }
@@ -710,7 +798,8 @@ export const regions = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.regions ? currentSettings.regions.id : true
+      method: null
+
     },
     {
       name: 'labels.name',
@@ -719,7 +808,8 @@ export const regions = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.regions ? currentSettings.regions.name : true
+      method: null
+
     },
     {
       name: 'labels.home',
@@ -728,7 +818,8 @@ export const regions = {
       type: 'boolean',
       subField: null,
       sort: false,
-      visible: currentSettings.regions ? currentSettings.regions.home : true
+      method: null
+
     },
     {
       name: 'labels.abroad',
@@ -737,7 +828,8 @@ export const regions = {
       type: 'boolean',
       subField: null,
       sort: false,
-      visible: currentSettings.regions ? currentSettings.regions.ruleType : true
+      method: null
+
     },
     {
       name: 'labels.insideEu',
@@ -746,7 +838,8 @@ export const regions = {
       type: 'boolean',
       subField: null,
       sort: false,
-      visible: currentSettings.regions ? currentSettings.regions.insideEU : true
+      method: null
+
     },
     {
       name: 'labels.outsideEu',
@@ -755,7 +848,8 @@ export const regions = {
       type: 'boolean',
       subField: 'enName',
       sort: false,
-      visible: currentSettings.regions ? currentSettings.regions.outsideEU : true
+      method: null
+
     },
     {
       name: 'labels.createdOn',
@@ -764,7 +858,8 @@ export const regions = {
       type: 'date',
       subField: 'enName',
       sort: false,
-      visible: currentSettings.regions ? currentSettings.regions.createdOn : true
+      method: null
+
     }
   ]
 }
@@ -785,7 +880,8 @@ export const administration = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.id : true
+      method: null
+
     },
     {
       name: 'labels.name',
@@ -794,7 +890,8 @@ export const administration = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.name : true
+      method: null
+
     },
     {
       name: 'labels.accessCode',
@@ -803,7 +900,8 @@ export const administration = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.accessCode : true
+      method: null
+
     },
     {
       name: 'labels.useShop',
@@ -812,7 +910,8 @@ export const administration = {
       type: 'boolean',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.useShop : true
+      method: null
+
     },
     {
       name: 'labels.useAutomation',
@@ -821,7 +920,8 @@ export const administration = {
       type: 'boolean',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.useAutomation : true
+      method: null
+
     },
     {
       name: 'labels.locked',
@@ -830,7 +930,8 @@ export const administration = {
       type: 'boolean',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.locked : true
+      method: null
+
     },
     {
       name: 'labels.trial',
@@ -839,7 +940,8 @@ export const administration = {
       type: 'boolean',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.trial : true
+      method: null
+
     },
     {
       name: 'labels.relationsLimit',
@@ -848,7 +950,8 @@ export const administration = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.relationsLimit : true
+      method: null
+
     },
     {
       name: 'labels.validFrom',
@@ -857,7 +960,8 @@ export const administration = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.validFrom : true
+      method: null
+
     },
     {
       name: 'labels.validTo',
@@ -866,7 +970,8 @@ export const administration = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.validTo : true
+      method: null
+
     },
     {
       name: 'labels.language',
@@ -875,7 +980,8 @@ export const administration = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.regions ? currentSettings.regions.language : true
+      method: null
+
     }
   ]
 }
@@ -895,25 +1001,36 @@ export const deliveryMethod = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.deliveryMethod ? currentSettings.deliveryMethod.id : true
+      method: null
+
     },
     {
       name: 'labels.name',
-      field: 'deliveryMethodLanguages',
+      field: 'name',
       authorities: ['*'],
-      type: 'multiLang',
-      subField: 'name',
+      type: null,
+      subField: null,
       sort: false,
-      visible: currentSettings.deliveryMethod ? currentSettings.deliveryMethod.name : true
+      method: function (item: any) {
+        // @ts-ignore
+        const lang = getMultiLangName(item.deliveryMethodLanguages).name
+        return lang
+      }
+
     },
     {
       name: 'labels.description',
-      field: 'deliveryMethodLanguages',
+      field: 'description',
       authorities: ['*'],
-      type: 'multiLang',
-      subField: 'description',
+      type: null,
+      subField: null,
       sort: false,
-      visible: currentSettings.deliveryMethod ? currentSettings.deliveryMethod.description : true
+      method: function (item: any) {
+        // @ts-ignore
+        const lang = getMultiLangName(item.deliveryMethodLanguages).description
+        return lang
+      }
+
     },
     {
       name: 'labels.type',
@@ -922,7 +1039,8 @@ export const deliveryMethod = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.deliveryMethod ? currentSettings.deliveryMethod.type : true
+      method: null
+
     },
     {
       name: 'labels.createdOn',
@@ -931,7 +1049,8 @@ export const deliveryMethod = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.administration ? currentSettings.administration.createdOn : true
+      method: null
+
     }
   ]
 }
@@ -951,16 +1070,22 @@ export const paymentMethod = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.paymentMethod ? currentSettings.paymentMethod.id : true
+      method: null
+
     },
     {
       name: 'labels.name',
-      field: 'paymentMethodLanguages',
+      field: 'name',
       authorities: ['*'],
       type: 'multiLang',
       subField: null,
       sort: false,
-      visible: currentSettings.paymentMethod ? currentSettings.paymentMethod.name : true
+      method: function (item: any) {
+        // @ts-ignore
+        const lang = getMultiLangName(item.paymentMethodLanguages).name
+        return lang
+      }
+
     },
     {
       name: 'labels.administrationCosts',
@@ -969,7 +1094,8 @@ export const paymentMethod = {
       type: 'money',
       subField: null,
       sort: false,
-      visible: currentSettings.paymentMethod ? currentSettings.paymentMethod.administrationCosts : true
+      method: null
+
     },
     {
       name: 'labels.available',
@@ -978,7 +1104,8 @@ export const paymentMethod = {
       type: '',
       subField: null,
       sort: false,
-      visible: currentSettings.paymentMethod ? currentSettings.paymentMethod.available : true
+      method: null
+
     },
     {
       name: 'labels.createdOn',
@@ -987,7 +1114,380 @@ export const paymentMethod = {
       type: 'date',
       subField: null,
       sort: false,
-      visible: currentSettings.paymentMethod ? currentSettings.paymentMethod.createdOn : true
+      method: null
+
     }
   ]
+}
+export const relation = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 20,
+  cols: [
+    {
+      name: 'labels.id',
+      field: 'id',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.name',
+      field: 'name',
+      authorities: ['*'],
+      type: 'multiLang',
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        const title = item.relationProfile && item.relationProfile.title ? item.relationProfile.title : ''
+        const firstName = item.relationProfile && item.relationProfile.firstName ? item.relationProfile.firstName : ''
+        const lastName = item.relationProfile && item.relationProfile.lastName ? item.relationProfile.lastName : ''
+        const middleName = item.relationProfile && item.relationProfile.middleName ? item.relationProfile.middleName : ''
+        return `${title} ${firstName} ${middleName} ${lastName} `
+      }
+
+    },
+    {
+      name: 'labels.email',
+      field: 'email',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.createdOn',
+      field: 'createdOn',
+      authorities: ['*'],
+      type: 'date',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.postalCode',
+      field: 'postalCode',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        if (item.relationAddresses && item.relationAddresses.length > 0) {
+          return item.relationAddresses[0].postalCode
+        }
+        return '-'
+      }
+    },
+    {
+      name: 'labels.city',
+      field: 'city',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        if (item.relationAddresses && item.relationAddresses.length > 0) {
+          return item.relationAddresses[0].city
+        }
+        return '-'
+      }
+    },
+    {
+      name: 'labels.country',
+      field: 'country',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        if (item.relationAddresses && item.relationAddresses.length > 0) {
+          return getCountryById(item.relationAddresses[0].countryId)
+        }
+        return '-'
+      }
+    },
+    {
+      name: 'labels.company',
+      field: 'company',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        if (item.companies && item.companies.length > 0) {
+          return item.companies[0].name
+        }
+        return '-'
+      }
+    },
+    {
+      name: 'labels.points',
+      field: 'points',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        if (item.relationProfile) {
+          return item.relationProfile.points
+        }
+        return '-'
+      }
+    },
+    {
+      name: 'labels.relationType',
+      field: 'relationType',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        let result = '-'
+        if (item.relationProfile && item.relationProfile.categoryId) {
+          Store.state.lookups.categories.forEach((cat: any) => {
+            if (cat.id === item.relationProfile.categoryId) {
+              result = cat.code
+            }
+          })
+          return result
+        } else {
+          return '-'
+        }
+      }
+    },
+    {
+      name: 'labels.relationTags',
+      field: 'relationTags',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        const result: any = []
+        if (item.relationTags && item.relationTags.length > 0) {
+          item.relationTags.forEach((tag: any) => {
+            result.push(tag.code)
+          })
+          return result.join(', ')
+        } else {
+          return '-'
+        }
+      }
+    },
+    {
+      name: 'labels.relationGroups',
+      field: 'relationGroups',
+      authorities: ['*'],
+      type: null,
+      subField: null,
+      sort: false,
+      method: function (item: any) {
+        const result: any = []
+        if (item.relationGroups && item.relationGroups.length > 0) {
+          item.relationGroups.forEach((group: any) => {
+            result.push(group.label)
+          })
+          return result.join(', ')
+        } else {
+          return '-'
+        }
+      }
+    }
+  ]
+}
+
+export const columnsVisibility = {
+  relation: {
+    id: true,
+    name: true,
+    createdOn: false,
+    postalCode: false,
+    city: false,
+    country: false,
+    relationTags: true,
+    relationGroups: true,
+    company: false,
+    points: false,
+    relationType: false,
+    email: true,
+    itemsPerPage: 20
+  },
+  order: {
+    id: true,
+    createdOn: true,
+    customer: true,
+    description: true,
+    productFeatures: true,
+    nettoAmount: true,
+    invoiceNumber: true,
+    paymentStatus: true,
+    itemsPerPage: 20
+  },
+  helpTag: {
+    id: true,
+    title: true,
+    color: true,
+    createdOn: true,
+    updatedOn: true,
+    itemsPerPage: 20
+  },
+  helpCategory: {
+    id: true,
+    title: true,
+    color: true,
+    createdOn: true,
+    updatedOn: true,
+    children: true,
+    parent: true,
+    itemsPerPage: 20
+  },
+  helpMaterials: {
+    id: true,
+    helpType: true,
+    title: true,
+    tags: true,
+    categories: true,
+    fieldCode: true,
+    screenCode: true,
+    tabCode: true,
+    popupCode: true,
+    itemsPerPage: 20
+  },
+  category: {
+    id: true,
+    code: true,
+    createdOn: true,
+    color: true,
+    itemsPerPage: 20
+  },
+  tag: {
+    id: true,
+    code: true,
+    points: true,
+    createdOn: true,
+    itemsPerPage: 20
+  },
+  roles: {
+    id: true,
+    code: true,
+    name: true,
+    updatedOn: true,
+    description: true,
+    itemsPerPage: 20
+  },
+  users: {
+    id: true,
+    login: true,
+    name: true,
+    activated: true,
+    lastLogin: true,
+    roles: true,
+    itemsPerPage: 20
+  },
+  customField: {
+    id: true,
+    code: true,
+    userVisible: true,
+    userEditable: true,
+    gdprSpecialField: true,
+    customFieldType: true,
+    createdOn: true,
+    updatedOn: true,
+    itemsPerPage: 20
+  },
+  group: {
+    id: true,
+    label: true,
+    createdOn: true,
+    category: true,
+    itemsPerPage: 20
+  },
+  promotion: {
+    id: true,
+    name: true,
+    availableFrom: true,
+    availableTo: true,
+    promotionType: true,
+    discount: true,
+    promotionProducts: true,
+    itemsPerPage: 20
+  },
+  taxRate: {
+    id: true,
+    level: true,
+    rate: true,
+    validFrom: true,
+    validTo: true,
+    createdOn: true,
+    country: true,
+    itemsPerPage: 20
+  },
+  taxRateLink: {
+    id: true,
+    validFrom: true,
+    validTo: true,
+    createdOn: true,
+    fromTaxRate: true,
+    toTaxRate: true,
+    itemsPerPage: 20
+  },
+  taxRule: {
+    id: true,
+    customerType: true,
+    customerRegion: true,
+    ruleType: true,
+    createdOn: true,
+    country: true,
+    itemsPerPage: 20
+  },
+  regions: {
+    id: true,
+    name: true,
+    home: true,
+    abroad: true,
+    insideEu: true,
+    outsideEu: true,
+    createdOn: true,
+    itemsPerPage: 20
+  },
+  deliveryMethod: {
+    id: true,
+    name: true,
+    description: true,
+    deliveryMethodType: true,
+    createdOn: true,
+    itemsPerPage: 20
+  },
+  paymentMethod: {
+    id: true,
+    name: true,
+    administrativeCostsFixed: true,
+    availability: true,
+    createdOn: true,
+    itemsPerPage: 20
+  },
+  administration: {
+    id: true,
+    name: true,
+    accessCode: true,
+    useShop: true,
+    useAutomation: true,
+    locked: true,
+    trial: true,
+    relationsLimit: true,
+    validFrom: true,
+    validTo: true,
+    language: true,
+    itemsPerPage: 20
+  }
 }

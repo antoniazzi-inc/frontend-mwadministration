@@ -1,8 +1,10 @@
 <template>
   <div class="container-fluid">
     <div class="row m-3 mt-4 pagination-v">
-      <div class="col-md-12">
-        <pagination  :totalPages="totalPages" :table="$props.table" :page="currentPage" @changePage="onChangePage" :total="totalItems"></pagination>
+      <div class="col-md-12" v-if="!isLoading && allData.length > 0">
+        <pagination @update="rerenderPage" :totalPages="totalPages" :table="$props.table" :page="currentPage"
+                    @changePage="onChangePage" :total="totalItems"  :key="'pagination'" :perPage="itemsPerPage"
+                    :tableFields="tableFields"></pagination>
       </div>
     </div>
     <div class="row">
@@ -12,12 +14,12 @@
             <span class="sr-only">Loading...</span>
           </div>
         </div>
-        <h4 class="text-center mt-3" v-if="allData.length === 0">{{$t('labels.noData')}}</h4>
+        <h4 class="text-center mt-3" v-if="allData.length === 0">{{$t($props.noDataLabel)}}</h4>
         <table v-else class="table table-striped">
           <thead>
           <tr>
             <template v-for="(item, index) in tables[$props.table].cols">
-              <th v-if="hasAuthority(item.authorities)" :key="index">
+              <th v-if="hasAuthority(item.authorities)" :key="index" v-show="checkVisibility(item)">
                 <span>{{$t(item.name)}}</span>
               </th>
             </template>
@@ -28,25 +30,25 @@
           </thead>
           <tbody>
             <tr v-for="(item, ind) in allData" :key="ind">
-              <td v-for="(col, index) in tables[$props.table].cols" :key="index">
-                <span class="colorField" v-if="col.type === 'color'" :style="{'background': item[col.field]}">&nbsp;</span>
-                <span v-else-if="col.type === 'date'">{{item[col.field] | formatDate}}</span>
-                <span v-else-if="col.type === 'multiLang'">
-                  {{getMultiLangFieldName(col, item)}}
-                </span>
-                <span v-else-if="col.type === '' && col.subField !== null">
-                  {{item[col.field][col.subField]}}
-                </span>
-                <span v-else-if="col.type === 'boolean'">
-                  {{item[col.field] === true ? $t('labels.yes') : $t('labels.no')}}
-                </span>
-                <span v-else-if="col.type === 'money'">
-                  € {{item[col.field]}}
-                </span>
-                <span v-else>
-                  {{item[col.field]}}
-                </span>
-              </td>
+              <template v-for="(col, index) in tables[$props.table].cols">
+                <td :key="index" v-if="hasAuthority(col.authorities)" v-show="checkVisibility(col)">
+                  <span class="colorField" v-if="col.type === 'color'" :style="{'background': item[col.field]}">&nbsp;</span>
+                  <span v-else-if="col.method != null"> {{col.method(item)}}</span>
+                  <span v-else-if="col.type === 'date'">{{item[col.field] | formatDate}}</span>
+                  <span v-else-if="col.type === 'boolean'">
+                    {{item[col.field] === true ? $t('labels.yes') : $t('labels.no')}}
+                  </span>
+                  <span v-else-if="col.type === 'money'">
+                    € {{item[col.field]}}
+                  </span>
+                  <span v-else-if="col.type === 'percentage'">
+                    {{item[col.field]}}%
+                  </span>
+                  <span v-else>
+                    {{!item[col.field] ? '-' : item[col.field]}}
+                  </span>
+                </td>
+              </template>
               <td>
                 <div class="btn-group flex-btn-group-container text-center justify-content-center">
                   <div v-if="tables[$props.table].actions.edit"
@@ -72,8 +74,10 @@
       </div>
     </div>
     <div class="row m-3 mt-4 pagination-v">
-      <div class="col-md-12" v-if="!isLoading">
-        <pagination  :totalPages="totalPages" :table="$props.table" :page="currentPage" @changePage="onChangePage" :total="totalItems"></pagination>
+      <div class="col-md-12" v-if="!isLoading && allData.length > 0">
+        <pagination @update="rerenderPage" :totalPages="totalPages" :table="$props.table" :page="currentPage"
+                    @changePage="onChangePage" :total="totalItems" :key="'pagination'" :perPage="itemsPerPage"
+        :tableFields="tableFields"></pagination>
       </div>
     </div>
     <div class="modal" :id="'deleteModal_'+$props.table" tabindex="-1" role="dialog" ref="deleteModal">
@@ -120,5 +124,11 @@
     justify-content: center;
     align-items: center;
     background: rgba(255, 255, 255, 0.9);
+  }
+  thead th {
+    font-size: .9em!important;
+  }
+  .table td {
+    font-size: 0.9em;
   }
 </style>

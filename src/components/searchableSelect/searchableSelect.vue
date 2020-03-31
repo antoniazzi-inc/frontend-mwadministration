@@ -1,5 +1,5 @@
 <template>
-  <div class="input-group mb-3">
+  <div class="input-group">
     <div class="pull-left" style="flex: 1;">
     <multiselect
                  :multiple="$props.config.multiple"

@@ -52,16 +52,12 @@
             <div class="row p-0 m-0">
               <div class="col-md-6 pl-0 ml-0">
                 <label>{{$t('labels.validFrom')}}</label>
-                <flat-pickr :config="validFromConfig"
-                            class="form-control"
-                            placeholder="Select date"
+                <flat-pickr :config="validFromConfig" class="single-daterange form-control"
                             id="validFromDate" v-model="validFrom"></flat-pickr>
               </div>
               <div class="col-md-6 pr-0 mr-0">
                 <label>{{$t('labels.validTo')}}</label>
-                <flat-pickr :config="validToConfig"
-                            class="form-control"
-                            placeholder="Select date"
+                <flat-pickr :config="validToConfig" class="single-daterange form-control"
                             id="validToDate" v-model="validTo"></flat-pickr>
               </div>
             </div>

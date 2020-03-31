@@ -3,13 +3,15 @@ import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
 import TaxRuleService from '@/shared/services/taxRuleService'
 import { AxiosResponse } from 'axios'
+import {mixins} from "vue-class-component";
+import CommonHelpers from "@/shared/commonHelpers";
 @Component({
   components: {
     'simple-search': SimpleSearchComponent,
     PaginationTableComponent
   }
 })
-export default class TaxRuleComponent extends Vue {
+export default class TaxRuleComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
@@ -28,13 +30,9 @@ export default class TaxRuleComponent extends Vue {
   public removeTaxRule (tax: any) {
     this.taxRuleService.delete(tax.id).then((resp: AxiosResponse) => {
       if (resp) {
-        // @ts-ignore
-        this.$vueOnToast.pop('success', this.$t('toastMessages.taxRuleRemoved'))
-        // @ts-ignore
-        this.$refs.paginationTable.retrieveData()
+        this.setAlert('taxRuleRemoved', 'success')
       } else {
-        // @ts-ignore
-        this.$vueOnToast.pop('error', this.$t('toastMessages.taxRuleError'))
+        this.setAlert('taxRuleError', 'error')
       }
     })
   }

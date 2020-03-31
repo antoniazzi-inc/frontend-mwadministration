@@ -12,6 +12,7 @@
       :ref="'paginationTable'"
       :active="$props.active"
       :table="'paymentMethod'"
+      :noDataLabel="'labels.noData'"
       @onEdit="editPaymentMethod"
       @onDelete="removePaymentMethod"
       :service="deliveryMethodService"/>
@@ -32,9 +33,9 @@
                   <multi-language-component
                     :config="multiLangConfig"
                     :value="paymentMethod.paymentMethodLanguages"
-                    @onAdd="addNewpaymentMethodLanguages"
-                    @onChange="changeNewpaymentMethodLanguages"
-                    @onRemove="removepaymentMethodLanguages"></multi-language-component>
+                    @onAdd="addNewPaymentMethodLanguages"
+                    @onChange="changeNewPaymentMethodLanguages"
+                    @onRemove="removePaymentMethodLanguages"></multi-language-component>
                 </div>
                 <div class="row m-0 p-0">
                   <div class="col-md-6 m-0 p-0">
