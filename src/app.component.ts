@@ -131,7 +131,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
           this.$store.commit('authenticate')
           this.loading = false
           this.$store.commit('authenticated', account.data)
-          this.sockets.connect()
+          //this.sockets.connect()
         } else {
           this.$router.push('/login')
         }
