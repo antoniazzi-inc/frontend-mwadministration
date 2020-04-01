@@ -19,7 +19,7 @@ export default class Sockets extends Vue {
     super(props)
     this.store = store
     this.administrationService = AdministrationService.getInstance()
-    this.socket = new SockJS('api/administrationms/socket')
+    this.socket = new SockJS('/socket')
     this.receivedMessages = []
     this.sendMessage = null
     this.connected = false
@@ -32,9 +32,9 @@ export default class Sockets extends Vue {
       this.stompClient = Stomp.over(this.socket)
       this.stompClient.connect({}, (frame: any) => {
           this.connected = true
-          this.stompClient.subscribe(`api/administrationms/api/session/${result.data.uid}`, (tick: any) => {
+         /* this.stompClient.subscribe(`api/administrationms/api/session/${result.data.uid}`, (tick: any) => {
             this.updateLookups(JSON.parse(tick.body))
-          })
+          })*/
         },
         (error: any) => {
           console.log(error)

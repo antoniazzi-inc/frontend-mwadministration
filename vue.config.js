@@ -30,29 +30,29 @@ module.exports = {
       '/api': {
         target: {
           // host: '192.168.100.25',
-          host: 'localhost',
+          host: '77.28.93.93',
           protocol: 'http:',
           port: 8080
         },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://192.168.100.25:8080')
-          proxyReq.setHeader('origin', 'http://localhost:8080')
+          proxyReq.setHeader('origin', 'http://77.28.93.93:8080')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
         changeOrigin: true
       },
-      'api/administrationms/socket': {
+      '/socket': {
         target: {
           // host: '192.168.100.25',
-          host: 'localhost',
+          host: '77.28.93.93',
           protocol: 'http:',
           port: 8080
         },
         onProxyReq: proxyReq => {
           console.log(proxyReq)
           // proxyReq.setHeader('origin', 'http://192.168.100.25:180801')
-          proxyReq.setHeader('origin', 'http://localhost:8080')
+          proxyReq.setHeader('origin', 'http://77.28.93.93:8080')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
