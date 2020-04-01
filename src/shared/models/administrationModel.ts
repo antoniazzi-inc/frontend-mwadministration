@@ -7,6 +7,7 @@ import {
 } from '@/shared/models/administrationSettingsModel'
 import { ICountry } from '@/shared/models/country.model'
 import { IExternalSystem } from '@/shared/models/externalSystem.model'
+import {IAdministrationBusiness} from "@/shared/models/administration-business.model";
 export interface IAdministration extends IBaseEntity{
   name?: string;
   accessCode?: string;
@@ -15,13 +16,15 @@ export interface IAdministration extends IBaseEntity{
   useAutomation?: boolean;
   trial?: boolean;
   relationsLimit?: number;
+  uid?: string;
   validFrom?: Moment;
   validTo?: Moment;
   country?: ICountry;
   administrationSettings?: IAdministrationSettings;
   categories?: ICategoryEntity[];
   tags?: ITagEntity[];
-  externalSystems?: ITagEntity[];
+  externalSystems?: IExternalSystem[];
+  administrationBusiness?: IAdministrationBusiness
   langKey?: string;
 }
 
@@ -36,6 +39,7 @@ export class AdministrationEntity implements IAdministration {
   public useAutomation?: boolean,
   public trial?: boolean,
   public relationsLimit?: number,
+  public uid?: string,
   public validFrom?: Moment,
   public validTo?: Moment,
   public country?: ICountry,
@@ -43,11 +47,13 @@ export class AdministrationEntity implements IAdministration {
   public categories?: ICategoryEntity[],
   public tags?: ITagEntity[],
   public externalSystems?: IExternalSystem[],
+    public administrationBusiness?: IAdministrationBusiness,
   public langKey?: string
   ) {
     this.locked = this.locked || false
     this.useShop = this.useShop || false
     this.useAutomation = this.useAutomation || false
     this.trial = this.trial || false
+    this.relationsLimit = this.relationsLimit || 100000
   }
 };

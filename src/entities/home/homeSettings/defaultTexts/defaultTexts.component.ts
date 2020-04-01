@@ -1,29 +1,32 @@
 import { Component, Vue } from 'vue-property-decorator'
-import {DefaultTextsConfig, HtmlPageTemplates, EmailTemplates, EmailTextConfig, HtmlPage, HtmlFragmentText} from "@/shared/defaultTextsConfig";
-import AdministrationSettingsService from "@/shared/services/administrationSettingsService";
-import {AxiosResponse} from "axios";
-import MultiLanguageHtmlEditorComponent from "../../../../components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue";
-import {AdministrationSettings} from "@/shared/models/administrationSettingsModel";
-import {MultiLanguageConfig} from "@/shared/models/MultiLanguageConfig";
-import MultiLanguageComponent from "../../../../components/multiLanguage/MultiLanguage.vue";
-import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
-import SimpleHtmlEditorComponent from "@/components/simpleHtmlEditor/simpleHtmlEditor.vue";
+import { DefaultTextsConfig, HtmlPageTemplates, EmailTemplates, EmailTextConfig, HtmlPage, HtmlFragmentText } from '@/shared/defaultTextsConfig'
+import AdministrationSettingsService from '@/shared/services/administrationSettingsService'
+import { AxiosResponse } from 'axios'
+import MultiLanguageHtmlEditorComponent from '../../../../components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue'
+import { AdministrationSettings } from '@/shared/models/administrationSettingsModel'
+import { MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
+import MultiLanguageComponent from '../../../../components/multiLanguage/MultiLanguage.vue'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
+import SimpleHtmlEditorComponent from '@/components/simpleHtmlEditor/simpleHtmlEditor.vue'
 import MjmlSimpleMessageComponent
-  from "@/shared/templates/defaultTextsEmailTemplates/mjmlSimpleMessage/mjmlSimpleMessage.vue";
+  from '@/shared/templates/defaultTextsEmailTemplates/mjmlSimpleMessage/mjmlSimpleMessage.vue'
 
-import DefaultTextSettingsComponent from "@/entities/home/homeSettings/defaultTexts/defaultTextSettings.vue";
-import {mixins} from "vue-class-component";
-import CommonHelpers from "@/shared/commonHelpers";
+import DefaultTextSettingsComponent from '@/entities/home/homeSettings/defaultTexts/defaultTextSettings.vue'
+import { mixins } from 'vue-class-component'
+import CommonHelpers from '@/shared/commonHelpers'
 import MjmlActionMessageComponent
-  from "@/shared/templates/defaultTextsEmailTemplates/mjmlActionMessage/mjmlActionMessage.vue";
+  from '@/shared/templates/defaultTextsEmailTemplates/mjmlActionMessage/mjmlActionMessage.vue'
 import MjmlFullMessageComponent
-  from "@/shared/templates/defaultTextsEmailTemplates/mjmlFullMessage/mjmlFullMessage.vue";
+  from '@/shared/templates/defaultTextsEmailTemplates/mjmlFullMessage/mjmlFullMessage.vue'
 import MjmlFullActionComponent
-  from "@/shared/templates/defaultTextsEmailTemplates/mjmlFullAction/mjmlFullAction.vue";
-import DefaultTextsSocialComponent from "@/entities/home/homeSettings/defaultTexts/defaultTextsSocial.vue";
+  from '@/shared/templates/defaultTextsEmailTemplates/mjmlFullAction/mjmlFullAction.vue'
+import DefaultTextsSocialComponent from '@/entities/home/homeSettings/defaultTexts/defaultTextsSocial.vue'
+import MjmlSimplePageComponent
+  from '@/shared/templates/defaultTextsEmailTemplates/mjmlSimplePage/mjmlSimplePage.vue'
+import MjmlFullPageComponent from '@/shared/templates/defaultTextsEmailTemplates/mjmlFullPage/mjmlFullPage.vue'
 @Component({
-  components:{
+  components: {
     MultiLanguageHtmlEditorComponent,
     MultiLanguageComponent,
     SearchableSelectComponent,
@@ -33,30 +36,32 @@ import DefaultTextsSocialComponent from "@/entities/home/homeSettings/defaultTex
     MjmlSimpleMessageComponent,
     MjmlActionMessageComponent,
     MjmlFullMessageComponent,
-    MjmlFullActionComponent
+    MjmlFullActionComponent,
+    MjmlFullPageComponent,
+    MjmlSimplePageComponent
   }
 })
 export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
-  public administrationSettingsService:any
-  public defaultTexts:any
-  public emailTemplates:any
-  public htmlPageTemplates:any
-  public clickedTab:any
-  public searchableConfig:ISearchableSelectConfig
-  public searchableConfigHtml:ISearchableSelectConfig
-  public currentTab:any
-  public selectedText:any
-  public emailText:any
-  public htmlPage:any
-  public multiLangConfig:any
-  public selectedTextValuesBackup:any
-  public availableLangs:any[]
-  public selectedTextValues:any
-  public htmlFragmentText:any
-  public selectedEmailTemplate:any
-  public selectedHtmlPageTemplate:any
-  constructor() {
-    super();
+  public administrationSettingsService: any
+  public defaultTexts: any
+  public emailTemplates: any
+  public htmlPageTemplates: any
+  public clickedTab: any
+  public searchableConfig: ISearchableSelectConfig
+  public searchableConfigHtml: ISearchableSelectConfig
+  public currentTab: any
+  public selectedText: any
+  public emailText: any
+  public htmlPage: any
+  public multiLangConfig: any
+  public selectedTextValuesBackup: any
+  public availableLangs: any[]
+  public selectedTextValues: any
+  public htmlFragmentText: any
+  public selectedEmailTemplate: any
+  public selectedHtmlPageTemplate: any
+  constructor () {
+    super()
     this.defaultTexts = DefaultTextsConfig
     this.emailTemplates = []
     this.htmlPageTemplates = []
@@ -83,7 +88,8 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
     this.availableLangs = []
     this.administrationSettingsService = AdministrationSettingsService.getInstance()
   }
-  public mounted(){
+
+  public mounted () {
     for (const key in this.$store.state.languages) {
       if (this.$store.state.languages.hasOwnProperty(key)) {
         this.availableLangs.push({
@@ -92,46 +98,53 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
         })
       }
     }
-    EmailTemplates.forEach(item=>{
+    EmailTemplates.forEach(item => {
       this.emailTemplates.push({
         ...item,
         name: this.$t(item.name)
       })
     })
-    HtmlPageTemplates.forEach(item=>{
+    HtmlPageTemplates.forEach(item => {
       this.htmlPageTemplates.push({
         ...item,
         name: this.$t(item.name)
       })
     })
   }
-  public chooseText(text:any){
+
+  public chooseText (text: any) {
     this.selectedText = text
-    const pagination:any = {
+    const pagination: any = {
       page: 0,
       size: 20,
       sort: ['id,desc']
     }
-    this.administrationSettingsService.getAll(pagination,'settingKey=='+text.settingsKey).then((resp:AxiosResponse)=>{
-      if(resp && resp.data.content && resp.data.content.length > 0) {
+    this.administrationSettingsService.getAll(pagination, 'settingKey==' + text.settingsKey).then((resp: AxiosResponse) => {
+      if (resp && resp.data.content && resp.data.content.length > 0) {
         this.selectedTextValuesBackup = JSON.parse(JSON.stringify(resp.data.content[0]))
         this.selectedTextValues = resp.data.content[0]
         this.populateLocalTextValues()
       } else {
-        let settingValueJson;
-        if(text.type === 'email') {
+        let settingValueJson
+        if (text.type === 'email') {
           this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
           settingValueJson = JSON.parse(JSON.stringify(EmailTextConfig))
           this.selectedEmailTemplate = null
+          this.htmlFragmentText = {}
+          this.htmlPage = {}
         }
-        if(text.type === 'htmlEditor') {
+        if (text.type === 'htmlEditor') {
           this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
           settingValueJson = JSON.parse(JSON.stringify(HtmlPage))
           this.selectedHtmlPageTemplate = null
+          this.htmlFragmentText = {}
+          this.emailText = {}
         }
-        if(text.type === 'htmlFragment') {
+        if (text.type === 'htmlFragment') {
           this.htmlFragmentText = HtmlFragmentText
           settingValueJson = this.htmlFragmentText
+          this.emailText = {}
+          this.htmlPage = {}
         }
         this.selectedTextValues = new AdministrationSettings(undefined, undefined, text.settingsKey,
           settingValueJson, undefined, undefined, undefined)
@@ -140,174 +153,200 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
       this.currentTab = 'values'
     })
   }
-  public htmlFragmentTextChanged(text:any){
+
+  public htmlFragmentTextChanged (text: any) {
     this.htmlFragmentText = text
   }
 
-  public populateLocalTextValues(){
-    if(this.selectedText && this.selectedText.type)
-    switch (this.selectedText.type) {
-      case 'htmlFragment':
-        this.htmlFragmentText = JSON.parse(this.selectedTextValues.settingValueJson)
-        break;
-      case 'email':
-        this.emailText = JSON.parse(this.selectedTextValues.settingValueJson)
-        this.emailTemplates.forEach((template:any)=>{
-          if(template.id === this.emailText.value.selectedTemplate){
-            this.selectedEmailTemplate = template
-          }
-        })
-        break;
-      case 'htmlPage':
-        this.htmlPage = JSON.parse(this.selectedTextValues.settingValueJson)
-        this.htmlPageTemplates.forEach((template:any)=>{
-          if(template.id === this.htmlPage.value.selectedTemplate){
-            this.selectedHtmlPageTemplate = template
-          }
-        })
-        break;
+  public populateLocalTextValues () {
+    if (this.selectedText && this.selectedText.type) {
+      switch (this.selectedText.type) {
+        case 'htmlFragment':
+          this.htmlFragmentText = JSON.parse(this.selectedTextValues.settingValueJson)
+          this.emailText = {}
+          this.htmlPage = {}
+          break
+        case 'email':
+          this.emailText = JSON.parse(this.selectedTextValues.settingValueJson)
+          this.emailTemplates.forEach((template: any) => {
+            if (template.id === this.emailText.value.selectedTemplate) {
+              this.selectedEmailTemplate = template
+            }
+          })
+          this.htmlFragmentText = {}
+          this.htmlPage = {}
+          break
+        case 'htmlPage':
+          this.htmlPage = JSON.parse(this.selectedTextValues.settingValueJson)
+          this.htmlPageTemplates.forEach((template: any) => {
+            if (template.id === this.htmlPage.value.selectedTemplate) {
+              this.selectedHtmlPageTemplate = template
+            }
+          })
+          this.htmlFragmentText = {}
+          this.emailText = {}
+          break
+      }
     }
     this.$forceUpdate()
   }
-  public emailTextTemplateChanged(id:any, template:any){
+
+  public emailTextTemplateChanged (id: any, template: any) {
     this.emailText.value[id] = template
   }
-  public htmlPageTextTemplateChanged(id:any, template:any){
+
+  public htmlPageTextTemplateChanged (id: any, template: any) {
     this.htmlPage.value[id] = template
   }
-  public addNewEmailSubject(langKey:any){
-    let newLang = {
+
+  public addNewEmailSubject (langKey: any) {
+    const newLang = {
       langKey: langKey,
       name: '',
       description: ''
     }
     this.emailText.subject.push(newLang)
   }
-  public changeNewEmailSubject(subject:any){
+
+  public changeNewEmailSubject (subject: any) {
     let index = null
-    this.emailText.subject.forEach((item:any,ind:number)=>{
-      if(item.langKey === subject.langKey){
+    this.emailText.subject.forEach((item: any, ind: number) => {
+      if (item.langKey === subject.langKey) {
         index = ind
       }
     })
-    if(index !== null){
+    if (index !== null) {
       this.emailText.subject[index] = subject
     }
   }
-  public removeNewEmailSubject(subject:any){
+
+  public removeNewEmailSubject (subject: any) {
     let index = null
-    this.emailText.subject.forEach((item:any,ind:number)=>{
-      if(item.langKey === subject.langKey){
+    this.emailText.subject.forEach((item: any, ind: number) => {
+      if (item.langKey === subject.langKey) {
         index = ind
       }
     })
-    if(index !== null){
+    if (index !== null) {
       this.emailText.subject.splice(index, 1)
     }
   }
-  public addNewHtmlPageSubject(langKey:any){
-    let newLang = {
+
+  public addNewHtmlPageSubject (langKey: any) {
+    const newLang = {
       langKey: langKey,
       name: '',
       description: ''
     }
     this.htmlPage.subject.push(newLang)
   }
-  public changeNewHtmlPageSubject(subject:any){
+
+  public changeNewHtmlPageSubject (subject: any) {
     let index = null
-    this.htmlPage.subject.forEach((item:any,ind:number)=>{
-      if(item.langKey === subject.langKey){
+    this.htmlPage.subject.forEach((item: any, ind: number) => {
+      if (item.langKey === subject.langKey) {
         index = ind
       }
     })
-    if(index !== null){
+    if (index !== null) {
       this.htmlPage.subject[index] = subject
     }
   }
-  public updateSocialMedia(obj:any){
-    debugger
+
+  public updateSocialMedia (obj: any) {
     this.emailText.value.socialMedia = obj
   }
-  public removeNewHtmlPageSubject(subject:any){
+  public updateHtmlSocialMedia (obj: any) {
+    this.htmlPage.value.socialMedia = obj
+  }
+
+  public removeNewHtmlPageSubject (subject: any) {
     let index = null
-    this.htmlPage.subject.forEach((item:any,ind:number)=>{
-      if(item.langKey === subject.langKey){
+    this.htmlPage.subject.forEach((item: any, ind: number) => {
+      if (item.langKey === subject.langKey) {
         index = ind
       }
     })
-    if(index !== null){
+    if (index !== null) {
       this.htmlPage.subject.splice(index, 1)
     }
   }
-  public emailTemplateChanged(template:any){
+
+  public emailTemplateChanged (template: any) {
     this.selectedEmailTemplate = template
     this.emailText.value = {
       selectedTemplate: template && template.id ? template.id : null,
-      headerText:'',
-      pageText:{},
-      pageText2:{},
-      buttonText:'',
-      buttonLink:'',
-      imageUrl:'',
-      footerText:{},
-      socialMedia:'',
+      headerText: '',
+      pageText: {},
+      pageText2: {},
+      buttonText: '',
+      buttonLink: '',
+      imageUrl: '',
+      footerText: {},
+      socialMedia: ''
     }
     this.emailText.subject = []
   }
-  public emailTemplateRemoved(template:any){
+
+  public emailTemplateRemoved (template: any) {
     this.selectedEmailTemplate = null
   }
-  public htmlPageTemplateChanged(template:any){
+
+  public htmlPageTemplateChanged (template: any) {
     this.selectedHtmlPageTemplate = template
     this.htmlPage.value = {
       selectedTemplate: template && template.id ? template.id : null,
-      headerText:'',
-      pageText:{},
-      pageText2:{},
-      buttonText:'',
-      buttonLink:'',
-      imageUrl:'',
-      footerText:{},
-      socialMedia:'',
+      headerText: '',
+      pageText: {},
+      pageText2: {},
+      buttonText: '',
+      buttonLink: '',
+      imageUrl: '',
+      footerText: {},
+      socialMedia: ''
     }
     this.htmlPage.subject = []
   }
-  public htmlPageTemplateRemoved(template:any){
+
+  public htmlPageTemplateRemoved (template: any) {
     this.selectedHtmlPageTemplate = null
   }
 
-  public updateEmailTextConfig(config:any){
+  public updateEmailTextConfig (config: any) {
     this.emailText.config = config
   }
-  public updateHtmlPageTextConfig(config:any){
+
+  public updateHtmlPageTextConfig (config: any) {
     this.htmlPage.config = config
   }
-  public resetText(){
-    this.selectedTextValuesBackup ? this.selectedTextValues = this.selectedTextValuesBackup :
-      new AdministrationSettings(undefined, undefined, this.selectedText.settingsKey,
-      '', undefined, undefined, undefined)
+
+  public resetText () {
+    this.selectedTextValuesBackup ? this.selectedTextValues = this.selectedTextValuesBackup
+      : new AdministrationSettings(undefined, undefined, this.selectedText.settingsKey,
+        '', undefined, undefined, undefined)
   }
-  public saveText(){
-    let dto:any = {
+
+  public saveText () {
+    const dto: any = {
       id: this.selectedTextValues?.id,
       version: this.selectedTextValues?.version,
-      settingKey: this.selectedTextValues && this.selectedTextValues.settingKey ? this.selectedTextValues.settingKey :
-      this.selectedText && this.selectedText.settingKey ? this.selectedText.settingKey : undefined,
+      settingKey: this.selectedTextValues && this.selectedTextValues.settingKey ? this.selectedTextValues.settingKey
+        : this.selectedText && this.selectedText.settingKey ? this.selectedText.settingKey : undefined,
       settingValueJson: null
     }
     switch (this.selectedText.type) {
       case 'htmlFragment':
         dto.settingValueJson = JSON.stringify(this.htmlFragmentText)
-        break;
+        break
       case 'email':
         dto.settingValueJson = JSON.stringify(this.emailText)
-        break;
+        break
       case 'htmlPage':
         dto.settingValueJson = JSON.stringify(this.htmlPage)
-        break;
+        break
     }
-    if(dto.id){
-      this.administrationSettingsService.put(dto).then((resp:AxiosResponse)=>{
+    if (dto.id) {
+      this.administrationSettingsService.put(dto).then((resp: AxiosResponse) => {
         if (resp) {
           this.selectedTextValues = resp.data
           this.selectedTextValuesBackup = JSON.parse(JSON.stringify(resp.data))
@@ -317,7 +356,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
         }
       })
     } else {
-      this.administrationSettingsService.post(dto).then((resp:AxiosResponse)=>{
+      this.administrationSettingsService.post(dto).then((resp: AxiosResponse) => {
         if (resp) {
           this.setAlert('defaultTextsCreated', 'success')
         } else {

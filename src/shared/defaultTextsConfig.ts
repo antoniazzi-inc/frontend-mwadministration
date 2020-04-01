@@ -47,7 +47,7 @@ export const DefaultTextsConfig = [
         settingsKey: 'text_orders_sa',
         type: 'htmlFragment',
         name: 'labels.socialAffiliateLine'
-      },
+      }
     ]
   },
   {
@@ -133,7 +133,7 @@ export const DefaultTextsConfig = [
       }
     ]
   }
-];
+]
 export const EmailTemplates = [
   {
     id: 'mjml-sm',
@@ -235,7 +235,7 @@ export const EmailTemplates = [
       component: 'socialMedia'
     }]
   }
-];
+]
 export const HtmlPageTemplates = [
   {
     id: 'mjml-page-s',
@@ -270,12 +270,16 @@ export const HtmlPageTemplates = [
       name: 'labels.socialMedia',
       component: 'socialMedia'
     }]
-  },
-];
+  }
+]
 export const HtmlPage = {
   subject: [],
   value: {
-    selectedTemplate: null
+    selectedTemplate: null,
+    headerText: '',
+    pageText: {},
+    footerText: {},
+    socialMedia: []
   },
   config: {
     font: {},
@@ -321,7 +325,7 @@ export const EmailTextConfig = {
     buttonLink: '',
     imageUrl: '',
     footerText: {},
-    socialMedia: [],
+    socialMedia: []
   },
   config: {
     font: {},
@@ -354,4 +358,4 @@ export const EmailTextConfig = {
       textAlign: ''
     }
   }
-};
+}

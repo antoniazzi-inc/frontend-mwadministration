@@ -52,11 +52,11 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
 
   public mounted () {
     this.user = this.$store.state.userIdentity
-    this.user.relationProfile.birthDate = this.user.relationProfile.birthDate ?
-      moment(this.user.relationProfile.birthDate).format('YYYY-MM-DD') : null
     if (this.user && !this.user.relationProfile) {
       this.user.relationProfile = new RelationProfile()
     }
+    this.user.relationProfile.birthDate =  this.user.relationProfile && this.user.relationProfile.birthDate
+      ? moment(this.user.relationProfile.birthDate).format('YYYY-MM-DD') : null
     this.timeZones = this.$store.state.lookups.timeZones
   }
 

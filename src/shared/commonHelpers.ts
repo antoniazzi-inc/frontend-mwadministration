@@ -160,6 +160,7 @@ export default class CommonHelpers extends Vue {
       ? relation.relationProfile.lastName : ''
     return `${title} ${firstName} ${middleName} ${lastName} `
   }
+
   /*
    * Name: checkForUrlHttps
    * arg: url -> String
@@ -168,41 +169,43 @@ export default class CommonHelpers extends Vue {
    * Author: Nick Dam
    */
   public checkForUrlHttps (url: string) {
-    if(url.match('http')){
+    if (url.match('http')) {
       return url
-    }else {
+    } else {
       return `https://${url}`
     }
   }
+
   /*
    * Name: extractAddress
    * arg: addresses:[] -> Array Of addresses
    * description: Extract address from given array and returns address label and address type
    * Author: Nick Dam
    */
-  public extractAddress (addresses:any[]) {
+  public extractAddress (addresses: any[]) {
     let street = ''
     let number = ''
     let city = ''
     let postal = ''
     let country = ''
-    if(addresses && addresses.length){
+    if (addresses && addresses.length) {
       street = addresses[0].street
       number = addresses[0].houseNumber
       city = addresses[0].city
       postal = addresses[0].postalCode
       country = this.getCountryById(addresses[0].postalCode).enName
     }
-    return {label: `${street} ${number}, ${city} ${postal} ${country} `, type: addresses[0].addressType}
+    return { label: `${street} ${number}, ${city} ${postal} ${country} `, type: addresses[0].addressType }
   }
+
   /*
    * Name: setAlert
    * arg: message -> String, type -> String( error, success, waring, info)
    * description: Display toast message
    * Author: Nick Dam
    */
-  public setAlert (message:string, type:string) {
+  public setAlert (message: string, type: string) {
     // @ts-ignore
-    this.$vueOnToast.pop(type, '' ,this.$t('toastMessages.' + message))
+    this.$vueOnToast.pop(type, '', this.$t('toastMessages.' + message))
   }
 }

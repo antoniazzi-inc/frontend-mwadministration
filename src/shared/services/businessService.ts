@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import {IBusiness} from "@/shared/models/business.model";
+import { IBusiness } from '@/shared/models/business.model'
 
 export default class BusinessService extends BaseEntityService<IBusiness> {
   private static instance: BusinessService;

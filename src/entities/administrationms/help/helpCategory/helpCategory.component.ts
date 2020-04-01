@@ -3,8 +3,8 @@ import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
 import { AxiosResponse } from 'axios'
 import HelpCategoryService from '@/shared/services/helpCategoryService'
-import {mixins} from "vue-class-component";
-import CommonHelpers from "@/shared/commonHelpers";
+import { mixins } from 'vue-class-component'
+import CommonHelpers from '@/shared/commonHelpers'
 @Component({
   components: {
     'simple-search': SimpleSearchComponent,

@@ -42,14 +42,15 @@ module.exports = {
         },
         changeOrigin: true
       },
-      '/socket': {
+      'api/administrationms/socket': {
         target: {
           // host: '192.168.100.25',
           host: 'localhost',
           protocol: 'http:',
-          port: 18081
+          port: 8080
         },
         onProxyReq: proxyReq => {
+          console.log(proxyReq)
           // proxyReq.setHeader('origin', 'http://192.168.100.25:180801')
           proxyReq.setHeader('origin', 'http://localhost:8080')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')

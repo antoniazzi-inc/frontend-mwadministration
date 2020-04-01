@@ -20,7 +20,7 @@ export default new Vuex.Store({
       timeZones: [],
       taxRates: [],
       companies: [],
-      administrationBusiness: [],
+      administrationBusiness: []
     },
     languages: {
       nl: { name: 'Nederlands' },

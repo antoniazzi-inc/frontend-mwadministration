@@ -12,11 +12,11 @@ export default class MjmlService {
     return MjmlService.instance
   }
 
-  public renderTemplate(entity: any){
+  public renderTemplate (entity: any) {
     return new Promise((resolve, reject) => {
-      axios.post('/render',  {mjml: entity}).then(resp=>{
+      axios.post('/render', { mjml: entity }).then(resp => {
         resolve(resp)
-      }).catch(err=>{
+      }).catch(err => {
         reject(err)
       })
     })

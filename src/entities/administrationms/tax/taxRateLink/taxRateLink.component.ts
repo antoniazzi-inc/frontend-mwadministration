@@ -3,8 +3,8 @@ import TaxRateLinkService from '@/shared/services/taxRateLinkService'
 import { AxiosResponse } from 'axios'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
-import {mixins} from "vue-class-component";
-import CommonHelpers from "@/shared/commonHelpers";
+import { mixins } from 'vue-class-component'
+import CommonHelpers from '@/shared/commonHelpers'
 @Component({
   components: {
     'simple-search': SimpleSearchComponent,

@@ -1,10 +1,10 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import {Component, Vue, Watch} from 'vue-property-decorator'
-import {Company, ICompany} from "@/shared/models/company.model";
-import {IRelationEntity} from "@/shared/models/relationModel";
-import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Company, ICompany } from '@/shared/models/company.model'
+import { IRelationEntity } from '@/shared/models/relationModel'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 
 @Component({
   components: {
@@ -20,7 +20,7 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   public editMode: boolean
   public addNewCompany: boolean
   public searchableConfigCompany: ISearchableSelectConfig
-  public companies:ICompany[]
+  public companies: ICompany[]
   public companyToEdit: ICompany|null
   constructor () {
     super()
@@ -34,54 +34,54 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
       true, true, false, false)
   }
 
-  @Watch('rel', {immediate:true, deep: true})
-  public updateCompanies(rel:IRelationEntity){
-    if(rel.companies && rel.companies.length) this.companies = rel.companies
+  @Watch('rel', { immediate: true, deep: true })
+  public updateCompanies (rel: IRelationEntity) {
+    if (rel.companies && rel.companies.length) this.companies = rel.companies
   }
 
-  public editCompany(company:ICompany, index: number){
+  public editCompany (company: ICompany, index: number) {
     this.companyToEdit = JSON.parse(JSON.stringify(company))
     this.editMode = true
     this.addNewCompany = false
   }
 
-  public deleteCompany(company:ICompany){}
+  public deleteCompany (company: ICompany) {}
 
-  public companyChanged(company:ICompany){
+  public companyChanged (company: ICompany) {
     this.companyToEdit = company
   }
 
-  public companyRemoved(company:ICompany){
+  public companyRemoved (company: ICompany) {
     this.companyToEdit = null
   }
 
-  public getCompanyAddress(company:ICompany){
-    let result:any = ''
-    if(company && company.companyAddresses && company.companyAddresses.length) {
+  public getCompanyAddress (company: ICompany) {
+    let result: any = ''
+    if (company && company.companyAddresses && company.companyAddresses.length) {
       result = this.extractAddress(company.companyAddresses)
     }
     return result
   }
 
-  public getCompanyPhone(company:ICompany){
-    let result:any = ''
-    if(company && company.companyPhones && company.companyPhones.length) {
+  public getCompanyPhone (company: ICompany) {
+    let result: any = ''
+    if (company && company.companyPhones && company.companyPhones.length) {
       result = company.companyPhones[0].number
     }
     return result
   }
 
-  public onAddCompany (){
+  public onAddCompany () {
     this.companyToEdit = new Company()
     this.editMode = true
     this.addNewCompany = true
   }
 
-  public createNewCompany (){
+  public createNewCompany () {
     this.companyToEdit = new Company()
     this.editMode = false
     this.addNewCompany = true
   }
 
-  public saveCompany (){}
+  public saveCompany () {}
 }

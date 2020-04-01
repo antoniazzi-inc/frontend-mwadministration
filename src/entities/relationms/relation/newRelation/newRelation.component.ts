@@ -127,6 +127,7 @@ export default class NewRelationComponent extends mixins(Vue, CommonHelpers) {
   public removeRow (index: any) {
     this.relations.splice(index, 1)
   }
+
   public tagsRemoved (tag: any) {
     let index = null
     this.relationTags.forEach((tg: any, ind: any) => {

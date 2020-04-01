@@ -110,6 +110,8 @@
               </div>
               <default-texts-social-component v-if="selectedEmailTemplate && selectedEmailTemplate.id === 'mjml-fa' ||
               selectedEmailTemplate && selectedEmailTemplate.id === 'mjml-fm'" @onUpdate="updateSocialMedia" :value="emailText"/>
+              <default-texts-social-component v-if="selectedHtmlPageTemplate
+              && selectedHtmlPageTemplate.id === 'mjml-page-f'" @onUpdate="updateHtmlSocialMedia" :value="htmlPage"/>
             </div>
             <div :class="{'tab-pane': true, active: currentTab === 'settings'}" id="settings" role="tabpanel"
                  aria-labelledby="settings-tab">
@@ -126,6 +128,8 @@
               <mjml-full-message-component :active="currentTab === 'preview'" :value="emailText" v-if="selectedEmailTemplate && selectedEmailTemplate.id=== 'mjml-fm'"/>
               <mjml-action-message-component :active="currentTab === 'preview'" :value="emailText" v-if="selectedEmailTemplate && selectedEmailTemplate.id=== 'mjml-am'"/>
               <mjml-full-action-component :active="currentTab === 'preview'" :value="emailText" v-if="selectedEmailTemplate && selectedEmailTemplate.id=== 'mjml-fa'"/>
+              <mjml-full-page-component :active="currentTab === 'preview'" :value="htmlPage" v-if="selectedHtmlPageTemplate && selectedHtmlPageTemplate.id=== 'mjml-page-f'"/>
+              <mjml-simple-page-component :active="currentTab === 'preview'" :value="htmlPage" v-if="selectedHtmlPageTemplate && selectedHtmlPageTemplate.id=== 'mjml-page-s'"/>
             </div>
           </div>
         </div>

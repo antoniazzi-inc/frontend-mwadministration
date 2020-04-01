@@ -1,6 +1,6 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import {Component, Vue, Watch} from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import RelationService from '@/shared/services/relationService'
 import { IRelationProfile, RelationProfile } from '@/shared/models/relation-profile.model'
 import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
@@ -11,7 +11,7 @@ import moment from 'moment'
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from 'axios'
 @Component({
   components: {
     SearchableSelectComponent,
@@ -60,25 +60,27 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
       }
     }
   }
-  @Watch('rel',  {immediate: true, deep: true} )
-  public updateRelation (newVal:any) {
-    if(!newVal || !newVal.relationProfile) return
+
+  @Watch('rel', { immediate: true, deep: true })
+  public updateRelation (newVal: any) {
+    if (!newVal || !newVal.relationProfile) return
     this.relation = JSON.parse(JSON.stringify(newVal))
     this.relationProfile = JSON.parse(JSON.stringify(newVal.relationProfile))
-   if(this.relationProfile.categoryId) this.getSelectedCategory()
+    if (this.relationProfile.categoryId) this.getSelectedCategory()
   }
 
   public getSelectedCategory () {
     let result = null
-    this.$store.state.lookups.categories.forEach((cat:any)=>{
-      if(cat.id === this.relationProfile.categoryId){
+    this.$store.state.lookups.categories.forEach((cat: any) => {
+      if (cat.id === this.relationProfile.categoryId) {
         result = cat
       }
     })
-    if(result !== null){
+    if (result !== null) {
       this.relationCategory = result
     }
   }
+
   public categoryRemoved (cat: any) {
     this.relationCategory = null
   }
@@ -93,20 +95,20 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public goBack () {
-    this.$router.push({name: 'Relations'})
+    this.$router.push({ name: 'Relations' })
   }
 
   public saveRelation () {
-    this.$validator.validateAll().then(result=>{
-      if(result){
+    this.$validator.validateAll().then(result => {
+      if (result) {
         let dto = new RelationEntity()
-        dto = this.relation;
+        dto = this.relation
         dto.relationProfile = this.relationProfile
-        if(this.relationProfile.birthDate) dto.relationProfile.birthDate = moment(this.relationProfile.birthDate)
-        if(this.relationCategory && this.relationCategory.id){
+        if (this.relationProfile.birthDate) dto.relationProfile.birthDate = moment(this.relationProfile.birthDate)
+        if (this.relationCategory && this.relationCategory.id) {
           dto.relationProfile.categoryId = this.relationCategory.id
         }
-        this.relationService.put(dto).then((resp:AxiosResponse)=>{
+        this.relationService.put(dto).then((resp: AxiosResponse) => {
           if (resp) {
             this.setAlert('relationUpdated', 'success')
           } else {
@@ -116,8 +118,8 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
       }
     })
   }
-  public validateUrl(){
-    if(this.relationProfile.website && !this.$validator.errors.has('website'))
-      this.relationProfile.website = this.checkForUrlHttps(this.relationProfile.website)
+
+  public validateUrl () {
+    if (this.relationProfile.website && !this.$validator.errors.has('website')) { this.relationProfile.website = this.checkForUrlHttps(this.relationProfile.website) }
   }
 }

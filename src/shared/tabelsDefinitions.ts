@@ -884,16 +884,6 @@ export const administration = {
 
     },
     {
-      name: 'labels.name',
-      field: 'name',
-      authorities: ['*'],
-      type: '',
-      subField: null,
-      sort: false,
-      method: null
-
-    },
-    {
       name: 'labels.accessCode',
       field: 'accessCode',
       authorities: ['*'],
@@ -904,48 +894,8 @@ export const administration = {
 
     },
     {
-      name: 'labels.useShop',
-      field: 'useShop',
-      authorities: ['*'],
-      type: 'boolean',
-      subField: null,
-      sort: false,
-      method: null
-
-    },
-    {
-      name: 'labels.useAutomation',
-      field: 'useAutomation',
-      authorities: ['*'],
-      type: 'boolean',
-      subField: null,
-      sort: false,
-      method: null
-
-    },
-    {
-      name: 'labels.locked',
-      field: 'locked',
-      authorities: ['*'],
-      type: 'boolean',
-      subField: null,
-      sort: false,
-      method: null
-
-    },
-    {
-      name: 'labels.trial',
-      field: 'trial',
-      authorities: ['*'],
-      type: 'boolean',
-      subField: null,
-      sort: false,
-      method: null
-
-    },
-    {
-      name: 'labels.relationsLimit',
-      field: 'relationsLimit',
+      name: 'labels.name',
+      field: 'name',
       authorities: ['*'],
       type: '',
       subField: null,
@@ -974,10 +924,60 @@ export const administration = {
 
     },
     {
-      name: 'labels.language',
-      field: 'langKey',
+      name: 'labels.email',
+      field: 'email',
       authorities: ['*'],
       type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.lastLogin',
+      field: 'lastLogin',
+      authorities: ['*'],
+      type: 'date',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.relationsLimit',
+      field: 'relationsLimit',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.trial',
+      field: 'trial',
+      authorities: ['*'],
+      type: 'boolean',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.useShop',
+      field: 'useShop',
+      authorities: ['*'],
+      type: 'boolean',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.useAutomation',
+      field: 'useAutomation',
+      authorities: ['*'],
+      type: 'boolean',
       subField: null,
       sort: false,
       method: null
@@ -1478,16 +1478,16 @@ export const columnsVisibility = {
   },
   administration: {
     id: true,
-    name: true,
     accessCode: true,
-    useShop: true,
-    useAutomation: true,
-    locked: true,
-    trial: true,
-    relationsLimit: true,
+    name: true,
     validFrom: true,
     validTo: true,
-    language: true,
+    email: true,
+    lastLogin: true,
+    relationsLimit: true,
+    trial: true,
+    useShop: true,
+    useAutomation: true,
     itemsPerPage: 20
   }
 }

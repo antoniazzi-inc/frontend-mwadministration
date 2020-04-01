@@ -11,7 +11,7 @@ import { AxiosResponse } from 'axios'
     active: Boolean
   }
 })
-export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelpers) {
+export default class MjmlSimplePageComponent extends mixins(Vue, CommonHelpers) {
   public htmlOutput: any;
   public mjmlService: any;
   public renderOutput: any;
@@ -25,7 +25,7 @@ export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelper
 
   @Watch('active', { immediate: true, deep: true })
   public init () {
-    this.htmlOutput = `<mjml>
+    this.htmlOutput = `<mjml owa="desktop">
   <mj-head>
     <mj-attributes>
       <mj-all padding="0px"></mj-all>
@@ -39,13 +39,11 @@ export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelper
         font-weight="${this.$props.value.config.header.fontWeight}"
         font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
         align="${this.$props.value.config.header.textAlign}">${this.$props.value.value.headerText}</mj-text>
-      </mj-column>
-   </mj-section>
-   <mj-section width="100%" >
-   <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
+        <mj-text font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
         color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage]}</mj-text>
-</mj-section>
+      </mj-column>
+   </mj-section>
   </mj-body>
 </mjml>`
     if (this.$props.active) {

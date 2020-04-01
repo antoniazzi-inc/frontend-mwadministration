@@ -12,6 +12,8 @@ import { AdministrationEntity, IAdministration } from '@/shared/models/administr
 import AdministrationService from '@/shared/services/administrationService'
 import moment from 'moment'
 import { tag } from '@/shared/tabelsDefinitions'
+import {IRelationEntity, RelationEntity} from "@/shared/models/relationModel";
+import {AdministrationBusiness} from "@/shared/models/administration-business.model";
 
 @Component({
   components: {
@@ -29,6 +31,7 @@ import { tag } from '@/shared/tabelsDefinitions'
 })
 export default class NewAdministrationComponent extends mixins(CommonHelpers, Vue) {
   public administration: IAdministration;
+  public administrationUser: IRelationEntity;
   public countries: ICountry[];
   public searchableConfig: any;
   public administrationService: any;
@@ -44,6 +47,7 @@ export default class NewAdministrationComponent extends mixins(CommonHelpers, Vu
     super()
     this.administration = new AdministrationEntity()
     this.selectedLanguage = {}
+    this.administrationUser = new RelationEntity()
     this.administration.validFrom = moment()
     this.administrationService = AdministrationService.getInstance()
     this.countries = []
@@ -70,6 +74,7 @@ export default class NewAdministrationComponent extends mixins(CommonHelpers, Vu
   }
 
   public mounted () {
+    this.administration.administrationBusiness = new AdministrationBusiness()
     for (const key in this.$store.state.languages) {
       if (this.$store.state.languages.hasOwnProperty(key)) {
         this.allLanguages.push({
@@ -131,5 +136,12 @@ export default class NewAdministrationComponent extends mixins(CommonHelpers, Vu
 
   public async langRemoved (lang: any) {
     this.selectedLanguage = undefined
+  }
+
+  public validateUrl () {
+    if (this.administration.administrationBusiness?.website && !this.$validator.errors.has('Company-Website')) {
+      this.administration.administrationBusiness.website =
+        this.checkForUrlHttps(this.administration.administrationBusiness.website)
+    }
   }
 }

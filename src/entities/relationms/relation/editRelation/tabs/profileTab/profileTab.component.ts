@@ -17,7 +17,7 @@ import CompanySubTabComponent
   from '@/entities/relationms/relation/editRelation/tabs/profileTab/subTabs/companySubTab/companySubTab.vue'
 import AffiliatesSubTabComponent
   from '@/entities/relationms/relation/editRelation/tabs/profileTab/subTabs/affiliatesSubTab/affiliatesSubTab.vue'
-import {IRelationEntity} from "@/shared/models/relationModel";
+import { IRelationEntity } from '@/shared/models/relationModel'
 
 @Component({
   components: {
@@ -52,7 +52,7 @@ export default class ProfileTabComponent extends mixins(Vue, CommonHelpers) {
     this.currentSubTab = name || 'general'
   }
 
-  public update(rel:IRelationEntity){
+  public update (rel: IRelationEntity) {
     this.$emit('update', rel)
   }
 }

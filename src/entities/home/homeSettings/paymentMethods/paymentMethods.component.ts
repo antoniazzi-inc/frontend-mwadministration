@@ -1,24 +1,24 @@
-import {Component, Vue} from "vue-property-decorator";
-import PaginationTableComponent from "@/components/paginationTable/paginationTable.vue";
-import MultiLanguageComponent from "@/components/multiLanguage/MultiLanguage.vue";
-import SimpleSearchComponent from "@/components/simpleSearch/simpleSearch.vue";
-import MultiLanguageHtmlEditorComponent from "@/components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue";
-import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
+import { Component, Vue } from 'vue-property-decorator'
+import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
+import MultiLanguageComponent from '@/components/multiLanguage/MultiLanguage.vue'
+import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
+import MultiLanguageHtmlEditorComponent from '@/components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue'
+import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import {
   IPaymentMethod,
   PaymentMethod,
   PaymentMethodAvailability,
   PaymentMethodType
-} from "@/shared/models/payment-method.model";
-import {IMoneyConfig, MoneyConfig} from "@/shared/models/moneyConfig";
-import {IMultiLanguageConfig, MultiLanguageConfig} from "@/shared/models/MultiLanguageConfig";
-import PaymentMethodService from "@/shared/services/paymentMethodService";
-import {AxiosResponse} from "axios";
-import {mixins} from "vue-class-component";
-import CommonHelpers from "@/shared/commonHelpers";
+} from '@/shared/models/payment-method.model'
+import { IMoneyConfig, MoneyConfig } from '@/shared/models/moneyConfig'
+import { IMultiLanguageConfig, MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
+import PaymentMethodService from '@/shared/services/paymentMethodService'
+import { AxiosResponse } from 'axios'
+import { mixins } from 'vue-class-component'
+import CommonHelpers from '@/shared/commonHelpers'
 @Component({
   props: {
-    'active': Boolean
+    active: Boolean
   },
   components: {
     PaginationTableComponent,
@@ -33,6 +33,7 @@ export default class PaymentMethodsComponent extends mixins(Vue, CommonHelpers) 
     PaymentMethodModal: HTMLElement;
     paginationTable: PaginationTableComponent;
   }
+
   public paymentMethod: IPaymentMethod
   public moneyConfig: IMoneyConfig
   public deliveryMethodService: any
@@ -123,6 +124,7 @@ export default class PaymentMethodsComponent extends mixins(Vue, CommonHelpers) 
       provider: 'mollie'
     }]
   }
+
   public resetPaymentMethod () {
     this.paymentMethod = new PaymentMethod()
   }
@@ -130,6 +132,7 @@ export default class PaymentMethodsComponent extends mixins(Vue, CommonHelpers) 
   public searchPaymentMethod (q: any) {
 
   }
+
   public save () {
     this.$validator.validateAll().then(success => {
       if (success) {
@@ -179,6 +182,7 @@ export default class PaymentMethodsComponent extends mixins(Vue, CommonHelpers) 
     // @ts-ignore
     $(this.$refs.PaymentMethodModal).modal('show')
   }
+
   public removePaymentMethod (method: any) {
     if (method.id) {
       this.deliveryMethodService.delete(method.id).then((resp: AxiosResponse) => {

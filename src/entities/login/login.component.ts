@@ -1,7 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import AuthService from '@/shared/services/authService'
 import RelationService from '@/shared/services/relationService'
-
 @Component
 export default class LoginComponent extends Vue {
   public authService = AuthService.getInstance()
@@ -10,9 +9,11 @@ export default class LoginComponent extends Vue {
   public username: string;
   public password: string;
   public resetEmail: string;
+  public sockets: any;
   public tfaCode: string;
   public rememberMe: boolean;
   public showReset: boolean;
+
   constructor () {
     super()
     this.accessCode = ''
@@ -22,6 +23,7 @@ export default class LoginComponent extends Vue {
     this.tfaCode = ''
     this.rememberMe = true
     this.showReset = false
+
   }
 
   public changeLanguage (lang: string) {

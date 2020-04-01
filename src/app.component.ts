@@ -15,8 +15,8 @@ import { columnsVisibility } from '@/shared/tabelsDefinitions'
 import { MenuDefinitions } from '@/shared/menuDefinitions'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import CompanyService from "@/shared/services/companyService";
-import BusinessService from "@/shared/services/businessService";
+import CompanyService from '@/shared/services/companyService'
+import BusinessService from '@/shared/services/businessService'
 import Sockets from "@/shared/sockets";
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
@@ -35,8 +35,8 @@ export default class App extends mixins(Vue, CommonHelpers) {
     taxRateService = TaxRateService.getInstance();
     companyService = CompanyService.getInstance();
     businessService = BusinessService.getInstance();
+    sockets = new Sockets({ url: 'http://localhost:18081/' });
     loading = true;
-    sockets = new Sockets({url:'http://localhost:18081/'});
     mainMenu = MenuDefinitions;
     customConfig = {
       timeout: 2500,
@@ -45,7 +45,6 @@ export default class App extends mixins(Vue, CommonHelpers) {
 
     columns: any = []
     mounted () {
-      this.sockets.connect();
       this.populateLookups()
       const conf = localStorage.getItem('tableColumns')
       const columns = conf ? JSON.parse(conf) : null
@@ -84,21 +83,22 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.$store.commit('companies', resp.data.content)
       })
       this.businessService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
-        if(resp && resp.data.content.length > 0) {
+        if (resp && resp.data.content.length > 0) {
           this.$store.commit('administrationBusiness', resp.data.content)
         } else {
-          let createBussinessDto = {
+          const createBussinessDto = {
             name: 'DefaultBusiness' + this.$store.state.userIdentity.id,
             description: 'default Business',
             website: 'default.com'
           }
-          this.businessService.post(createBussinessDto).then((resp:AxiosResponse)=>{
-            if(resp){
+          this.businessService.post(createBussinessDto).then((resp: AxiosResponse) => {
+            if (resp) {
               this.$store.commit('administrationBusiness', resp.data)
             }
           })
         }
       })
+
     }
 
     @Watch('$route', { immediate: true, deep: true })
@@ -131,6 +131,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
           this.$store.commit('authenticate')
           this.loading = false
           this.$store.commit('authenticated', account.data)
+          this.sockets.connect()
         } else {
           this.$router.push('/login')
         }
