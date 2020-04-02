@@ -47,15 +47,16 @@ module.exports = {
           // host: '192.168.100.25',
           host: 'localhost',
           protocol: 'http:',
-          port: 8080
+          port: 18081
         },
         onProxyReq: proxyReq => {
           console.log(proxyReq)
           // proxyReq.setHeader('origin', 'http://192.168.100.25:180801')
-          proxyReq.setHeader('origin', 'http://localhost:8080')
+          proxyReq.setHeader('origin', 'http://localhost:18081')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
+        ws: true,
         changeOrigin: true
       },
       '/render': {

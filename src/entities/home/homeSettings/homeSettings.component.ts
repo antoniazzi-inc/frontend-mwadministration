@@ -5,6 +5,7 @@ import DefaultTextsComponent from '@/entities/home/homeSettings/defaultTexts/def
 import { mixins } from 'vue-class-component'
 import DeliveryMethodsComponent from '@/entities/home/homeSettings/deliveryMethods/deliveryMethods.vue'
 import PaymentMethodsComponent from '@/entities/home/homeSettings/paymentMethods/paymentMethods.vue'
+import IntegrationsComponent from '@/entities/home/homeSettings/integrations/integrations.vue'
 
 @Component({
   props: {
@@ -17,7 +18,8 @@ import PaymentMethodsComponent from '@/entities/home/homeSettings/paymentMethods
     TagsComponent,
     DefaultTextsComponent,
     DeliveryMethodsComponent,
-    PaymentMethodsComponent
+    PaymentMethodsComponent,
+    IntegrationsComponent
   }
 })
 export default class HomeSettingsComponent extends mixins(Vue) {

@@ -1,6 +1,6 @@
-import { Moment } from 'moment';
-import { IAdministration } from './administrationModel';
-import {IBaseEntity} from "@/shared/models/baseModel";
+import { Moment } from 'moment'
+import { IAdministration } from './administrationModel'
+import { IBaseEntity } from '@/shared/models/baseModel'
 
 export interface IAdministrationBusiness extends IBaseEntity{
     name?: string;
@@ -10,7 +10,7 @@ export interface IAdministrationBusiness extends IBaseEntity{
 }
 
 export class AdministrationBusiness implements IAdministrationBusiness {
-    constructor(
+  constructor (
         public id?: number,
         public name?: string,
         public description?: string,
@@ -19,5 +19,5 @@ export class AdministrationBusiness implements IAdministrationBusiness {
         public updatedOn?: Moment,
         public version?: number,
         public administration?: IAdministration
-    ) {}
+  ) {}
 }

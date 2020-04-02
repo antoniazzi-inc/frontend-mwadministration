@@ -7,7 +7,7 @@ import {
 } from '@/shared/models/administrationSettingsModel'
 import { ICountry } from '@/shared/models/country.model'
 import { IExternalSystem } from '@/shared/models/externalSystem.model'
-import {IAdministrationBusiness} from "@/shared/models/administration-business.model";
+import { IAdministrationBusiness } from '@/shared/models/administration-business.model'
 export interface IAdministration extends IBaseEntity{
   name?: string;
   accessCode?: string;
@@ -24,7 +24,7 @@ export interface IAdministration extends IBaseEntity{
   categories?: ICategoryEntity[];
   tags?: ITagEntity[];
   externalSystems?: IExternalSystem[];
-  administrationBusiness?: IAdministrationBusiness
+  administrationBusiness?: IAdministrationBusiness;
   langKey?: string;
 }
 

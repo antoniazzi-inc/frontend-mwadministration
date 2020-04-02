@@ -12,8 +12,8 @@ import { AdministrationEntity, IAdministration } from '@/shared/models/administr
 import AdministrationService from '@/shared/services/administrationService'
 import moment from 'moment'
 import { tag } from '@/shared/tabelsDefinitions'
-import {IRelationEntity, RelationEntity} from "@/shared/models/relationModel";
-import {AdministrationBusiness} from "@/shared/models/administration-business.model";
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { AdministrationBusiness } from '@/shared/models/administration-business.model'
 
 @Component({
   components: {

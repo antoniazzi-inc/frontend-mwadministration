@@ -2,6 +2,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
+import { SocialMediaConfig } from '@/shared/defaultTextsConfig'
 @Component({
   components: {
     ToggleSwitch
@@ -14,39 +15,7 @@ export default class DefaultTextsSocialComponent extends mixins(Vue, CommonHelpe
   public social: any[]
   constructor () {
     super()
-    this.social = [{
-      name: 'Facebook',
-      visible: false,
-      url: ''
-    }, {
-      name: 'LinkedIn',
-      visible: false,
-      url: ''
-    }, {
-      name: 'Twitter',
-      visible: false,
-      url: ''
-    }, {
-      name: 'Pinterest',
-      visible: false,
-      url: ''
-    }, {
-      name: 'web',
-      visible: false,
-      url: ''
-    }, {
-      name: 'Youtube',
-      visible: false,
-      url: ''
-    }, {
-      name: 'Instagram',
-      visible: false,
-      url: ''
-    }, {
-      name: 'Vimeo',
-      visible: false,
-      url: ''
-    }]
+    this.social = JSON.parse(JSON.stringify(SocialMediaConfig))
   }
 
   public mounted () {
@@ -60,12 +29,10 @@ export default class DefaultTextsSocialComponent extends mixins(Vue, CommonHelpe
 
   @Watch('value', { immediate: true, deep: true })
   public updateVal (newVal: any) {
-    let copySocial = JSON.parse(JSON.stringify(this.social))
+    const copySocial = JSON.parse(JSON.stringify(SocialMediaConfig))
     this.social = []
-    this.social = newVal && newVal.value && newVal.value.socialMedia && newVal.value.socialMedia.length ?
-      newVal.value.socialMedia : copySocial
-    console.log(this.social[0].url)
-    console.log(newVal.value.socialMedia[0].url)
+    this.social = newVal && newVal.value && newVal.value.socialMedia && newVal.value.socialMedia.length
+      ? newVal.value.socialMedia : copySocial
   }
 
   public validateUrl (index: number, fieldName: string) {

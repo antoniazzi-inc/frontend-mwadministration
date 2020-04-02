@@ -23,7 +23,6 @@ export default class LoginComponent extends Vue {
     this.tfaCode = ''
     this.rememberMe = true
     this.showReset = false
-
   }
 
   public changeLanguage (lang: string) {

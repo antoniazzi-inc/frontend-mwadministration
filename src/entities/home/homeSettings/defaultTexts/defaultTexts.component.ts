@@ -130,21 +130,21 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
           this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
           settingValueJson = JSON.parse(JSON.stringify(EmailTextConfig))
           this.selectedEmailTemplate = null
-          this.htmlFragmentText = {}
-          this.htmlPage = {}
+          this.htmlFragmentText = JSON.parse(JSON.stringify(HtmlFragmentText))
+          this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
         }
         if (text.type === 'htmlEditor') {
           this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
           settingValueJson = JSON.parse(JSON.stringify(HtmlPage))
           this.selectedHtmlPageTemplate = null
-          this.htmlFragmentText = {}
-          this.emailText = {}
+          this.htmlFragmentText = JSON.parse(JSON.stringify(HtmlFragmentText))
+          this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
         }
         if (text.type === 'htmlFragment') {
           this.htmlFragmentText = HtmlFragmentText
           settingValueJson = this.htmlFragmentText
-          this.emailText = {}
-          this.htmlPage = {}
+          this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
+          this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
         }
         this.selectedTextValues = new AdministrationSettings(undefined, undefined, text.settingsKey,
           settingValueJson, undefined, undefined, undefined)
@@ -163,8 +163,8 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
       switch (this.selectedText.type) {
         case 'htmlFragment':
           this.htmlFragmentText = JSON.parse(this.selectedTextValues.settingValueJson)
-          this.emailText = {}
-          this.htmlPage = {}
+          this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
+          this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
           break
         case 'email':
           this.emailText = JSON.parse(this.selectedTextValues.settingValueJson)
@@ -173,8 +173,8 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
               this.selectedEmailTemplate = template
             }
           })
-          this.htmlFragmentText = {}
-          this.htmlPage = {}
+          this.htmlFragmentText = JSON.parse(JSON.stringify(HtmlFragmentText))
+          this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
           break
         case 'htmlPage':
           this.htmlPage = JSON.parse(this.selectedTextValues.settingValueJson)
@@ -183,8 +183,8 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
               this.selectedHtmlPageTemplate = template
             }
           })
-          this.htmlFragmentText = {}
-          this.emailText = {}
+          this.htmlFragmentText = JSON.parse(JSON.stringify(HtmlFragmentText))
+          this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
           break
       }
     }
@@ -256,6 +256,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   public updateSocialMedia (obj: any) {
     this.emailText.value.socialMedia = obj
   }
+
   public updateHtmlSocialMedia (obj: any) {
     this.htmlPage.value.socialMedia = obj
   }

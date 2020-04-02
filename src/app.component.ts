@@ -17,7 +17,7 @@ import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import CompanyService from '@/shared/services/companyService'
 import BusinessService from '@/shared/services/businessService'
-import Sockets from "@/shared/sockets";
+import Sockets from '@/shared/sockets'
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -98,7 +98,6 @@ export default class App extends mixins(Vue, CommonHelpers) {
           })
         }
       })
-
     }
 
     @Watch('$route', { immediate: true, deep: true })

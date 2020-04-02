@@ -283,33 +283,33 @@ export const HtmlPage = {
   },
   config: {
     font: {},
-    backgroundColor: '',
+    backgroundColor: '#ffffff',
     width: '',
     border: '',
     borderColor: '',
     header: {
-      fontSize: '',
-      textAlign: '',
-      fontWeight: '',
-      color: '',
-      fontStyle: ''
+      fontSize: '30',
+      textAlign: 'center',
+      fontWeight: 'bold',
+      color: '#000000',
+      fontStyle: 'italic'
     },
     footer: {
-      fontSize: '',
-      textAlign: '',
-      backgroundColor: '',
-      color: ''
+      fontSize: '10',
+      textAlign: 'left',
+      backgroundColor: '#ffffff',
+      color: '#000000'
     },
     buttons: {
-      borderRadius: '',
-      buttonSize: '',
-      fontWeight: '',
-      backgroundColor: ''
+      borderRadius: '10',
+      buttonSize: 'small',
+      fontWeight: 'italic',
+      backgroundColor: '#23a332'
     },
     text: {
-      fontSize: '',
-      color: '',
-      textAlign: ''
+      fontSize: '20',
+      color: '#ffffff',
+      textAlign: 'center'
     }
   }
 }
@@ -329,33 +329,66 @@ export const EmailTextConfig = {
   },
   config: {
     font: {},
-    backgroundColor: '',
+    backgroundColor: '#ffffff',
     width: '',
     border: '',
     borderColor: '',
     header: {
-      fontSize: '',
-      textAlign: '',
-      fontWeight: '',
-      color: '',
-      fontStyle: ''
+      fontSize: '30',
+      textAlign: 'center',
+      fontWeight: 'bold',
+      color: '#000000',
+      fontStyle: 'italic'
     },
     footer: {
-      fontSize: '',
-      textAlign: '',
-      backgroundColor: '',
-      color: ''
+      fontSize: '10',
+      textAlign: 'left',
+      backgroundColor: '#ffffff',
+      color: '#000000'
     },
     buttons: {
-      borderRadius: '',
-      buttonSize: '',
-      fontWeight: '',
-      backgroundColor: ''
+      borderRadius: '10',
+      buttonSize: 'small',
+      fontWeight: 'normal',
+      backgroundColor: '#23a332'
     },
     text: {
-      fontSize: '',
-      color: '',
-      textAlign: ''
+      fontSize: '20',
+      color: '#ffffff',
+      textAlign: 'center'
     }
   }
 }
+export const SocialMediaConfig = [{
+  name: 'Facebook',
+  visible: false,
+  url: ''
+}, {
+  name: 'LinkedIn',
+  visible: false,
+  url: ''
+}, {
+  name: 'Twitter',
+  visible: false,
+  url: ''
+}, {
+  name: 'Pinterest',
+  visible: false,
+  url: ''
+}, {
+  name: 'web',
+  visible: false,
+  url: ''
+}, {
+  name: 'Youtube',
+  visible: false,
+  url: ''
+}, {
+  name: 'Instagram',
+  visible: false,
+  url: ''
+}, {
+  name: 'Vimeo',
+  visible: false,
+  url: ''
+}]

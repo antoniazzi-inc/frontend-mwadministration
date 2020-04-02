@@ -20,10 +20,6 @@
         <a :class="{'nav-link': true, 'active': currentTab === 'roles'}" id="roles-tab" data-toggle="tab"
            href="#roles" role="tab" aria-controls="roles" aria-selected="true">{{$t('labels.roles')}}</a>
       </li>
-      <li class="nav-item" @click="currentTab = 'integrations'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'integrations'}" id="integrations-tab" data-toggle="tab"
-           href="#integrations" role="tab" aria-controls="integrations" aria-selected="true">{{$t('labels.integrations')}}</a>
-      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
       <div :class="{'tab-pane': true, active: currentTab === 'account'}" id="account" role="tabpanel" aria-labelledby="account-tab">
@@ -37,9 +33,6 @@
       </div>
       <div :class="{'tab-pane': true, active: currentTab === 'roles'}" id="roles" role="tabpanel" aria-labelledby="roles-tab">
         <roles-component :active="currentTab === 'roles'"></roles-component>
-      </div>
-      <div :class="{'tab-pane': true, active: currentTab === 'integrations'}" id="integrations" role="tabpanel" aria-labelledby="integrations-tab">
-        <integrations-component :active="currentTab === 'integrations'"></integrations-component>
       </div>
     </div>
   </div>

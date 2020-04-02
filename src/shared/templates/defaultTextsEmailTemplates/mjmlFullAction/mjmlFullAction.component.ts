@@ -38,7 +38,6 @@ export default class MjmlFullActionComponent extends mixins(Vue, CommonHelpers) 
 
   @Watch('active', { immediate: true, deep: true })
   public init () {
-    debugger
     const social: any = []
     if (this.$props.value.value.socialMedia && this.$props.value.value.socialMedia.length > 0) {
       this.$props.value.value.socialMedia.forEach((item: any, index: any) => {

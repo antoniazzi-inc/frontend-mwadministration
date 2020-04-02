@@ -2,8 +2,8 @@ import { Component, Vue } from 'vue-property-decorator'
 import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
 import store from '../store'
-import AdministrationService from "@/shared/services/administrationService";
-import {AxiosResponse} from "axios";
+import AdministrationService from '@/shared/services/administrationService'
+import { AxiosResponse } from 'axios'
 @Component
 export default class Sockets extends Vue {
   public administrationService: any
@@ -28,18 +28,18 @@ export default class Sockets extends Vue {
   }
 
   public connect () {
-    this.administrationService.get(this.store.state.userIdentity.administrationId).then((result:AxiosResponse)=>{
+    this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
       this.stompClient = Stomp.over(this.socket)
       this.stompClient.connect({}, (frame: any) => {
-          this.connected = true
-         /* this.stompClient.subscribe(`api/administrationms/api/session/${result.data.uid}`, (tick: any) => {
-            this.updateLookups(JSON.parse(tick.body))
-          })*/
-        },
-        (error: any) => {
-          console.log(error)
-          this.connected = false
-        }
+        this.connected = true
+        this.stompClient.subscribe(`/session/${result.data.uid}`, (tick: any) => {
+          this.updateLookups(JSON.parse(tick.body))
+        })
+      },
+      (error: any) => {
+        console.log(error)
+        this.connected = false
+      }
       )
     })
   }
@@ -53,38 +53,58 @@ export default class Sockets extends Vue {
 
   public updateLookups (obj: any) {
     const self = this
-    debugger
+    let lookupData = []
+    let lookupName = ''
+    switch (obj.type.toLowerCase()) {
+      case 'category':
+        lookupData = this.store.state.lookups.categories
+        lookupName = 'categories'
+        break
+      case 'tag':
+        lookupData = this.store.state.lookups.tags
+        lookupName = 'tags'
+        break
+      case 'taxrate':
+        lookupData = this.store.state.lookups.taxRates
+        lookupName = 'taxRates'
+        break
+    }
+    if (lookupName === '') {
+      return
+    }
+    let allToUpdate = []; let allToCreate = []; let allToDelete = []
+    let indexToUpdate = null
+    let indexToDelete = null
     switch (obj.action) {
       case 'UPDATE':
-        const allToUpdate = this.store.state.lookups[obj.type]
-        let indexToUpdate = null
-        this.store.state.lookups[obj.type].forEach((item: any, ind: number) => {
+        allToUpdate = lookupData
+        indexToUpdate = null
+        this.store.state.lookups[lookupName].forEach((item: any, ind: number) => {
           if (item.id === obj.content.id) {
             indexToUpdate = ind
           }
         })
         if (indexToUpdate !== null) {
           allToUpdate[indexToUpdate] = obj.content
-          this.store.commit(obj.type, allToUpdate)
+          this.store.commit(lookupName, allToUpdate)
         }
         break
       case 'CREATE':
-        debugger
-        const allToCreate = self.store.state.lookups[obj.type]
+        allToCreate = lookupData
         allToCreate.push(obj.content)
-        this.store.commit(obj.type, allToCreate)
+        this.store.commit(lookupName, allToCreate)
         break
       case 'DELETE':
-        const allToDelete = self.store.state.lookups[obj.type]
-        let indexToDelete = null
-        this.store.state.lookups[obj.type].forEach((item: any, ind: number) => {
+        allToDelete = self.store.state.lookups[lookupName]
+        indexToDelete = null
+        this.store.state.lookups[lookupName].forEach((item: any, ind: number) => {
           if (item.id === obj.content.id) {
             indexToDelete = ind
           }
         })
         if (indexToDelete !== null) {
           allToDelete.splice(indexToDelete, 1)
-          this.store.commit(obj.type, allToDelete)
+          this.store.commit(lookupName, allToDelete)
         }
         break
     }

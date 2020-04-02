@@ -13,6 +13,10 @@
         <a :class="{'nav-link': true, 'active': currentTab === 'default'}" id="default-tab" data-toggle="tab"
            href="#defaultTexts" role="tab" aria-controls="defaultTexts" aria-selected="false">{{$t('labels.defaultTexts')}}</a>
       </li>
+      <li class="nav-item" @click="currentTab = 'integrations'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'integrations'}" id="integrations-tab" data-toggle="tab"
+           href="#integrations" role="tab" aria-controls="integrations" aria-selected="true">{{$t('labels.integrations')}}</a>
+      </li>
       <li class="nav-item" @click="currentTab = 'deliveryMethods'">
         <a :class="{'nav-link': true, 'active': currentTab === 'deliveryMethods'}" id="delivery-tab"
            data-toggle="tab" href="#deliveryMethods" role="tab" aria-controls="deliveryMethods" aria-selected="false">
@@ -22,6 +26,7 @@
         <a :class="{'nav-link': true, 'active': currentTab === 'paymentMethods'}" id="payment-tab" data-toggle="tab"
            href="#paymentMethods" role="tab" aria-controls="paymentMethods" aria-selected="false">{{$t('labels.paymentMethods')}}</a>
       </li>
+
     </ul>
     <div class="tab-content" id="myTabContent">
       <div :class="{'tab-pane': true, active: currentTab === 'cat'}" id="categories" role="tabpanel" aria-labelledby="category-tab">
@@ -32,6 +37,9 @@
       </div>
       <div  :class="{'tab-pane': true, active: currentTab === 'default'}" id="defaultTexts" role="tabpanel" aria-labelledby="default-tab">
         <DefaultTextsComponent :active="currentTab==='default'"/>
+      </div>
+      <div :class="{'tab-pane': true, active: currentTab === 'integrations'}" id="integrations" role="tabpanel" aria-labelledby="integrations-tab">
+        <integrations-component :active="currentTab === 'integrations'"></integrations-component>
       </div>
       <div  :class="{'tab-pane': true, active: currentTab === 'deliveryMethods'}" id="deliveryMethods" role="tabpanel" aria-labelledby="delivery-tab">
         <DeliveryMethodsComponent :active="currentTab==='deliveryMethods'"/>

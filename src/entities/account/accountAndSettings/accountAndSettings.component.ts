@@ -10,8 +10,7 @@ import IntegrationsComponent from '@/entities/account/accountAndSettings/integra
     AccountComponent,
     InvoicesComponent,
     RolesComponent,
-    UsersComponent,
-    IntegrationsComponent
+    UsersComponent
   }
 })
 export default class AccountAndSettingsComponent extends Vue {
