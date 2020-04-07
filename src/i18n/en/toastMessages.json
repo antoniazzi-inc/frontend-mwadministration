@@ -59,5 +59,10 @@
   "relationsError": "Relations Error",
   "relationUpdateError": "Relation Update Error",
   "relationsRemoved": "Relation Removed",
+  "externalSystemCreated": "External System Created",
+  "externalSystemUpdated": "External System Updated",
+  "externalSystemError": "External System Error",
+  "externalSystemUpdateError": "External System Update Error",
+  "externalSystemRemoved": "External System Removed",
   "fillRequiredFields": "Please fill in all Required fields"
 }

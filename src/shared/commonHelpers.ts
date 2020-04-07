@@ -204,7 +204,7 @@ export default class CommonHelpers extends Vue {
    * description: Display toast message
    * Author: Nick Dam
    */
-  public setAlert (message: string, type: string) {
+  public setAlert (message: any, type: string) {
     // @ts-ignore
     this.$vueOnToast.pop(type, '', this.$t('toastMessages.' + message))
   }
