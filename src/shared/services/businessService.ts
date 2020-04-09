@@ -5,7 +5,7 @@ export default class BusinessService extends BaseEntityService<IBusiness> {
   private static instance: BusinessService;
 
   private constructor () {
-    super('api/relationms/api/businesss')
+    super('api/relationms/api/businesses')
   }
 
   public static getInstance (): BusinessService {

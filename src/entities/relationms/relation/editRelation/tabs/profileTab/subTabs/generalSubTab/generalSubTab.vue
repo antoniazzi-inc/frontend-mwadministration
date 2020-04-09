@@ -1,5 +1,5 @@
 <template>
-  <div class="m-3">
+  <div>
     <form @submit.prevent.stop="saveRelation">
       <div class="form-row mt-3">
         <div class="col-sm-2">

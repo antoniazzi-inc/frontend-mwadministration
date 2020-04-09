@@ -20,6 +20,7 @@
     "popper.js": "^1.16.1",
     "sockjs-client": "^1.4.0",
     "v-money": "^0.8.1",
+    "validate-vat-ts": "^1.1.0",
     "vee-validate": "^2.2.15",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.2",
@@ -33,6 +34,7 @@
     "vue-property-decorator": "^8.3.0",
     "vue-router": "^3.1.5",
     "vue-trumbowyg": "^3.5.0",
+    "vuedraggable": "^2.23.2",
     "vuex": "^3.1.2",
     "webstomp-client": "^1.2.6"
   },

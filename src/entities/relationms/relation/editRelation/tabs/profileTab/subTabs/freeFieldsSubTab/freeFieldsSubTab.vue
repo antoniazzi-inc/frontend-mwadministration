@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-3">
     tasks
   </div>
 </template>

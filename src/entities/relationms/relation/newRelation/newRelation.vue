@@ -40,6 +40,9 @@
           <button class="btn btn-outline-primary float-left" @click.prevent.stop="addNewRelation">
             <i class="fas fa-plus"></i> {{$t('labels.addOneMore')}}
           </button>
+          <button class="btn btn-outline-secondary ml-4 float-left" @click.prevent.stop="goBack">
+            {{$t('buttons.cancel')}}
+          </button>
         </form>
       </tab-content>
       <tab-content :title="$t('labels.groupsTagsCategories')"

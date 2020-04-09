@@ -8,6 +8,7 @@ export interface ICompany extends IBaseEntity{
     name?: string;
     description?: string;
     website?: string;
+    alias?: string;
     vatNumber?: string;
     companyPhones?: ICompanyPhone[];
     companyAddresses?: ICompanyAddress[];
@@ -22,6 +23,7 @@ export class Company implements ICompany {
         public name?: string,
         public description?: string,
         public website?: string,
+        public alias?: string,
         public vatNumber?: string,
         public companyPhones?: ICompanyPhone[],
         public companyAddresses?: ICompanyAddress[],

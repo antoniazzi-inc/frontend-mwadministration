@@ -16,7 +16,7 @@
       @onEdit="editPaymentMethod"
       @onDelete="removePaymentMethod"
       :service="deliveryMethodService"/>
-    <div class="modal" id="PaymentMethodModal" tabindex="-1" role="dialog" ref="PaymentMethodModal">
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="PaymentMethodModal" tabindex="-1" role="dialog" ref="PaymentMethodModal">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <form name="editForm" role="form" novalidate @submit.prevent.stop="save()">

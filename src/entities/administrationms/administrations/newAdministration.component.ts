@@ -99,16 +99,21 @@ export default class NewAdministrationComponent extends mixins(CommonHelpers, Vu
     this.$validator.validateAll().then(success => {
       if (success && this.selectedLanguage && this.selectedLanguage.value && this.administration.country && this.administration.country.id) {
         this.administration.langKey = this.selectedLanguage.value
+        let dto = {
+          administration: this.administration,
+          relation: this.administrationUser
+        }
         if (this.administration.id) {
-          this.administrationService.put(this.administration).then((resp: AxiosResponse) => {
+          //todo handle proper edit
+          /*this.administrationService.put(dto).then((resp: AxiosResponse) => {
             if (resp) {
               this.setAlert('administrationUpdated', 'success')
             } else {
               this.setAlert('administrationError', 'error')
             }
-          })
+          })*/
         } else {
-          this.administrationService.post(this.administration).then((resp: AxiosResponse) => {
+          this.administrationService.createAdministration(dto).then((resp: AxiosResponse) => {
             if (resp) {
               this.setAlert('administrationCreated', 'success')
             } else {

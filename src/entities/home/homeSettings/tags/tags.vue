@@ -16,7 +16,7 @@
       @onCopy="copyTag"
       @onDelete="deleteTag"
       :service="tagService"/>
-    <div class="modal" id="tagModal" tabindex="-1" role="dialog" ref="tagModal">
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="tagModal" tabindex="-1" role="dialog" ref="tagModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <form name="editForm" role="form" novalidate @submit.prevent.stop="saveTag()">

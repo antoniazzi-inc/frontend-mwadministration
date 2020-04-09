@@ -4,7 +4,8 @@ import { Moment } from 'moment'
 export const enum PhoneType {
     WORK = 'WORK',
     HOME = 'HOME',
-    MOBILE = 'MOBILE'
+    MOBILE = 'MOBILE',
+    OTHER = 'OTHER',
 }
 
 export interface ICompanyPhone extends IBaseEntity{

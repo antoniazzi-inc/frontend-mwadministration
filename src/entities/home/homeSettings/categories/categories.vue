@@ -16,7 +16,7 @@
       @onCopy="copyCategory"
       @onDelete="deleteCategory"
       :service="categoryService"/>
-    <div class="modal" id="categoryModal" tabindex="-1" role="dialog" ref="categoryModal">
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="categoryModal" tabindex="-1" role="dialog" ref="categoryModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <form name="editForm" role="form" novalidate @submit.prevent.stop="saveCategory()">

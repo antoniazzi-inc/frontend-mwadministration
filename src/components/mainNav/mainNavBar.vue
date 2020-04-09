@@ -180,7 +180,7 @@
         </li>
       </ul>
     </div>
-    <div class="modal" id="userProfileModal" tabindex="-1" role="dialog" ref="userProfileModal">
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="userProfileModal" tabindex="-1" role="dialog" ref="userProfileModal">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">

@@ -100,7 +100,69 @@ export const category = {
     }
   ]
 }
-
+export const group = {
+  actions: {
+    copy: true,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 10,
+  cols: [
+    {
+      name: 'labels.administrationId',
+      field: 'administrationId',
+      authorities: ['ROLE_SUPER_ADMIN'],
+      subField: null,
+      type: '',
+      sort: false
+    },
+    {
+      name: 'labels.id',
+      field: 'id',
+      authorities: ['*'],
+      subField: null,
+      type: '',
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.label',
+      field: 'label',
+      authorities: ['*'],
+      subField: null,
+      type: null,
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.category',
+      field: 'category',
+      subField: null,
+      type: null,
+      authorities: ['*'],
+      sort: false,
+      method: function (item:any) {
+        let name = ''
+        Store.state.lookups.categories.forEach((cat:any)=>{
+          if(cat.id === item.categoryId){
+            name = cat.code
+          }
+        })
+        return name
+      }
+    },
+    {
+      name: 'labels.createdOn',
+      field: 'createdOn',
+      subField: null,
+      type: 'date',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }
+  ]
+}
 export const tag = {
   actions: {
     copy: true,

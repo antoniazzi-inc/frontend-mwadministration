@@ -31,7 +31,7 @@
         </div>
         <h4 class="mt-5 pt-5" v-else>{{$t('labels.noIntegrations')}}</h4>
       </div>
-      <div class="modal" id="deleteModal" tabindex="-1" role="dialog" ref="deleteModal">
+      <div class="modal" data-backdrop="static" data-keyboard="false" id="deleteModal" tabindex="-1" role="dialog" ref="deleteModal">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">

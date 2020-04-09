@@ -34,6 +34,7 @@ import NewAdministrationComponent from '@/entities/administrationms/administrati
 import NotFoundComponent from '@/entities/notFound/notFound.vue'
 import NewRelationComponent from '@/entities/relationms/relation/newRelation/newRelation.vue'
 import EditRelationComponent from '@/entities/relationms/relation/editRelation/editRelation.vue'
+import NewRelationFreeFieldsComponent from "@/entities/relationms/relationFreeFields/newRelationFreeField.vue";
 
 Vue.use(VueRouter)
 
@@ -107,6 +108,11 @@ const routes = [
     path: '/relations-free-fields',
     name: 'RelationsFreeFields',
     component: RelationFreeFieldsComponent
+  },{
+    path: '/relations-free-fields/new',
+    name: 'NewRelationsFreeFields',
+    component: NewRelationFreeFieldsComponent,
+    params: {id: null}
   }, {
     path: '/relations-reporting',
     name: 'RelationsReporting',

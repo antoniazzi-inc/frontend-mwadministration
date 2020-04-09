@@ -6,17 +6,18 @@ import { Moment } from 'moment'
 export interface ILanguage extends IBaseEntity{
   langKey?: string;
   title?: string;
+  name?: string;
   intro?: string;
   helpCategory?: IHelpCategory;
 }
 
 export class Language implements ILanguage {
-    name: any;
     constructor (
       public id?: number,
       public administrationId?: number,
       public langKey?: string,
       public title?: string,
+      public name?: string,
       public intro?: string,
       public helpCategory?: IHelpCategory,
       public version?: number,

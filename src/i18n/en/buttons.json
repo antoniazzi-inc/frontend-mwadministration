@@ -4,6 +4,8 @@
   "close": "Close",
   "confirm": "Confirm",
   "cancel": "Cancel",
+  "create": "Create",
+  "add": "Add",
   "createNewCompany": "Create New Company",
   "addNewCompany": "Add New Company",
   "backToList": "Back To List"

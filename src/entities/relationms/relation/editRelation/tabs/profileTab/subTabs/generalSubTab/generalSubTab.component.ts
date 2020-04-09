@@ -64,7 +64,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
   @Watch('rel', { immediate: true, deep: true })
   public updateRelation (newVal: any) {
     if (!newVal || !newVal.relationProfile) return
-    this.relation = JSON.parse(JSON.stringify(newVal))
+    this.relation = newVal
     this.relationProfile = JSON.parse(JSON.stringify(newVal.relationProfile))
     if (this.relationProfile.categoryId) this.getSelectedCategory()
   }
@@ -110,6 +110,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
         }
         this.relationService.put(dto).then((resp: AxiosResponse) => {
           if (resp) {
+            this.$emit('updateRel', resp.data)
             this.setAlert('relationUpdated', 'success')
           } else {
             this.setAlert('relationUpdateError', 'error')

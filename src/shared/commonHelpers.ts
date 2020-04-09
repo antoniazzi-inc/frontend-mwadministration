@@ -1,6 +1,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { ILanguage, Language } from '@/shared/models/language.model'
 import { columnsVisibility } from '@/shared/tabelsDefinitions'
+import {Country} from "@/shared/models/country.model";
 
 @Component
 export default class CommonHelpers extends Vue {
@@ -207,5 +208,23 @@ export default class CommonHelpers extends Vue {
   public setAlert (message: any, type: string) {
     // @ts-ignore
     this.$vueOnToast.pop(type, '', this.$t('toastMessages.' + message))
+  }
+  /*
+   * Name: preselectCountry
+   * arg: id -> country ID
+   * description: Preselect country
+   * Author: Nick Dam
+   */
+  public preselectCountry (id?:number) {
+    let country = new Country()
+    if (!id){
+      id = 150
+    }
+    this.$store.state.allCountries.forEach((cntr:any) =>{
+      if(cntr.id === id){
+        country = cntr
+      }
+    })
+    return country
   }
 }

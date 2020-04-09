@@ -80,7 +80,7 @@
         :tableFields="tableFields"></pagination>
       </div>
     </div>
-    <div class="modal" :id="'deleteModal_'+$props.table" tabindex="-1" role="dialog" ref="deleteModal">
+    <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteModal_'+$props.table" tabindex="-1" role="dialog" ref="deleteModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">

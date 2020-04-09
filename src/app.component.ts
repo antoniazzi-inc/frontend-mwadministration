@@ -18,6 +18,7 @@ import CommonHelpers from '@/shared/commonHelpers'
 import CompanyService from '@/shared/services/companyService'
 import BusinessService from '@/shared/services/businessService'
 import Sockets from '@/shared/sockets'
+import RelationGroupService from "@/shared/services/relationGroupService";
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -31,6 +32,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     categoryService = CategoryService.getInstance();
     timeZoneService = TimeZoneService.getInstance();
     countryService = CountryService.getInstance();
+    relationGroupService = RelationGroupService.getInstance();
     tagService = TagService.getInstance();
     taxRateService = TaxRateService.getInstance();
     companyService = CompanyService.getInstance();
@@ -81,6 +83,9 @@ export default class App extends mixins(Vue, CommonHelpers) {
       })
       this.companyService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.$store.commit('companies', resp.data.content)
+      })
+      this.relationGroupService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.$store.commit('groups', resp.data.content)
       })
       this.businessService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         if (resp && resp.data.content.length > 0) {

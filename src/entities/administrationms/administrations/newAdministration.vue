@@ -98,7 +98,7 @@
               </div>
               <div class="col-md-4 pl-0 m-0">
                 <label>{{$t('labels.loginCodeFirstUser')}}</label>
-                <input type="email" :class="{'form-control': true, invalid: errors.has('Access-Code')}"
+                <input type="text" :class="{'form-control': true, invalid: errors.has('Access-Code')}"
                        name="Access-Code" v-validate="'required'" v-model="administrationUser.accessCode">
                 <span class="text-danger small">{{errors.first('Access-Code')}}</span>
               </div>
@@ -125,17 +125,6 @@
               </div>
             </div>
           </div>
-          <!--<div class="form-group">
-          </div>-->
-          <!--<div class="form-group">
-            <label>{{$t('labels.settingKey')}}</label>
-            <input type="text" class="form-control" v-model="administration.administrationSettings.settingKey">
-          </div>
-          <div class="form-group">
-            <label>{{$t('labels.settingValueJson')}}</label>
-            <input type="text" class="form-control" v-model="administration.administrationSettings.settingValueJson">
-          </div>-->
-
           <div class="text-right">
             <button type="button" id="cancel-save" class="btn btn-secondary mr-2" v-on:click="cancel()">
               <span v-text="$t('buttons.cancel')">Cancel</span>

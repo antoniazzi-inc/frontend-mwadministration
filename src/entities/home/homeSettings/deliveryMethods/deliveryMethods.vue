@@ -15,7 +15,7 @@
       @onEdit="editDeliveryMethod"
       @onDelete="removeDeliveryMethod"
       :service="deliveryMethodService"/>
-    <div class="modal" id="deliveryMethodsModal" tabindex="-1" role="dialog" ref="deliveryMethodsModal">
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="deliveryMethodsModal" tabindex="-1" role="dialog" ref="deliveryMethodsModal">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <form name="editForm" role="form" novalidate @submit.prevent.stop="save()">

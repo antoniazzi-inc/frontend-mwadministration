@@ -14,6 +14,7 @@ declare module 'mjml-core'
 declare module 'mjml-body'
 declare module 'mjml-column'
 declare module 'mjml-section'
+declare module 'vuedraggable'
 declare module 'mjml-text'
 
 declare module 'vue-on-toast'

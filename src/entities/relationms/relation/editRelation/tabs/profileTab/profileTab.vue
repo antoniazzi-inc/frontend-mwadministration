@@ -41,41 +41,42 @@
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'general'}" id="general" role="tabpanel"
            aria-labelledby="general-tab">
         <p class="m-3">{{$t('labels.changeBasicRelationFields')}}</p>
-        <general-sub-tab-component :rel="$props.relation"
+        <general-sub-tab-component :rel="$props.relation" @updateRel="update"
                                    :active="currentSubTab==='general'"></general-sub-tab-component>
       </div>
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'company'}" id="company" role="tabpanel"
            aria-labelledby="company-tab">
-        <company-sub-tab-component :rel="$props.relation"
+        <company-sub-tab-component :rel="$props.relation" @updateRel="update"
                                    :active="currentSubTab==='company'"></company-sub-tab-component>
       </div>
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'tags'}" id="tags" role="tabpanel"
            aria-labelledby="tags-tab">
-        <tags-sub-tab-component :rel="$props.relation" :active="currentSubTab==='tags'"></tags-sub-tab-component>
+        <tags-sub-tab-component :rel="$props.relation"  @updateRel="update"
+                                :active="currentSubTab==='tags'"></tags-sub-tab-component>
       </div>
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'contacts'}" id="contacts"
            role="tabpanel" aria-labelledby="contacts-tab">
-        <contacts-sub-tab-component :rel="$props.relation"
+        <contacts-sub-tab-component :rel="$props.relation"  @updateRel="update"
                                     :active="currentSubTab==='contacts'"></contacts-sub-tab-component>
       </div>
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'groups'}" id="groups" role="tabpanel"
            aria-labelledby="groups-tab">
-        <groups-sub-tab-component :rel="$props.relation"
+        <groups-sub-tab-component :rel="$props.relation"  @updateRel="update"
                                   :active="currentSubTab==='groups'"></groups-sub-tab-component>
       </div>
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'freeFields'}" id="freeFields" role="tabpanel"
            aria-labelledby="freeFields-tab">
-        <free-fields-sub-tab-component :rel="$props.relation"
+        <free-fields-sub-tab-component :rel="$props.relation"  @updateRel="update"
                                        :active="currentSubTab==='freeFields'"></free-fields-sub-tab-component>
       </div>
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'customer'}" id="customer" role="tabpanel"
            aria-labelledby="customer-tab">
-        <customer-sub-tab-component :rel="$props.relation"
+        <customer-sub-tab-component :rel="$props.relation" @updateRel="update"
                                     :active="currentSubTab==='customer'"></customer-sub-tab-component>
       </div>
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'affiliates'}" id="affiliates" role="tabpanel"
            aria-labelledby="affiliates-tab">
-        <affiliates-sub-tab-component :rel="$props.relation"
+        <affiliates-sub-tab-component :rel="$props.relation" @updateRel="update"
                                       :active="currentSubTab==='affiliates'"></affiliates-sub-tab-component>
       </div>
     </div>

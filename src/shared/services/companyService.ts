@@ -5,7 +5,7 @@ export default class CompanyService extends BaseEntityService<ICompany> {
   private static instance: CompanyService;
 
   private constructor () {
-    super('api/relationms/api/companys')
+    super('api/relationms/api/companies')
   }
 
   public static getInstance (): CompanyService {
