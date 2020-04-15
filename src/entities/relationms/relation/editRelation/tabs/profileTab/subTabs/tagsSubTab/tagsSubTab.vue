@@ -4,8 +4,8 @@
     <searchable-select-component :config="searchableConfig"
                                  :options="$store.state.lookups.tags"
                                  :value="selectedTags"
-                                 @onChange="tagsChanged"
-                                 @onSelected="tagsChanged"
+                                 @onSelected="addTag"
+                                 @onDelete="removeTag"
     ></searchable-select-component>
   </div>
 </template>

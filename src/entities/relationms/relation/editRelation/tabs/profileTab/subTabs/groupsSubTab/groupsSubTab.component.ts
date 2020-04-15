@@ -7,6 +7,7 @@ import {IRelationGroup} from "@/shared/models/relation-group.model";
 import RelationGroupService from "@/shared/services/relationGroupService";
 import RelationService from "@/shared/services/relationService";
 import {AxiosResponse} from "axios";
+import moment from "moment";
 @Component({
   components: {
     draggable
@@ -53,11 +54,40 @@ export default class GroupsSubTabComponent extends mixins(Vue, CommonHelpers) {
   public updateGroups(newVal:any){
     if(this.isChanged){
       let allGroups:any = []
-      let dto = JSON.parse(JSON.stringify(this.relationCopy))
+      let dto = new RelationEntity(
+        this.relationCopy.createdOn,
+        this.relationCopy.updatedOn,
+        this.relationCopy.id,
+        this.relationCopy.version,
+        this.relationCopy.administrationId,
+        this.relationCopy.uid,
+        this.relationCopy.username,
+        this.relationCopy.password,
+        this.relationCopy.email,
+        this.relationCopy.enabled,
+        this.relationCopy.languageKey,
+        this.relationCopy.tfaEnabled,
+        this.relationCopy.tfaId,
+        this.relationCopy.affiliate,
+        this.relationCopy.beneficiary,
+        this.relationCopy,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      )
       dto.relationGroups = []
+      dto.relationProfile = undefined
       if(this.relationCopy.relationGroups)
       this.relationCopy.relationGroups.forEach(group=>{
-        allGroups.push({id: group.id, version: group.version})
+        allGroups.push({id: group.id, version: group.version, createdOn: group.createdOn, updatedOn: group.updatedOn})
       })
       dto.relationGroups = allGroups
       this.relationService.put(dto).then((resp:AxiosResponse)=>{

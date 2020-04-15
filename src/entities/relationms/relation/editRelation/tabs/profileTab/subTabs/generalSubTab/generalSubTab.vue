@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent.stop="saveRelation">
+    <form @submit.prevent.stop="saveRelation" v-if="relationProfile">
       <div class="form-row mt-3">
         <div class="col-sm-2">
           <label>{{$t('labels.title')}}</label>

@@ -6,11 +6,15 @@ export interface IBaseEntity {
   createdOn?: Moment;
   updatedOn?: Moment;
   version?: number;
-  administration?: AdministrationEntity;
+  administrationId?: number;
 }
 
 export class BaseEntity implements IBaseEntity {
   constructor(
-  ){
-  }
+   public id?: number,
+   public createdOn?: Moment,
+   public updatedOn?: Moment,
+   public version?: number,
+   public administrationId?: number
+  ){}
 };

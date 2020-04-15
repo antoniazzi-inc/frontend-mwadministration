@@ -3,7 +3,7 @@ import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import RelationService from '@/shared/services/relationService'
 import { IRelationProfile, RelationProfile } from '@/shared/models/relation-profile.model'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { IRelationEntity, RelationEntity} from '@/shared/models/relationModel'
 import { ICategoryEntity } from '@/shared/models/categoryModel'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
@@ -19,7 +19,8 @@ import { AxiosResponse } from 'axios'
     ToggleSwitch
   },
   props: {
-    rel: Object
+    rel: Object,
+    active: Boolean
   }
 })
 export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
@@ -43,10 +44,9 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
       false, true, false, false)
     this.relationService = RelationService.getInstance()
     this.dateConfig = {
-      wrap: true,
+      wrap: false,
       altInput: false,
-      dateFormat: 'd-m-Y',
-      minDate: moment(new Date()).subtract(18, 'year')
+      dateFormat: 'Y-m-d'
     }
   }
 
@@ -63,21 +63,27 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
 
   @Watch('rel', { immediate: true, deep: true })
   public updateRelation (newVal: any) {
-    if (!newVal || !newVal.relationProfile) return
     this.relation = newVal
-    this.relationProfile = JSON.parse(JSON.stringify(newVal.relationProfile))
-    if (this.relationProfile.categoryId) this.getSelectedCategory()
+    this.relationProfile = newVal.relationProfile
+    this.getSelectedCategory(newVal.relationProfile ? newVal.relationProfile.categoryId : null)
+    if(newVal.relationProfile && !newVal.relationProfile.birthDate) {
+      this.relationProfile.birthDate = moment(new Date()).format('Y-m-d')
+    }
   }
 
-  public getSelectedCategory () {
-    let result = null
+  public getSelectedCategory (categoryId:any) {
+    if(!categoryId) return
+    let result:any = null
+    let self= this
     this.$store.state.lookups.categories.forEach((cat: any) => {
-      if (cat.id === this.relationProfile.categoryId) {
+      if (cat.id === self.relationProfile.categoryId) {
         result = cat
       }
     })
     if (result !== null) {
-      this.relationCategory = result
+      Vue.nextTick(function () {
+        self.relationCategory = result
+      })
     }
   }
 
@@ -99,14 +105,44 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public saveRelation () {
+    let self = this;
     this.$validator.validateAll().then(result => {
       if (result) {
-        let dto = new RelationEntity()
-        dto = this.relation
-        dto.relationProfile = this.relationProfile
-        if (this.relationProfile.birthDate) dto.relationProfile.birthDate = moment(this.relationProfile.birthDate)
-        if (this.relationCategory && this.relationCategory.id) {
-          dto.relationProfile.categoryId = this.relationCategory.id
+        let dto = new RelationEntity(
+          this.relation.createdOn,
+          this.relation.updatedOn,
+          this.relation.id,
+          this.relation.version,
+          this.relation.administrationId,
+          this.relation.uid,
+          this.relation.username,
+          this.relation.password,
+          this.relation.email,
+          this.relation.enabled,
+          this.relation.languageKey,
+          this.relation.tfaEnabled,
+          this.relation.tfaId,
+          this.relation.affiliate,
+          this.relation.beneficiary,
+          this.relationProfile,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined
+          )
+        if (dto && dto.relationProfile && dto.relationProfile.birthDate) {
+          let birthDate:any = self.relationProfile.birthDate
+          dto.relationProfile.birthDate = moment(birthDate)
+        }
+        if (self.relationCategory && self.relationCategory.id) {
+         if(dto && dto.relationProfile) dto.relationProfile.categoryId = self.relationCategory.id
         }
         this.relationService.put(dto).then((resp: AxiosResponse) => {
           if (resp) {

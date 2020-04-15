@@ -42,7 +42,7 @@
       </div>
       <div :class="{'tab-pane': true, 'active': currentTab === 'contactHistory'}" id="contactHistory"
            role="tabpanel" aria-labelledby="contactHistory-tab">
-        <contact-history-tab-component :relation="relation" :active="currentTab === 'contactHistory'" @update="updateRelation"></contact-history-tab-component>
+        <contact-history-tab-component :rel="relation" :active="currentTab === 'contactHistory'" @update="updateRelation"></contact-history-tab-component>
       </div>
       <div :class="{'tab-pane': true, 'active': currentTab === 'orders'}" id="orders" role="tabpanel"
            aria-labelledby="orders-tab">

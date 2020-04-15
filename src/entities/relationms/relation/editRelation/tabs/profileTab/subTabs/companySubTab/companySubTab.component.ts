@@ -187,11 +187,40 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   }
   public saveRelationCompany (company?:any) {
     if(this.relationCopy.companies && this.relationCopy.companies.length){
-      this.relationCopy.companies.push(company)
+      this.relationCopy.companies.push({id: company.id, version: company.version})
     } else {
-      this.relationCopy.companies = [company]
+      this.relationCopy.companies = [{id: company.id, version: company.version}]
     }
-    this.relationService.put(this.relationCopy).then((resp:AxiosResponse)=>{
+    let dto = new RelationEntity(
+      this.relationCopy.createdOn,
+      this.relationCopy.updatedOn,
+      this.relationCopy.id,
+      this.relationCopy.version,
+      this.relationCopy.administrationId,
+      this.relationCopy.uid,
+      this.relationCopy.username,
+      this.relationCopy.password,
+      this.relationCopy.email,
+      this.relationCopy.enabled,
+      this.relationCopy.languageKey,
+      this.relationCopy.tfaEnabled,
+      this.relationCopy.tfaId,
+      this.relationCopy.affiliate,
+      this.relationCopy.beneficiary,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.relationCopy.companies,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    )
+    this.relationService.put(dto).then((resp:AxiosResponse)=>{
       if(resp){
         this.setAlert('companyCreated', 'success')
         this.cancelNewComp()
