@@ -301,7 +301,6 @@
     box-shadow: none;
   }
   @media (min-width: 900px) {
-    /* Show the dropdown menu on hover */
     .dropdown:hover .dropdown-menu {
       display: block;
     }
