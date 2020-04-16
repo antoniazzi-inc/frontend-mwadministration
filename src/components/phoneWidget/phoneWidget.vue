@@ -59,6 +59,7 @@
 <script lang="ts" src="./phoneWidget.component.ts"></script>
 <style>
   .support-index {
+    width: 100%;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;

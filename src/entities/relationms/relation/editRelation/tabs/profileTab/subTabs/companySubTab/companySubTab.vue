@@ -2,34 +2,34 @@
   <div class="p-3">
     <div class="row" v-if="companies.length && !editMode && !addNewCompany">
       <div class="col-md-6">
-        <div class="row" v-for="(item, index) in companies" :key="index">
-          <div class="col-md-12">
-            <div class="support-index support-tickets">
-              <div class="support-ticket">
-                <div class="st-body">
-                  <div class="avatar"><i style="font-size: 2rem;" class="dashicons dashicons-building"></i></div>
-                  <div class="st-meta">
-                    <i class="os-icon os-icon-edit" @click="editCompany(item, index)"></i>
-                    <div class="os-icon os-icon-trash" @click="deleteCompany(item)"></div>
-                  </div>
-                  <div class="ticket-content">
-                    <h6 class="ticket-title">
-                      {{item.name}}
-                    </h6>
-                    <div class="ticket-description">
-                      <span class="label">{{item.description}}</span>
+            <div class="col-md-12 mb-4" v-for="(item, index) in companies" :key="index">
+              <div class="row">
+                <div class="support-index support-tickets" >
+                  <div class="support-ticket">
+                    <div class="st-body">
+                      <div class="avatar"><i style="font-size: 2rem;" class="fas fa-building"></i></div>
+                      <div class="st-meta">
+                        <i class="fas fa-edit text-warning" @click="editCompany(item, index)"></i>
+                        <div class="fas fa-trash-alt text-danger ml-2" @click="deleteCompany(item)"></div>
+                      </div>
+                      <div class="ticket-content">
+                        <h6 class="ticket-title">
+                          {{item.name}}
+                        </h6>
+                        <div class="ticket-description">
+                          <span class="label">{{item.description}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="st-foot">
+                      <span class="value">{{getCompanyAddress(item).label}}</span>
+                      <br/>
+                      <span class="value">{{getCompanyPhone(item)}}</span>
                     </div>
                   </div>
                 </div>
-                <div class="st-foot">
-                  <span class="value">{{getCompanyAddress(item).label}}</span>
-                  <br/>
-                  <span class="value">{{getCompanyPhone(item)}}</span>
-                </div>
               </div>
             </div>
-          </div>
-        </div>
       </div>
     </div>
     <div class="row m-3" v-if="companies.length === 0 && !editMode && !addNewCompany">

@@ -85,7 +85,7 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   public editCompany (company: ICompany, index: number) {
     this.companyToEdit = JSON.parse(JSON.stringify(company))
     this.editMode = true
-    this.addNewCompany = false
+    this.addNewCompany = true
   }
 
   public deleteCompany (company: ICompany) {}
@@ -163,13 +163,33 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
           version: this.$store.state.lookups.administrationBusiness[0].version
         }
         this.companyToEdit.alias = this.companyToEdit.name
-        this.companyService.post(this.companyToEdit).then((resp:AxiosResponse)=>{
-          if(resp) {
-            this.saveRelationCompany(resp.data)
-          } else {
-            this.setAlert('companyCreateError', 'error')
-          }
-        })
+        if(this.companyToEdit.id) {
+          this.companyService.put(this.companyToEdit).then((resp:AxiosResponse)=>{
+            if(resp) {
+              let index = null
+              this.relationCopy.companies?.forEach((comp, ind)=>{
+                if(comp.id === resp.data.id) {
+                  index = ind
+                }
+              })
+              if(index !== null && this.relationCopy.companies) {
+                this.relationCopy.companies[index] = resp.data
+              }
+            this.$emit('updateRel', this.relationCopy)
+              this.cancelNewComp()
+            } else {
+              this.setAlert('companyCreateError', 'error')
+            }
+          })
+        } else {
+          this.companyService.post(this.companyToEdit).then((resp:AxiosResponse)=>{
+            if(resp) {
+              this.saveRelationCompany(resp.data)
+            } else {
+              this.setAlert('companyCreateError', 'error')
+            }
+          })
+        }
       } else {
         this.setAlert('fillRequiredFields', 'error')
       }
