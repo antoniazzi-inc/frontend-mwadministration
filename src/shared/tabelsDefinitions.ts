@@ -1181,6 +1181,106 @@ export const paymentMethod = {
     }
   ]
 }
+
+export const customField = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 20,
+  cols: [
+    {
+      name: 'labels.administrationId',
+      field: 'administrationId',
+      authorities: ['ROLE_SUPER_ADMIN'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },{
+      name: 'labels.id',
+      field: 'id',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.code',
+      field: 'code',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.userVisible',
+      field: 'userVisible',
+      authorities: ['*'],
+      type: 'boolean',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.userEditable',
+      field: 'userEditable',
+      authorities: ['*'],
+      type: 'boolean',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.gdprSpecialField',
+      field: 'gdprSpecialField',
+      authorities: ['*'],
+      type: 'boolean',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.customFieldType',
+      field: 'customFieldType',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.createdOn',
+      field: 'createdOn',
+      authorities: ['*'],
+      type: 'date',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.updatedOn',
+      field: 'updatedOn',
+      authorities: ['*'],
+      type: 'date',
+      subField: null,
+      sort: false,
+      method: null
+
+    }
+  ]
+}
 export const relation = {
   actions: {
     copy: false,
@@ -1328,8 +1428,8 @@ export const relation = {
       }
     },
     {
-      name: 'labels.relationTags',
-      field: 'relationTags',
+      name: 'labels.tags',
+      field: 'tags',
       authorities: ['*'],
       type: null,
       subField: null,
@@ -1337,8 +1437,10 @@ export const relation = {
       method: function (item: any) {
         const result: any = []
         if (item.relationTags && item.relationTags.length > 0) {
+            Store.state.lookups.tags.forEach((localTag:any) => {
           item.relationTags.forEach((tag: any) => {
-            result.push(tag.code)
+              if(localTag.id === tag.tagId) result.push(localTag.code)
+            })
           })
           return result.join(', ')
         } else {
@@ -1376,7 +1478,7 @@ export const columnsVisibility = {
     postalCode: false,
     city: false,
     country: false,
-    relationTags: true,
+    tags: true,
     relationGroups: true,
     company: false,
     points: false,
@@ -1465,7 +1567,7 @@ export const columnsVisibility = {
     customFieldType: true,
     createdOn: true,
     updatedOn: true,
-    itemsPerPage: 20
+    showing: 20
   },
   group: {
     id: true,

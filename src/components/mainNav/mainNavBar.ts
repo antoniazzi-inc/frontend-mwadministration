@@ -11,10 +11,13 @@ import { RelationProfile } from '@/shared/models/relation-profile.model'
 import RelationService from '@/shared/services/relationService'
 import { AxiosResponse } from 'axios'
 import { MenuDefinitions } from '@/shared/menuDefinitions'
+import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
+import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
 @Component({
   components: {
     'v-gravatar': gravatarImg,
-    flatPickr
+    flatPickr,
+    SearchableSelectComponent
   }
 })
 export default class MainNavBar extends mixins(commonHelpers, Vue) {
@@ -25,15 +28,24 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
 
   public dateConfig: any;
   public user: any;
+  public selectedTimeZone: any;
   public timeZones: any[];
   public changePassword: any;
+  public birthDate: any;
+  public searchableConfig: ISearchableSelectConfig;
   public searchString: string;
   public changePasswordChecked: boolean;
   public authService = AuthService.getInstance();
   constructor () {
     super()
+    this.searchableConfig = new SearchableSelectConfig('code',
+      'labels.timezone', '', false,
+      false, false, false, false)
     this.searchString = ''
     this.changePasswordChecked = false
+    this.selectedTimeZone = null
+    this.birthDate = null
+    this.relationService = RelationService.getInstance()
     this.user = new RelationEntity()
 
     this.timeZones = []
@@ -43,10 +55,10 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
       repeatPassword: ''
     }
     this.dateConfig = {
-      wrap: true,
+      wrap: false,
       altInput: false,
       dateFormat: 'd-m-Y',
-      minDate: moment(new Date()).subtract(18, 'year').format('YYYY-MM-DD')
+      maxDate: moment().subtract(18, 'year').format('d-m-YYYY')
     }
   }
 
@@ -55,8 +67,6 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
     if (this.user && !this.user.relationProfile) {
       this.user.relationProfile = new RelationProfile()
     }
-    this.user.relationProfile.birthDate = this.user.relationProfile && this.user.relationProfile.birthDate
-      ? moment(this.user.relationProfile.birthDate).format('YYYY-MM-DD') : null
     this.timeZones = this.$store.state.lookups.timeZones
   }
 
@@ -67,7 +77,28 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
     this.$set(this.$i18n, 'locale', ind)
     // TODO send request to server to change language if needed
   }
-
+  public loadUser(){
+    let self = this;
+    this.relationService.get(this.user.id).then((resp:AxiosResponse)=>{
+      this.user = resp.data
+      let zone:any = null
+      if(resp.data.relationProfile.timeZoneId) {
+        this.timeZones.forEach(timeZone => {
+          if (timeZone.id === resp.data.relationProfile.timeZoneId) {
+            zone = timeZone
+          }
+        })
+        Vue.nextTick(function () {
+            self.selectedTimeZone = zone
+        })
+      }
+      this.$forceUpdate()
+      Vue.nextTick(function () {
+        resp.data.relationProfile && resp.data.relationProfile.birthDate ?
+          self.birthDate =  moment(resp.data.relationProfile.birthDate).format('DD-MM-YYYY') : self.birthDate = null
+      })
+    })
+  }
   public getUserName () {
     return this.getRelationFullName(this.$store.state.userIdentity)
   }
@@ -97,19 +128,21 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
   }
 
   public changeTimeZone (e: any) {
-    this.user.relationProfile.timeZoneId = e.currentTarget.value
+    if(!e) return
+    this.selectedTimeZone = e
+    this.user.relationProfile.timeZoneId = e.id
   }
 
   public changeTitle (e: any) {
     this.user.relationProfile.title = e.currentTarget.value
   }
 
-  public getTitles () {
-    return ['Mr.', 'Ms.', 'Mrs.']
+  public removeTimeZone () {
+    this.selectedTimeZone = null
   }
 
   public saveUserProfile () {
-    this.user.relationProfile.birthDate = moment(this.user.relationProfile.birthDate)
+    this.user.relationProfile.birthDate = moment(this.birthDate)
     this.relationService.put(this.user).then((resp: AxiosResponse) => {
       if (resp) {
         this.setAlert('userUpdated', 'success')

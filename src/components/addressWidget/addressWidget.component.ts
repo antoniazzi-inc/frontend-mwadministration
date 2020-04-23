@@ -60,7 +60,6 @@ export default class AddressWidgetComponent extends mixins(CommonHelpers, Vue) {
 
   public countryChanged(country:any) {
     this.selectedCountry = country
-    debugger
     this.addressCopy.countryId = country ? country.id : this.selectedCountry?.id
   }
   public validatePostalCode() {

@@ -27,6 +27,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
   public currentTab: string
   public relationService: any
   public dateConfig: any
+  public birthDate:any
   public allLanguages: any[]
   public relationProfile: IRelationProfile
   public relation: IRelationEntity
@@ -34,6 +35,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
   public searchableConfigCat: ISearchableSelectConfig
   constructor () {
     super()
+    this.birthDate = null
     this.currentTab = 'profile'
     this.relationProfile = new RelationProfile()
     this.relation = new RelationEntity()
@@ -46,7 +48,8 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     this.dateConfig = {
       wrap: false,
       altInput: false,
-      dateFormat: 'Y-m-d'
+      dateFormat: 'd-m-Y',
+      maxDate: moment().subtract(18, 'year').format('d-m-YYYY')
     }
   }
 
@@ -66,8 +69,11 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     this.relation = newVal
     this.relationProfile = newVal.relationProfile
     this.getSelectedCategory(newVal.relationProfile ? newVal.relationProfile.categoryId : null)
-    if(newVal.relationProfile && !newVal.relationProfile.birthDate) {
-      this.relationProfile.birthDate = moment(new Date()).format('Y-m-d')
+    if(newVal.relationProfile && newVal.relationProfile.birthDate) {
+      let self = this;
+      Vue.nextTick(function () {
+        self.birthDate = moment(self.relationProfile.birthDate).format('DD-MM-YYYY')
+      })
     }
   }
 
@@ -108,39 +114,11 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     let self = this;
     this.$validator.validateAll().then(result => {
       if (result) {
-        let dto = new RelationEntity(
-          this.relation.createdOn,
-          this.relation.updatedOn,
-          this.relation.id,
-          this.relation.version,
-          this.relation.administrationId,
-          this.relation.uid,
-          this.relation.username,
-          this.relation.password,
-          this.relation.email,
-          this.relation.enabled,
-          this.relation.languageKey,
-          this.relation.tfaEnabled,
-          this.relation.tfaId,
-          this.relation.affiliate,
-          this.relation.beneficiary,
-          this.relationProfile,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined
-          )
-        if (dto && dto.relationProfile && dto.relationProfile.birthDate) {
-          let birthDate:any = self.relationProfile.birthDate
-          dto.relationProfile.birthDate = moment(birthDate)
+        let dto = this.relation
+        if (dto && dto.relationProfile && this.birthDate) {
+          dto.relationProfile.birthDate = moment(this.birthDate)
         }
+        console.log(dto.relationProfile?.birthDate)
         if (self.relationCategory && self.relationCategory.id) {
          if(dto && dto.relationProfile) dto.relationProfile.categoryId = self.relationCategory.id
         }

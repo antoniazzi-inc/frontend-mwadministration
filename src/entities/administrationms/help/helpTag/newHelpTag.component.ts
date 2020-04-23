@@ -77,6 +77,7 @@ export default class NewHelpTagComponent extends mixins(CommonHelpers, Vue) {
       if (this.helpTag.id) {
         this.helpTagService.put(this.helpTag).then((resp: AxiosResponse) => {
           if (resp) {
+            this.cancel()
             this.setAlert('helpTagUpdated', 'success')
           } else {
             this.setAlert('helpTagError', 'error')
@@ -85,6 +86,7 @@ export default class NewHelpTagComponent extends mixins(CommonHelpers, Vue) {
       } else {
         this.helpTagService.post(this.helpTag).then((resp: AxiosResponse) => {
           if (resp) {
+            this.cancel()
             this.setAlert('helpTagUpdated', 'success')
           } else {
             this.setAlert('helpTagError', 'error')

@@ -72,6 +72,7 @@ export default class NewTaxRuleComponent extends mixins(CommonHelpers, Vue) {
         if (this.taxRule.id) {
           this.taxRuleService.put(this.taxRule).then((resp: AxiosResponse) => {
             if (resp) {
+              this.cancel()
               this.setAlert('taxRuleUpdated', 'success')
             } else {
               this.setAlert('taxRuleError', 'error')
@@ -80,6 +81,7 @@ export default class NewTaxRuleComponent extends mixins(CommonHelpers, Vue) {
         } else {
           this.taxRuleService.post(this.taxRule).then((resp: AxiosResponse) => {
             if (resp) {
+              this.cancel()
               this.setAlert('taxRuleCreated', 'success')
             } else {
               this.setAlert('taxRuleError', 'error')

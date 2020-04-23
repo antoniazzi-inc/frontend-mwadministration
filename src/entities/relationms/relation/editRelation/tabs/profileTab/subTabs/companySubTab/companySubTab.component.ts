@@ -6,8 +6,7 @@ import {IRelationEntity, RelationEntity} from '@/shared/models/relationModel'
 import {ISearchableSelectConfig, SearchableSelectConfig} from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import validateVat, {CountryCodes, ViesValidationResponse} from 'validate-vat-ts';
-import {CompanyPhone, ICompanyPhone, PhoneType} from "@/shared/models/company-phone.model";
-import {CompanyAddress, ICompanyAddress} from "@/shared/models/company-address.model";
+import {PhoneType} from "@/shared/models/company-phone.model";
 import {Country, ICountry} from "@/shared/models/country.model";
 import CompanyService from "@/shared/services/companyService";
 import {AxiosResponse} from "axios";
@@ -35,8 +34,6 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   public companies: ICompany[]
   public vatError: any
   public relationCopy: IRelationEntity
-  public phone: ICompanyPhone
-  public address: ICompanyAddress
   public companyToEdit: ICompany
   public selectedCountry: ICountry|null
   constructor () {
@@ -55,11 +52,6 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
     }
     this.editMode = false
     this.selectedCountry = new Country()
-    this.address = new CompanyAddress()
-    this.phone = {
-      phoneType: PhoneType.HOME,
-      number: ''
-    }
     this.vatError = ''
     this.addNewCompany = false
     this.searchableConfigCompany = new SearchableSelectConfig('name',
@@ -100,34 +92,38 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
 
   public getCompanyAddress (company: ICompany) {
     let result: any = ''
-    if (company && company.companyAddresses && company.companyAddresses.length) {
-      result = this.extractAddress(company.companyAddresses)
+    if (company) {
+      let address = company.addressStreet ? company.addressStreet : ''
+      let number = company.addressHouseNumber ? company.addressHouseNumber : ''
+      let city = company.city ? company.city : ''
+      let postal = company.postalCode ? company.postalCode : ''
+      let country = company.countryId ? this.getCountryById(company.countryId) : ''
+      result = `${address} ${number} ${city} ${postal} ${country} `
     }
     return result
   }
 
   public getCompanyPhone (company: ICompany) {
     let result: any = ''
-    if (company && company.companyPhones && company.companyPhones.length) {
-      result = company.companyPhones[0].number
+    if (company && company.phoneNumber) {
+      result = company.phoneNumber
     }
     return result
   }
 
   public onAddCompany () {
     this.companyToEdit = new Company()
+    this.companyToEdit.phoneType = PhoneType.OTHER
     this.editMode = true
     this.addNewCompany = true
   }
 
   public createNewCompany () {
     this.companyToEdit = new Company()
-    this.phone = new CompanyPhone(undefined, undefined, undefined, undefined, PhoneType.HOME)
-    this.address = new CompanyAddress()
     this.editMode = false
     this.addNewCompany = true
     this.selectedCountry = this.preselectCountry()
-    this.address.countryId = this.selectedCountry.id
+    this.companyToEdit.countryId = this.selectedCountry.id
   }
 
   public async validateVat () {
@@ -156,8 +152,6 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
     this.$validator.validateAll().then((resp:boolean)=>{
       if(resp && (this.vatError === '' || this.companyToEdit.vatNumber === '')) {
         this.vatError = ''
-        this.companyToEdit.companyPhones = [this.phone]
-        this.companyToEdit.companyAddresses = [this.address]
         this.companyToEdit.business = {
           id: this.$store.state.lookups.administrationBusiness[0].id,
           version: this.$store.state.lookups.administrationBusiness[0].version
@@ -166,19 +160,11 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
         if(this.companyToEdit.id) {
           this.companyService.put(this.companyToEdit).then((resp:AxiosResponse)=>{
             if(resp) {
-              let index = null
-              this.relationCopy.companies?.forEach((comp, ind)=>{
-                if(comp.id === resp.data.id) {
-                  index = ind
-                }
-              })
-              if(index !== null && this.relationCopy.companies) {
-                this.relationCopy.companies[index] = resp.data
-              }
+              this.setAlert('companyUpdated', 'success')
             this.$emit('updateRel', this.relationCopy)
               this.cancelNewComp()
             } else {
-              this.setAlert('companyCreateError', 'error')
+              this.setAlert('companyUpdateError', 'error')
             }
           })
         } else {
@@ -198,12 +184,12 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   public countryChanged (country:any) {
     if(country){
       this.selectedCountry = country
-      this.address.countryId = country.id
+      this.companyToEdit.countryId = country.id
     }
   }
   public countryRemoved (country:any) {
     this.selectedCountry = null
-    this.address.countryId = undefined
+    this.companyToEdit.countryId = undefined
   }
   public saveRelationCompany (company?:any) {
     if(this.relationCopy.companies && this.relationCopy.companies.length){
@@ -211,35 +197,7 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
     } else {
       this.relationCopy.companies = [{id: company.id, version: company.version}]
     }
-    let dto = new RelationEntity(
-      this.relationCopy.createdOn,
-      this.relationCopy.updatedOn,
-      this.relationCopy.id,
-      this.relationCopy.version,
-      this.relationCopy.administrationId,
-      this.relationCopy.uid,
-      this.relationCopy.username,
-      this.relationCopy.password,
-      this.relationCopy.email,
-      this.relationCopy.enabled,
-      this.relationCopy.languageKey,
-      this.relationCopy.tfaEnabled,
-      this.relationCopy.tfaId,
-      this.relationCopy.affiliate,
-      this.relationCopy.beneficiary,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      this.relationCopy.companies,
-      undefined,
-      undefined,
-      undefined,
-      undefined
-    )
+    let dto = this.relationCopy
     this.relationService.put(dto).then((resp:AxiosResponse)=>{
       if(resp){
         this.setAlert('companyCreated', 'success')

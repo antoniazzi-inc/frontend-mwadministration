@@ -140,6 +140,7 @@ export default class NewHelpCategoryComponent extends mixins(CommonHelpers, Vue)
       if (this.newHelpCategory.id) {
         this.helpCategoryService.put(this.newHelpCategory).then((resp: AxiosResponse) => {
           if (resp) {
+            this.cancel()
             this.setAlert('helpCategoryUpdated', 'success')
           } else {
             this.setAlert('helpCategoryError', 'error')
@@ -148,6 +149,7 @@ export default class NewHelpCategoryComponent extends mixins(CommonHelpers, Vue)
       } else {
         this.helpCategoryService.post(this.newHelpCategory).then((resp: AxiosResponse) => {
           if (resp) {
+            this.cancel()
             this.setAlert('helpCategoryCreated', 'success')
           } else {
             this.setAlert('helpCategoryError', 'error')

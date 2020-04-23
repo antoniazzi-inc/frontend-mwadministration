@@ -76,7 +76,7 @@
           <label for="birthdateRelation" v-html="$t('labels.birthDate')"></label>
           <div class="date-input">
           <flat-pickr :config="dateConfig" class="single-daterange form-control"
-                      id="birthdateRelation" v-model="relationProfile.birthDate"></flat-pickr>
+                      id="birthdateRelation" v-model="birthDate"></flat-pickr>
           </div>
         </div>
         <div class="col">

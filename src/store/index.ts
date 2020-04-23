@@ -14,12 +14,13 @@ export default new Vuex.Store({
       categories: [],
       groups: [],
       tags: [],
-      freefields: [],
+      freeFields: [],
       regions: [],
       products: [],
       timeZones: [],
       taxRates: [],
       companies: [],
+      roles: [],
       administrationBusiness: []
     },
     languages: {
@@ -61,8 +62,8 @@ export default new Vuex.Store({
     taxRates (state, newState) {
       state.lookups.taxRates = newState
     },
-    freefields (state, newState) {
-      state.lookups.freefields = newState
+    freeFields (state, newState) {
+      state.lookups.freeFields = newState
     },
     groups (state, newState) {
       state.lookups.groups = newState
@@ -78,6 +79,9 @@ export default new Vuex.Store({
     },
     products (state, newState) {
       state.lookups.products = newState
+    },
+    roles (state, newState) {
+      state.lookups.roles = newState
     },
     administrationBusiness (state, newState) {
       state.lookups.administrationBusiness = newState

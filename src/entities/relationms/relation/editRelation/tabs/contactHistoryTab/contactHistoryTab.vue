@@ -53,7 +53,7 @@
     -moz-osx-font-smoothing: grayscale;
     position: absolute;
     left: 22px;
-    top: 50%;
+    top: 25%;
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
     font-size: 16px;

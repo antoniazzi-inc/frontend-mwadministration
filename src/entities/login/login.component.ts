@@ -24,7 +24,11 @@ export default class LoginComponent extends Vue {
     this.rememberMe = true
     this.showReset = false
   }
-
+  public created(){
+    if(this.$store.state.authenticated){
+      this.$router.push('/')
+    }
+  }
   public changeLanguage (lang: string) {
     this.$set(this.$i18n, 'locale', lang)
   }

@@ -112,6 +112,10 @@ const routes = [
     path: '/relations-free-fields/new',
     name: 'NewRelationsFreeFields',
     component: NewRelationFreeFieldsComponent,
+  },{
+    path: '/relations-free-fields/new/:id',
+    name: 'EditRelationsFreeFields',
+    component: NewRelationFreeFieldsComponent,
     params: {id: null}
   }, {
     path: '/relations-reporting',

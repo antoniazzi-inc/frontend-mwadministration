@@ -50,10 +50,18 @@ export default class RelationGroupsComponent extends mixins(CommonHelpers,Vue) {
       }
     })
   }
+  public doFocus() {
+    let self = this;
+    setTimeout(function () {
+      //@ts-ignore
+      self.$refs.groupLabel.focus();
+    }, 200);
+  }
   public async resetGroup(){
     this.group = new RelationGroup()
     this.selectedCategory = null
     await this.$validator.reset()
+    this.doFocus()
   }
 
   public searchGroups(query:any){}

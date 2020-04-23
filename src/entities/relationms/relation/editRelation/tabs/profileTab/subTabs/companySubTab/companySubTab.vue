@@ -21,10 +21,10 @@
                         </div>
                       </div>
                     </div>
-                    <div class="st-foot">
-                      <span class="value">{{getCompanyAddress(item).label}}</span>
+                    <div class="st-foot ml-3">
+                      <span class="value"><i class="fas fa-map"></i> {{getCompanyAddress(item)}}</span>
                       <br/>
-                      <span class="value">{{getCompanyPhone(item)}}</span>
+                      <span class="value"><i class="fas fa-mobile"></i> {{getCompanyPhone(item)}}</span>
                     </div>
                   </div>
                 </div>
@@ -90,16 +90,16 @@
               <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{phone.phoneType}}
+                  {{companyToEdit.phoneType}}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" v-on:click="phone.phoneType=phoneTypes.home" href="#">{{phoneTypes.home}}</a>
-                  <a class="dropdown-item" v-on:click="phone.phoneType=phoneTypes.mobile"
+                  <a class="dropdown-item" v-on:click="companyToEdit.phoneType=phoneTypes.home" href="#">{{phoneTypes.home}}</a>
+                  <a class="dropdown-item" v-on:click="companyToEdit.phoneType=phoneTypes.mobile"
                      href="#">{{phoneTypes.mobile}}</a>
-                  <a class="dropdown-item" v-on:click="phone.phoneType=phoneTypes.work" href="#">{{phoneTypes.work}}</a>
+                  <a class="dropdown-item" v-on:click="companyToEdit.phoneType=phoneTypes.work" href="#">{{phoneTypes.work}}</a>
                 </div>
               </div>
-              <input type="text" :class="{'form-control': true}" v-model="phone.number">
+              <input type="text" :class="{'form-control': true}" v-model="companyToEdit.phoneNumber">
             </div>
           </div>
           <div class="form-row mt-3">
@@ -110,13 +110,13 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">{{$t('labels.street')}}</span>
                   </div>
-                  <input type="text" :class="{'form-control': true}" name="street" v-model="address.street">
+                  <input type="text" :class="{'form-control': true}" name="street" v-model="companyToEdit.addressStreet">
                 </div>
                 <div :class="{'input-group':true, 'col-md-6': true, 'pr-0': true}">
                   <div class="input-group-prepend">
                     <span class="input-group-text">{{$t('labels.houseNumber')}}</span>
                   </div>
-                  <input type="text" :class="{'form-control': true}" name="number" v-model="address.houseNumber">
+                  <input type="text" :class="{'form-control': true}" name="number" v-model="companyToEdit.addressHouseNumber">
                 </div>
               </div>
               <div class="row pl-0 pr-0 pt-3 m-0">
@@ -124,13 +124,13 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">{{$t('labels.postalCode')}}</span>
                   </div>
-                  <input type="text" :class="{'form-control': true}" name="postalCode" v-model="address.postalCode">
+                  <input type="text" :class="{'form-control': true}" name="postalCode" v-model="companyToEdit.postalCode">
                 </div>
                 <div :class="{'input-group':true, 'col-md-6': true, 'pr-0': true}">
                   <div class="input-group-prepend">
                     <span class="input-group-text">{{$t('labels.city')}}</span>
                   </div>
-                  <input type="text" :class="{'form-control': true}" name="city" v-model="address.city">
+                  <input type="text" :class="{'form-control': true}" name="city" v-model="companyToEdit.city">
                 </div>
               </div>
               <div class="row pl-0 pr-0 pt-3 m-0">

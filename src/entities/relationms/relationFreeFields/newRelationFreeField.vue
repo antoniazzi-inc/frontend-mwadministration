@@ -7,6 +7,19 @@
         <form @submit.prevent.stop="saveFreeField">
           <div class="form-row mt-3">
             <div class="col">
+              <label>{{$t('labels.freeFieldType')}}</label>
+              <select v-validate="'required'" @input="changeType" name="Free-Field-Type"
+                      :class="{'form-control': true, invalid: errors.has('Free-Field-Type')}"
+                      v-model="freeField.customFieldType">
+                <option value="TEXT">{{$t('labels.text')}}</option>
+                <option value="BOOLEAN">{{$t('labels.boolean')}}</option>
+                <option value="OPTION_LIST">{{$t('labels.optionList')}}</option>
+              </select>
+              <span class="text-danger small">{{errors.first('Free-Field-Type')}}</span>
+            </div>
+          </div>
+          <div class="form-row mt-3">
+            <div class="col">
               <multi-language-component
                 :config="multiLangConfig"
                 :value="freeField.customFieldLanguages"
@@ -45,19 +58,6 @@
                                            @onSelected="categoryUpdated"
                                            @onDelete="categoryRemoved"
               ></searchable-select-component>
-            </div>
-          </div>
-          <div class="form-row mt-3">
-            <div class="col">
-              <label>{{$t('labels.freeFieldType')}}</label>
-              <select v-validate="'required'" @input="changeType" name="Free-Field-Type"
-                      :class="{'form-control': true, invalid: errors.has('Free-Field-Type')}"
-                      v-model="freeField.customFieldType">
-                <option value="TEXT">{{$t('labels.text')}}</option>
-                <option value="BOOLEAN">{{$t('labels.boolean')}}</option>
-                <option value="OPTION_LIST">{{$t('labels.optionList')}}</option>
-              </select>
-              <span class="text-danger small">{{errors.first('Free-Field-Type')}}</span>
             </div>
           </div>
           <div class="form-row mt-3">

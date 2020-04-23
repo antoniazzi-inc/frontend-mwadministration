@@ -32,7 +32,7 @@
               <div class="mt-4">
                 <div class="form-group">
                   <label class="form-control-label">{{$t('labels.label')}}</label>
-                  <input type="text" :class="{'form-control':true, invalid: errors.has('label')}" name="label"
+                  <input ref="groupLabel" type="text" :class="{'form-control':true, invalid: errors.has('label')}" name="label"
                          v-model="group.label" v-validate="'required'"/>
                   <span class="text-danger small">{{ errors.first('label') }}</span>
                 </div>

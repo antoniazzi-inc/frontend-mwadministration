@@ -90,6 +90,7 @@ export default class NewTaxRateComponent extends mixins(CommonHelpers, Vue) {
         if (this.taxRate.id) {
           this.taxRateService.put(this.taxRate).then((resp: AxiosResponse) => {
             if (resp) {
+              this.cancel()
               this.setAlert('taxRateUpdated', 'success')
             } else {
               this.setAlert('taxRateError', 'error')
@@ -98,6 +99,7 @@ export default class NewTaxRateComponent extends mixins(CommonHelpers, Vue) {
         } else {
           this.taxRateService.post(this.taxRate).then((resp: AxiosResponse) => {
             if (resp) {
+              this.cancel()
               this.setAlert('taxRateCreated', 'success')
             } else {
               this.setAlert('taxRateError', 'error')

@@ -25,6 +25,16 @@ import FreeFieldOptionService from "@/shared/services/freeFieldOptionService";
     MultiLanguageComponent,
     ToggleSwitch,
     draggable
+  },
+  beforeRouteEnter (to, from, next) {
+    next((vm: any) => {
+      if (to.query.rel) {
+        vm.goBackTo = to.query.rel
+      }
+      if (to.params.id) {
+        vm.retrieveItem(to.params.id)
+      }
+    })
   }
 })
 export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers, Vue) {
@@ -36,6 +46,7 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
   public multiLangConfigOption: IMultiLanguageConfig;
   public searchableConfigCat: ISearchableSelectConfig;
   public freeFieldService: any;
+  public goBackTo: any;
   public freeFieldOptionService: any;
   public editMode: boolean;
   public selectedCategory: ICategoryEntity|null
@@ -50,6 +61,7 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
 
   constructor() {
     super();
+    this.goBackTo = null
     this.freeField = new CustomField()
     this.selectedOption = new CustomFieldOption()
     this.searchableConfigCat = new SearchableSelectConfig('code',
@@ -68,7 +80,26 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
     this.optionToDelete = null
     this.selectedOptionIndex = null
   }
+  public retrieveItem (id: number) {
+    this.freeFieldService.get(id).then((resp: AxiosResponse) => {
+      this.freeField = resp.data
+      const langs: any = []
+      resp.data.customFieldLanguages.forEach((lang: any) => {
+        langs.push({
+          id: lang.id,
+          name: lang.name,
+          description: lang.intro,
+          langKey: lang.langKey,
+          version: lang.version
+        })
+      })
+    }).catch((e:any) =>{
+      if(e) {
+        this.setAlert('somethingWentWrong', 'error')
+      }
 
+    })
+  }
   public addNewFreeFieldLanguage(langKey:any){
     let lang = {
       langKey: langKey,
@@ -170,8 +201,12 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
     }
   }
   public saveOptionField(e:any){
+    let self = this
     this.$validator.validateAll().then(resp=>{
       if(resp){
+        self.selectedOption.customFieldOptionLanguages && self.selectedOption.customFieldOptionLanguages[0].name ?
+          self.selectedOption.code = self.selectedOption.customFieldOptionLanguages[0].name.replace(/\s/g, '_') :
+          self.selectedOption.code = ''
         if(this.selectedOption.id){
           this.freeFieldOptionService.put(this.selectedOption).then((resp:AxiosResponse)=>{
             if(resp){
@@ -204,11 +239,13 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
     this.selectedCategory = null
   }
   public saveFreeField(){
+    let self = this
     this.$validator.validateAll().then(resp=>{
       if(resp && this.freeField.customFieldLanguages && this.freeField.customFieldLanguages.length &&
-        this.freeField.customFieldLanguages[0].name !== ''){
-        this.freeField.code = this.freeField.customFieldLanguages[0].name ?
-          this.freeField.customFieldLanguages[0].name.replace(/\s/g, '_') : ''
+        this.freeField.customFieldLanguages[0].name !== '') {
+        self.freeField.customFieldLanguages && self.freeField.customFieldLanguages[0].name ?
+          self.freeField.code = self.freeField.customFieldLanguages[0].name.replace(/\s/g, '_') :
+          self.freeField.code = ''
         this.freeField.categoryId = this.selectedCategory?.id
         if(this.freeField.id) {
           this.freeFieldService.put(this.freeField).then((resp:AxiosResponse)=>{
@@ -223,7 +260,11 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
             this.freeFieldService.post(this.freeField).then((resp:AxiosResponse)=>{
               if(resp){
                 this.setAlert('freeFieldCreated', 'success')
-                this.cancel()
+                if(this.goBackTo !== null) {
+                  this.$router.push('/relations/edit' + this.goBackTo + '?tab=freeFields')
+                } else {
+                  this.cancel()
+                }
               } else {
                 this.setAlert('freeFieldCreateError', 'error')
               }
@@ -242,6 +283,7 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
     let newOption = new CustomFieldOption()
     newOption.createdOn = moment()
     newOption.updatedOn = moment()
+
     if(this.freeField.customFieldOptions && this.freeField.customFieldOptions.length){
       newOption.customFieldIndex = this.freeField.customFieldOptions.length + 1
       this.freeField.customFieldOptions.push(newOption)

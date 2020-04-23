@@ -7,116 +7,112 @@ import {AxiosResponse} from "axios";
 import {mixins} from "vue-class-component";
 import CommonHelpers from "@/shared/commonHelpers";
 import {CustomField, ICustomField} from "@/shared/models/custom-field.model";
-import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.component";
+import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import {SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
+import {RelationCustomField} from "@/shared/models/relation-custom-field.model";
+import {Language} from "@/shared/models/language.model";
 
 
 @Component({
-  props:{
-    relation: Object
+  props: {
+    rel: Object,
+    active: Boolean
   },
   components: {
     SearchableSelectComponent
   }
 })
 export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue) {
-  refs!:{
-    removeEntityFreeField:HTMLElement
-  }
-  public customFieldService = relationFreeFieldService.getInstance()
-  public relationCustomFieldService = relationFreeFieldOptionService.getInstance()
+  refs!: {
+    removeEntityFreeField: HTMLElement
+  };
+  public customFieldService = relationFreeFieldService.getInstance();
+  public relationCustomFieldService = relationFreeFieldService.getInstance();
   public editMode = false;
   public searchString = '';
   public addNewField = false;
-  public relationCopy: IRelationEntity|null = null;
+  public relationCopy: IRelationEntity | null = null;
   public selectedOptionValue: any = null;
-  public fieldsConfig = {
-    required: false,
-    placeholder: 'selectField',
-    trackBy: 'name',
-    enableAdd: true,
-    allowEmpty: true,
-    addCaption: 'createNewField'
-  };
+  public fieldsConfig = new SearchableSelectConfig('name',
+    'labels.selectField', 'labels.createNewField', true,
+    true, true, false, false);
   public selectedFields: ICustomField[] = [];
   public allCustomFields: ICustomField[] = [];
   public itemToDelete: ICustomField = {};
-  public fieldToEdit = {
-    customField: new CustomField(),
-    value: '',
-    id: undefined,
-    updatedOn: null,
-    createdOn: null,
-    version: ''
-  };
+  public fieldToEdit = new RelationCustomField(undefined, undefined, '',
+    undefined, new CustomField(undefined, undefined, '', false,
+      false, false, undefined, undefined,
+      [new Language(undefined, undefined, this.$store.state.currentLanguage,
+        '', '', '', undefined, undefined, undefined, undefined)],
+    undefined, undefined, undefined, undefined, undefined));
   public allFields: ICustomField[] = [];
 
   @Watch('rel', {immediate: true, deep: true})
-  public fillRel(newVal:any){
+  public fillRel(newVal: any) {
     this.relationCopy = JSON.parse(JSON.stringify(newVal));
   }
+
   @Watch('selectedOptionValue', {immediate: true, deep: true})
-  public fillVal(newVal:any){
-    this.fieldToEdit.value = newVal
+  public fillVal(newVal: any) {
+    if (this.fieldToEdit && newVal) this.fieldToEdit.value = newVal
   }
 
   public created() {
     this.relationCopy = new RelationEntity();
-    this.fieldToEdit = {
-      customField: new CustomField(),
-      value: '',
-      id: undefined,
-      updatedOn: null,
-      createdOn: null,
-      version: ''
-    };
+    this.fieldToEdit = new RelationCustomField();
     this.retrieveAllCustomFields();
   }
-  public mounted(){
-    this.relationCopy = this.$props.relation;
+
+  public mounted() {
+    this.relationCopy = this.$props.rel;
     this.searchString = '';
   }
-  public retrieveAllCustomFields(){
-    let self = this;
-    let pagination = {
-      page: 0,
-      size: 10000,
-      sort: ['id,asc']
-    }
-    this.customFieldService.getAll(pagination, null).then((resp:AxiosResponse) => {
-      if (resp.data){
-        self.allCustomFields = resp.data;
-        self.getAllFreeFields(resp.data);
-      }
-    })
+
+  public retrieveAllCustomFields() {
+    this.allCustomFields = this.$store.state.lookups.freeFields;
+    this.getAllFreeFields(this.$store.state.lookups.freeFields);
   }
-  public closeModal(){
+
+  public closeModal() {
     console.log('TODO implement closeModal');
   }
-  public removeConfirmed(){
+
+  public removeConfirmed() {
     console.log('TODO implement removeConfirmed');
   }
-  public searchFreeFields(){
+
+  public searchFreeFields() {
     console.log('TODO implement searchFreeFields');
   }
-  public editRelationField(item:any){
-    if(item.customField.customFieldType === 'OPTION_LIST'){
+
+  public editRelationField(item: any) {
+    if (item.customField.customFieldType === 'OPTION_LIST') {
       this.selectedOptionValue = item.value
     }
     this.fieldToEdit = item;
     this.editMode = true;
     this.addNewField = false;
   }
-  public getAllFreeFields (allFields:any) {
+
+  @Watch('active', {immediate: true, deep: true})
+  public populate(newVal: boolean) {
+    if (newVal) {
+      this.allFields = [];
+      this.getAllFreeFields(this.$store.state.lookups.freeFields)
+    }
+  }
+
+  public getAllFreeFields(allFields: any) {
     let self = this;
-    let all:any = [];
+    let all: any = [];
     $.each(allFields, function (k, v) {
       let toSkip = false;
-      if(self.relationCopy) $.each(self.relationCopy.relationCustomFields, function (key, val:any) {
-        if(val.customField.id === v.id){
+      if (self.relationCopy) $.each(self.relationCopy.relationCustomFields, function (key, val: any) {
+        if (val.customField.id === v.id) {
           toSkip = true;
         }
       });
-      if(!toSkip){
+      if (!toSkip) {
         all.push({
           code: v.code,
           customFieldLanguages: v.customFieldLanguages,
@@ -130,151 +126,126 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
           administrationId: v.administrationId,
           userEditable: v.userEditable,
           userVisible: v.userVisible,
-          name:  v.customFieldLanguages && v.customFieldLanguages.length > 0 ? v.customFieldLanguages[0].name : ''
+          name: v.customFieldLanguages && v.customFieldLanguages.length > 0 ? v.customFieldLanguages[0].name : ''
         });
       }
     });
-    this.allFields = all;
+    Vue.nextTick(function () {
+      self.allFields = all;
+    })
   }
-  public deleteRelationField(item:any){
-    $(this.$refs.removeEntityFreeField).show();
+
+  public deleteRelationField(item: any) {
+    //@ts-ignore
+    $(this.$refs.deleteModal).modal('show');
     this.itemToDelete = item;
   }
-  public removeField(){
+
+  public removeField() {
     let self = this;
-    if(this.itemToDelete.id) this.relationCustomFieldService.delete(this.itemToDelete.id).then((resp:AxiosResponse)=>{
-      let index = null;
-      if(self.relationCopy)
-      $.each(self.relationCopy.relationCustomFields, function (k, v:any) {
-        if(v.id === self.itemToDelete.id){
-          index = k;
-        }
-      });
-      if(index !== null && self.relationCopy && self.relationCopy.relationCustomFields){
-        self.relationCopy.relationCustomFields.splice(index, 1);
-      }
-      this.setAlert(this.$t('toastMessages.customFieldDeleted'), 'success')
+    if (this.itemToDelete.id) this.relationCustomFieldService.delete(this.itemToDelete.id).then((resp: AxiosResponse) => {
+      this.$emit('updateRel');
+      this.setAlert(this.$t('toastMessages.customFieldDeleted'), 'success');
       this.closeDialog();
-      this.getAllFreeFields(this.allCustomFields);
+      this.getAllFreeFields(this.$store.state.lookups.freeFields);
     });
   }
-  public closeDialog(){
-    (<any>this.$refs.removeEntityFreeField).hide();
+
+  public closeDialog() {
+    //@ts-ignore
+    $(this.$refs.deleteModal).modal('hide');
     this.itemToDelete = {};
     this.$emit('retrieveRelation', this.relationCopy);
   }
-  public getClassName(type:any){
+
+  public getClassName(type: any) {
     switch (type) {
       case 'OPTION_LIST':
         return 'fa fa-filter';
       case 'BOOLEAN':
-        return 'fab fa-nintendo-switch';
+        return 'fa fa-toggle-on';
       case 'TEXT':
         return 'fa fa-font';
     }
   }
-  public getName(langs:any){
+
+  public getName(langs: any) {
     if (!langs) return '';
     let lang = '';
     let self = this;
     $.each(langs, function (k, v) {
-      if(v.langKey === self.$store.state.currentLanguage){
+      if (v.langKey === self.$store.state.currentLanguage) {
         lang = v.name;
       }
     });
-    if(lang !== ''){
+    if (lang !== '') {
       return lang;
-    }else{
+    } else {
       return langs[0] ? langs[0].name : '';
     }
   }
-  public newField(){
+
+  public newField() {
     this.editMode = true;
     this.addNewField = true;
-    this.getAllFreeFields(this.allCustomFields);
+    this.getAllFreeFields(this.$store.state.lookups.freeFields);
   }
-  public navigateToFieds(){
-    if(this.relationCopy) this.$router.push('/entity/custom-field/new/?rel=' + this.relationCopy.id);
+
+  public navigateToFieds() {
+    if (this.relationCopy) this.$router.push('/relations-free-fields/new?tab=' + this.relationCopy.id);
   }
-  public addField(field:any){
-    this.fieldToEdit = {
-      customField: field,
-      value: field.value,
-      id: undefined,
-      createdOn: null,
-      updatedOn: null,
-      version: '',
-    };
+
+  public addField(field: any) {
+    if (field) {
+      this.fieldToEdit = new RelationCustomField();
+    } else {
+      this.fieldToEdit = new RelationCustomField()
+    }
     this.addNewField = true;
     this.editMode = true;
-    this.getAllFreeFields(this.allCustomFields);
+    this.getAllFreeFields(this.$store.state.lookups.freeFields);
   }
-  public saveFreeField(){
+
+  public saveFreeField() {
     let self = this;
-    if (this.relationCopy){
-    let dto = {
-      "customField": {
-        "id": this.fieldToEdit.customField.id,
-        "administrationId": this.relationCopy.administrationId,
-        "code": this.fieldToEdit.customField.code,
-        "userVisible": this.fieldToEdit.customField.userVisible,
-        "userEditable": this.fieldToEdit.customField.userEditable,
-        "gdprSpecialField": this.fieldToEdit.customField.gdprSpecialField,
-        "customFieldType": this.fieldToEdit.customField.customFieldType,
-        "createdOn": this.fieldToEdit.customField.createdOn,
-        "updatedOn": this.fieldToEdit.customField.updatedOn,
-        "version": this.fieldToEdit.customField.version,
-        "customFieldLanguages": this.fieldToEdit.customField.customFieldLanguages,
-        "customFieldOptions": this.fieldToEdit.customField.customFieldOptions
-      },
-      "relation": {
-        "id": this.relationCopy.id,
-        "version": this.relationCopy.version
-      },
-      "value": this.fieldToEdit.value
-    };
-    if(this.fieldToEdit.customField.customFieldType === 'OPTION_LIST'){
-      dto.value = this.selectedOptionValue;
-    }
-    if(this.fieldToEdit.id){
-      this.relationCustomFieldService.put(dto).then((resp:AxiosResponse)=>{
-        let index = null;
-        if(self.relationCopy)
-        $.each(self.relationCopy.relationCustomFields, function (k, v:any) {
-          if(v.id === resp.data.id){
-            index = k;
+    if (this.relationCopy) {
+      this.fieldToEdit.relation = {id:this.relationCopy.id, version: this.relationCopy.version}
+      if (this.fieldToEdit && this.fieldToEdit.customField && this.fieldToEdit.customField.customFieldType === 'OPTION_LIST') {
+        this.fieldToEdit.value = this.selectedOptionValue;
+      }
+      if (this.fieldToEdit.id) {
+        this.relationCustomFieldService.put(this.fieldToEdit).then((resp: AxiosResponse) => {
+          let index = null;
+          if (self.relationCopy)
+            $.each(self.relationCopy.relationCustomFields, function (k, v: any) {
+              if (v.id === resp.data.id) {
+                index = k;
+              }
+            });
+          if (index !== null && self.relationCopy && self.relationCopy.relationCustomFields) {
+            self.relationCopy.relationCustomFields[index] = resp.data;
           }
-        });
-        if(index !== null && self.relationCopy && self.relationCopy.relationCustomFields){
-          self.relationCopy.relationCustomFields[index] = resp.data;
-        }
-        this.setAlert(this.$t('toastMessages.relationCustomFieldUpdated'), 'success')
-        this.cancelFreeField();
-        self.$emit('retrieveRelation', self.relationCopy);
-      })
-    }else{
-      this.relationCustomFieldService.post(dto).then((resp:AxiosResponse)=>{
-        if(self.relationCopy && self.relationCopy.relationCustomFields) self.relationCopy.relationCustomFields.push(resp.data);
-        // @ts-ignore
-        this.setAlert(this.$t('toastMessages.relationCustomFieldCreated'), 'success')
-        this.cancelFreeField();
-        self.$emit('retrieveRelation', self.relationCopy);
-      })
-    }
+          this.setAlert(this.$t('toastMessages.relationCustomFieldUpdated'), 'success');
+          this.cancelFreeField();
+          self.$emit('retrieveRelation', self.relationCopy);
+        })
+      } else {
+        this.relationCustomFieldService.post(this.fieldToEdit).then((resp: AxiosResponse) => {
+          if (self.relationCopy && self.relationCopy.relationCustomFields) self.relationCopy.relationCustomFields.push(resp.data);
+          // @ts-ignore
+          this.setAlert(this.$t('toastMessages.relationCustomFieldCreated'), 'success');
+          this.cancelFreeField();
+          self.$emit('retrieveRelation', self.relationCopy);
+        })
+      }
     }
 
   }
-  public cancelFreeField(){
+
+  public cancelFreeField() {
     this.editMode = false;
     this.addNewField = false;
-    this.fieldToEdit = {
-      customField: new CustomField(),
-      value: '',
-      id: undefined,
-      updatedOn: null,
-      createdOn: null,
-      version: ''
-    };
+    this.fieldToEdit = new RelationCustomField();
     this.$emit('retrieveRelation', this.relationCopy);
   }
 }

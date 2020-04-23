@@ -50,8 +50,7 @@ export default class NewRelationComponent extends mixins(Vue, CommonHelpers) {
     if (this.relationTags) {
       this.relationTags.forEach(item => {
         tags.push({
-          id: item.id,
-          version: item.version
+          tagId: item.id,
         })
       })
     }

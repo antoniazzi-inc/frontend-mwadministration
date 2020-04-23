@@ -179,6 +179,7 @@ export default class NewHelpMaterialComponent extends mixins(CommonHelpers, Vue)
         if (this.helpContent.id) {
           this.helpMaterialService.put(this.helpContent).then((resp: AxiosResponse) => {
             if (resp) {
+              this.cancel()
               this.setAlert('helpMaterialUpdated', 'success')
             } else {
               this.setAlert('helpMaterialError', 'error')
@@ -187,6 +188,7 @@ export default class NewHelpMaterialComponent extends mixins(CommonHelpers, Vue)
         } else {
           this.helpMaterialService.post(this.helpContent).then((resp: AxiosResponse) => {
             if (resp) {
+              this.cancel()
               this.setAlert('helpMaterialCreated', 'success')
             } else {
               this.setAlert('helpMaterialError', 'error')

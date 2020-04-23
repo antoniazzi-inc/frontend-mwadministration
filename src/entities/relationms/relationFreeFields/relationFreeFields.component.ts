@@ -6,6 +6,7 @@ import {AxiosResponse} from "axios";
 import {mixins} from "vue-class-component";
 import CommonHelpers from "@/shared/commonHelpers";
 import SimpleSearchComponent from "@/components/simpleSearch/simpleSearch.vue";
+import freeFieldService from "@/shared/services/freeFieldService";
 
 @Component({
   components: {
@@ -18,13 +19,14 @@ export default class RelationFreeFieldsComponent extends mixins(CommonHelpers, V
   public relationFreeFieldService: any
 constructor() {
   super();
-  this.relationFreeFieldService = RelationFreeFieldService.getInstance()
+  this.relationFreeFieldService = freeFieldService.getInstance()
 }
+
   public searchFreeField(q: any) {
 
   }
   public editFreeField(field: any) {
-    this.$router.push('/relations-free-fields/new')
+    this.$router.push('/relations-free-fields/new/' + field.id)
   }
   public deleteFreeField(field: any) {
     if(field && field.id) {

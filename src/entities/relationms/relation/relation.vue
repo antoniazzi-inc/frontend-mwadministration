@@ -15,7 +15,7 @@
       <div class="col-md-9">
         <PaginationTableComponent
           :ref="'paginationTable'"
-          :active="true"
+          :active="active"
           :table="'relation'"
           :noDataLabel="'labels.noRelations'"
           @onEdit="editRelation"

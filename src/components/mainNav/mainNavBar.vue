@@ -122,7 +122,7 @@
                 <div class="font-weight-bold ml-2">{{getUserName()}}</div>
                 <div class="small">{{getUserRole()}}</div>
               </div>
-            <router-link to="" data-toggle="modal" data-target="#userProfileModal" class="dropdown-item child-link">
+            <router-link to="" data-toggle="modal" @click.native="loadUser" data-target="#userProfileModal" class="dropdown-item child-link">
               <div class="row">
                 <div class="col-md-2 ml-2">
                   <i class="fas fa-user-tie"/>
@@ -194,23 +194,21 @@
               <form @submit.prevent="saveUserProfile()">
                 <div class="form-body" v-if="user.relationProfile">
                   <div class="form-group">
-                    <select class="form-control" @change="changeTitle">
-                      <option></option>
-                      <option v-for="(title, ind) in getTitles()" :value="title" :key="ind">{{title}}</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
                     <div class="row">
-                      <div class="col-md-4">
-                        <label for="firstName" v-html="$t('labels.firstName')"></label><span class="text-danger">*</span>
+                      <div class="col-md-2">
+                        <label for="firstName" v-html="$t('labels.title')"></label>
+                        <input type="text" class="form-control" id="title" v-model="user.relationProfile.title" />
+                      </div>
+                      <div class="col-md-3">
+                        <label for="firstName" v-html="$t('labels.firstName')"></label>
                         <input type="text" class="form-control" id="firstName" v-model="user.relationProfile.firstName" />
                       </div>
-                      <div class="col-md-2">
+                      <div class="col-md-3">
                         <label for="firstName" v-html="$t('labels.middleName')"></label>
                         <input type="text" class="form-control" id="middleName" v-model="user.relationProfile.middleName" />
                       </div>
-                      <div class="col-md-6">
-                        <label for="firstName" v-html="$t('labels.lastName')"></label><span class="text-danger">*</span>
+                      <div class="col-md-4">
+                        <label for="firstName" v-html="$t('labels.lastName')"></label>
                         <input type="text" class="form-control" id="lastName" v-model="user.relationProfile.lastName" />
                       </div>
                     </div>
@@ -218,8 +216,7 @@
                   <div class="form-group">
                     <label for="birthdate" v-html="$t('labels.birthDate')"></label>
                     <div class="date-input">
-                      <flat-pickr :config="dateConfig" class="single-daterange form-control"
-                                  id="birthdate" v-model="user.relationProfile.birthDate"></flat-pickr>
+                      <flat-pickr :config="dateConfig" class="single-daterange form-control" id="birthdate" v-model="birthDate"/>
                     </div>
                   </div>
                   <div class="form-group">
@@ -233,11 +230,13 @@
                     </span>
                     <div class="input-group in-tab-pane" v-if="$store.state.lookups.timeZones
                     && $store.state.lookups.timeZones.length>0">
-                      <select class="form-control" @change="changeTimeZone">
-                        <option v-for="(timezone, ind) in timeZones" :key="ind" :value="timezone.id">
-                          {{timezone.code}}
-                        </option>
-                      </select>
+                      <searchable-select-component :config="searchableConfig"
+                                                   :options="$store.state.lookups.timeZones"
+                                                   :value="selectedTimeZone"
+                                                   @onChange="changeTimeZone"
+                                                   @onSelected="changeTimeZone"
+                                                   @onDelete="removeTimeZone"
+                      ></searchable-select-component>
                     </div>
                   </div>
                   <div class="form-group">
