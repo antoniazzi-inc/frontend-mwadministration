@@ -129,8 +129,11 @@ export default class PaymentMethodsComponent extends mixins(Vue, CommonHelpers) 
     this.paymentMethod = new PaymentMethod()
   }
 
-  public searchPaymentMethod (q: any) {
-
+  public searchPaymentMethod (query: any) {
+    let fields:string[] = ['paymentMethodLanguages.name']
+    let q:string = this.makeSimpleSearchQuery(fields ,query)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/administrationms/api/payment-methods', undefined, q);
   }
 
   public save () {

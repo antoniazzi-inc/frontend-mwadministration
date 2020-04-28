@@ -34,7 +34,7 @@ import NewAdministrationComponent from '@/entities/administrationms/administrati
 import NotFoundComponent from '@/entities/notFound/notFound.vue'
 import NewRelationComponent from '@/entities/relationms/relation/newRelation/newRelation.vue'
 import EditRelationComponent from '@/entities/relationms/relation/editRelation/editRelation.vue'
-import NewRelationFreeFieldsComponent from "@/entities/relationms/relationFreeFields/newRelationFreeField.vue";
+import NewRelationFreeFieldsComponent from '@/entities/relationms/relationFreeFields/newRelationFreeField.vue'
 
 Vue.use(VueRouter)
 
@@ -68,9 +68,19 @@ const routes = [
     name: 'AccountSettings',
     component: AccountAndSettingsComponent
   }, {
-    path: '/account/settings/new-user',
+    path: '/account/user/new-user',
     name: 'NewUserAccount',
     component: NewUserComponent
+  }, {
+    path: '/account/user/edit-user/:id',
+    name: 'EditUserAccount',
+    component: NewUserComponent,
+    params: { id: null }
+  }, {
+    path: '/account/settings/edit-role/:id',
+    name: 'EditRoleComponent',
+    component: NewRoleComponent,
+    params: { id: null }
   }, {
     path: '/account/settings/new-role',
     name: 'NewUserRole',
@@ -108,15 +118,15 @@ const routes = [
     path: '/relations-free-fields',
     name: 'RelationsFreeFields',
     component: RelationFreeFieldsComponent
-  },{
+  }, {
     path: '/relations-free-fields/new',
     name: 'NewRelationsFreeFields',
-    component: NewRelationFreeFieldsComponent,
-  },{
+    component: NewRelationFreeFieldsComponent
+  }, {
     path: '/relations-free-fields/new/:id',
     name: 'EditRelationsFreeFields',
     component: NewRelationFreeFieldsComponent,
-    params: {id: null}
+    params: { id: null }
   }, {
     path: '/relations-reporting',
     name: 'RelationsReporting',

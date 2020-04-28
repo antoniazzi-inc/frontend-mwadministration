@@ -5,7 +5,7 @@
         <div class="pi-controls">
           <i class="fa fa-edit text-warning" @click="editContact(item)"></i>
           <i class="fa fa-trash-alt ml-2 text-danger" data-toggle="modal"
-             data-target="#deleteModal" @click="deleteContact(item)"></i>
+             data-target="#deleteModalContactHistory" @click="deleteContact(item)"></i>
         </div>
         <div class="pi-body">
           <div class="avatar"><i style="font-size: 2.5rem" :class="getContactAvatar(item, index)"></i></div>
@@ -20,7 +20,7 @@
           <div class="extra-info">{{$t('labels.updatedOn')}}: {{item.updatedOn | formatDisplayDateTime}}</div>
         </div>
       </div>
-      <div class="modal" data-backdrop="static" data-keyboard="false" id="deleteModal" tabindex="-1" role="dialog" ref="deleteModal">
+      <div class="modal" data-backdrop="static" data-keyboard="false" id="deleteModalContactHistory" tabindex="-1" role="dialog" ref="deleteModalContactHistory">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -65,7 +65,7 @@
           </div>
           <div class="buttons-w text-right mb-4">
             <button type="button" class="btn btn-outline-primary" @click.prevent="cancelContact">{{$t('buttons.cancel')}}</button>
-            <button type="button" class="btn btn-primary" @click.prevent="saveContact">{{$t('buttons.submit')}}</button>
+            <button type="button" class="btn btn-primary ml-2" @click.prevent="saveContact">{{$t('buttons.submit')}}</button>
           </div>
         </form>
       </div>

@@ -1,5 +1,28 @@
 <template>
   <div class="p-3">
+    <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteModalCompany'" tabindex="-1" role="dialog" ref="deleteModalCompany">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>{{$t('labels.confirmDelete')}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="mt-4">
+              <h5>{{$t('labels.areYouSureToDelete')}}</h5>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="companyRemoveConfirmed">
+              {{$t('buttons.confirm')}}
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row" v-if="companies.length && !editMode && !addNewCompany">
       <div class="col-md-6">
             <div class="col-md-12 mb-4" v-for="(item, index) in companies" :key="index">
@@ -10,7 +33,8 @@
                       <div class="avatar"><i style="font-size: 2rem;" class="fas fa-building"></i></div>
                       <div class="st-meta">
                         <i class="fas fa-edit text-warning" @click="editCompany(item, index)"></i>
-                        <div class="fas fa-trash-alt text-danger ml-2" @click="deleteCompany(item)"></div>
+                        <div class="fas fa-trash-alt text-danger ml-2" data-toggle="modal"
+                             data-target="#deleteModalCompany" @click="deleteCompany(item)"></div>
                       </div>
                       <div class="ticket-content">
                         <h6 class="ticket-title">

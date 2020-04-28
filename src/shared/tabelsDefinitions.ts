@@ -142,10 +142,10 @@ export const group = {
       type: null,
       authorities: ['*'],
       sort: false,
-      method: function (item:any) {
+      method: function (item: any) {
         let name = ''
-        Store.state.lookups.categories.forEach((cat:any)=>{
-          if(cat.id === item.categoryId){
+        Store.state.lookups.categories.forEach((cat: any) => {
+          if (cat.id === item.categoryId) {
             name = cat.code
           }
         })
@@ -283,7 +283,7 @@ export const roles = {
 }
 export const users = {
   actions: {
-    copy: true,
+    copy: false,
     edit: true,
     delete: true,
     info: false
@@ -314,11 +314,18 @@ export const users = {
       type: '',
       authorities: ['*'],
       sort: false,
-      method: null
+      method: function (newVal: any) {
+        if (newVal && newVal.relationProfile) {
+          const fName = newVal.relationProfile.firstName ? newVal.relationProfile.firstName : ''
+          const mName = newVal.relationProfile.middleName ? newVal.relationProfile.middleName : ''
+          const lName = newVal.relationProfile.lastName ? newVal.relationProfile.lastName : ''
+          return `${fName} ${mName} ${lName}`
+        }
+      }
     },
     {
-      name: 'labels.login',
-      field: 'login',
+      name: 'labels.username',
+      field: 'username',
       subField: null,
       type: '',
       authorities: ['*'],
@@ -326,10 +333,10 @@ export const users = {
       method: null
     },
     {
-      name: 'labels.activated',
-      field: 'activated',
+      name: 'labels.enabled',
+      field: 'enabled',
       subField: null,
-      type: '',
+      type: 'boolean',
       authorities: ['*'],
       sort: false,
       method: null
@@ -350,7 +357,19 @@ export const users = {
       type: '',
       authorities: ['*'],
       sort: false,
-      method: null
+      method: function (newVal: any) {
+        let result = ''
+        if (newVal && newVal.roles) {
+          newVal.roles.forEach((role: any, ind: number) => {
+            if (ind < newVal.roles?.length - 1) {
+              result += role.name + ', '
+            } else {
+              result += role.name
+            }
+          })
+        }
+        return result
+      }
     }
   ]
 }
@@ -1200,7 +1219,7 @@ export const customField = {
       sort: false,
       method: null
 
-    },{
+    }, {
       name: 'labels.id',
       field: 'id',
       authorities: ['*'],
@@ -1437,9 +1456,9 @@ export const relation = {
       method: function (item: any) {
         const result: any = []
         if (item.relationTags && item.relationTags.length > 0) {
-            Store.state.lookups.tags.forEach((localTag:any) => {
-          item.relationTags.forEach((tag: any) => {
-              if(localTag.id === tag.tagId) result.push(localTag.code)
+          Store.state.lookups.tags.forEach((localTag: any) => {
+            item.relationTags.forEach((tag: any) => {
+              if (localTag.id === tag.tagId) result.push(localTag.code)
             })
           })
           return result.join(', ')
@@ -1551,9 +1570,9 @@ export const columnsVisibility = {
   },
   users: {
     id: true,
-    login: true,
+    username: true,
     name: true,
-    activated: true,
+    enabled: true,
     lastLogin: true,
     roles: true,
     itemsPerPage: 20

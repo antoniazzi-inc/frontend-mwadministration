@@ -22,8 +22,11 @@ constructor() {
   this.relationFreeFieldService = freeFieldService.getInstance()
 }
 
-  public searchFreeField(q: any) {
-
+  public searchFreeField(query: any) {
+    let fields:string[] = ['code']
+    let q:string = this.makeSimpleSearchQuery(fields ,query)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/relationms/api/custom-fields', undefined, q);
   }
   public editFreeField(field: any) {
     this.$router.push('/relations-free-fields/new/' + field.id)

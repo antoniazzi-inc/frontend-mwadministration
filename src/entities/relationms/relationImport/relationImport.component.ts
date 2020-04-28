@@ -103,8 +103,6 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     let dto:any = [];
     let self = this;
     self.step = 4;
-
-
     let payload:any = {};
     if (self.existingGroup !== 0) {
       payload.existingGroup = self.existingGroup;
@@ -123,6 +121,11 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     // build list for server and add 'exists' flag to each record, so at serverside we know what to do
     payload.relations = [];
     self.datafordb.forEach(function (rel) {
+      if(rel.email){
+        if(self.existingEmailsList.includes(rel.email)) {
+          return
+        }
+      }
       let row:any = [];
         let relProfile:any = new RelationProfile(undefined, undefined, '', '', '', '', '',
           '', '', 0, '', '', false, 0, 0, undefined, undefined, undefined, undefined)
@@ -463,7 +466,6 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                   if (obj === obj2.value) {
                     let foundMapping = self.mappings.find(x => x.index === objindex);
                     foundMapping.dbfield = obj2.value;
-                    console.log(foundMapping)
                   }
                 })
               })

@@ -64,7 +64,12 @@ export default class RelationGroupsComponent extends mixins(CommonHelpers,Vue) {
     this.doFocus()
   }
 
-  public searchGroups(query:any){}
+  public searchGroups(query:any){
+    let fields:string[] = ['label']
+    let q:string = this.makeSimpleSearchQuery(fields ,query)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/relationms/api/relation-groups', undefined, q);
+  }
 
   public editGroup(group:any){
     this.openModal()

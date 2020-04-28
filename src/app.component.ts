@@ -21,6 +21,7 @@ import Sockets from '@/shared/sockets'
 import RelationGroupService from "@/shared/services/relationGroupService";
 import FreeFieldService from "@/shared/services/freeFieldService";
 import RoleService from "@/shared/services/roleService";
+import PermissionsService from "@/shared/services/permissionService";
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -31,6 +32,7 @@ Vue.use(VueOnToast, {})
   })
 export default class App extends mixins(Vue, CommonHelpers) {
     roleService = RoleService.getInstance();
+    permissionsService = PermissionsService.getInstance();
     accountService = RelationService.getInstance();
     categoryService = CategoryService.getInstance();
     timeZoneService = TimeZoneService.getInstance();
@@ -41,8 +43,10 @@ export default class App extends mixins(Vue, CommonHelpers) {
     taxRateService = TaxRateService.getInstance();
     companyService = CompanyService.getInstance();
     businessService = BusinessService.getInstance();
+    counter = 0;
     sockets = new Sockets({ url: 'http://localhost:18081/' });
     loading = true;
+    isReady = true;
     mainMenu = MenuDefinitions;
     customConfig = {
       timeout: 2500,
@@ -70,34 +74,50 @@ export default class App extends mixins(Vue, CommonHelpers) {
         size: 100000,
         sort: 'id,asc'
       }
+      if(!this.$store.state.authenticated) {return}
+      this.isReady = false
       this.taxRateService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('taxRates', resp.data.content)
       })
       this.countryService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('allCountries', resp.data.content)
       })
       this.timeZoneService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('timeZones', resp.data.content)
       })
       this.categoryService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('categories', resp.data.content)
       })
       this.tagService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('tags', resp.data.content)
       })
       this.companyService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('companies', resp.data.content)
       })
       this.relationGroupService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('groups', resp.data.content)
       })
       this.customFieldService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('freeFields', resp.data.content)
       })
       this.roleService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         this.$store.commit('roles', resp.data.content)
       })
+      this.permissionsService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        this.$store.commit('permissions', resp.data.content)
+      })
       this.businessService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
         if (resp && resp.data.content.length > 0) {
           this.$store.commit('administrationBusiness', resp.data.content)
         } else {
@@ -115,6 +135,19 @@ export default class App extends mixins(Vue, CommonHelpers) {
       })
     }
 
+    @Watch('$store.state.authenticated', { immediate: true, deep: true })
+    public getLookups(newVal:any){
+      if(newVal) {
+        this.populateLookups()
+      }
+    }
+
+    @Watch('counter', { immediate: true, deep: true })
+    public changeReady(newVal:any){
+      if(newVal > 10) {
+        this.isReady = true
+      }
+    }
     @Watch('$route', { immediate: true, deep: true })
     checkRouteAuthority (to: any, from: any, next: any) {
       const self = this

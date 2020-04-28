@@ -48,8 +48,9 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     this.dateConfig = {
       wrap: false,
       altInput: false,
-      dateFormat: 'd-m-Y',
-      maxDate: moment().subtract(18, 'year').format('d-m-YYYY')
+      dateFormat: 'Y-m-d',
+      altFormat: 'Y-M-d',
+      maxDate: moment().subtract(18, 'years').format('YYYY-M-D')
     }
   }
 
@@ -72,7 +73,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     if(newVal.relationProfile && newVal.relationProfile.birthDate) {
       let self = this;
       Vue.nextTick(function () {
-        self.birthDate = moment(self.relationProfile.birthDate).format('DD-MM-YYYY')
+        self.birthDate = self.relationProfile.birthDate
       })
     }
   }
@@ -116,9 +117,8 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
       if (result) {
         let dto = this.relation
         if (dto && dto.relationProfile && this.birthDate) {
-          dto.relationProfile.birthDate = moment(this.birthDate)
+          dto.relationProfile.birthDate = moment(this.birthDate).add(1, 'days').format('YYYY-MM-DD')
         }
-        console.log(dto.relationProfile?.birthDate)
         if (self.relationCategory && self.relationCategory.id) {
          if(dto && dto.relationProfile) dto.relationProfile.categoryId = self.relationCategory.id
         }

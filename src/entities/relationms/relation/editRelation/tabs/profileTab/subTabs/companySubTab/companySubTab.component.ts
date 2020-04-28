@@ -22,12 +22,16 @@ import RelationService from "@/shared/services/relationService";
   }
 })
 export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
+  $refs!:{
+    deleteModalCompany: HTMLElement
+  }
   public currentTab: string
   public editMode: boolean
   public phoneTypes: any
   public addNewCompany: boolean
   public companyService: any
   public relationService: any
+  public companyToDelete: any
   public administrationBusiness: any
   public searchableConfigCountry: ISearchableSelectConfig
   public searchableConfigCompany: ISearchableSelectConfig
@@ -45,6 +49,7 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
     this.companies = []
     this.administrationBusiness = null
     this.companyToEdit = new Company()
+    this.companyToDelete = null
     this.phoneTypes = {
       home: PhoneType.HOME,
       work: PhoneType.WORK,
@@ -71,6 +76,8 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
     }
     if (rel.companies && rel.companies.length) {
       this.companies = rel.companies
+    } else {
+      this.companies = []
     }
   }
 
@@ -80,16 +87,45 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
     this.addNewCompany = true
   }
 
-  public deleteCompany (company: ICompany) {}
+  public deleteCompany (company: ICompany) {
+    this.companyToDelete = company
+  }
 
   public companyChanged (company: ICompany) {
     this.companyToEdit = company
   }
 
-  public companyRemoved (company: ICompany) {
+  public async companyRemoveConfirmed () {
+    let self = this
+    if(this.companyToDelete.id && this.relationCopy.companies) {
+      let companies = JSON.parse(JSON.stringify(this.relationCopy.companies))
+      this.relationCopy.companies = undefined
+      this.closeDeleteModal()
+     let newComp = await companies.filter(function(value:any, index:any, arr:any) {
+        return value.id !== self.companyToDelete.id
+      })
+      if(newComp){
+        this.relationCopy.companies = newComp
+      } else {
+        this.relationCopy.companies = undefined
+      }
+        this.relationService.put(this.relationCopy).then((resp:AxiosResponse)=>{
+          if(resp){
+            this.setAlert('companyRemoved', 'success')
+            this.$emit('updateRel')
+          } else {
+            this.setAlert('companyRemoveError', 'error')
+          }
+        })
+    }
+  }
+  public companyRemoved () {
     this.companyToEdit = new Company()
   }
-
+  public closeDeleteModal () {
+    // @ts-ignore
+    $(this.$refs.deleteModalCompany).modal('hide')
+  }
   public getCompanyAddress (company: ICompany) {
     let result: any = ''
     if (company) {

@@ -3,6 +3,9 @@ import PaginationTableComponent from '@/components/paginationTable/paginationTab
 import { IRole, Role } from '@/shared/models/role.model'
 import RelationService from '@/shared/services/relationService'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
+import {AxiosResponse} from "axios";
+import {mixins} from "vue-class-component";
+import CommonHelpers from "@/shared/commonHelpers";
 @Component({
   props: {
     active: Boolean
@@ -12,7 +15,7 @@ import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
     'simple-search': SimpleSearchComponent
   }
 })
-export default class UsersComponent extends Vue {
+export default class UsersComponent extends mixins(CommonHelpers, Vue) {
   refs!: {
     paginationTable: PaginationTableComponent;
   }
@@ -35,19 +38,30 @@ export default class UsersComponent extends Vue {
     this.role = new Role()
   }
 
-  public searchUser (q: string) {
-
+  public searchUser (query: string) {
+    let fields:string[] = ['name', 'code']
+    let q:string = this.makeSimpleSearchQuery(fields ,query, 'OR')
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/relationms/api/roles', undefined, q);
   }
 
-  public editUser () {
-
+  public editUser (user:any) {
+    this.$router.push('/account/user/edit-user/' + user.id)
   }
 
   public copyUser () {
 
   }
 
-  public deleteUser () {
-
+  public deleteUser (user:any) {
+    this.relationService.delete(user.id).then((resp:AxiosResponse)=>{
+        //@ts-ignore
+        this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, '');
+      if(resp){
+        this.setAlert('userDeleted', 'success')
+      } else {
+        this.setAlert('userDeletedError', 'error')
+      }
+    })
   }
 }

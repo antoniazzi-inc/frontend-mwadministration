@@ -1,7 +1,7 @@
-import {Vue, Component} from 'vue-property-decorator'
-import {ILanguage, Language} from '@/shared/models/language.model'
-import {columnsVisibility} from '@/shared/tabelsDefinitions'
-import {Country} from "@/shared/models/country.model";
+import { Vue, Component } from 'vue-property-decorator'
+import { ILanguage, Language } from '@/shared/models/language.model'
+import { columnsVisibility } from '@/shared/tabelsDefinitions'
+import { Country } from '@/shared/models/country.model'
 
 @Component
 export default class CommonHelpers extends Vue {
@@ -11,15 +11,15 @@ export default class CommonHelpers extends Vue {
   * description: Returns boolean depending on the list of authorities and the user authorities
   * Author: Nick Dam
   */
-  public hasAuthority(authority: string | [], table?: any) {
-    let auth: string[] = [];
-    let result = false;
+  public hasAuthority (authority: string | [], table?: any) {
+    let auth: string[] = []
+    let result = false
     if (typeof authority === 'string') {
       auth = [authority]
     } else {
       auth = authority
     }
-    const userAuths: any = [];
+    const userAuths: any = []
     if (this.$store.state.userIdentity) {
       this.$store.state.userIdentity.roles.forEach((auth: any) => {
         userAuths.push(auth.code)
@@ -43,15 +43,15 @@ export default class CommonHelpers extends Vue {
   * description: Returns object of columns visibility
   * Author: Nick Dam
   */
-  public getTableVisibilityFields(table: string) {
-    let fieldsJson: any = localStorage.getItem('tableColumns');
+  public getTableVisibilityFields (table: string) {
+    let fieldsJson: any = localStorage.getItem('tableColumns')
     if (fieldsJson) {
       fieldsJson = JSON.parse(fieldsJson)
     } else {
-      fieldsJson = columnsVisibility;
+      fieldsJson = columnsVisibility
       localStorage.setItem('tableColumns', JSON.stringify(columnsVisibility))
     }
-    if (fieldsJson && fieldsJson[table]) return fieldsJson[table];
+    if (fieldsJson && fieldsJson[table]) return fieldsJson[table]
     return null
   }
 
@@ -61,12 +61,12 @@ export default class CommonHelpers extends Vue {
   * description: Sets table column visibility
   * Author: Nick Dam
   */
-  public setTableVisibilityFields(table: string, value: any) {
-    let fieldsJson: any = localStorage.getItem('tableColumns');
+  public setTableVisibilityFields (table: string, value: any) {
+    let fieldsJson: any = localStorage.getItem('tableColumns')
     if (fieldsJson) {
       fieldsJson = JSON.parse(fieldsJson)
     }
-    fieldsJson[table] = value;
+    fieldsJson[table] = value
     localStorage.setItem('tableColumns', JSON.stringify(fieldsJson))
   }
 
@@ -76,29 +76,63 @@ export default class CommonHelpers extends Vue {
      * description: Changes column visibility depending on given column and table and set to local storage
      * Author: Nick Dam
      */
-  public changeColumnVisibility(column: any, table: string) {
-    const local: any = this.getTableVisibilityFields(table);
-    const newVal = !local[column.id];
-    local[column.id] = newVal;
+  public changeColumnVisibility (column: any, table: string) {
+    const local: any = this.getTableVisibilityFields(table)
+    const newVal = !local[column.id]
+    local[column.id] = newVal
     this.setTableVisibilityFields(table, local)
   }
 
   /*
    * Name: makeSimpleSearchQuery
-   * arg: fields -> array (searchBy), query -> search string
+   * arg: fields -> array (searchBy), query -> search string, operator -> OR/AND
    * description: Creates simple search query
    * Author: Nick Dam
    */
-  public makeSimpleSearchQuery(fields: string[], query: string) {
-    let result = '';
+  public makeSimpleSearchQuery (fields: string[], query: string, operator?: string) {
+    let result = ''
     fields.forEach((item, key) => {
       if (key < fields.length - 1) {
-        result += `${item}==*${query}*&`
+        if (operator) {
+          result += `${item}==*${query}*${operator} `
+        } else result += `${item}==*${query}*&`
       } else {
         result += `${item}==*${query}*`
       }
-    });
+    })
+    if (operator) {
+      return `(${result})`
+    }
     return result
+  }
+
+  /*
+   * Name: queryBuilder
+   * arg: queryArray -> array (),
+   * description: Creates search query
+   * Author: Nick Dam
+   */
+  public queryBuilder (queryArray: any[]) {
+    let finalQuery = ''
+    queryArray.forEach((query, index) => {
+      if (index === 0) {
+        finalQuery += '('
+      } else {
+        finalQuery += ' ('
+      }
+      query.children.forEach((children: any) => {
+        children.value = children.value.replace(/\*/g, '')
+        children.value = children.value.replace(/%/g, '')
+        const valueToSearch = children.exactSearch || children.inBetweenOperator === '=in=' || children.inBetweenOperator === '=out=' || children.inBetweenOperator === '=null=' || children.inBetweenOperator === '=empty=' ? children.value : '*' + children.value + '*'
+        finalQuery += children.key + children.inBetweenOperator + (children.inBetweenOperator === '=in=' ? ('(' + valueToSearch + ')') : valueToSearch) + (index < query.children.length - 1 ? (' ' + children.afterOperator + ' ') : '')
+      })
+      if (index === queryArray.length - 1) {
+        finalQuery += ')' + (index < queryArray.length - 1 ? query.mainOperator : '&')
+      } else {
+        finalQuery += ') ' + (index < queryArray.length - 1 ? query.mainOperator : '&')
+      }
+    })
+    return finalQuery
   }
 
   /*
@@ -107,15 +141,15 @@ export default class CommonHelpers extends Vue {
    * description: Returns a language object depending of the administration default language
    * Author: Nick Dam
    */
-  public getMultiLangName(langs: ILanguage[] | undefined | null) {
-    const self = this;
+  public getMultiLangName (langs: ILanguage[] | undefined | null) {
+    const self = this
     if (langs && langs.length > 0) {
-      let result = null;
+      let result = null
       langs.forEach(lang => {
         if (lang.langKey === self.$store.state.currentLanguage) {
           result = lang
         }
-      });
+      })
       if (result) {
         return result
       } else {
@@ -132,32 +166,33 @@ export default class CommonHelpers extends Vue {
    * description: Returns a country object
    * Author: Nick Dam
    */
-  public getCountryById(id: number) {
+  public getCountryById (id: number) {
     let result = {
       enName: ''
-    };
+    }
     this.$store.state.allCountries.forEach((country: any) => {
       if (country.id === id) {
         result = country
       }
-    });
+    })
     return result
   }
+
   /*
    * Name: getCountryByName
    * arg: name -> Country Name
    * description: Returns a country id
    * Author: Nick Dam
    */
-  public getCountryByName(name: number) {
+  public getCountryByName (name: number) {
     let result = {
       enName: ''
-    };
+    }
     this.$store.state.allCountries.forEach((country: any) => {
       if (country.enName === name) {
         result = country.id
       }
-    });
+    })
     return result
   }
 
@@ -167,15 +202,15 @@ export default class CommonHelpers extends Vue {
    * description: Returns full name of a give relation
    * Author: Nick Dam
    */
-  public getRelationFullName(relation: any) {
+  public getRelationFullName (relation: any) {
     const title = relation.relationProfile && relation.relationProfile.title
-      ? relation.relationProfile.title : '';
+      ? relation.relationProfile.title : ''
     const firstName = relation.relationProfile && relation.relationProfile.firstName
-      ? relation.relationProfile.firstName : '';
+      ? relation.relationProfile.firstName : ''
     const middleName = relation.relationProfile && relation.relationProfile.middleName
-      ? relation.relationProfile.middleName : '';
+      ? relation.relationProfile.middleName : ''
     const lastName = relation.relationProfile && relation.relationProfile.lastName
-      ? relation.relationProfile.lastName : '';
+      ? relation.relationProfile.lastName : ''
     return `${title} ${firstName} ${middleName} ${lastName} `
   }
 
@@ -186,7 +221,7 @@ export default class CommonHelpers extends Vue {
    *              if not adds http:// to the url and returns the new url
    * Author: Nick Dam
    */
-  public checkForUrlHttps(url: string) {
+  public checkForUrlHttps (url: string) {
     if (url.match('http')) {
       return url
     } else {
@@ -200,20 +235,20 @@ export default class CommonHelpers extends Vue {
    * description: Extract address from given array and returns address label and address type
    * Author: Nick Dam
    */
-  public extractAddress(addresses: any[]) {
-    let street = '';
-    let number = '';
-    let city = '';
-    let postal = '';
-    let country = '';
+  public extractAddress (addresses: any[]) {
+    let street = ''
+    let number = ''
+    let city = ''
+    let postal = ''
+    let country = ''
     if (addresses && addresses.length) {
-      street = addresses[0].street;
-      number = addresses[0].houseNumber;
-      city = addresses[0].city;
-      postal = addresses[0].postalCode;
+      street = addresses[0].street
+      number = addresses[0].houseNumber
+      city = addresses[0].city
+      postal = addresses[0].postalCode
       country = this.getCountryById(addresses[0].postalCode).enName
     }
-    return {label: `${street} ${number}, ${city} ${postal} ${country} `, type: addresses[0].addressType}
+    return { label: `${street} ${number}, ${city} ${postal} ${country} `, type: addresses[0].addressType }
   }
 
   /*
@@ -222,7 +257,7 @@ export default class CommonHelpers extends Vue {
    * description: Display toast message
    * Author: Nick Dam
    */
-  public setAlert(message: any, type: string) {
+  public setAlert (message: any, type: string) {
     // @ts-ignore
     this.$vueOnToast.pop(type, '', this.$t('toastMessages.' + message))
   }
@@ -233,8 +268,8 @@ export default class CommonHelpers extends Vue {
    * description: Preselect country
    * Author: Nick Dam
    */
-  public preselectCountry(id?: number) {
-    let country = new Country();
+  public preselectCountry (id?: number) {
+    let country = new Country()
     if (!id) {
       id = 150
     }
@@ -242,14 +277,14 @@ export default class CommonHelpers extends Vue {
       if (cntr.id === id) {
         country = cntr
       }
-    });
+    })
     return country
   }
 
   /**
    * @return list of fixed relation fields
    */
-  public relationFields() {
+  public relationFields () {
     return [
       {
         value: 'title',
@@ -321,6 +356,6 @@ export default class CommonHelpers extends Vue {
       }, {
         value: 'dnassign',
         label: this.$t('labels.doNotAssign')
-      }];
+      }]
   }
 }

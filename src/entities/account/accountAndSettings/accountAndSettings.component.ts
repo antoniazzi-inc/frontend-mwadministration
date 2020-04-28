@@ -11,6 +11,13 @@ import IntegrationsComponent from '@/entities/account/accountAndSettings/integra
     InvoicesComponent,
     RolesComponent,
     UsersComponent
+  },
+  beforeRouteEnter (to, from, next) {
+    next((vm: any) => {
+      if (to.query.tab) {
+        vm.switchTab(to.query.tab)
+      }
+    })
   }
 })
 export default class AccountAndSettingsComponent extends Vue {
@@ -19,5 +26,9 @@ export default class AccountAndSettingsComponent extends Vue {
   constructor () {
     super()
     this.currentTab = 'account'
+  }
+
+  public switchTab(tab:string) {
+    this.currentTab = tab
   }
 }

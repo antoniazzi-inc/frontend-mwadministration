@@ -22,8 +22,11 @@ export default class HelpTagComponent extends mixins(Vue, CommonHelpers) {
     this.helpTagService = HelpTagService.getInstance()
   }
 
-  public searchHelpTag (q: string) {
-
+  public searchHelpTag (query: string) {
+    let fields:string[] = ['helpTagLanguages.name']
+    let q:string = this.makeSimpleSearchQuery(fields ,query)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/administrationms/api/help-tags', undefined, q);
   }
 
   public editHelpTag (tag: any) {

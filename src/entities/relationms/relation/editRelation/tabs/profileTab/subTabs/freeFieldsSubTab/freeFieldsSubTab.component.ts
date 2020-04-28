@@ -89,7 +89,19 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
     if (item.customField.customFieldType === 'OPTION_LIST') {
       this.selectedOptionValue = item.value
     }
-    this.fieldToEdit = item;
+    if(item){
+      this.fieldToEdit = item;
+    } else {
+      this.fieldToEdit = {
+        customField: new CustomField(),
+        updatedOn: undefined,
+        createdOn: undefined,
+        value: '',
+        version: undefined,
+        id: undefined
+      }
+    }
+    this.fieldToEdit.customField = item.customField;
     this.editMode = true;
     this.addNewField = false;
   }
@@ -196,14 +208,28 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
   }
 
   public addField(field: any) {
-    if (field) {
-      this.fieldToEdit = new RelationCustomField();
-    } else {
-      this.fieldToEdit = new RelationCustomField()
+      if(field){
+        this.fieldToEdit = {
+          customField: field,
+          value: '',
+          id: undefined,
+          createdOn: undefined,
+          updatedOn: undefined,
+          version: undefined,
+        };
+      } else {
+        this.fieldToEdit = {
+          customField: new CustomField(),
+          updatedOn: undefined,
+          createdOn: undefined,
+          value: '',
+          version: undefined,
+          id: undefined
+        }
     }
-    this.addNewField = true;
-    this.editMode = true;
-    this.getAllFreeFields(this.$store.state.lookups.freeFields);
+      this.addNewField = true;
+      this.editMode = true;
+      this.getAllFreeFields(this.$store.state.lookups.freeFields);
   }
 
   public saveFreeField() {

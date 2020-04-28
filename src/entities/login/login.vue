@@ -6,7 +6,7 @@
           <img src="@/assets/images/logo-login.png"/>
           <div class="loginHolder text-left">
             <h3 class="p-3" style="color: rgb(255, 255, 255);">{{$t('labels.loginToYourAccount')}}</h3>
-            <form @submit="doLogin()">
+            <form @submit.prevent.stop="doLogin()">
               <div class="form-group">
                 <label for="accessCode">{{$t('labels.accessCode')}}</label>
                 <div class="input-group mb-3">

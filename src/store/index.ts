@@ -21,6 +21,7 @@ export default new Vuex.Store({
       taxRates: [],
       companies: [],
       roles: [],
+      permissions: [],
       administrationBusiness: []
     },
     languages: {
@@ -82,6 +83,9 @@ export default new Vuex.Store({
     },
     roles (state, newState) {
       state.lookups.roles = newState
+    },
+    permissions (state, newState) {
+      state.lookups.permissions = newState
     },
     administrationBusiness (state, newState) {
       state.lookups.administrationBusiness = newState

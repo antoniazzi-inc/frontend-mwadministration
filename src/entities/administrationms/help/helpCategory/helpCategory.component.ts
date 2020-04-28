@@ -30,7 +30,12 @@ export default class HelpCategoryComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public resetHelpCategory () {}
-  public searchHelpCategory (query: string) {}
+  public searchHelpCategory (query: string) {
+    let fields:string[] = ['helpCategoryLanguages.name']
+    let q:string = this.makeSimpleSearchQuery(fields ,query)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/administrationms/api/help-categories', undefined, q);
+  }
   public editHelpCategory (cat: any) {
     this.$router.push({ name: 'EditHelpCategory', params: { id: cat.id } })
   }

@@ -30,7 +30,7 @@ import 'trumbowyg/dist/ui/trumbowyg.css';
 })
 export default class ContactWidget extends mixins(CommonHelpers, Vue) {
   $refs!:{
-    deleteModal: HTMLElement
+    deleteModalContactHistory: HTMLElement
   }
   public contactHistoryService: any
   public editMode: boolean
@@ -125,7 +125,7 @@ constructor() {
 
   public closeModal(){
     // @ts-ignore
-    $(this.$refs.deleteModal).modal('hide')
+    $(this.$refs.deleteModalContactHistory).modal('hide')
   }
   public getContactAvatar(item:any, index:any){
     let className = '';

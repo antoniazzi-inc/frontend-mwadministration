@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div v-show="editMode" class="col-md-7">
+    <div v-if="editMode" class="col-md-7">
       <form novalidate @submit.stop.prevent="saveFreeField">
         <div class="form-group" v-if="addNewField">
           <label>{{$t('labels.select')}}</label>
@@ -55,8 +55,7 @@
           <label>{{$t('labels.name')}}</label>
           <h5 v-if="fieldToEdit.customField" class="title">{{getName(fieldToEdit.customField.customFieldLanguages)}}</h5>
         </div>
-        <div v-if="fieldToEdit.customField">
-        <div class="form-group" v-if="fieldToEdit.customField.customFieldType === 'OPTION_LIST'">
+        <div class="form-group" v-if="fieldToEdit.customField && fieldToEdit.customField.customFieldType === 'OPTION_LIST'">
           <label class="control-label">{{$t('labels.selectValue')}}</label>
           <select name="optionValue" :class="{'form-control': true, 'invalid': errors.has('optionValue') }" v-model="selectedOptionValue">
             <option :key="index" :value="fieldToEdit.customField.customFieldOptions[index].value" v-for="(item, index) in fieldToEdit.customField.customFieldOptions">
@@ -65,12 +64,12 @@
           </select>
           <span class="text-danger small">{{errors.first('optionValue')}}</span>
         </div>
-        <div class="form-group" v-if="fieldToEdit.customField.customFieldType === 'TEXT'">
+        <div class="form-group" v-if="fieldToEdit.customField && fieldToEdit.customField.customFieldType === 'TEXT'">
           <label class="control-label">{{$t('labels.enterValue')}}</label>
           <input name="value" :class="{'form-control': true, 'invalid': errors.has('value') }" type="text" v-model="fieldToEdit.value"/>
           <span class="text-danger small">{{errors.first('value')}}</span>
         </div>
-        <div class="form-group" v-if="fieldToEdit.customField.customFieldType === 'BOOLEAN'">
+        <div class="form-group" v-if="fieldToEdit.customField && fieldToEdit.customField.customFieldType === 'BOOLEAN'">
           <label class="control-label">{{$t('labels.selectValue')}}</label>
           <select name="boolean-field-type" :class="{'form-control': true, 'invalid': errors.has('boolean-field-type') }" v-model="fieldToEdit.value">
             <option value="true">{{$t('labels.yes')}}</option>
@@ -78,15 +77,11 @@
           </select>
           <span class="text-danger small">{{errors.first('boolean-field-type')}}</span>
         </div>
-        </div>
         <div class="buttons-w text-right">
           <button type="button" class="btn btn-outline-primary" @click.prevent="cancelFreeField">{{$t('buttons.cancel')}}</button>
           <button type="submit" class="btn btn-primary ml-2">{{$t('buttons.save')}}</button>
         </div>
       </form>
-    </div>
-    <div v-show="editMode" class="col-md-5">
-
     </div>
     <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteModal'" tabindex="-1" role="dialog" ref="deleteModal">
       <div class="modal-dialog" role="document">
