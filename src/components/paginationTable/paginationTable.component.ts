@@ -1,14 +1,14 @@
-import {Component, Vue, Watch} from 'vue-property-decorator'
-import {mixins} from 'vue-class-component'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import * as Tables from '@/shared/tabelsDefinitions'
 import Chrome from 'vue-color/src/components/Chrome'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationComponent from '@/components/paginationTable/pagination.vue'
-import {CustomField, CustomFieldType} from "@/shared/models/custom-field.model";
-import {Language} from "@/shared/models/language.model";
-import moment from "moment";
-import {CustomFieldOption} from "@/shared/models/custom-field-option.model";
+import { CustomField, CustomFieldType } from '@/shared/models/custom-field.model'
+import { Language } from '@/shared/models/language.model'
+import moment from 'moment'
+import { CustomFieldOption } from '@/shared/models/custom-field-option.model'
 
 @Component({
   components: {
@@ -20,6 +20,9 @@ import {CustomFieldOption} from "@/shared/models/custom-field-option.model";
     service: Object,
     active: {
       type: Boolean
+    },
+    searchQuery: {
+      type: String
     },
     table: {
       type: String
@@ -74,6 +77,9 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
           size: this.itemsPerPage,
           sort: ['id,desc']
         }
+      }
+      if (!query && this.$props.searchQuery) {
+        query = this.$props.searchQuery
       }
       this.$props.service.getAll(pagination, query).then((resp: any) => {
         this.totalItems = resp.data.totalElements

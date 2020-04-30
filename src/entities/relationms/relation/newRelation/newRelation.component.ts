@@ -50,7 +50,7 @@ export default class NewRelationComponent extends mixins(Vue, CommonHelpers) {
     if (this.relationTags) {
       this.relationTags.forEach(item => {
         tags.push({
-          tagId: item.id,
+          tagId: item.id
         })
       })
     }
@@ -66,8 +66,8 @@ export default class NewRelationComponent extends mixins(Vue, CommonHelpers) {
       item.relationProfile.categoryId = this.relationCategories?.id
       item.relationGrups = groups
       item.relationTags = tags
-      item.username = 'default_'+ Math.random()
-      item.password =  Math.random()
+      item.username = 'default_' + Math.random()
+      item.password = Math.random()
       item.tfaEnabled = false
     })
     this.relationService.createMultiple(this.relations).then((resp: AxiosResponse) => {
@@ -137,7 +137,8 @@ export default class NewRelationComponent extends mixins(Vue, CommonHelpers) {
     })
     if (index) this.relationTags.splice(index, 1)
   }
-  public goBack(){
+
+  public goBack () {
     this.$router.go(-1)
   }
 }

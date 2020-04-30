@@ -2,6 +2,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import { ILanguage, Language } from '@/shared/models/language.model'
 import { columnsVisibility } from '@/shared/tabelsDefinitions'
 import { Country } from '@/shared/models/country.model'
+import { isObject, isString } from 'util'
 
 @Component
 export default class CommonHelpers extends Vue {
@@ -135,6 +136,67 @@ export default class CommonHelpers extends Vue {
     return finalQuery
   }
 
+  public queryArrayToQueryString (queryArray: any) {
+    let finalQuery = ''
+    const logicalOperator = queryArray.operator ? queryArray.operator.toLowerCase() : queryArray.logicalOperator ? queryArray.logicalOperator.toLowerCase() : null
+    queryArray.children.forEach((obj: any, ind: any) => {
+      console.log(obj.type)
+      let currentQuery = ''
+      if (obj.type === 'rule') {
+        let operator = ''
+        let condition = ''
+        let value = ''
+        if (obj.query.op && obj.query.op.value && obj.query.op.value.id) {
+          operator = obj.query.op.value.id
+        }
+        if (obj.query.op === null && obj.query.value && obj.query.value.value) {
+          if (obj.query.value.value.id) {
+            operator = obj.query.value.value.id
+          }
+        } else
+        if (obj.query.value) {
+          value = this.getQueryVal(obj.query.value)
+        }
+        if (!value && obj.query.op === null && obj.query.value.operator === null && obj.query.value.value.value) {
+          value = obj.query.value.value.value.id
+        }
+        if (obj.query.condition && obj.query.condition.searchQuery) {
+          condition = obj.query.condition.searchQuery
+        } else if (obj.query.ruleObj && obj.query.ruleObj.searchQuery) {
+          condition = obj.query.ruleObj.searchQuery
+        }
+        if (condition.match('conditionId')) {
+          condition.replace('{conditionId}', obj.query.condition.value)
+        }
+        if (!operator) { operator = '==' }
+        if (operator.match('{k}')) {
+          operator = operator.replace('{k}', value)
+          currentQuery += condition + operator
+        } else {
+          if (operator.match('empty')) {
+            currentQuery += condition + operator
+          } else {
+            currentQuery += condition + operator + value
+          }
+        }
+
+        if (ind < queryArray.children.length - 1) {
+          finalQuery += '(' + currentQuery + ') ' + logicalOperator + ' '
+        } else {
+          finalQuery += currentQuery
+        }
+      } else if (obj.type === 'group-component') {
+        const finalGroupQuery = this.queryArrayToQueryString(obj.query)
+        if (ind < queryArray.children.length - 1) {
+          finalQuery += '(' + finalGroupQuery + ') ' + logicalOperator + ' '
+        } else {
+          finalQuery += finalGroupQuery
+        }
+      }
+    })
+    return finalQuery
+  }
+
   /*
    * Name: getMultiLangName
    * arg: langs -> array of all languages
@@ -158,6 +220,40 @@ export default class CommonHelpers extends Vue {
     } else {
       return new Language()
     }
+  }
+
+  public getQueryVal (value: any) {
+    let val = null
+    if (isString(value.value)) {
+      val = value.value
+    } else if (value.value.length) {
+      let finalVal = ''
+      value.value.forEach((val: any, ind: any) => {
+        if (ind < value.value.length - 1) {
+          if (val.id) {
+            finalVal += val.id + ','
+          } else if (val.value.id) {
+            finalVal += val.value.id + ','
+          }
+        } else {
+          if (val.id) {
+            finalVal += val.id
+          } else if (val.value.id) {
+            finalVal += val.value.id
+          }
+        }
+      })
+      val = finalVal
+    } else if (isObject(value.value)) {
+      if (value.value.labelValue) {
+        val = value.value.labelValue
+      } else if (value.value.value.id) {
+        val = value.value.value.id
+      } else if (value.value.value.value.id) {
+        val = value.value.value.value.id
+      }
+    }
+    return val
   }
 
   /*

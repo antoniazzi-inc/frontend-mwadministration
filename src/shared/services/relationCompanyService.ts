@@ -1,17 +1,17 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import {ICompany} from "@/shared/models/company.model";
+import { ICompany } from '@/shared/models/company.model'
 
-export default class relationCompanyService extends BaseEntityService<ICompany> {
-  private static instance: relationCompanyService;
+export default class RelationCompanyService extends BaseEntityService<ICompany> {
+  private static instance: RelationCompanyService;
 
   private constructor () {
     super('api/relationms/api/relation-company')
   }
 
-  public static getInstance (): relationCompanyService {
-    if (!relationCompanyService.instance) {
-      return new relationCompanyService()
+  public static getInstance (): RelationCompanyService {
+    if (!RelationCompanyService.instance) {
+      return new RelationCompanyService()
     }
-    return relationCompanyService.instance
+    return RelationCompanyService.instance
   }
 }

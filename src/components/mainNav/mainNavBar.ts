@@ -11,8 +11,8 @@ import { RelationProfile } from '@/shared/models/relation-profile.model'
 import RelationService from '@/shared/services/relationService'
 import { AxiosResponse } from 'axios'
 import { MenuDefinitions } from '@/shared/menuDefinitions'
-import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 @Component({
   components: {
     'v-gravatar': gravatarImg,
@@ -77,28 +77,30 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
     this.$set(this.$i18n, 'locale', ind)
     // TODO send request to server to change language if needed
   }
-  public loadUser(){
-    let self = this;
-    this.relationService.get(this.user.id).then((resp:AxiosResponse)=>{
+
+  public loadUser () {
+    const self = this
+    this.relationService.get(this.user.id).then((resp: AxiosResponse) => {
       this.user = resp.data
-      let zone:any = null
-      if(resp.data.relationProfile.timeZoneId) {
+      let zone: any = null
+      if (resp.data.relationProfile.timeZoneId) {
         this.timeZones.forEach(timeZone => {
           if (timeZone.id === resp.data.relationProfile.timeZoneId) {
             zone = timeZone
           }
         })
         Vue.nextTick(function () {
-            self.selectedTimeZone = zone
+          self.selectedTimeZone = zone
         })
       }
       this.$forceUpdate()
       Vue.nextTick(function () {
-        resp.data.relationProfile && resp.data.relationProfile.birthDate ?
-          self.birthDate =  moment(resp.data.relationProfile.birthDate).format('DD-MM-YYYY') : self.birthDate = null
+        resp.data.relationProfile && resp.data.relationProfile.birthDate
+          ? self.birthDate = moment(resp.data.relationProfile.birthDate).format('DD-MM-YYYY') : self.birthDate = null
       })
     })
   }
+
   public getUserName () {
     return this.getRelationFullName(this.$store.state.userIdentity)
   }
@@ -128,7 +130,7 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
   }
 
   public changeTimeZone (e: any) {
-    if(!e) return
+    if (!e) return
     this.selectedTimeZone = e
     this.user.relationProfile.timeZoneId = e.id
   }

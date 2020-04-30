@@ -1,11 +1,11 @@
-import {Component, Vue, Watch} from 'vue-property-decorator'
-import {ExternalSystem, IExternalSystem, ExternalSystemType} from "@/shared/models/externalSystem.model";
-import ExternalSystemsService from "@/shared/services/externalSystemsService";
-import {AxiosResponse} from "axios";
-import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
-import {mixins} from "vue-class-component";
-import CommonHelpers from "@/shared/commonHelpers";
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { ExternalSystem, IExternalSystem, ExternalSystemType } from '@/shared/models/externalSystem.model'
+import ExternalSystemsService from '@/shared/services/externalSystemsService'
+import { AxiosResponse } from 'axios'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
+import { mixins } from 'vue-class-component'
+import CommonHelpers from '@/shared/commonHelpers'
 const allExternalSettings = {
   externalSystemType: '',
   className: '',
@@ -49,10 +49,10 @@ const allExternalSettings = {
   security1: '',
   security2: '',
   username: '',
-  filename: '',
+  filename: ''
 }
 @Component({
-  components:{
+  components: {
     SearchableSelectComponent
   },
   props: {
@@ -60,20 +60,21 @@ const allExternalSettings = {
   }
 })
 export default class IntegrationsComponent extends mixins(CommonHelpers, Vue) {
-  refs!:{
-    deleteModal: HTMLElement
+  refs!: {
+    deleteModal: HTMLElement;
   }
-  public externalSystemsService:any
-  public externalSystems:any
-  public externalSystemType:any
-  public searchableConfig:ISearchableSelectConfig
-  public editMode:boolean
-  public allExternalSystems:IExternalSystem[]
-  public selectedExternalSystem:any
-  public externalSystemToEdit:IExternalSystem
-  public itemToRemove:IExternalSystem|null
-  public clickedTab:string
-  public settingsJSON:any
+
+  public externalSystemsService: any
+  public externalSystems: any
+  public externalSystemType: any
+  public searchableConfig: ISearchableSelectConfig
+  public editMode: boolean
+  public allExternalSystems: IExternalSystem[]
+  public selectedExternalSystem: any
+  public externalSystemToEdit: IExternalSystem
+  public itemToRemove: IExternalSystem|null
+  public clickedTab: string
+  public settingsJSON: any
   constructor () {
     super()
     this.settingsJSON = allExternalSettings
@@ -86,7 +87,7 @@ export default class IntegrationsComponent extends mixins(CommonHelpers, Vue) {
     this.externalSystemType = {
       active: ExternalSystemType.ACTIVE,
       inactive: ExternalSystemType.INACTIVE,
-      test: ExternalSystemType.TEST,
+      test: ExternalSystemType.TEST
     }
     this.clickedTab = ''
     this.allExternalSystems = []
@@ -94,7 +95,8 @@ export default class IntegrationsComponent extends mixins(CommonHelpers, Vue) {
     this.itemToRemove = null
     this.externalSystems = []
   }
-  public mounted(){
+
+  public mounted () {
     this.externalSystems = [
       {
         id: 0,
@@ -188,39 +190,43 @@ export default class IntegrationsComponent extends mixins(CommonHelpers, Vue) {
       }
     ]
   }
-  @Watch('active', {immediate: true, deep: true})
-  public retrieveAllExternalSystems(){
-    let pagination = {
+
+  @Watch('active', { immediate: true, deep: true })
+  public retrieveAllExternalSystems () {
+    const pagination = {
       page: 0,
       size: 100000,
       sort: ['id,asc']
     }
-    this.externalSystemsService.getAll(pagination, undefined).then((resp:AxiosResponse)=>{
-      if(resp) {
+    this.externalSystemsService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+      if (resp) {
         this.allExternalSystems = resp.data.content
       }
     })
   }
 
-  public changeSelectedExternalSystems(system: any){
-    if(system){
+  public changeSelectedExternalSystems (system: any) {
+    if (system) {
       this.selectedExternalSystem = system
       this.settingsJSON.externalSystemType = system.type
     }
   }
-  public selectSelectedExternalSystems(system: any){
-    if(system){
+
+  public selectSelectedExternalSystems (system: any) {
+    if (system) {
       this.selectedExternalSystem = system
       this.settingsJSON.externalSystemType = system.type
     }
   }
-  public removeSelectedExternalSystems(system: any){
+
+  public removeSelectedExternalSystems (system: any) {
     this.selectedExternalSystem = null
   }
-  public save() {
-    let self = this;
-    this.$validator.validateAll().then((status:boolean) => {
-      if (status && self.selectedExternalSystem){
+
+  public save () {
+    const self = this
+    this.$validator.validateAll().then((status: boolean) => {
+      if (status && self.selectedExternalSystem) {
         self.externalSystemToEdit.settingValueJson = JSON.stringify(self.settingsJSON)
         if (self.externalSystemToEdit.id) {
           self.externalSystemsService.put(self.externalSystemToEdit).then((resp: AxiosResponse) => {
@@ -246,48 +252,54 @@ export default class IntegrationsComponent extends mixins(CommonHelpers, Vue) {
       }
     })
   }
-  public cancel(){
+
+  public cancel () {
     this.editMode = false
     this.selectedExternalSystem = null
     this.externalSystemToEdit = new ExternalSystem()
     this.settingsJSON = allExternalSettings
     this.retrieveAllExternalSystems()
   }
-  public editExternalSystem(externalSys:any){
-    this.clickedTab = this.clickedTab === externalSys.type ? this.clickedTab = '' : this.clickedTab=externalSys.type
+
+  public editExternalSystem (externalSys: any) {
+    this.clickedTab = this.clickedTab === externalSys.type ? this.clickedTab = '' : this.clickedTab = externalSys.type
     this.externalSystemToEdit = externalSys
     this.settingsJSON = JSON.parse(externalSys.settingValueJson)
     this.editMode = true
-    let self = this;
-    this.externalSystems.forEach((sys:any, ind:number)=>{
-      if(sys.type === self.settingsJSON.externalSystemType){
+    const self = this
+    this.externalSystems.forEach((sys: any, ind: number) => {
+      if (sys.type === self.settingsJSON.externalSystemType) {
         self.selectedExternalSystem = sys
       }
     })
   }
-  public newExternalSystem(){
+
+  public newExternalSystem () {
     this.editMode = true
     this.settingsJSON = allExternalSettings
     this.externalSystemToEdit = new ExternalSystem()
   }
-  public setRemoveExternalSystem(sys:any){
+
+  public setRemoveExternalSystem (sys: any) {
     this.itemToRemove = sys
   }
-  public removeConfirm(){
-    if(this.itemToRemove && this.itemToRemove.id){
-      this.externalSystemsService.delete(this.itemToRemove.id).then((resp:AxiosResponse)=>{
-        if(resp){
+
+  public removeConfirm () {
+    if (this.itemToRemove && this.itemToRemove.id) {
+      this.externalSystemsService.delete(this.itemToRemove.id).then((resp: AxiosResponse) => {
+        if (resp) {
           this.setAlert(this.$t('toastMessages.externalSystemRemoved'), 'success')
         } else {
           this.setAlert(this.$t('toastMessages.externalSystemError'), 'error')
         }
-       this.retrieveAllExternalSystems()
-        //@ts-ignore
+        this.retrieveAllExternalSystems()
+        // @ts-ignore
         $(this.$refs.deleteModal).modal('hide')
       })
     }
   }
-  public validateUrl(field:any, value:any){
+
+  public validateUrl (field: any, value: any) {
     if (this.settingsJSON[field] && !this.$validator.errors.has(field)) {
       this.settingsJSON[field] = this.checkForUrlHttps(value)
     }

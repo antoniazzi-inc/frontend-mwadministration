@@ -12,7 +12,7 @@ export interface ILanguage extends IBaseEntity{
 }
 
 export class Language implements ILanguage {
-    constructor (
+  constructor (
       public id?: number,
       public administrationId?: number,
       public langKey?: string,
@@ -23,5 +23,5 @@ export class Language implements ILanguage {
       public version?: number,
       public createdOn?: Moment,
       public updatedOn?: Moment
-    ) {}
+  ) {}
 }

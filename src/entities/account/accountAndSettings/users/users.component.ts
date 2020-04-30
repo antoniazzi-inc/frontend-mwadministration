@@ -3,9 +3,9 @@ import PaginationTableComponent from '@/components/paginationTable/paginationTab
 import { IRole, Role } from '@/shared/models/role.model'
 import RelationService from '@/shared/services/relationService'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
-import {AxiosResponse} from "axios";
-import {mixins} from "vue-class-component";
-import CommonHelpers from "@/shared/commonHelpers";
+import { AxiosResponse } from 'axios'
+import { mixins } from 'vue-class-component'
+import CommonHelpers from '@/shared/commonHelpers'
 @Component({
   props: {
     active: Boolean
@@ -39,13 +39,13 @@ export default class UsersComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public searchUser (query: string) {
-    let fields:string[] = ['name', 'code']
-    let q:string = this.makeSimpleSearchQuery(fields ,query, 'OR')
+    const fields: string[] = ['name', 'code']
+    const q: string = this.makeSimpleSearchQuery(fields, query, 'OR')
     // @ts-ignore
-    this.$refs.paginationTable.retrieveData('api/relationms/api/roles', undefined, q);
+    this.$refs.paginationTable.retrieveData('api/relationms/api/roles', undefined, q)
   }
 
-  public editUser (user:any) {
+  public editUser (user: any) {
     this.$router.push('/account/user/edit-user/' + user.id)
   }
 
@@ -53,11 +53,16 @@ export default class UsersComponent extends mixins(CommonHelpers, Vue) {
 
   }
 
-  public deleteUser (user:any) {
-    this.relationService.delete(user.id).then((resp:AxiosResponse)=>{
-        //@ts-ignore
-        this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, '');
-      if(resp){
+  public deleteUser (user: any) {
+    if (user && user.id) {
+      if (user.id === this.$store.state.userIdentity.id) {
+        return this.setAlert('cannotDeleteThisUser', 'error')
+      }
+    }
+    this.relationService.delete(user.id).then((resp: AxiosResponse) => {
+      // @ts-ignore
+      this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, '')
+      if (resp) {
         this.setAlert('userDeleted', 'success')
       } else {
         this.setAlert('userDeletedError', 'error')

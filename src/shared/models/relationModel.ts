@@ -1,5 +1,5 @@
-import { Moment } from 'moment';
-import { BaseEntity } from './baseModel';
+import { Moment } from 'moment'
+import { BaseEntity } from './baseModel'
 import { IAffiliate } from './AffiliateModel'
 import { IBeneficiary } from './beneficiary.model'
 import { IRelationProfile } from './relation-profile.model'
@@ -13,8 +13,8 @@ import { IRelationCustomField } from './relation-custom-field.model'
 import { IRole } from './role.model'
 import { IRelationGroup } from './relation-group.model'
 import { IGrantedAuthority } from './GrantedAuthorityModel'
-import {ITagEntity} from "@/shared/models/tagModel";
-import {ICompany} from "@/shared/models/company.model";
+import { ITagEntity } from '@/shared/models/tagModel'
+import { ICompany } from '@/shared/models/company.model'
 
 export interface IRelationEntity extends BaseEntity {
   version?: number;
@@ -46,7 +46,7 @@ export interface IRelationEntity extends BaseEntity {
 }
 
 export class RelationEntity implements IRelationEntity {
-  constructor(
+  constructor (
     public createdOn?: Moment,
     public updatedOn?: Moment,
     public id?: number,
@@ -75,7 +75,7 @@ export class RelationEntity implements IRelationEntity {
     public relationCustomFields?: IRelationCustomField[],
     public roles?: IRole[],
     public relationGroups?: IRelationGroup[],
-    public authorities?: IGrantedAuthority[],
-  ){
+    public authorities?: IGrantedAuthority[]
+  ) {
   }
 };

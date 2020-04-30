@@ -10,8 +10,10 @@
     <simple-search @onSearch="searchRole"></simple-search>
     <PaginationTableComponent
       :ref="'paginationTable'"
-      :active="$props.active"
+      :active="true"
+      :useService="false"
       :table="'roles'"
+      :searchQuery="searchQuery"
       :noDataLabel="'labels.noData'"
       @onEdit="editRole"
       @onCopy="copyRole"

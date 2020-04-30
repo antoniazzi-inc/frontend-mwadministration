@@ -20,6 +20,7 @@ export default new Vuex.Store({
       timeZones: [],
       taxRates: [],
       companies: [],
+      paymentMethods: [],
       roles: [],
       permissions: [],
       administrationBusiness: []
@@ -86,6 +87,9 @@ export default new Vuex.Store({
     },
     permissions (state, newState) {
       state.lookups.permissions = newState
+    },
+    paymentMethods (state, newState) {
+      state.lookups.paymentMethods = newState
     },
     administrationBusiness (state, newState) {
       state.lookups.administrationBusiness = newState

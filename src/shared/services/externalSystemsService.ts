@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import {IExternalSystem} from "@/shared/models/externalSystem.model";
+import { IExternalSystem } from '@/shared/models/externalSystem.model'
 
 export default class ExternalSystemsService extends BaseEntityService<IExternalSystem> {
   private static instance: ExternalSystemsService;

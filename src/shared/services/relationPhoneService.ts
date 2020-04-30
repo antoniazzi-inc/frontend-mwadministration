@@ -1,17 +1,17 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import {IRelationPhone} from "@/shared/models/relation-phone.model";
+import { IRelationPhone } from '@/shared/models/relation-phone.model'
 
-export default class relationPhoneService extends BaseEntityService<IRelationPhone> {
-  private static instance: relationPhoneService;
+export default class RelationPhoneService extends BaseEntityService<IRelationPhone> {
+  private static instance: RelationPhoneService;
 
   private constructor () {
     super('api/relationms/api/relation-phones')
   }
 
-  public static getInstance (): relationPhoneService {
-    if (!relationPhoneService.instance) {
-      return new relationPhoneService()
+  public static getInstance (): RelationPhoneService {
+    if (!RelationPhoneService.instance) {
+      return new RelationPhoneService()
     }
-    return relationPhoneService.instance
+    return RelationPhoneService.instance
   }
 }

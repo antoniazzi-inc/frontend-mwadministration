@@ -18,10 +18,11 @@ import CommonHelpers from '@/shared/commonHelpers'
 import CompanyService from '@/shared/services/companyService'
 import BusinessService from '@/shared/services/businessService'
 import Sockets from '@/shared/sockets'
-import RelationGroupService from "@/shared/services/relationGroupService";
-import FreeFieldService from "@/shared/services/freeFieldService";
-import RoleService from "@/shared/services/roleService";
-import PermissionsService from "@/shared/services/permissionService";
+import RelationGroupService from '@/shared/services/relationGroupService'
+import FreeFieldService from '@/shared/services/freeFieldService'
+import RoleService from '@/shared/services/roleService'
+import PermissionsService from '@/shared/services/permissionService'
+import PaymentMethodService from '@/shared/services/paymentMethodService'
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -31,6 +32,7 @@ Vue.use(VueOnToast, {})
     }
   })
 export default class App extends mixins(Vue, CommonHelpers) {
+    paymentService = PaymentMethodService.getInstance();
     roleService = RoleService.getInstance();
     permissionsService = PermissionsService.getInstance();
     accountService = RelationService.getInstance();
@@ -74,7 +76,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
         size: 100000,
         sort: 'id,asc'
       }
-      if(!this.$store.state.authenticated) {return}
+      if (!this.$store.state.authenticated) { return }
       this.isReady = false
       this.taxRateService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
@@ -96,6 +98,17 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.counter++
         this.$store.commit('tags', resp.data.content)
       })
+      this.paymentService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        const methods: any = []
+        resp.data.content?.forEach((payment: any) => {
+          methods.push({
+            label: this.getMultiLangName(payment.paymentMethodLanguages).name,
+            value: payment
+          })
+        })
+        this.$store.commit('paymentMethods', methods)
+      })
       this.companyService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
         this.$store.commit('companies', resp.data.content)
@@ -108,10 +121,19 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.counter++
         this.$store.commit('freeFields', resp.data.content)
       })
-      this.roleService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
-        this.counter++
-        this.$store.commit('roles', resp.data.content)
-      })
+      if (!this.hasAuthority('ROLE_SUPER_ADMIN')) {
+        const roles = 'ROLE_SUPER_ADMIN,ROLE_ADMIN,ROLE_RELATION,ROLE_CUSTOMER,ROLE_BENEFICIARY,ROLE_AFFILIATE,ROLE_NEWSLETTER,ROLE_SUPPORT'
+        const q = 'code=out=(' + roles + ')'
+        this.roleService.getAll(pagination, q).then((resp: AxiosResponse) => {
+          this.counter++
+          this.$store.commit('roles', resp.data.content)
+        })
+      } else {
+        this.roleService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+          this.counter++
+          this.$store.commit('roles', resp.data.content)
+        })
+      }
       this.permissionsService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
         this.$store.commit('permissions', resp.data.content)
@@ -136,18 +158,19 @@ export default class App extends mixins(Vue, CommonHelpers) {
     }
 
     @Watch('$store.state.authenticated', { immediate: true, deep: true })
-    public getLookups(newVal:any){
-      if(newVal) {
+    public getLookups (newVal: any) {
+      if (newVal) {
         this.populateLookups()
       }
     }
 
     @Watch('counter', { immediate: true, deep: true })
-    public changeReady(newVal:any){
-      if(newVal > 10) {
+    public changeReady (newVal: any) {
+      if (newVal > 11) {
         this.isReady = true
       }
     }
+
     @Watch('$route', { immediate: true, deep: true })
     checkRouteAuthority (to: any, from: any, next: any) {
       const self = this

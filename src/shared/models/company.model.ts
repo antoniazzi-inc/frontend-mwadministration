@@ -1,29 +1,29 @@
-import {ICompanyPhone, PhoneType} from './company-phone.model'
-import {AddressType, ICompanyAddress} from './company-address.model'
+import { ICompanyPhone, PhoneType } from './company-phone.model'
+import { AddressType, ICompanyAddress } from './company-address.model'
 import { IBusiness } from './business.model'
 import { IRelationEntity } from './relationModel'
 import { IBaseEntity } from '@/shared/models/baseModel'
 import { Moment } from 'moment'
 export interface ICompany extends IBaseEntity{
-  name?: string
-  description?: string
-  website?: string
-  alias?: string
-  vatNumber?: string
-  addressStreet?: string
-  addressHouseNumber?: string
-  city?: string
-  countryId?: number
-  entranceNumber?: string
-  appartmentNumber?: string
-  postalCode?: string
-  addressDescription?: string
-  addressType?: AddressType
-  phoneNumber?: string
-  phoneDescription?: string
-  phoneType?: PhoneType
-  business?: IBusiness
-  relations?: IRelationEntity[]
+  name?: string;
+  description?: string;
+  website?: string;
+  alias?: string;
+  vatNumber?: string;
+  addressStreet?: string;
+  addressHouseNumber?: string;
+  city?: string;
+  countryId?: number;
+  entranceNumber?: string;
+  appartmentNumber?: string;
+  postalCode?: string;
+  addressDescription?: string;
+  addressType?: AddressType;
+  phoneNumber?: string;
+  phoneDescription?: string;
+  phoneType?: PhoneType;
+  business?: IBusiness;
+  relations?: IRelationEntity[];
 }
 
 export class Company implements ICompany {

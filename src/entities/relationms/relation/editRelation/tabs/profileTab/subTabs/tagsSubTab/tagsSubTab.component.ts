@@ -1,13 +1,13 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import {Component, Vue, Watch} from 'vue-property-decorator'
-import {ITagEntity} from "@/shared/models/tagModel";
-import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
-import {AxiosResponse} from "axios";
-import {IRelationEntity, RelationEntity} from "@/shared/models/relationModel";
-import RelationService from "@/shared/services/relationService";
-import RelationTagService from "@/shared/services/relationTagService";
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { ITagEntity } from '@/shared/models/tagModel'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
+import { AxiosResponse } from 'axios'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import RelationService from '@/shared/services/relationService'
+import RelationTagService from '@/shared/services/relationTagService'
 
 @Component({
   components: {
@@ -36,15 +36,15 @@ export default class TagsSubTabComponent extends mixins(Vue, CommonHelpers) {
       false, true, true, false)
   }
 
-  @Watch('rel', {immediate:true, deep: true})
-  public populateTags(newVal: any) {
+  @Watch('rel', { immediate: true, deep: true })
+  public populateTags (newVal: any) {
     this.relationCopy = newVal
-    let allTags:any = []
-    let self = this
-    if(newVal && newVal.relationTags) {
-      this.$store.state.lookups.tags.forEach((tag:any)=>{
-        newVal.relationTags.forEach((relTag:any)=>{
-          if(tag.id === relTag.tagId) {
+    const allTags: any = []
+    const self = this
+    if (newVal && newVal.relationTags) {
+      this.$store.state.lookups.tags.forEach((tag: any) => {
+        newVal.relationTags.forEach((relTag: any) => {
+          if (tag.id === relTag.tagId) {
             allTags.push(tag)
           }
         })
@@ -55,17 +55,17 @@ export default class TagsSubTabComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  public addTag(tag:any) {
-    if(tag){
-    let dto:any = {
-      tagId: tag.id,
-      relation: {
-        id: this.$props.rel.id,
-        version: this.$props.rel.version,
+  public addTag (tag: any) {
+    if (tag) {
+      const dto: any = {
+        tagId: tag.id,
+        relation: {
+          id: this.$props.rel.id,
+          version: this.$props.rel.version
+        }
       }
-    }
-      this.relationTagService.post(dto).then((resp:AxiosResponse)=>{
-        if(resp){
+      this.relationTagService.post(dto).then((resp: AxiosResponse) => {
+        if (resp) {
           tag.item = resp.data
           this.selectedTags.push(tag)
           this.$emit('updateRel')
@@ -76,10 +76,11 @@ export default class TagsSubTabComponent extends mixins(Vue, CommonHelpers) {
       })
     }
   }
-  public removeTag(tag:any) {
-    if(tag && tag.id){
-      this.relationTagService.delete(tag.id).then((resp:AxiosResponse)=>{
-        if(resp){
+
+  public removeTag (tag: any) {
+    if (tag && tag.id) {
+      this.relationTagService.delete(tag.id).then((resp: AxiosResponse) => {
+        if (resp) {
           this.$emit('updateRel')
           this.setAlert('relationTagsRemoved', 'success')
         } else {

@@ -180,10 +180,10 @@ export default class DeliveryMethodsComponent extends mixins(Vue, CommonHelpers)
   }
 
   public searchDeliveryMethod (query: any) {
-    let fields:string[] = ['deliveryMethodLanguages.name']
-    let q:string = this.makeSimpleSearchQuery(fields ,query)
+    const fields: string[] = ['deliveryMethodLanguages.name']
+    const q: string = this.makeSimpleSearchQuery(fields, query)
     // @ts-ignore
-    this.$refs.paginationTable.retrieveData('api/administrationms/api/delivery-methods', undefined, q);
+    this.$refs.paginationTable.retrieveData('api/administrationms/api/delivery-methods', undefined, q)
   }
 
   public editDeliveryMethod (method: any) {

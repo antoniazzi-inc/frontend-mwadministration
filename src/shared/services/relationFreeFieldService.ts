@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import {IRelationCustomField} from "@/shared/models/relation-custom-field.model";
+import { IRelationCustomField } from '@/shared/models/relation-custom-field.model'
 
 export default class RelationFreeFieldService extends BaseEntityService<IRelationCustomField> {
   private static instance: RelationFreeFieldService;

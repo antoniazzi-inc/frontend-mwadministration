@@ -1,14 +1,14 @@
-import Component, {mixins} from 'vue-class-component'
-import {Vue, Watch} from 'vue-property-decorator'
-import {AddressType, IRelationAddress, RelationAddress} from "@/shared/models/relation-address.model";
-import CommonHelpers from "@/shared/commonHelpers";
-import { ICountry } from '@/shared/models/country.model';
-import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
-import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import Component, { mixins } from 'vue-class-component'
+import { Vue, Watch } from 'vue-property-decorator'
+import { AddressType, IRelationAddress, RelationAddress } from '@/shared/models/relation-address.model'
+import CommonHelpers from '@/shared/commonHelpers'
+import { ICountry } from '@/shared/models/country.model'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 
 @Component({
-  components:{
+  components: {
     ToggleSwitch,
     SearchableSelectComponent
   },
@@ -17,7 +17,6 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
   }
 })
 export default class AddressWidgetComponent extends mixins(CommonHelpers, Vue) {
-
   public addressCopy: IRelationAddress;
   public addressTypes: any;
   public searchableConfig: ISearchableSelectConfig;
@@ -26,13 +25,13 @@ export default class AddressWidgetComponent extends mixins(CommonHelpers, Vue) {
   public newAddress: boolean;
   public selectedCountry: ICountry|null
 
-  constructor() {
-    super();
+  constructor () {
+    super()
     this.addressTypes = {
       home: AddressType.HOME,
       other: AddressType.OTHER,
       postal: AddressType.POSTAL,
-      work: AddressType.WORK,
+      work: AddressType.WORK
     }
     this.searchableConfig = new SearchableSelectConfig('enName',
       'labels.country', '', true,
@@ -44,11 +43,11 @@ export default class AddressWidgetComponent extends mixins(CommonHelpers, Vue) {
     this.addressCopy = new RelationAddress()
   }
 
-  @Watch('address', {immediate: true, deep: true})
-  public populate(newVal: any) {
+  @Watch('address', { immediate: true, deep: true })
+  public populate (newVal: any) {
     if (newVal) {
       this.addressCopy = newVal
-      if(newVal && !newVal.id){
+      if (newVal && !newVal.id) {
         this.newAddress = true
         this.selectedCountry = this.preselectCountry(150)
         this.addressCopy.countryId = this.preselectCountry(150).id
@@ -58,31 +57,34 @@ export default class AddressWidgetComponent extends mixins(CommonHelpers, Vue) {
     }
   }
 
-  public countryChanged(country:any) {
+  public countryChanged (country: any) {
     this.selectedCountry = country
     this.addressCopy.countryId = country ? country.id : this.selectedCountry?.id
   }
-  public validatePostalCode() {
-    //TODO
+
+  public validatePostalCode () {
+    // TODO
   }
 
-  public edit(entity: any) {
+  public edit (entity: any) {
     this.editMode = true
     this.$emit('onEdit', this.addressCopy)
   }
 
-  public remove() {
+  public remove () {
     this.$emit('onRemove', this.addressCopy)
   }
-  public cancel() {
+
+  public cancel () {
     this.$emit('onCancel')
     this.editMode = false
     this.newAddress = false
-    if(!this.addressCopy.id) this.remove()
+    if (!this.addressCopy.id) this.remove()
   }
-  public save() {
-    this.$validator.validateAll().then(resp=>{
-      if(resp){
+
+  public save () {
+    this.$validator.validateAll().then(resp => {
+      if (resp) {
         this.$emit('onSave', this.addressCopy)
         this.cancel()
       }

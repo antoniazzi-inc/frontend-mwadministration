@@ -1,17 +1,17 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import {ICustomFieldOption} from "@/shared/models/custom-field-option.model";
+import { ICustomFieldOption } from '@/shared/models/custom-field-option.model'
 
-export default class relationFreeFieldOption extends BaseEntityService<ICustomFieldOption> {
-  private static instance: relationFreeFieldOption;
+export default class RelationFreeFieldOption extends BaseEntityService<ICustomFieldOption> {
+  private static instance: RelationFreeFieldOption;
 
   private constructor () {
     super('api/relationms/api/relation-custom-field-options')
   }
 
-  public static getInstance (): relationFreeFieldOption {
-    if (!relationFreeFieldOption.instance) {
-      return new relationFreeFieldOption()
+  public static getInstance (): RelationFreeFieldOption {
+    if (!RelationFreeFieldOption.instance) {
+      return new RelationFreeFieldOption()
     }
-    return relationFreeFieldOption.instance
+    return RelationFreeFieldOption.instance
   }
 }

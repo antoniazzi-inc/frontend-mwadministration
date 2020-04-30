@@ -1,15 +1,17 @@
 import { Component, Vue } from 'vue-property-decorator'
 import RelationService from '@/shared/services/relationService'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
-import {AxiosResponse} from "axios";
-import {mixins} from "vue-class-component";
-import CommonHelpers from "@/shared/commonHelpers";
-import SimpleSearchComponent from "@/components/simpleSearch/simpleSearch.vue";
-import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import { AxiosResponse } from 'axios'
+import { mixins } from 'vue-class-component'
+import CommonHelpers from '@/shared/commonHelpers'
+import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
+import complexSearchComponent from '@/entities/relationms/relation/complexSearch/complexSearch.vue'
 
 @Component({
   components: {
+    complexSearch: complexSearchComponent,
     PaginationTableComponent,
     'simple-search': SimpleSearchComponent,
     SearchableSelectComponent
@@ -29,6 +31,15 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   public selectedCategories: any
   public currentSearchCategory: string
   public active: boolean
+  public showQueryPopupForSimpleQueries: boolean
+  public showSearchQueries: boolean
+  public complexFilter = {
+    operator: 'and',
+    children: []
+  };
+
+  public queryName = '';
+  public complexId = 0;
   constructor () {
     super()
     this.searchableTagsConfig = new SearchableSelectConfig('code',
@@ -49,11 +60,13 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
     this.selectedGroups = []
     this.selectedCategories = null
     this.active = true
+    this.showQueryPopupForSimpleQueries = false
+    this.showSearchQueries = false
     this.relationService = RelationService.getInstance()
   }
 
   public simpleSearch () {
-    let queryArray:any = [];
+    const queryArray: any = []
     if (this.currentSearchName !== '') {
       queryArray.push({
         mainOperator: 'and',
@@ -76,7 +89,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
           afterOperator: '',
           exactSearch: false
         }]
-      });
+      })
     }
     if (this.currentSearchEmail !== '') {
       queryArray.push({
@@ -88,13 +101,13 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
           afterOperator: '',
           exactSearch: false
         }]
-      });
+      })
     }
     if (this.currentSearchGroups.length > 0) {
-      let groups:any = [];
+      const groups: any = []
       $.each(this.currentSearchGroups, function (k, v) {
-        groups.push(v.id);
-      });
+        groups.push(v.id)
+      })
       queryArray.push({
         mainOperator: 'and',
         children: [{
@@ -104,7 +117,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
           afterOperator: '',
           exactSearch: false
         }]
-      });
+      })
     }
     if (this.currentSearchCategory !== '') {
       queryArray.push({
@@ -116,13 +129,13 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
           afterOperator: '',
           exactSearch: false
         }]
-      });
+      })
     }
     if (this.currentSearchTags.length > 0) {
-      let tags:any = [];
+      const tags: any = []
       $.each(this.currentSearchTags, function (k, v) {
-        tags.push(v.id);
-      });
+        tags.push(v.id)
+      })
       queryArray.push({
         mainOperator: '',
         children: [{
@@ -132,78 +145,98 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
           afterOperator: '',
           exactSearch: false
         }]
-      });
+      })
     }
-    let finalQ = this.queryBuilder(queryArray);
+    const finalQ = this.queryBuilder(queryArray)
     // @ts-ignore
-    this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, finalQ);
+    this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, finalQ)
   }
+
   public clear () {
-    this.currentSearchEmail = '';
-    this.currentSearchName = '';
-    this.currentSearchTags = [];
+    this.currentSearchEmail = ''
+    this.currentSearchName = ''
+    this.currentSearchTags = []
     this.selectedTags = []
-    this.currentSearchCategory = '';
-    this.selectedCategories = null;
-    this.currentSearchGroups = [];
-    this.selectedGroups = [];
-    //@ts-ignore
-    this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, undefined);
+    this.currentSearchCategory = ''
+    this.selectedCategories = null
+    this.currentSearchGroups = []
+    this.selectedGroups = []
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, undefined)
   }
+
   public editRelation (rel: any) {
     this.$router.push({ name: 'EditRelations', params: { id: rel.id } })
   }
 
   public deleteRelation (rel: any) {
     this.active = false
-    if(rel.id) this.relationService.delete(rel.id).then((resp:AxiosResponse)=>{
-      this.active = true
-      if(resp){
-        this.setAlert('relationRemoved', 'success')
-      } else {
-        this.setAlert('relationRemoveError', 'error')
+    if (rel.id) {
+      if (rel.id === this.$store.state.userIdentity.id) {
+        return this.setAlert('cannotDeleteThisUser', 'error')
       }
-    })
+      this.relationService.delete(rel.id).then((resp: AxiosResponse) => {
+        this.active = true
+        if (resp) {
+          this.setAlert('relationRemoved', 'success')
+        } else {
+          this.setAlert('relationRemoveError', 'error')
+        }
+      })
+    }
   }
-  public tagSearchChanged(tag:any) {
+
+  public tagSearchChanged (tag: any) {
     this.currentSearchTags.push(tag)
   }
 
-  public tagSearchRemoved(tag:any) {
-    let index = null;
+  public tagSearchRemoved (tag: any) {
+    let index = null
     $.each(this.currentSearchTags, function (k, v) {
       if (v.id === tag.id) {
-        index = k;
+        index = k
       }
-    });
+    })
     if (index !== null) {
-      this.currentSearchTags.splice(index, 1);
+      this.currentSearchTags.splice(index, 1)
     }
   }
 
-  public groupSearchChanged(group:any) {
-    this.currentSearchGroups.push(group);
+  public groupSearchChanged (group: any) {
+    this.currentSearchGroups.push(group)
   }
 
-  public groupSearchRemoved(group:any) {
-    let index = null;
+  public groupSearchRemoved (group: any) {
+    let index = null
     $.each(this.currentSearchGroups, function (k, v) {
       if (v.id === group.id) {
-        index = k;
+        index = k
       }
-    });
+    })
     if (index !== null) {
-      this.currentSearchGroups.splice(index, 1);
+      this.currentSearchGroups.splice(index, 1)
     }
   }
 
-  public categorySearchChanged(category:any) {
-    this.selectedCategories = category;
+  public categorySearchChanged (category: any) {
+    this.selectedCategories = category
     this.currentSearchCategory += category.id
   }
 
-  public categorySearchRemoved() {
-    this.selectedCategories = {};
-    this.currentSearchCategory = '';
+  public categorySearchRemoved () {
+    this.selectedCategories = {}
+    this.currentSearchCategory = ''
+  }
+
+  public startComplexSearch (query: any) {
+    console.log(query)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, query)
+  }
+
+  public openSearchQueries (isForSimpleQueries: any) {
+    this.showQueryPopupForSimpleQueries = isForSimpleQueries
+    this.showSearchQueries = true;
+    (<any> this.$refs.searchQueries).show()
   }
 }

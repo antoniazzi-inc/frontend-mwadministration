@@ -1,11 +1,11 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import {Component, Vue, Watch} from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import draggable from 'vuedraggable'
-import {IRelationEntity, RelationEntity} from "@/shared/models/relationModel";
-import {IRelationGroup} from "@/shared/models/relation-group.model";
-import RelationService from "@/shared/services/relationService";
-import {AxiosResponse} from "axios";
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { IRelationGroup } from '@/shared/models/relation-group.model'
+import RelationService from '@/shared/services/relationService'
+import { AxiosResponse } from 'axios'
 
 @Component({
   components: {
@@ -34,33 +34,38 @@ export default class GroupsSubTabComponent extends mixins(Vue, CommonHelpers) {
     this.isChanged = false
     this.allGroups = []
   }
-  public mounted(){
+
+  public mounted () {
     this.allGroups = this.$store.state.lookups.groups
   }
-  @Watch('active', {immediate: true, deep: true})
-  public init(newVal:any){
+
+  @Watch('active', { immediate: true, deep: true })
+  public init (newVal: any) {
     this.isChanged = false
   }
-  @Watch('rel', {immediate: true, deep: true})
-  public updateRelation(newVal:any){
-    if(newVal){
+
+  @Watch('rel', { immediate: true, deep: true })
+  public updateRelation (newVal: any) {
+    if (newVal) {
       this.relationCopy = newVal
     }
     this.allGroups = this.excludeGroups()
     this.groupSearch = ''
   }
-  @Watch('relationCopy.relationGroups', {immediate: true, deep: true})
-  public updateGroups(newVal:any){
-    if(this.isChanged){
-      let allGroups:any = []
-      let dto = this.relationCopy
-      if(this.relationCopy.relationGroups)
-      this.relationCopy.relationGroups.forEach(group=>{
-        allGroups.push({id: group.id, version: group.version, createdOn: group.createdOn, updatedOn: group.updatedOn})
-      })
+
+  @Watch('relationCopy.relationGroups', { immediate: true, deep: true })
+  public updateGroups (newVal: any) {
+    if (this.isChanged) {
+      const allGroups: any = []
+      const dto = this.relationCopy
+      if (this.relationCopy.relationGroups) {
+        this.relationCopy.relationGroups.forEach(group => {
+          allGroups.push({ id: group.id, version: group.version, createdOn: group.createdOn, updatedOn: group.updatedOn })
+        })
+      }
       dto.relationGroups = allGroups
-      this.relationService.put(dto).then((resp:AxiosResponse)=>{
-        if(resp){
+      this.relationService.put(dto).then((resp: AxiosResponse) => {
+        if (resp) {
           this.$emit('updateRel', resp.data)
           this.setAlert('relationGroupsUpdated', 'success')
         } else {
@@ -70,44 +75,50 @@ export default class GroupsSubTabComponent extends mixins(Vue, CommonHelpers) {
       this.isChanged = false
     }
   }
- public excludeGroups() {
-    let allGroups:any = []
-   this.$store.state.lookups.groups.forEach((group:any)=>{
-     let exclude = false
-    this.relationCopy.relationGroups?.forEach((relationGroup:any)=>{
-      if(group.id === relationGroup.id) {
-        exclude = true;
+
+  public excludeGroups () {
+    const allGroups: any = []
+    this.$store.state.lookups.groups.forEach((group: any) => {
+      let exclude = false
+    this.relationCopy.relationGroups?.forEach((relationGroup: any) => {
+      if (group.id === relationGroup.id) {
+        exclude = true
       }
     })
-     if(!exclude){
-       allGroups.push(group)
-     }
-   })
-    return allGroups;
+    if (!exclude) {
+      allGroups.push(group)
+    }
+    })
+    return allGroups
   }
- public clone(obj:any, e:any) {
-   this.isChanged = true
-    return obj;
-  }
-  public pullFunction(e:any) {
-    return this.controlOnStart ? "clone" : true;
-  }
-  public start({ originalEvent }:any) {
+
+  public clone (obj: any, e: any) {
     this.isChanged = true
-    this.controlOnStart = originalEvent.ctrlKey;
+    return obj
   }
-  public removeGroup(group:any){
+
+  public pullFunction (e: any) {
+    return this.controlOnStart ? 'clone' : true
+  }
+
+  public start ({ originalEvent }: any) {
+    this.isChanged = true
+    this.controlOnStart = originalEvent.ctrlKey
+  }
+
+  public removeGroup (group: any) {
     this.isChanged = true
     let index = null
-    this.relationCopy.relationGroups?.forEach((relationGroup:any, ind:number)=>{
-      if(group.id === relationGroup.id) {
-        index = ind;
+    this.relationCopy.relationGroups?.forEach((relationGroup: any, ind: number) => {
+      if (group.id === relationGroup.id) {
+        index = ind
       }
     })
-    if(index !== null) this.relationCopy.relationGroups?.splice(index, 1)
+    if (index !== null) this.relationCopy.relationGroups?.splice(index, 1)
   }
-  public search(){
-    let search = this.groupSearch
-   this.allGroups = this.$store.state.lookups.groups.filter(function (e:any) { return e.label.indexOf(search) !== -1 })
+
+  public search () {
+    const search = this.groupSearch
+    this.allGroups = this.$store.state.lookups.groups.filter(function (e: any) { return e.label.indexOf(search) !== -1 })
   }
 }

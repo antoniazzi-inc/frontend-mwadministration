@@ -28,7 +28,7 @@ export default class AccountAndSettingsComponent extends Vue {
     this.currentTab = 'account'
   }
 
-  public switchTab(tab:string) {
+  public switchTab (tab: string) {
     this.currentTab = tab
   }
 }

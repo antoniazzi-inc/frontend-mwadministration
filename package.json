@@ -20,6 +20,7 @@
     "papaparse": "^5.2.0",
     "popper.js": "^1.16.1",
     "sockjs-client": "^1.4.0",
+    "util": "^0.12.2",
     "v-money": "^0.8.1",
     "validate-vat-ts": "^1.1.0",
     "vee-validate": "^2.2.15",

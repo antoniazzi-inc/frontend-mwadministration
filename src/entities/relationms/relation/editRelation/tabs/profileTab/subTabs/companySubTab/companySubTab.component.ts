@@ -1,16 +1,16 @@
-import {mixins} from 'vue-class-component'
+import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import {Component, Vue, Watch} from 'vue-property-decorator'
-import {Company, ICompany} from '@/shared/models/company.model'
-import {IRelationEntity, RelationEntity} from '@/shared/models/relationModel'
-import {ISearchableSelectConfig, SearchableSelectConfig} from '@/shared/models/SearchableSelectConfig'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Company, ICompany } from '@/shared/models/company.model'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
-import validateVat, {CountryCodes, ViesValidationResponse} from 'validate-vat-ts';
-import {PhoneType} from "@/shared/models/company-phone.model";
-import {Country, ICountry} from "@/shared/models/country.model";
-import CompanyService from "@/shared/services/companyService";
-import {AxiosResponse} from "axios";
-import RelationService from "@/shared/services/relationService";
+import validateVat, { CountryCodes, ViesValidationResponse } from 'validate-vat-ts'
+import { PhoneType } from '@/shared/models/company-phone.model'
+import { Country, ICountry } from '@/shared/models/country.model'
+import CompanyService from '@/shared/services/companyService'
+import { AxiosResponse } from 'axios'
+import RelationService from '@/shared/services/relationService'
 
 @Component({
   components: {
@@ -22,9 +22,10 @@ import RelationService from "@/shared/services/relationService";
   }
 })
 export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
-  $refs!:{
-    deleteModalCompany: HTMLElement
+  $refs!: {
+    deleteModalCompany: HTMLElement;
   }
+
   public currentTab: string
   public editMode: boolean
   public phoneTypes: any
@@ -53,7 +54,7 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
     this.phoneTypes = {
       home: PhoneType.HOME,
       work: PhoneType.WORK,
-      mobile: PhoneType.MOBILE,
+      mobile: PhoneType.MOBILE
     }
     this.editMode = false
     this.selectedCountry = new Country()
@@ -66,12 +67,14 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
       'labels.country', '', false,
       false, false, false, false)
   }
-  public mounted(){
+
+  public mounted () {
 
   }
+
   @Watch('rel', { immediate: true, deep: true })
   public updateCompanies (rel: IRelationEntity) {
-    if(rel){
+    if (rel) {
       this.relationCopy = rel
     }
     if (rel.companies && rel.companies.length) {
@@ -96,44 +99,47 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public async companyRemoveConfirmed () {
-    let self = this
-    if(this.companyToDelete.id && this.relationCopy.companies) {
-      let companies = JSON.parse(JSON.stringify(this.relationCopy.companies))
+    const self = this
+    if (this.companyToDelete.id && this.relationCopy.companies) {
+      const companies = JSON.parse(JSON.stringify(this.relationCopy.companies))
       this.relationCopy.companies = undefined
       this.closeDeleteModal()
-     let newComp = await companies.filter(function(value:any, index:any, arr:any) {
+      const newComp = await companies.filter(function (value: any, index: any, arr: any) {
         return value.id !== self.companyToDelete.id
       })
-      if(newComp){
+      if (newComp) {
         this.relationCopy.companies = newComp
       } else {
         this.relationCopy.companies = undefined
       }
-        this.relationService.put(this.relationCopy).then((resp:AxiosResponse)=>{
-          if(resp){
-            this.setAlert('companyRemoved', 'success')
-            this.$emit('updateRel')
-          } else {
-            this.setAlert('companyRemoveError', 'error')
-          }
-        })
+      this.relationService.put(this.relationCopy).then((resp: AxiosResponse) => {
+        if (resp) {
+          this.setAlert('companyRemoved', 'success')
+          this.$emit('updateRel')
+        } else {
+          this.setAlert('companyRemoveError', 'error')
+        }
+      })
     }
   }
+
   public companyRemoved () {
     this.companyToEdit = new Company()
   }
+
   public closeDeleteModal () {
     // @ts-ignore
     $(this.$refs.deleteModalCompany).modal('hide')
   }
+
   public getCompanyAddress (company: ICompany) {
     let result: any = ''
     if (company) {
-      let address = company.addressStreet ? company.addressStreet : ''
-      let number = company.addressHouseNumber ? company.addressHouseNumber : ''
-      let city = company.city ? company.city : ''
-      let postal = company.postalCode ? company.postalCode : ''
-      let country = company.countryId ? this.getCountryById(company.countryId) : ''
+      const address = company.addressStreet ? company.addressStreet : ''
+      const number = company.addressHouseNumber ? company.addressHouseNumber : ''
+      const city = company.city ? company.city : ''
+      const postal = company.postalCode ? company.postalCode : ''
+      const country = company.countryId ? this.getCountryById(company.countryId) : ''
       result = `${address} ${number} ${city} ${postal} ${country} `
     }
     return result
@@ -165,10 +171,10 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   public async validateVat () {
     try {
       if (this.companyToEdit.vatNumber != null) {
-        //@ts-ignore
-        let country:CountryCodes = this.selectedCountry.enName ? CountryCodes[this.selectedCountry.enName] : CountryCodes.Netherlands
-        const validationInfo: ViesValidationResponse = await validateVat(country, this.companyToEdit.vatNumber);
-        if(validationInfo.valid){
+        // @ts-ignore
+        const country: CountryCodes = this.selectedCountry.enName ? CountryCodes[this.selectedCountry.enName] : CountryCodes.Netherlands
+        const validationInfo: ViesValidationResponse = await validateVat(country, this.companyToEdit.vatNumber)
+        if (validationInfo.valid) {
           this.vatError = ''
         } else {
           this.vatError = this.$t('labels.vatNumberNotValid')
@@ -180,32 +186,33 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public urlValidate () {
-    if(this.companyToEdit.website && !this.$validator.errors.has('company-website')){
+    if (this.companyToEdit.website && !this.$validator.errors.has('company-website')) {
       this.companyToEdit.website = this.checkForUrlHttps(this.companyToEdit.website)
     }
   }
+
   public saveCompany () {
-    this.$validator.validateAll().then((resp:boolean)=>{
-      if(resp && (this.vatError === '' || this.companyToEdit.vatNumber === '')) {
+    this.$validator.validateAll().then((resp: boolean) => {
+      if (resp && (this.vatError === '' || this.companyToEdit.vatNumber === '')) {
         this.vatError = ''
         this.companyToEdit.business = {
           id: this.$store.state.lookups.administrationBusiness[0].id,
           version: this.$store.state.lookups.administrationBusiness[0].version
         }
         this.companyToEdit.alias = this.companyToEdit.name
-        if(this.companyToEdit.id) {
-          this.companyService.put(this.companyToEdit).then((resp:AxiosResponse)=>{
-            if(resp) {
+        if (this.companyToEdit.id) {
+          this.companyService.put(this.companyToEdit).then((resp: AxiosResponse) => {
+            if (resp) {
               this.setAlert('companyUpdated', 'success')
-            this.$emit('updateRel', this.relationCopy)
+              this.$emit('updateRel', this.relationCopy)
               this.cancelNewComp()
             } else {
               this.setAlert('companyUpdateError', 'error')
             }
           })
         } else {
-          this.companyService.post(this.companyToEdit).then((resp:AxiosResponse)=>{
-            if(resp) {
+          this.companyService.post(this.companyToEdit).then((resp: AxiosResponse) => {
+            if (resp) {
               this.saveRelationCompany(resp.data)
             } else {
               this.setAlert('companyCreateError', 'error')
@@ -217,25 +224,28 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
       }
     })
   }
-  public countryChanged (country:any) {
-    if(country){
+
+  public countryChanged (country: any) {
+    if (country) {
       this.selectedCountry = country
       this.companyToEdit.countryId = country.id
     }
   }
-  public countryRemoved (country:any) {
+
+  public countryRemoved (country: any) {
     this.selectedCountry = null
     this.companyToEdit.countryId = undefined
   }
-  public saveRelationCompany (company?:any) {
-    if(this.relationCopy.companies && this.relationCopy.companies.length){
-      this.relationCopy.companies.push({id: company.id, version: company.version})
+
+  public saveRelationCompany (company?: any) {
+    if (this.relationCopy.companies && this.relationCopy.companies.length) {
+      this.relationCopy.companies.push({ id: company.id, version: company.version })
     } else {
-      this.relationCopy.companies = [{id: company.id, version: company.version}]
+      this.relationCopy.companies = [{ id: company.id, version: company.version }]
     }
-    let dto = this.relationCopy
-    this.relationService.put(dto).then((resp:AxiosResponse)=>{
-      if(resp){
+    const dto = this.relationCopy
+    this.relationService.put(dto).then((resp: AxiosResponse) => {
+      if (resp) {
         this.setAlert('companyCreated', 'success')
         this.cancelNewComp()
         this.$emit('updateRel', resp.data)
@@ -246,7 +256,7 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public cancelNewComp () {
-    this.editMode = false;
+    this.editMode = false
     this.addNewCompany = false
     this.companyToEdit = new Company()
   }

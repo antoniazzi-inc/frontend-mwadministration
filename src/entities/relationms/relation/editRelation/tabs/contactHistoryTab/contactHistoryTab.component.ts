@@ -1,9 +1,9 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import {Component, Vue, Watch} from 'vue-property-decorator'
-import {IRelationEntity, RelationEntity} from "@/shared/models/relationModel";
-import ContactWidget from "@/entities/relationms/relation/editRelation/tabs/contactHistoryTab/contactWidget.vue";
-import {ContactHistory, IContactHistory} from "@/shared/models/contact-history.model";
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import ContactWidget from '@/entities/relationms/relation/editRelation/tabs/contactHistoryTab/contactWidget.vue'
+import { ContactHistory, IContactHistory } from '@/shared/models/contact-history.model'
 
 @Component({
   components: {
@@ -29,27 +29,28 @@ export default class ContactHistoryTabComponent extends mixins(Vue, CommonHelper
     this.relationCopy = new RelationEntity()
   }
 
-  @Watch('rel',{immediate:true, deep: true})
-  public fillRelation(newVal:any) {
-    if(newVal){
+  @Watch('rel', { immediate: true, deep: true })
+  public fillRelation (newVal: any) {
+    if (newVal) {
       this.relationCopy = newVal
     }
   }
 
-  public addNewContact(){
-      let newContact = new ContactHistory();
-      newContact.info = ''
-      this.relationCopy.contactHistories ? this.relationCopy.contactHistories.push(newContact) : this.relationCopy.contactHistories = [newContact];
-      this.editMode = true;
-  }
-  closeEditMode(){
-    this.editMode = false
-  }
-  public searchContacts(){}
-  public retrieveRelation(relation:any){
-    this.editMode = false
-    this.$emit('update', relation);
-    this.closeEditMode();
+  public addNewContact () {
+    const newContact = new ContactHistory()
+    newContact.info = ''
+    this.relationCopy.contactHistories ? this.relationCopy.contactHistories.push(newContact) : this.relationCopy.contactHistories = [newContact]
+    this.editMode = true
   }
 
+  closeEditMode () {
+    this.editMode = false
+  }
+
+  public searchContacts () {}
+  public retrieveRelation (relation: any) {
+    this.editMode = false
+    this.$emit('update', relation)
+    this.closeEditMode()
+  }
 }
