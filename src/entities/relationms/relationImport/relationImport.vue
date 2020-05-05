@@ -79,9 +79,16 @@
                             <tr>
                               <td v-for="(cell,index) in rows[0]" :key="index">
                                 <select class="form-control" style="width:150px;" v-model="mappings[index].dbfield">
-                                  <option v-for="(field, ind) in dbfields" :value="field.value" :key="ind">
-                                    {{field.label}}
-                                  </option>
+                                    <optgroup :label="$t('labels.fields')">
+                                          <option :value="field.value" :key="ind" v-for="(field, ind) in dbfields">
+                                            {{field.label}}
+                                          </option>
+                                    </optgroup>
+                                    <optgroup :label="$t('labels.freeFieldsMenu')" v-if="allFreeFileds.length">
+                                          <option :value="field.value" :key="ind" v-for="(field, ind) in allFreeFileds">
+                                            {{field.label}}
+                                          </option>
+                                    </optgroup>
                                 </select>
                               </td>
                             </tr>

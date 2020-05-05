@@ -173,7 +173,7 @@ export default class CommonHelpers extends Vue {
           operator = operator.replace('{k}', value)
           currentQuery += condition + operator
         } else {
-          if (operator.match('empty')) {
+          if (operator.toLowerCase().match('empty')) {
             currentQuery += condition + operator
           } else {
             currentQuery += condition + operator + value
@@ -381,7 +381,7 @@ export default class CommonHelpers extends Vue {
    * @return list of fixed relation fields
    */
   public relationFields () {
-    return [
+    let result = [
       {
         value: 'title',
         label: this.$t('labels.title')
@@ -453,5 +453,6 @@ export default class CommonHelpers extends Vue {
         value: 'dnassign',
         label: this.$t('labels.doNotAssign')
       }]
+    return result
   }
 }

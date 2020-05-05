@@ -43,8 +43,8 @@ export default class CustomerSubTabComponent extends mixins(Vue, CommonHelpers) 
 
   public save () {
     const dto = this.$props.rel
-    dto.relationCustomer = this.customer
-    dto.relationCustomer.defaultPaymentMethodId = this.selectedPaymentMethod ? this.selectedPaymentMethod.value.id : undefined
+    dto.customer = this.customer
+    dto.customer.defaultPaymentMethodId = this.selectedPaymentMethod ? this.selectedPaymentMethod.value.id : undefined
     this.relationService.put(dto).then((resp: AxiosResponse) => {
       if (resp) {
         this.setAlert('relationUpdated', 'success')

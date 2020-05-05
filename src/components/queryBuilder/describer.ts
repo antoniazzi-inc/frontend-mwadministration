@@ -38,7 +38,6 @@ export default class Describer extends mixins(CommonHelpers, Vue) {
 
     public workon (rule: any) {
       const me = this
-      debugger
       if (rule.query.children) {
         const Operator = rule.query.logicalOperator
         const s: any = []

@@ -84,6 +84,17 @@ export default class RuleComponent extends mixins(Vue, CommonHelpers) {
             })
             self.$set(self.selectedCondition.secondLvlCondition.outputElement, 'options', allAttributes)
           })
+        } else if(this.selectedCondition.secondLvlCondition.id === 'freeFieldOptions'){
+          if(this.selectedCondition.customFieldOptions && this.selectedCondition.customFieldOptions.length){
+            let options:any=[]
+            this.selectedCondition.customFieldOptions.forEach((option:any)=>{
+              options.push({
+                label: self.getMultiLangName(option.customFieldOptionLanguages).name,
+                value: option
+              })
+            })
+            self.$set(self.selectedCondition.secondLvlCondition.outputElement, 'options', options)
+          }
         }
       }
     }
@@ -105,7 +116,7 @@ export default class RuleComponent extends mixins(Vue, CommonHelpers) {
     }
 
     public updateConditionOperator (value: any) {
-      if (value.value.labelValue.match('empty')) {
+      if (value.value.labelValue.toLowerCase().match('empty')) {
         this.hideValue = true
       } else {
         this.hideValue = false
@@ -114,7 +125,7 @@ export default class RuleComponent extends mixins(Vue, CommonHelpers) {
     }
 
     public updateConditionSecondLevelCond (value: any) {
-      if (value.value.labelValue.match('empty')) {
+      if (value.value.labelValue.toLowerCase().match('empty')) {
         this.hideValue = true
       } else {
         this.hideValue = false
@@ -133,7 +144,7 @@ export default class RuleComponent extends mixins(Vue, CommonHelpers) {
     }
 
     public updateOperator (value: any) {
-      if (value.value.labelValue.match('empty')) {
+      if (value.value.labelValue.toLowerCase().match('empty')) {
         this.hideValue = true
       } else {
         this.hideValue = false

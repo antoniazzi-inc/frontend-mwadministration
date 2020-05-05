@@ -38,7 +38,7 @@
                             :value="finalQuery.attr"
                             :options="selectedCondition.secondLvlCondition.outputElement.options"></condition-component>
                     </div>
-                    <div v-if="selectedCondition.outputElement !== null && localQuery.op && !localQuery.op.value.id.match('empty')" class="mt-1">
+                    <div v-if="selectedCondition.outputElement !== null && localQuery.op && !localQuery.op.value.id.toLowerCase().match('empty')" class="mt-1">
                         <!--If there is output Element in selected condition-->
                         <condition-component
                             :componentType="selectedCondition.outputElement.type"
@@ -86,3 +86,8 @@
     </div>
 </template>
 <script lang="ts" src="./rule.component.ts"></script>
+<style>
+  .accordion>.card{
+    overflow: inherit!important;
+  }
+</style>

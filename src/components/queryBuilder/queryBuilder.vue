@@ -1,12 +1,12 @@
 <template>
-    <div class="vue-query-builder" :class="{ 'vue-query-builder-styled': styled}">
+    <div class="vue-query-builder" :class="{ 'vue-query-builder-styled': true}">
         <group-component name="groupComp"
             :index="-1"
             :query="query"
             :rules="mergedRules"
             :maxDepth="maxDepth"
             :depth="depth"
-            :styled="styled"
+            :styled="true"
             :onlyActiveEntities="onlyActiveEntities"
             type="group"
         ></group-component>
@@ -15,7 +15,6 @@
 <script lang="ts" src="./queryBuilder.component.ts">
 </script>
 <style>
-
     .vue-query-builder-styled .vqb-rule {
         margin-top: 15px;
         /* background-color: #f5f5f5; */

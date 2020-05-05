@@ -1,6 +1,7 @@
 <template>
   <div class="p-3">
-    <form @submit.prevent.stop="save">
+    <h3 class="text-center" v-if="$props.rel.customer===null">{{$t('labels.relationIsNotCustomer')}}</h3>
+    <form @submit.prevent.stop="save" v-else>
       <div class="form-row mt-3">
         <label>{{$t('labels.customerNumber')}}</label>
         <input type="text" disabled v-model="customer.customerNumber" class="form-control">

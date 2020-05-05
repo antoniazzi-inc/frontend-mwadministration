@@ -31,7 +31,7 @@ export default class RolesComponent extends mixins(CommonHelpers, Vue) {
   public role: IRole;
   constructor () {
     super()
-    this.searchQuery = 'code=out=(ROLE_SUPER_ADMIN,ROLE_ADMIN,ROLE_RELATION,ROLE_CUSTOMER,ROLE_BENEFICIARY,ROLE_AFFILIATE,ROLE_NEWSLETTER,ROLE_SUPPORT)'
+    this.searchQuery = 'code=out=(ROLE_SUPER_ADMIN,ROLE_USER,ROLE_ADMIN,ROLE_RELATION,ROLE_CUSTOMER,ROLE_BENEFICIARY,ROLE_AFFILIATE,ROLE_NEWSLETTER,ROLE_SUPPORT)'
     this.roleService = RoleService.getInstance()
     this.allRoles = []
     this.role = new Role()

@@ -294,7 +294,6 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
     const newOption = new CustomFieldOption()
     newOption.createdOn = moment()
     newOption.updatedOn = moment()
-
     if (this.freeField.customFieldOptions && this.freeField.customFieldOptions.length) {
       newOption.customFieldIndex = this.freeField.customFieldOptions.length + 1
       this.freeField.customFieldOptions.push(newOption)

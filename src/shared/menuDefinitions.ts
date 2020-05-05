@@ -25,7 +25,7 @@ export const MenuDefinitions = [
       path: '/relations-import',
       authorities: ['*']
     }, {
-      name: 'labels.freeFields',
+      name: 'labels.freeFieldsMenu',
       icon: '',
       path: '/relations-free-fields',
       authorities: ['*']

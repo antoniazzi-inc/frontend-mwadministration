@@ -1,17 +1,35 @@
 
 import { mixins } from 'vue-class-component'
-import { Vue } from 'vue-property-decorator'
+import {Component, Vue} from 'vue-property-decorator'
 import CommonHelpers from '@/shared/commonHelpers'
-
-export default class SearchRules extends mixins(CommonHelpers, Vue) {
+import Store from '@/store/index'
+import {ILanguage, Language} from "@/shared/models/language.model";
+export default class SearchRules extends mixins(Vue) {
     public commonRules: any;
     public shopRules: any;
     public automationRules: any;
     private allOperators: any;
-
-    constructor (props: any) {
+  public getMultiLangName (langs: ILanguage[] | undefined | null) {
+    const self = this
+    if (langs && langs.length > 0) {
+      let result = null
+      langs.forEach(lang => {
+        if (lang.langKey === Store.state.currentLanguage) {
+          result = lang
+        }
+      })
+      if (result) {
+        return result
+      } else {
+        return new Language()
+      }
+    } else {
+      return new Language()
+    }
+  }
+    constructor (props:any) {
       super(props)
-      this.allOperators = props.operator
+      this.allOperators = props.operator,
       this.commonRules = [{
         id: 'relFields',
         label: 'Relation Fields',
@@ -125,8 +143,9 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
       {
         id: 'freefields',
         label: 'Free Fields',
-        description: 'labels.freeFields',
+        description: 'labels.freeFieldsComplexSearch',
         searchQuery: '(relationCustomFields.customField.id=={conditionId} and relationCustomFields.value)',
+        searchQueryOption: '(relationCustomFields.customField.id=={conditionId} and relationCustomFields.customFieldOption.id=={conditionOptionId} and relationCustomFields.value)',
         conditions: [],
         operator: {
           id: 'textOperators',
@@ -142,7 +161,7 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
         id: 'groups',
         label: 'Groups',
         searchQuery: 'relationGroups.groupId',
-        description: 'labels.groups',
+        description: 'labels.complexSearchGroups',
         conditions: [],
         operator: {
           id: 'groupOperators',
@@ -158,7 +177,7 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
         id: 'points',
         label: 'Points',
         searchQuery: 'relationProfile.points',
-        description: 'labels.points',
+        description: 'labels.complexSearchPoints',
         conditions: [],
         operator: {
           id: 'pointOperators',
@@ -173,7 +192,7 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
       }, {
         id: 'categories',
         searchQuery: 'relationProfile.categoryId',
-        description: 'labels.categories',
+        description: 'labels.complexSearchCategories',
         label: 'Category',
         conditions: [],
         operator: null,
@@ -185,7 +204,7 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
         id: 'tags',
         label: 'Tags',
         searchQuery: 'relationTags.tagId',
-        description: 'labels.tags',
+        description: 'labels.complexSearchTags',
         conditions: [],
         operator: {
           id: 'textOperators',
@@ -252,7 +271,7 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
           id: 'email',
           label: 'Email',
           searchQuery: 'notKnown',
-          description: 'labels.email',
+          description: 'labels.emailComplexSearch',
           conditions: [],
           operator: {
             id: 'emailOperators',
@@ -289,7 +308,7 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
           id: 'orders',
           label: 'Orders',
           searchQuery: 'notKnown',
-          description: 'labels.orders',
+          description: 'labels.complexSearchOrders',
           conditions: [],
           operator: null,
           outputElement: null
@@ -366,9 +385,23 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
       // insert this.lookups
       rules.forEach(function (rule: any) {
         if (rule.id === 'tags') {
-          rule.outputElement.options = lookups.tags
+          let finalTags:any = []
+          lookups.tags.forEach((t:any)=>{
+            finalTags.push({
+              label: t.code,
+              value: t
+            })
+          })
+          rule.outputElement.options = finalTags
         } else if (rule.id === 'categories') {
-          rule.outputElement.options = lookups.categories
+          let finalCats:any = []
+          lookups.categories.forEach((t:any)=>{
+            finalCats.push({
+              label: t.code,
+              value: t
+            })
+          })
+          rule.outputElement.options = finalCats
         } else if (rule.id === 'relFields' && lookups.allCountries.length) {
           rule.conditions.push({
             id: 'country',
@@ -384,10 +417,15 @@ export default class SearchRules extends mixins(CommonHelpers, Vue) {
           lookups.freeFields.forEach((freeField: any) => {
             rule.conditions.push({
               ...freeField,
+              label: self.getMultiLangName(freeField.customFieldLanguages).name,
               id: 'freeFields',
               outputElement: null,
               operator: null,
-              secondLvlCondition: null,
+              secondLvlCondition: {
+                id: 'freeFieldOptions',
+                outputElement: { type: 'singleSelect', options: [] },
+                applyCondition: 'freeFieldOptions'
+              },
               searchQuery: ''
             })
           })

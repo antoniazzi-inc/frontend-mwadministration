@@ -15,6 +15,7 @@ import { IRelationGroup } from './relation-group.model'
 import { IGrantedAuthority } from './GrantedAuthorityModel'
 import { ITagEntity } from '@/shared/models/tagModel'
 import { ICompany } from '@/shared/models/company.model'
+import {ICustomer} from "@/shared/models/customer.model";
 
 export interface IRelationEntity extends BaseEntity {
   version?: number;
@@ -27,6 +28,7 @@ export interface IRelationEntity extends BaseEntity {
   languageKey?: string;
   tfaEnabled?: boolean;
   tfaId?: string;
+  customer?: ICustomer;
   affiliate?: IAffiliate;
   beneficiary?: IBeneficiary;
   relationProfile?: IRelationProfile;
@@ -60,6 +62,7 @@ export class RelationEntity implements IRelationEntity {
     public languageKey?: string,
     public tfaEnabled?: boolean,
     public tfaId?: string,
+    public customer?: ICustomer,
     public affiliate?: IAffiliate,
     public beneficiary?: IBeneficiary,
     public relationProfile?: IRelationProfile,

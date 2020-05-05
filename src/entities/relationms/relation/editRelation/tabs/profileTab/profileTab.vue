@@ -25,7 +25,7 @@
       <li class="nav-item" @click="currentSubTab = 'freeFields'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'freeFields'}" id="freeFields-tab" data-toggle="tab"
            href="#freeFields" role="tab" aria-controls="freeFields"
-           aria-selected="false">{{$t('labels.freeFields')}}</a>
+           aria-selected="false">{{$t('labels.freeFieldsMenu')}}</a>
       </li>
       <li class="nav-item" @click="currentSubTab = 'customer'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'customer'}" id="customer-tab" data-toggle="tab"

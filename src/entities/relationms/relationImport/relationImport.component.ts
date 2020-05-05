@@ -8,7 +8,7 @@ import CommonHelpers from '@/shared/commonHelpers'
 import gravatarImg from 'vue-gravatar'
 import RelationService from '@/shared/services/relationService'
 import { AxiosResponse } from 'axios'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { RelationEntity } from '@/shared/models/relationModel'
 import { RelationProfile } from '@/shared/models/relation-profile.model'
 @Component({
   components: {
@@ -41,6 +41,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public fileType: any;
   public excelFile: any;
   public rows: any[];
+  public allFreeFileds: any[];
   public mappings: any[];
   public dbfields: any[];
   public datafordb: any[];
@@ -58,6 +59,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     this.fileType = ''
     this.mappings = []
     this.rows = []
+    this.allFreeFileds = []
     this.existingGroup = 0
     this.newGroup = ''
     this.delimiter = ''
@@ -97,6 +99,14 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public mounted () {
     this.dbfields = this.relationFields()
     this.groups = this.$store.state.lookups.groups
+    let freeFields:any = []
+    this.$store.state.lookups.freeFields.forEach((freeField:any)=>{
+      freeFields.push({
+        label: this.getMultiLangName(freeField.customFieldLanguages).name,
+        value: freeField
+      })
+    })
+    this.allFreeFileds = freeFields
   }
 
   public onComplete () {
