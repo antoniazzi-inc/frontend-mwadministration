@@ -214,6 +214,10 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
           ? self.selectedOption.code = self.selectedOption.customFieldOptionLanguages[0].name.replace(/\s/g, '_')
           : self.selectedOption.code = ''
         if (this.selectedOption.id) {
+          this.selectedOption.customField = {
+            id: this.freeField.id,
+            version: this.freeField.version
+          }
           this.freeFieldOptionService.put(this.selectedOption).then((resp: AxiosResponse) => {
             if (resp) {
               if (this.selectedOptionIndex !== null && this.freeField.customFieldOptions) {
@@ -257,8 +261,11 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
           ? self.freeField.code = self.freeField.customFieldLanguages[0].name.replace(/\s/g, '_')
           : self.freeField.code = ''
         this.freeField.categoryId = this.selectedCategory?.id
+        this.freeField.relationCustomFields = undefined
         if (this.freeField.id) {
-          this.freeFieldService.put(this.freeField).then((resp: AxiosResponse) => {
+          const dto = JSON.parse(JSON.stringify(this.freeField))
+          dto.customFieldOptions = undefined
+          this.freeFieldService.put(dto).then((resp: AxiosResponse) => {
             if (resp) {
               this.setAlert('freeFieldUpdated', 'success')
               this.cancel()

@@ -22,6 +22,7 @@
                                  :subtitle="''"
                                  shape="tab"
                                  color="#1c4cc3"
+                                 @on-change ="changeTab"
                                  error-color="#ff4949">
                       <tab-content :title="$t('labels.uploadFile')" :before-change="validateStep" icon="fas fa-upload">
                         <div class="row">
@@ -77,7 +78,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                              <td v-for="(cell,index) in rows[0]" :key="index">
+                              <td v-for="(cell, index) in rows[0]" :key="index">
                                 <select class="form-control" style="width:150px;" v-model="mappings[index].dbfield">
                                     <optgroup :label="$t('labels.fields')">
                                           <option :value="field.value" :key="ind" v-for="(field, ind) in dbfields">
@@ -85,8 +86,8 @@
                                           </option>
                                     </optgroup>
                                     <optgroup :label="$t('labels.freeFieldsMenu')" v-if="allFreeFileds.length">
-                                          <option :value="field.value" :key="ind" v-for="(field, ind) in allFreeFileds">
-                                            {{field.label}}
+                                          <option :value="field1.value" :key="ind1+'_'" v-for="(field1, ind1) in allFreeFileds">
+                                            {{field1.label}}
                                           </option>
                                     </optgroup>
                                 </select>
@@ -107,7 +108,7 @@
                                       <div class="col-md-8">
                                         <select class="form-control" v-model="existingGroup">
                                           <option :value="0" v-html="$t('labels.defaultGroup')"></option>
-                                          <option v-for="(group, ind) in $store.state.lookups.groups" :value="group.value" :key="ind">
+                                          <option v-for="(group, ind) in $store.state.lookups.groups" :value="group.id" :key="ind">
                                             {{group.label}}
                                           </option>
                                         </select>

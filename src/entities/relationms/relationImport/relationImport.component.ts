@@ -10,6 +10,12 @@ import RelationService from '@/shared/services/relationService'
 import { AxiosResponse } from 'axios'
 import { RelationEntity } from '@/shared/models/relationModel'
 import { RelationProfile } from '@/shared/models/relation-profile.model'
+import { RelationAddress } from '@/shared/models/relation-address.model'
+import { Company } from '@/shared/models/company.model'
+import { RelationPhone } from '@/shared/models/relation-phone.model'
+import { RelationCustomField } from '@/shared/models/relation-custom-field.model'
+import { customField, relation } from '@/shared/tabelsDefinitions'
+import { PhoneType } from '@/shared/models/company-phone.model'
 @Component({
   components: {
     'v-gravatar': gravatarImg,
@@ -99,8 +105,8 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public mounted () {
     this.dbfields = this.relationFields()
     this.groups = this.$store.state.lookups.groups
-    let freeFields:any = []
-    this.$store.state.lookups.freeFields.forEach((freeField:any)=>{
+    const freeFields: any = []
+    this.$store.state.lookups.freeFields.forEach((freeField: any) => {
       freeFields.push({
         label: this.getMultiLangName(freeField.customFieldLanguages).name,
         value: freeField
@@ -129,15 +135,27 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
 
     // build list for server and add 'exists' flag to each record, so at serverside we know what to do
     payload.relations = []
+    const relationsToCreate: any = []
     self.datafordb.forEach(function (rel) {
       const row: any = []
+      const relationAddress: any = new RelationAddress(undefined, undefined, undefined, '', '', '',
+        150, undefined, '', '', '', undefined,
+        true, true, true, undefined, undefined, undefined, undefined)
+      const relationPhone: any = []
+      const relationCustomFields: any = []
+      const relationCompany = new Company(undefined, undefined, undefined, undefined,
+        undefined, '', undefined, undefined, undefined, undefined,
+        undefined, undefined, undefined, undefined, undefined,
+        undefined, undefined, undefined, undefined,
+        undefined, undefined, undefined, undefined)
       const relProfile: any = new RelationProfile(undefined, undefined, '', '', '', '', '',
-        '', '', 0, '', '', false, 0, 0, undefined, undefined, undefined, undefined)
+        '', '', 0, '', '', false, undefined, undefined, undefined, undefined, undefined, undefined)
       const newRel: any = new RelationEntity(undefined, undefined, undefined, undefined, undefined,
         undefined, 'default_' + Math.random(), Math.random().toString(), '', true, self.$store.state.currentLanguage,
-        false, undefined, undefined, undefined, relProfile, undefined, undefined, undefined,
+        false, undefined, undefined, undefined, undefined, relProfile, undefined, undefined,
         undefined, undefined, undefined, undefined, undefined, undefined,
         undefined, [], [], undefined)
+
       rel.forEach(function (fld: any) {
         let fvalue = fld.value
         if (fld.fieldName === 'categoryId') {
@@ -148,11 +166,35 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
               cat = cate
             }
           })
-
           if (cat) fvalue = cat.value
-        } else if (fld.fieldName === 'country') {
+        } else if (fld.fieldName.toLowerCase() === 'country') {
           // try to convert the provided country name into an id
           fvalue = self.getCountryByName(fvalue)
+          if (!fvalue) fvalue = self.getCountryByIso(fvalue)
+        } else if (fld.fieldName.toLowerCase() === 'companyname') {
+          relationCompany.name = fvalue
+        } else if (fld.fieldName.toLowerCase() === 'customfields') {
+          relationCustomFields.push({ customField: { id: fvalue.value.id, version: fvalue.value.version }, value: fvalue.cellVal })
+        } else if (fld.fieldName.toLowerCase() === 'phone2ork') {
+          relationPhone.push({
+            number: fvalue,
+            phoneType: PhoneType.WORK
+          })
+        } else if (fld.fieldName.toLowerCase() === 'phonehome') {
+          relationPhone.push({
+            number: fvalue,
+            phoneType: PhoneType.HOME
+          })
+        } else if (fld.fieldName.toLowerCase() === 'mobile') {
+          relationPhone.push({
+            number: fvalue,
+            phoneType: PhoneType.MOBILE
+          })
+        } else if (fld.fieldName.toLowerCase() === 'phonework') {
+          relationPhone.push({
+            number: fvalue,
+            phoneType: PhoneType.WORK
+          })
         }
         row.push({ label: fld.fieldName, value: fvalue })
         if (fld.fieldName === 'email') {
@@ -161,12 +203,13 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
         }
       })
       payload.relations.push(row)
-
       row.forEach((item: any) => {
         if (newRel[item.label] !== undefined) {
           newRel[item.label] = item.value
         } else if (relProfile[item.label] !== undefined) {
           relProfile[item.label] = item.value
+        } else if (relationAddress[item.label] !== undefined) {
+          relationAddress[item.label] = item.value
         }
         if (relProfile.categoryId === 0) {
           relProfile.categoryId = undefined
@@ -174,28 +217,40 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
         if (newRel.relationGroups?.length === 0) {
           newRel.relationGroups = undefined
         }
-        newRel.roles = [
-          {
-            id: 3,
-            version: 0
-          }, {
-            id: 4,
-            version: 0
-          }
-        ]
+        if (relationCustomFields.length > 0) {
+          newRel.relationCustomFields = relationCustomFields
+        } else {
+          newRel.relationCustomFields = undefined
+        }
+        if (relationCompany.name) {
+          newRel.companies = [relationCompany]
+        }
+        if (self.existingGroup) {
+          self.$store.state.lookups.groups.forEach((group: any) => {
+            if (group.id === self.existingGroup) {
+              newRel.relationGroups = [{
+                id: group.id,
+                version: group.version
+              }]
+            }
+          })
+        }
+        if (newRel.relationProfile.birthDate === '') newRel.relationProfile.birthDate = undefined
+        newRel.relationAddresses = [relationAddress]
+        newRel.relationPhones = relationPhone.length > 0 ? relationPhone : undefined
+        newRel.roles = [{ id: 3, version: 0 }]
       })
-      newRel.authorities = [{ authority: 'ROLE_USER' }, { authority: 'ROLE_RELATION' }]
-      dto.push(newRel)
+      relationsToCreate.push(newRel)
     })
-    this.relationService.createMultiple(dto).then((resp: AxiosResponse) => {
+    this.relationService.import(relationsToCreate).then((resp: AxiosResponse) => {
       if (resp) {
         this.setAlert('relationsCreated', 'success')
         this.goBack()
       } else {
         this.setAlert('relationsError', 'error')
+        this.step = 3
       }
     })
-    console.log('datafordb', JSON.stringify(payload))
   }
 
   public goBack () {
@@ -439,49 +494,54 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     }
   }
 
+  public changeTab (oldTab: any, newTab: any) {
+    this.step = newTab + 1
+  }
+
   public step2 () {
-    this.step = 2
     const self = this
-    if (self.mappings.length < 1) {
-      if (self.fileType === 'vcf') {
-        self.vcfFile = true
+    self.datafordb = []
+    if (self.fileType === 'vcf') {
+      self.vcfFile = true
+    } else {
+      self.vcfFile = false
+      let file
+      if (self.fileType !== 'csv') {
+        file = self.excelFile
       } else {
-        self.vcfFile = false
-        let file
-        if (self.fileType !== 'csv') {
-          file = self.excelFile
-        } else {
-          file = self.file
-        }
-        const results = Papa.parse(file,
-          {
-            delimiter: self.csvDelimiter,
-            encoding: 'UTF-8',
-            skipEmptyLines: true,
-            complete: function (results: any) {
-              self.rows = results.data
-              for (let i = 0; i < self.rows[0].length; i++) {
-                self.mappings.push({ index: i, dbfield: 'dnassign' })
-              }
-              const foundFields = self.rows[0].filter(function (obj: any, objindex: number) {
-                return self.dbfields.some(function (obj2: any) {
-                  if (obj === obj2.value) {
-                    const foundMapping = self.mappings.find(x => x.index === objindex)
-                    foundMapping.dbfield = obj2.value
-                  }
-                })
-              })
-            }
-          }
-        )
+        file = self.file
       }
+      let foundMapping: any = []
+      const results = Papa.parse(file,
+        {
+          delimiter: self.csvDelimiter,
+          encoding: 'UTF-8',
+          skipEmptyLines: true,
+          complete: function (results: any) {
+            self.rows = results.data
+            for (let i = 0; i < self.rows[0].length; i++) {
+              self.mappings.push({ index: i, dbfield: 'dnassign' })
+            }
+            const foundFields = self.rows[0].filter(function (obj: any, objindex: number) {
+              return self.dbfields.some(function (obj2: any) {
+                if (obj.toLowerCase().includes(obj2.value.toLowerCase())) {
+                  foundMapping = self.mappings.find(x => x.index === objindex)
+                  foundMapping.dbfield = obj2.value
+                }
+              })
+            })
+          }
+        }
+      )
     }
   }
 
   public step3 () {
+    this.datafordb = []
+    this.exampleCards = []
+    this.duplicateEmailsFound = 0
     const emails: string[] = []
     const self = this
-    self.step = 3
     self.numRowsInFile = self.rows.length - 1 // skip first mapping row
     if (self.datafordb.length < 1) {
       // Find the email field index
@@ -517,20 +577,26 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                 const exampleCard: any = []
                 const singleRow: any = []
                 let counter = 0
+                const freeFields: any = []
                 rowValue.forEach(function (cellValue: any, cellIndex: any) {
+                  if (!cellValue) {
+                    cellValue = ''
+                  }
                   counter += 1
-                  const columnName = self.mappings[cellIndex].dbfield
+                  const columnName = typeof self.mappings[cellIndex].dbfield === 'string' ? self.mappings[cellIndex].dbfield : 'customFields'
                   // if (columnName === 'dnassign') {
                   // 	return;
                   // }
                   const myObj: any = {}
                   myObj.fieldName = columnName
-                  myObj.value = cellValue
+                  myObj.value = typeof self.mappings[cellIndex].dbfield === 'string' ? cellValue : { value: self.mappings[cellIndex].dbfield, cellVal: rowValue[cellIndex] ? rowValue[cellIndex] : '' }
                   // myObj[columnName] = cellValue;
                   // self.datafordb.push(myObj);
                   if (columnName !== 'dnassign') {
                     singleRow.push(myObj)
-                    if (self.relationsToImport < 3) {
+                    if (columnName === 'customFields') {
+                      freeFields.push({ label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex] })
+                    } else {
                       const foundDbField = self.dbfields.filter(x => x.value === columnName)
                       exampleCard.push({ label: foundDbField[0].label, value: myObj.value })
                     }
@@ -538,9 +604,9 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                   // inserted row counter
                   // if (cellIndex === (rowValue.length - 1)) {
                   if (counter === (rowValue.length)) {
-                    if (self.relationsToImport < 3) {
-                      self.exampleCards.push(exampleCard)
-                    }
+                    const freeFieldsLabel = freeFields.map((e: any) => { return e.label })
+                    exampleCard.push({ label: self.$t('labels.freeFieldsMenu'), value: freeFieldsLabel.join(', ') })
+                    self.exampleCards.push(exampleCard)
                     self.datafordb.push(singleRow)
                     self.relationsToImport += 1
                   }

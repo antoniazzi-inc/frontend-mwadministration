@@ -8,7 +8,6 @@
 
 [class^='picons-thin-icon-'],
 [class*=' picons-thin-icon-'] {
-  /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'piconsthin' !important;
   speak: none;
   font-style: normal;
@@ -16,8 +15,6 @@
   font-variant: normal;
   text-transform: none;
   line-height: 1;
-
-  /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -90,7 +87,6 @@
 
 
 .os-icon {
-  /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'osfont' !important;
   speak: none;
   font-style: normal;
@@ -98,7 +94,6 @@
   font-variant: normal;
   text-transform: none;
   line-height: 1;
-  /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -199,6 +194,9 @@
   content: '\f003';
 }
 
+.fa-cogs:before {
+  content: '\f085';
+}
 .fa-envelope:before {
   content: '\f0e0';
 }
@@ -281,4 +279,43 @@
 }
 .os-icon-ui-49:before {
   content: '\e96d';
+}
+
+.fa-map-pin:before {
+  content: '\f276';
+}
+
+.fa-map:before {
+  content: '\f279';
+}
+
+.dashicons-text:before {
+  content: '\f478';
+}
+
+.fa-filter:before {
+  content: '\f0b0';
+}
+
+.fa-nintendo-switch:before {
+  content: '\f418';
+}
+
+.fa-toggle-on:before {
+  content: '\f205';
+}
+
+.fa-font:before {
+  content: '\f031';
+}
+
+.fa-map-signs:before {
+  content: '\f277';
+}
+
+.fa-file-import:before {
+  content: '\f56f';
+}
+.fa-upload:before {
+  content: '\f093';
 }

@@ -8,7 +8,7 @@
           <div class="form-row mt-3">
             <div class="col">
               <label>{{$t('labels.freeFieldType')}}</label>
-              <select v-validate="'required'" @input="changeType" name="Free-Field-Type"
+              <select v-validate="'required'" @input="changeType" name="Free-Field-Type" :disabled="freeField.id"
                       :class="{'form-control': true, invalid: errors.has('Free-Field-Type')}"
                       v-model="freeField.customFieldType">
                 <option value="TEXT">{{$t('labels.text')}}</option>
@@ -69,7 +69,10 @@
         </form>
       </div>
       <div class="col-md-6" v-if="freeField.customFieldType === 'OPTION_LIST'">
-        <p class="text-center text-danger small">{{$t('labels.freeFieldOptionSaveWarning')}}</p>
+        <p class="text-center text-danger small"
+           v-if="!freeField.customFieldOptions || freeField.customFieldOptions.length === 0">
+          {{$t('labels.freeFieldOptionSaveWarning')}}
+        </p>
         <div class="row">
           <div class="col-md-6 text-left">
             <h4>{{$t('labels.fieldOptions')}}</h4>

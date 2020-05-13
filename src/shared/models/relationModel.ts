@@ -15,7 +15,7 @@ import { IRelationGroup } from './relation-group.model'
 import { IGrantedAuthority } from './GrantedAuthorityModel'
 import { ITagEntity } from '@/shared/models/tagModel'
 import { ICompany } from '@/shared/models/company.model'
-import {ICustomer} from "@/shared/models/customer.model";
+import { ICustomer } from '@/shared/models/customer.model'
 
 export interface IRelationEntity extends BaseEntity {
   version?: number;

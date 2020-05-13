@@ -8,6 +8,7 @@ import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import complexSearchComponent from '@/entities/relationms/relation/complexSearch/complexSearch.vue'
+import { EventBus } from '@/shared/eventBus'
 
 @Component({
   components: {
@@ -63,6 +64,14 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
     this.showQueryPopupForSimpleQueries = false
     this.showSearchQueries = false
     this.relationService = RelationService.getInstance()
+  }
+
+  public mounted () {
+    EventBus.$on('refreshRelations', (content: any) => {
+      this.$t('labels.relationsImported', content)
+      // @ts-ignore
+      this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, undefined)
+    })
   }
 
   public simpleSearch () {

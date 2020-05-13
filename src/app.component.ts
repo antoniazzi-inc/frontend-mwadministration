@@ -47,6 +47,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     businessService = BusinessService.getInstance();
     counter = 0;
     sockets = new Sockets({ url: 'http://localhost:18081/' });
+    relationSocket = new Sockets({ url: 'http://localhost:18080/' });
     loading = true;
     isReady = true;
     mainMenu = MenuDefinitions;
@@ -122,7 +123,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.$store.commit('freeFields', resp.data.content)
       })
       if (!this.hasAuthority('ROLE_SUPER_ADMIN')) {
-        const roles = 'ROLE_SUPER_ADMIN,ROLE_ADMIN,ROLE_RELATION,ROLE_CUSTOMER,ROLE_BENEFICIARY,ROLE_AFFILIATE,ROLE_NEWSLETTER,ROLE_SUPPORT'
+        const roles = 'ROLE_SUPER_ADMIN,ROLE_ADMIN,ROLE_RELATION,ROLE_USER,ROLE_CUSTOMER,ROLE_BENEFICIARY,ROLE_AFFILIATE,ROLE_NEWSLETTER,ROLE_SUPPORT'
         const q = 'code=out=(' + roles + ')'
         this.roleService.getAll(pagination, q).then((resp: AxiosResponse) => {
           this.counter++
@@ -202,6 +203,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
           this.loading = false
           this.$store.commit('authenticated', account.data)
           this.sockets.connect()
+          this.relationSocket.connectRelation()
         } else {
           this.$router.push('/login')
         }

@@ -84,10 +84,10 @@ export default class RuleComponent extends mixins(Vue, CommonHelpers) {
             })
             self.$set(self.selectedCondition.secondLvlCondition.outputElement, 'options', allAttributes)
           })
-        } else if(this.selectedCondition.secondLvlCondition.id === 'freeFieldOptions'){
-          if(this.selectedCondition.customFieldOptions && this.selectedCondition.customFieldOptions.length){
-            let options:any=[]
-            this.selectedCondition.customFieldOptions.forEach((option:any)=>{
+        } else if (this.selectedCondition.secondLvlCondition.id === 'freeFieldOptions') {
+          if (this.selectedCondition.customFieldOptions && this.selectedCondition.customFieldOptions.length) {
+            const options: any = []
+            this.selectedCondition.customFieldOptions.forEach((option: any) => {
               options.push({
                 label: self.getMultiLangName(option.customFieldOptionLanguages).name,
                 value: option

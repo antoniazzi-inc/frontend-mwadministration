@@ -293,6 +293,24 @@ export default class CommonHelpers extends Vue {
   }
 
   /*
+   * Name: getCountryByIso
+   * arg: name -> Country Iso
+   * description: Returns a country id
+   * Author: Nick Dam
+   */
+  public getCountryByIso (iso: string) {
+    let result = {
+      enName: ''
+    }
+    this.$store.state.allCountries.forEach((country: any) => {
+      if (country.iso3.toLowerCase() === iso.toLowerCase()) {
+        result = country.id
+      }
+    })
+    return result
+  }
+
+  /*
    * Name: getRelationFullName
    * arg: relation -> IRelationEntity
    * description: Returns full name of a give relation
@@ -381,7 +399,7 @@ export default class CommonHelpers extends Vue {
    * @return list of fixed relation fields
    */
   public relationFields () {
-    let result = [
+    const result = [
       {
         value: 'title',
         label: this.$t('labels.title')

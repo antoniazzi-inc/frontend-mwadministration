@@ -104,7 +104,7 @@ export default class NewUserComponent extends mixins(CommonHelpers, Vue) {
             }
           })
         })
-        allRoles.push({ id: 2, version: 0 },{id: 3, version: 0})
+        allRoles.push({ id: 2, version: 0 }, { id: 3, version: 0 })
         this.userAccount.roles = allRoles
         if (this.userAccount.id) {
           this.relationService

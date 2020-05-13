@@ -24,6 +24,10 @@ export default class RelationService extends BaseEntityService<IRelationEntity> 
     return this.postRequest(`${this.url}/create-multiple`, entity)
   }
 
+  public async import (entity: any) {
+    return this.postRequest(`${this.url}/import`, entity)
+  }
+
   public async search (entity: any) {
     return this.postRequest(`${this.url}/search`, entity)
   }

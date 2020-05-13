@@ -1,39 +1,40 @@
 
 import { mixins } from 'vue-class-component'
-import {Component, Vue} from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import CommonHelpers from '@/shared/commonHelpers'
 import Store from '@/store/index'
-import {ILanguage, Language} from "@/shared/models/language.model";
+import { ILanguage, Language } from '@/shared/models/language.model'
 export default class SearchRules extends mixins(Vue) {
     public commonRules: any;
     public shopRules: any;
     public automationRules: any;
     private allOperators: any;
-  public getMultiLangName (langs: ILanguage[] | undefined | null) {
-    const self = this
-    if (langs && langs.length > 0) {
-      let result = null
-      langs.forEach(lang => {
-        if (lang.langKey === Store.state.currentLanguage) {
-          result = lang
+    public getMultiLangName (langs: ILanguage[] | undefined | null) {
+      const self = this
+      if (langs && langs.length > 0) {
+        let result = null
+        langs.forEach(lang => {
+          if (lang.langKey === Store.state.currentLanguage) {
+            result = lang
+          }
+        })
+        if (result) {
+          return result
+        } else {
+          return new Language()
         }
-      })
-      if (result) {
-        return result
       } else {
         return new Language()
       }
-    } else {
-      return new Language()
     }
-  }
-    constructor (props:any) {
+
+    constructor (props: any) {
       super(props)
       this.allOperators = props.operator,
       this.commonRules = [{
         id: 'relFields',
-        label: 'Relation Fields',
-        description: 'labels.relationField',
+        label: 'Relation Field',
+        description: 'labels.relationFieldLabel',
         searchQuery: null,
         conditions: [
           {
@@ -385,8 +386,8 @@ export default class SearchRules extends mixins(Vue) {
       // insert this.lookups
       rules.forEach(function (rule: any) {
         if (rule.id === 'tags') {
-          let finalTags:any = []
-          lookups.tags.forEach((t:any)=>{
+          const finalTags: any = []
+          lookups.tags.forEach((t: any) => {
             finalTags.push({
               label: t.code,
               value: t
@@ -394,8 +395,8 @@ export default class SearchRules extends mixins(Vue) {
           })
           rule.outputElement.options = finalTags
         } else if (rule.id === 'categories') {
-          let finalCats:any = []
-          lookups.categories.forEach((t:any)=>{
+          const finalCats: any = []
+          lookups.categories.forEach((t: any) => {
             finalCats.push({
               label: t.code,
               value: t
