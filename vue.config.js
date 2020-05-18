@@ -30,13 +30,13 @@ module.exports = {
       '/api': {
         target: {
           // host: '46.217.82.127',
-          host: 'localhost',
+          host: 'dse.e-act.nl',
           protocol: 'http:',
           port: 8080
         },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://46.217.82.127:8080')
-          proxyReq.setHeader('origin', 'http://localhost:8080')
+          proxyReq.setHeader('origin', 'http://dse.e-act.nl:8080')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
@@ -45,34 +45,34 @@ module.exports = {
       '/socket': {
         target: {
           // host: '46.217.82.127',
-          host: 'localhost',
+          host: 'dse.e-act.nl',
           protocol: 'http:',
           port: 18081
         },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://46.217.82.127:180801')
-          proxyReq.setHeader('origin', 'http://localhost:18081')
+          proxyReq.setHeader('origin', 'http://dse.e-act.nl:18081')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
-        ws: true,
+        ws: false,
         changeOrigin: true
       },
       '^/relation-socket': {
         target: {
           // host: '46.217.82.127',
-          host: 'localhost',
+          host: 'dse.e-act.nl',
           protocol: 'http:',
           port: 18080
         },
         pathRewrite: { '^/relation-socket': '/socket' },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://46.217.82.127:180801')
-          proxyReq.setHeader('origin', 'http://localhost:18080')
+          proxyReq.setHeader('origin', 'http://dse.e-act.nl:18080')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
-        ws: true,
+        ws: false,
         changeOrigin: true
       },
       '/render': {
