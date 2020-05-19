@@ -46,8 +46,8 @@ export default class App extends mixins(Vue, CommonHelpers) {
     companyService = CompanyService.getInstance();
     businessService = BusinessService.getInstance();
     counter = 0;
-    sockets = new Sockets({ url: 'http://dse.e-act.nl:18081/' });
-    relationSocket = new Sockets({ url: 'http://dse.e-act.nl:18080/' });
+    sockets = new Sockets({ url: 'http://localhost:18081/' });
+    relationSocket = new Sockets({ url: 'http://localhost:18080/' });
     loading = true;
     isReady = true;
     mainMenu = MenuDefinitions;

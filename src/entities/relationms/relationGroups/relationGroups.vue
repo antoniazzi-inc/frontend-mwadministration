@@ -49,8 +49,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">{{$t('buttons.save')}}</button>
               <button type="button" class="btn btn-secondary"  @click="closeModal">{{$t('buttons.close')}}</button>
+              <button type="submit" class="btn btn-primary">{{$t('buttons.save')}}</button>
             </div>
           </form>
         </div>

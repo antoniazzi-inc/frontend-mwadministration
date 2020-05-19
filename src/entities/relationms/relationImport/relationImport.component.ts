@@ -12,9 +12,6 @@ import { RelationEntity } from '@/shared/models/relationModel'
 import { RelationProfile } from '@/shared/models/relation-profile.model'
 import { RelationAddress } from '@/shared/models/relation-address.model'
 import { Company } from '@/shared/models/company.model'
-import { RelationPhone } from '@/shared/models/relation-phone.model'
-import { RelationCustomField } from '@/shared/models/relation-custom-field.model'
-import { customField, relation } from '@/shared/tabelsDefinitions'
 import { PhoneType } from '@/shared/models/company-phone.model'
 @Component({
   components: {
@@ -30,6 +27,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public relationService: any;
   public duplicateEmailsFound: number;
   public delimiterFields: boolean;
+  public isUploading: boolean;
   public insertEmptyValues: boolean;
   public hasHeaderField: boolean;
   public csvDelimiter: string;
@@ -70,6 +68,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     this.newGroup = ''
     this.delimiter = ''
     this.overwrite = false
+    this.isUploading = false
     this.insertEmptyValues = false
     this.fileContents = ''
     this.delimiterFields = false
@@ -92,7 +91,8 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     this.exampleCards = []
     this.numRowsInFile = 0
     this.dropzoneOptions = {
-      url: 'https://autorespond.nl',
+      url: '#',
+      autoProcessQueue: false,
       thumbnailWidth: 150,
       maxFilesize: 200,
       uploadMultiple: false,
@@ -259,6 +259,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
 
   public validateStep () {
     const self = this
+    self.isUploading = false
     return new Promise(resolve => {
       if (self.step === 1 && self.file) {
         self.step2()
@@ -272,6 +273,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
 
   public handleFile (file: any) {
     const me = this
+    me.isUploading = true
     me.file = file
     me.fileType = file.name.split('.').pop()
     if (me.fileType === 'csv') {
@@ -279,6 +281,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       me.hasHeaderField = true
       me.csvDelimiter = ','
       me.csvEscChar = '""'
+      me.isUploading = false
     } else if (me.fileType === 'vcf') {
       me.vcfFile = true
       me.delimiterFields = false
@@ -288,6 +291,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       const reader = new FileReader()
       const name = file.name
       reader.onload = function (e: any) {
+        me.isUploading = false
         let data = e.target.result
         data = data.split('END:VCARD')
         data.forEach(function (value: any, index: any) {
@@ -358,6 +362,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       const reader = new FileReader()
       const name = me.file.name
       reader.onload = function (e: any) {
+        me.isUploading = false
         const data = e.target.result
         let result
         let roa
@@ -550,7 +555,8 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
         self.emailFieldIndex = emailFieldIndex
       }
       const rowsInsertedCounter = 0
-      self.rows.forEach(function (rowValue, rowIndex) {
+      for(let rowIndex = 0; rowIndex < self.rows.length; rowIndex++){
+        let rowValue = self.rows[rowIndex]
         if (!self.vcfFile) {
           if (self.hasHeader && rowIndex === 0) {
             return
@@ -578,7 +584,8 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                 const singleRow: any = []
                 let counter = 0
                 const freeFields: any = []
-                rowValue.forEach(function (cellValue: any, cellIndex: any) {
+                for(let cellIndex = 0; cellIndex < rowValue.length; cellIndex++){
+                  let cellValue = rowValue[cellIndex]
                   if (!cellValue) {
                     cellValue = ''
                   }
@@ -606,11 +613,13 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                   if (counter === (rowValue.length)) {
                     const freeFieldsLabel = freeFields.map((e: any) => { return e.label })
                     exampleCard.push({ label: self.$t('labels.freeFieldsMenu'), value: freeFieldsLabel.join(', ') })
-                    self.exampleCards.push(exampleCard)
+                    if (self.relationsToImport < 5) {
+                      self.exampleCards.push(exampleCard)
+                    }
                     self.datafordb.push(singleRow)
                     self.relationsToImport += 1
                   }
-                })
+                }
               }
             } else {
               self.duplicateEmailsFound += 1
@@ -634,9 +643,11 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
               self.duplicateEmailsFound += 1
               self.duplicateEmailsList.push(foundDuplicate)
             } else {
+              debugger
               const exampleCard: any = []
               const singleRow: any = []
-              rowValue.forEach(function (cellValue: any, cellIndex: any) {
+              for(let cellIndex = 0; cellIndex < rowValue.length; cellIndex++){
+                let cellValue = rowValue[cellIndex]
                 // find duplicate email
                 const key = Object.keys(cellValue)
                 if (key[0] === 'email') {
@@ -651,25 +662,25 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                   myObj.value = cellValue[myObj.fieldName]
                   // self.datafordb.push(myObj);
                   singleRow.push(myObj)
-                  if (self.relationsToImport < 2) {
+                  if (self.relationsToImport < 5) {
                     exampleCard.push({ label: foundDbField[0].label, value: cellValue[myObj.fieldName] })
                   }
                 }
                 // inserted row counter
                 if (cellIndex === (rowValue.length - 1)) {
-                  if (self.relationsToImport < 2) {
+                  if (self.relationsToImport < 5) {
                     self.exampleCards.push(exampleCard)
                   }
                   self.datafordb.push(singleRow)
                   self.relationsToImport += 1
                 }
-              })
+              }
             }
           } else {
             self.duplicateEmailsFound += 1
           }
         }
-      })
+      }
       self.existingEmailsList = []
       // check on server for existing emails
       const pagination = {

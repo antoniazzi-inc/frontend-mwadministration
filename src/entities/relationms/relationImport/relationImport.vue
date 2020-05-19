@@ -27,6 +27,9 @@
                       <tab-content :title="$t('labels.uploadFile')" :before-change="validateStep" icon="fas fa-upload">
                         <div class="row">
                           <div class="col-md-5">
+                          <div class="spinner-border text-primary" role="status" v-if="isUploading">
+                            <span class="sr-only">Loading...</span>
+                          </div>
                             <vueDropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"
                                          :duplicateCheck="true"
                                          @vdropzone-file-added="handleFile"
@@ -66,6 +69,14 @@
                         <h3 v-html="$t('labels.handleRowColumnQuest')"></h3>
                         <p v-html="$t('labels.handleRowColumnQuestInfo')"></p>
                         <div style="width:99%; overflow: auto; overflow-y: hidden;" v-if="!vcfFile">
+                          <div class="row" v-if="rows.length === 0 || isUploading">
+                            <div class="col-md-12  text-center">
+                              <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                              </div>
+                            </div>
+                          </div>
+
                           <table class="table table-bordered" v-if="rows.length > 0">
                             <tbody>
                             <template v-for="(row,index) in rows">
@@ -367,5 +378,8 @@
     margin-top: -50px;
     float: right;
     height: 40px;
+  }
+  .dz-progress{
+    visibility: hidden!important;
   }
 </style>
