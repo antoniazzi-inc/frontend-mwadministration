@@ -23,8 +23,8 @@ export default class Sockets extends Vue {
     super(props)
     this.store = store
     this.administrationService = AdministrationService.getInstance()
-    this.socket = new SockJS('/socket')
-    this.relationSocket = new SockJS('/relation-socket')
+    this.socket = new SockJS('/administrationms/socket')
+    this.relationSocket = new SockJS('/relationms/socket')
     this.receivedMessages = []
     this.sendMessage = null
     this.connected = false

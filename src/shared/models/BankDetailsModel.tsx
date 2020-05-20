@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 import { BaseEntity } from './baseModel';
-import { IRelationEntity } from './RelationModel'
+import { IRelationEntity } from './relationModel'
 
 export interface IBankDetails extends BaseEntity {
     version?: number;

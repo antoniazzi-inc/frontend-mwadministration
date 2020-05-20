@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 import {BaseEntity} from './baseModel';
-import { IRelationEntity } from './RelationModel'
+import { IRelationEntity } from './relationModel'
 export const enum affiliateStatus {
     ACTIVE = 'ACTIVE',
     PENDING = 'PENDING',
