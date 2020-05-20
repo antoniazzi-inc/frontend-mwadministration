@@ -140,7 +140,7 @@
               <label>{{$t('labels.maxOccurrences')}}</label>
               <input :class="{'form-control': true, invalid: errors.has('Max-Occurrences')}" name="Max-Occurrences"
                      type="text"
-                     v-model="selectedOption.maxOccurrences" v-validate="'numeric|min_value:1|required'"/>
+                     v-model="selectedOption.maxOccurrences" v-validate="'numeric|min_value:1'"/>
               <span class="text-danger small">{{errors.first('Max-Occurrences')}}</span>
             </div>
           </div>

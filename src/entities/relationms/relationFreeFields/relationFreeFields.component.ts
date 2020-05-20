@@ -42,7 +42,7 @@ export default class RelationFreeFieldsComponent extends mixins(CommonHelpers, V
           this.setAlert('freeFieldRemoveError', 'error')
         }
         // @ts-ignore
-        this.$refs.paginationTable.retrieveData('api/relationms/api/custom-fields', undefined, q)
+        this.$refs.paginationTable.retrieveData('api/relationms/api/custom-fields', undefined, undefined)
       })
     }
   }

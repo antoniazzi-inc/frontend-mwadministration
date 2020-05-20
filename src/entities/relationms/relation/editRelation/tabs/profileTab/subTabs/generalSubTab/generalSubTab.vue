@@ -17,7 +17,7 @@
         <div class="col">
           <label>{{$t('labels.middleName')}}</label>
           <input type="text" :class="{'form-control': true, invalid: errors.has('middleName')}" v-model="relationProfile.middleName"
-                 name="middleName" v-validate="'alpha|max:20'" :placeholder="$t('labels.middleName')">
+                 name="middleName" v-validate="'alpha_spaces|max:20'" :placeholder="$t('labels.middleName')">
           <span class="text-danger small">{{errors.first('middleName')}}</span>
         </div>
         <div class="col">
