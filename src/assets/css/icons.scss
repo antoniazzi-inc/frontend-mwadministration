@@ -116,9 +116,6 @@
 .fa-envelope:before {
   content: '\f0e0';
 }
-.fa-search:before {
-  content: '\f002';
-}
 .os-icon-mail-14:before {
   content: '\e95e';
 }
@@ -308,11 +305,33 @@
 .fa-font:before {
   content: '\f031';
 }
-
+.fa-truck:before {
+  content: '\f0d1';
+}
+.dashicons-download:before {
+  content: '\f316';
+}
+.dashicons-book-alt:before {
+  content: '\f331';
+}
+.fa-ticket-alt:before {
+  content: '\f3ff';
+}
 .fa-map-signs:before {
   content: '\f277';
 }
-
+.fa-remove:before,
+.fa-close:before,
+.fa-times:before {
+  content: '\f00d';
+}
+.fa-rotate-right:before,
+.fa-repeat:before {
+  content: '\f01e';
+}
+.fa-undo:before {
+  content: '\f0e2';
+}
 .fa-file-import:before {
   content: '\f56f';
 }

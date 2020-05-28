@@ -39,3 +39,148 @@
 .date-input .form-control{
     padding-left: 35px;
 }
+.profile-tile {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.profile-tile .profile-tile-box {
+    width: 110px;
+    text-align: center;
+    border-radius: 6px;
+    padding: 1.2rem 0.5rem 0.5rem;
+    background-color: #fff;
+    -webkit-box-shadow: 0px 2px 4px rgba(126, 142, 177, 0.12);
+    box-shadow: 0px 2px 4px rgba(126, 142, 177, 0.12);
+    text-decoration: none;
+    color: #3e4b5b;
+    -webkit-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+    display: block;
+}
+
+.profile-tile .profile-tile-box:hover {
+    -webkit-transform: translateY(-5px) scale(1.02);
+    transform: translateY(-5px) scale(1.02);
+    -webkit-box-shadow: 0px 5px 12px rgba(126, 142, 177, 0.2);
+    box-shadow: 0px 5px 12px rgba(126, 142, 177, 0.2);
+}
+
+.profile-tile .profile-tile-box.faded {
+    background-color: #e9ecf3;
+    border: 1px dashed #acbeda;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.profile-tile .pt-avatar-w {
+    display: inline-block;
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.profile-tile .pt-avatar-w img {
+    width: 60px;
+    height: auto;
+}
+
+.profile-tile .pt-user-name {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.63rem;
+    text-transform: uppercase;
+}
+
+.profile-tile .pt-new-icon {
+    background-color: #047bf8;
+    color: #fff;
+    vertical-align: middle;
+    display: inline-block;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 50%;
+    line-height: 1;
+    height: 35px;
+    width: 35px;
+    margin-bottom: 10px;
+}
+
+.profile-tile .pt-new-icon i {
+    line-height: 35px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.profile-tile .profile-tile-meta {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    padding-left: 30px;
+}
+
+.profile-tile .profile-tile-meta ul {
+    list-style: none;
+    font-size: 0.63rem;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.4);
+    margin: 0px;
+    padding: 0px;
+}
+
+.profile-tile .profile-tile-meta ul li {
+    margin-bottom: 3px;
+}
+
+.profile-tile .profile-tile-meta ul strong {
+    color: #3e4b5b;
+    margin-left: 5px;
+}
+
+.profile-tile .profile-tile-meta ul strong a {
+    color: #3e4b5b;
+    text-decoration: none;
+    border-bottom: 1px solid #3e4b5b;
+}
+
+.profile-tile .pt-btn {
+    margin-top: 10px;
+}
+
+.inline-profile-tiles .profile-tile {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 1 130px;
+    flex: 0 1 130px;
+    margin-bottom: 10px;
+    padding-bottom: 0px;
+    border-bottom: none;
+    padding: 0px;
+}
+
+.inline-profile-tiles .profile-tile .pt-avatar-w img {
+    width: 40px;
+    height: auto;
+}
+
+.inline-profile-tiles .profile-tile .profile-tile-box {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    padding-bottom: 10px;
+}
+
+.inline-profile-tiles .profile-tile .pt-user-name {
+    border-top: none;
+    padding-top: 0px;
+    text-transform: none;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    margin-top: 5px;
+}

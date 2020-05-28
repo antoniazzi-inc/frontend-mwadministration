@@ -1,11 +1,11 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import {IProduct} from "@/shared/models/productModel";
+import { IProduct } from '@/shared/models/ProductModel'
 
 export default class ProductService extends BaseEntityService<IProduct> {
   private static instance: ProductService;
 
   private constructor () {
-    super('api/productms/api/products')
+    super('/api/productms/api/products')
   }
 
   public static getInstance (): ProductService {
@@ -13,5 +13,35 @@ export default class ProductService extends BaseEntityService<IProduct> {
       return new ProductService()
     }
     return ProductService.instance
+  }
+
+  public createOnBucket (obj: any) {
+    return new Promise(resolve => {
+      resolve(true)
+    })
+  }
+
+  public updateOnBucket (obj: any) {
+    return new Promise(resolve => {
+      resolve(true)
+    })
+  }
+
+  public deleteFromBucket (obj: any) {
+    return new Promise(resolve => {
+      resolve(true)
+    })
+  }
+
+  public searchMedia (pagination: any, q: any) {
+    return new Promise(resolve => {
+      resolve(true)
+    })
+  }
+
+  public loadAllMedia (pagination: any) {
+    return new Promise(resolve => {
+      resolve(true)
+    })
   }
 }

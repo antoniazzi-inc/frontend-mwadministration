@@ -44,4 +44,7 @@ export function initFilters () {
     }
     return ''
   })
+  Vue.filter('formatSize', function (value: any) {
+    return `${value / 1000} kb`
+  })
 }

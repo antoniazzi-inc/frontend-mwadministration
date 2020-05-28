@@ -42,6 +42,21 @@ module.exports = {
         },
         changeOrigin: true
       },
+      '/productms': {
+        target: {
+          // host: '46.217.82.127',
+          host: 'localhost',
+          protocol: 'http:',
+          port: 8080
+        },
+        onProxyReq: proxyReq => {
+          // proxyReq.setHeader('origin', 'http://46.217.82.127:8080')
+          proxyReq.setHeader('origin', 'http://localhost:8080')
+          proxyReq.setHeader('sec-fetch-mode', 'no-cors')
+          proxyReq.setHeader('Sec-Fetch-Site', 'none')
+        },
+        changeOrigin: true
+      },
       '/socket': {
         target: {
           // host: '46.217.82.127',

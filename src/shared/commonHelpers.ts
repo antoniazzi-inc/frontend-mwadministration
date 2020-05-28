@@ -3,7 +3,7 @@ import { ILanguage, Language } from '@/shared/models/language.model'
 import { columnsVisibility } from '@/shared/tabelsDefinitions'
 import { Country } from '@/shared/models/country.model'
 import { isObject, isString } from 'util'
-
+import axios from 'axios'
 @Component
 export default class CommonHelpers extends Vue {
   /*
@@ -344,6 +344,23 @@ export default class CommonHelpers extends Vue {
   }
 
   /*
+   * Name: convertFileToBase64
+   * arg: file -> File
+   * description: converts file to base64 string
+   * Author: Nick Dam
+   */
+  public convertFileToBase64 = (file: any) => new Promise((resolve, reject) => {
+    const self = this
+    const reader = new FileReader()
+    reader.onload = (function (theFile) {
+      return function (e: any) {
+        resolve(e.currentTarget.result.replace(/^data:(image|application|video)\/(png|jpeg|jpg|pdf|doc|docx|avi|mp4);base64,/, ''))
+      }
+    })(file)
+    reader.readAsDataURL(file)
+  });
+
+  /*
    * Name: extractAddress
    * arg: addresses:[] -> Array Of addresses
    * description: Extract address from given array and returns address label and address type
@@ -472,5 +489,61 @@ export default class CommonHelpers extends Vue {
         label: this.$t('labels.doNotAssign')
       }]
     return result
+  }
+
+  public ifUserCanUpload4k () {
+    return false
+  }
+
+  public loadProperImage (image: any) {
+    const self = this
+    return new Promise<any>(resolve => {
+      let url = ''
+      const preUrl = image.url.replace('https://storage.googleapis.com', '/getFromCloud')
+      if (this.ifUserCanUpload4k()) {
+        url = preUrl + '_4K'
+      } else {
+        url = preUrl + '_1K'
+      }
+      axios.get(url + '?' + Math.random(), { responseType: 'arraybuffer' }).then(function (res) {
+        if (!res || res.status === 404) {
+          url = preUrl + '/' + image.name.replace(/(\.[\w\d_-]+)$/i, '_720p$1')
+          axios.get(url + '?' + Math.random(), { responseType: 'arraybuffer' }).then(function (res1) {
+            if (!res || res.status === 404) {
+              url = preUrl + '_360p?' + Math.random()
+              axios.get(url, { responseType: 'arraybuffer' }).then(function (res2) {
+                if (!res || res.status === 404) {
+                  url = preUrl + '_thumb'
+                  axios.get(url + '?' + Math.random(), { responseType: 'arraybuffer' }).then(function (res3) {
+                    if (!res || res.status === 404) {
+                      resolve(null)
+                    } else {
+                      // @ts-ignore
+                      const base64String = self.arrayBufferToBase64(res3.data)
+                      resolve(base64String)
+                    }
+                  })
+                } else {
+                  const blob = new Blob([new Uint8Array(res.data)])
+                  // @ts-ignore
+                  const base64String = self.arrayBufferToBase64(res2.data)
+                  resolve(base64String)
+                }
+              })
+            } else {
+              const blob = new Blob([new Uint8Array(res.data)])
+              // @ts-ignore
+              const base64String = self.arrayBufferToBase64(res1.data)
+              resolve(base64String)
+            }
+          })
+        } else {
+          const blob = new Blob([new Uint8Array(res.data)])
+          // @ts-ignore
+          const base64String = self.arrayBufferToBase64(res.data)
+          resolve(base64String)
+        }
+      })
+    })
   }
 }

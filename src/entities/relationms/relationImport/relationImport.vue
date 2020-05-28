@@ -66,6 +66,11 @@
                       </tab-content>
                       <tab-content :title="$t('labels.mapFields')" :before-change="validateStep"
                                    icon="fas fa-map-signs">
+                        <div class="loader-import text-center justify-content-center align-items-center align-content-center" v-if="isProcessing">
+                          <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                        </div>
                         <h3 v-html="$t('labels.handleRowColumnQuest')"></h3>
                         <p v-html="$t('labels.handleRowColumnQuestInfo')"></p>
                         <div style="width:99%; overflow: auto; overflow-y: hidden;" v-if="!vcfFile">
@@ -176,13 +181,8 @@
                               <template v-for="(card, index) in cardinfo">
                               <dl :key="index">
                                 <dt>{{card.label}}</dt>
-                                <dd>{{card.value}}</dd>
+                                <dd>{{card.value}} <v-gravatar v-if="card.label.toLowerCase() === 'email'" class="avatar-sm" :email="card.value" :size="50"></v-gravatar></dd>
                               </dl>
-                              </template>
-                              <template v-for="(card, index) in cardinfo">
-                                <div  :key="index + 'email'" class="gravatar__profile" v-if="card.label.toLowerCase() === 'email'">
-                                  <v-gravatar class="avatar-sm" :email="card.value" :size="50"></v-gravatar>
-                                </div>
                               </template>
                             </div>
                           </div>
@@ -270,7 +270,6 @@
             </div>
           </div>
         </div>
-        <!-- <app-help-widget-content page="relation_import"></app-help-widget-content>-->
       </div>
     </div>
   </div>
@@ -375,11 +374,24 @@
   }
 
   .well .gravatar__profile {
-    margin-top: -50px;
     float: right;
-    height: 40px;
+    height: 50px;
   }
   .dz-progress{
     visibility: hidden!important;
+  }
+  .loader-import{
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(1,1,1,0.5);
+    text-align: center;
+    z-index: 999;
+  }
+  .avatar-sm{
+    float: right;
   }
 </style>

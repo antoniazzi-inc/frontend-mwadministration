@@ -1,0 +1,302 @@
+import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
+import SearchableMultiSelectComponent from '@/components/searchableSelect/searchableMultiSelect.vue'
+import { Money } from 'v-money'
+import SearchableSingleSelectComponent from '@/components/searchableSelect/searchableSingleSelect.vue'
+import { mixins } from 'vue-class-component'
+import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
+import CommonHelpers from '@/shared/commonHelpers'
+import { IProduct, Product } from '@/shared/models/ProductModel'
+import { IRegion } from '@/shared/models/region.model'
+import { ProductDeliveryMethod } from '@/shared/models/ProductDeliveryMethodModel'
+import { ITypePhysical, TypePhysical } from '@/shared/models/TypePhysicalModel'
+import typephysicalsService from '@/shared/services/type-physicalsService'
+import productdeliverymethodsService from '@/shared/services/product-delivery-methodsService'
+import { AxiosResponse } from 'axios'
+@Component({
+  props: {
+    product: Object,
+    clicked: Boolean
+  },
+  components: {
+    'multi-select': SearchableMultiSelectComponent,
+    'single-select': SearchableSingleSelectComponent,
+    'toggle-switch': ToggleSwitch,
+    money: Money
+  }
+})
+export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
+    public typePhysicalService: any = typephysicalsService.getInstance()
+    public productDeliveryMethodService: any = productdeliverymethodsService.getInstance()
+    public productCopy: IProduct|any = new Product();
+    public productBackup: IProduct|null = null;
+    public selectedRegion: IRegion|null = null;
+    public itemToEdit: ProductDeliveryMethod|null = null;
+    public itemPrice = 0;
+    public basePrice = 0;
+    public editItemMode = false;
+    public itemToDelete: number|null = null;
+    public allRegions: IRegion[] = [];
+    public typePhysical: ITypePhysical|any = new TypePhysical();
+    public multiSelectConfig = {
+      required: false,
+      trackBy: 'name',
+      allowEmpty: true
+    };
+
+    public allFulfilments = [];
+    public allShippingMethods = [];
+    public selectedShippingMethods = [];
+    public selectedShippingMethod = null;
+    public allCountries = this.$store.state.allCountries;
+    public selectedFulfilments = [];
+    public fulfilemtnParty = {
+      name: '',
+      description: ''
+    };
+
+    public money = {
+      decimal: ',',
+      thousands: '.',
+      prefix: '€',
+      suffix: '',
+      precision: 2,
+      masked: false
+    };
+
+    @Watch('clicked', { immediate: true, deep: true })
+    public updateClicked (newVal: any) {
+      const self = this
+      this.productCopy = this.$props.product
+      this.typePhysical = this.$props.product.typePhysical ? this.$props.product.typePhysical : new TypePhysical()
+      this.selectedShippingMethods = this.$props.product.productDeliveryMethods
+      this.productBackup = this.productBackup === null ? JSON.parse(JSON.stringify(this.$props.product)) : this.productBackup
+      $.each(this.typePhysical.shippingCostsJson, function (k, v: any) {
+        let costIndex: any = null
+        let country: any = {}
+        $.each(self.allCountries, function (i, j: any) {
+          if (v.regionId == j.id) {
+            costIndex = k
+            country = j
+          }
+        })
+        if (costIndex !== null) {
+          Vue.nextTick(function () {
+            if (self.typePhysical.shippingCostsJson) self.typePhysical.shippingCostsJson[costIndex].regionId = country.id
+          })
+        }
+      })
+      this.retrieve()
+    }
+
+    public retrieve () {
+      const self = this
+      const methods: any = []
+      $.each(this.$store.state.lookups.deliveryMethods, function (k, v) {
+        methods.push({
+          name: self.getMultiLangName(v.deliveryMethodLanguages).name,
+          value: v
+        })
+      })
+      this.$set(this, 'allShippingMethods', methods)
+      this.retrieveRegions()
+    }
+
+    public retrieveRegions () {
+      const regions: any = []
+      $.each(this.$store.state.lookups.regions, function (k, v) {
+        regions.push({
+          name: v.name,
+          value: v
+        })
+      })
+      this.allRegions = regions
+    }
+
+    public fulfilmentChanged (fulfilment: any) {}
+    public removeFulfilment (fulfilment: any) {}
+    public shippingMethodChanged (method: any) {
+      this.selectedShippingMethod = method
+    }
+
+    public removeShippingMethod (method: any) {
+      const index: any = null
+      $.each(this.selectedShippingMethods, function (k, v: any) {
+        if (v.value.id === method.value.id) {
+          index; k
+        }
+      })
+      if (index !== null && this.typePhysical.shippingCostsJson) {
+        this.selectedShippingMethods.splice(index, 1)
+        this.typePhysical.shippingCostsJson.splice(index, 1)
+      }
+    }
+
+    public addNewShipping () {
+      this.selectedRegion = null
+      this.selectedShippingMethod = null
+      this.itemPrice = 0
+      this.basePrice = 0
+    }
+
+    public closeDialogShipping () {
+      (<any> this.$refs.createProductPayment).hide()
+    }
+
+    public closeDialogRemove () {
+      (<any> this.$refs.removeEntityShipping).hide()
+    }
+
+    public addNewShippingMethod () {
+      if (this.editItemMode == true) {
+        // @ts-ignore
+        this.itemToEdit.regionId = this.selectedRegion.value.id
+
+        if (this.itemToEdit) {
+          // @ts-ignore
+          this.itemToEdit.deliveryMethodId = this.selectedShippingMethod.value.id
+          this.itemToEdit.basePrice = this.basePrice
+          this.itemToEdit.itemPrice = this.itemPrice
+          this.itemToEdit.product = {
+            id: this.productCopy.id,
+            administrationId: this.productCopy.administrationId,
+            version: this.productCopy.version,
+            createdOn: this.productCopy.createdOn,
+            updatedOn: this.productCopy.updatedOn,
+            availableTo: this.productCopy.availableTo,
+            availableFrom: this.productCopy.availableFrom,
+            price: this.productCopy.price,
+            tax: this.productCopy.tax,
+            productType: this.productCopy.productType
+          }
+        }
+        this.productDeliveryMethodService.put(this.itemToEdit).then((resp: AxiosResponse) => {
+          this.setAlert('deliveryMethodUpdated', 'success')
+          this.closeDialogShipping()
+          let index = null
+          $.each(this.selectedShippingMethods, function (k, v: any) {
+            if (v.id === resp.data.id) {
+              index = k
+            }
+          })
+          if (index) {
+            this.$set(this.selectedShippingMethods, index, resp)
+          }
+          this.itemToEdit = null
+          this.editItemMode = false
+        })
+      } else {
+        const delivery = new ProductDeliveryMethod()
+        // @ts-ignore
+        delivery.deliveryMethodId = this.selectedShippingMethod.value.id
+        // @ts-ignore
+        delivery.regionId = this.selectedRegion.value.id
+        delivery.basePrice = this.basePrice
+        delivery.itemPrice = this.itemPrice
+        delivery.product = {
+          id: this.productCopy.id,
+          administrationId: this.productCopy.administrationId,
+          version: this.productCopy.version,
+          createdOn: this.productCopy.createdOn,
+          updatedOn: this.productCopy.updatedOn,
+          availableTo: this.productCopy.availableTo,
+          availableFrom: this.productCopy.availableFrom,
+          price: this.productCopy.price,
+          tax: this.productCopy.tax,
+          productType: this.productCopy.productType
+        }
+        this.productDeliveryMethodService.post(delivery).then((resp: AxiosResponse) => {
+          this.setAlert('deliveryMethodCreated', 'success')
+          this.closeDialogShipping()
+          // @ts-ignore
+          this.selectedShippingMethods.push(resp.data)
+          this.itemToEdit = null
+          this.editItemMode = false
+        })
+      }
+    }
+
+    public prepareRemove (item: any) {
+      this.itemToDelete = item
+    }
+
+    public editItem (item: any) {
+      let region = null
+      let method = null
+      this.itemToEdit = item
+      $.each(this.allRegions, function (k, v) {
+        // @ts-ignore
+        if (v.value.id === item.regionId) {
+          region = v
+        }
+      })
+      $.each(this.allShippingMethods, function (k, v: any) {
+        if (v.value.id === item.deliveryMethodId) {
+          method = v
+        }
+      })
+      this.editItemMode = true
+      this.selectedRegion = region
+      this.selectedShippingMethod = method
+      this.basePrice = item.basePrice
+      this.itemPrice = item.itemPrice
+    }
+
+    public removeShipping () {
+      // @ts-ignore
+      this.productDeliveryMethodService.delete(this.selectedShippingMethods[this.itemToDelete].id).then(resp => {
+        if (this.itemToDelete) { this.selectedShippingMethods.splice(this.itemToDelete, 1) }
+        // @ts-ignore
+        this.setAlert('deliveryMethodDeleted', 'success')
+        this.itemToDelete = null
+        this.closeDialogRemove()
+      })
+    }
+
+    public regionChanged (region: any) {
+      this.selectedRegion = region
+    }
+
+    public removeRegion (region: any) {
+      this.selectedRegion = null
+    }
+
+    public save () {
+      const self = this
+      $.each(this.typePhysical.shippingCostsJson, function (k, v: any) {
+        if (self.typePhysical.shippingCostsJson) { self.typePhysical.shippingCostsJson[k].regionId = v.regionId.id }
+      })
+      if (this.typePhysical.id) {
+        this.typePhysicalService.put(this.typePhysical).then((resp: AxiosResponse) => {
+          // @ts-ignore
+          this.setAlert('productUpdated', 'success')
+          this.typePhysical = resp
+        })
+      }
+    }
+
+    public cancel () {
+      this.productCopy = this.productBackup
+      this.typePhysical = this.productBackup ? this.productBackup.typePhysical : null
+    }
+
+    public getRegionName (item: any) {
+      let name: any = ''
+      $.each(this.allRegions, function (k, v: any) {
+        // @ts-ignore
+        if (v.value.id === item.regionId) {
+          name = v.name
+        }
+      })
+      return name
+    }
+
+    public getMethodName (item: any) {
+      let name = ''
+      $.each(this.allShippingMethods, function (k, v: any) {
+        if (v.value.id === item.deliveryMethodId) {
+          name = v.name
+        }
+      })
+      return name
+    }
+}

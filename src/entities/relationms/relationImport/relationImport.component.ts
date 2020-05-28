@@ -38,6 +38,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public delimiter: string;
   public hasHeader: boolean;
   public btnNextDisabled: boolean;
+  public isProcessing: boolean;
   public overwrite: boolean;
   public dropzoneOptions: any;
   public file: any;
@@ -72,6 +73,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     this.insertEmptyValues = false
     this.fileContents = ''
     this.delimiterFields = false
+    this.isProcessing = false
     this.hasHeaderField = false
     this.csvDelimiter = ','
     this.csvEscChar = '"'
@@ -260,13 +262,17 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public validateStep () {
     const self = this
     self.isUploading = false
+    self.isProcessing = false
     return new Promise(resolve => {
       if (self.step === 1 && self.file) {
         self.step2()
         resolve(true)
       } else if (self.step === 2) {
-        self.step3()
-        resolve(true)
+        self.isProcessing = true
+        setTimeout(function () {
+          self.step3()
+          resolve(true)
+        }, 100)
       } else resolve(!!this.file)
     })
   }
@@ -555,11 +561,12 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
         self.emailFieldIndex = emailFieldIndex
       }
       const rowsInsertedCounter = 0
-      for(let rowIndex = 0; rowIndex < self.rows.length; rowIndex++){
-        let rowValue = self.rows[rowIndex]
+      for (let rowIndex = 0; rowIndex <= self.rows.length - 1; rowIndex++) {
+        const rowValue = self.rows[rowIndex]
+
         if (!self.vcfFile) {
           if (self.hasHeader && rowIndex === 0) {
-            return
+            continue
           }
           let foundDuplicate
           // Check if there is a email column
@@ -568,26 +575,31 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
             if (rowValue[self.emailFieldIndex] !== undefined && rowValue[self.emailFieldIndex] !== '') {
               // Set the email values to lowercase
               rowValue[self.emailFieldIndex] = rowValue[self.emailFieldIndex].toLowerCase()
-              emails.push(rowValue[self.emailFieldIndex])
-              self.datafordb.filter(function (arr) {
-                arr.filter(function (obj: any) {
+              emails[emails.length] = rowValue[self.emailFieldIndex]
+              // emails.push(rowValue[self.emailFieldIndex])
+              debugger
+              for (let i = 0; i < self.datafordb.length; i++) {
+                const arr = self.datafordb[i]
+                for (let j = 0; j < arr.length; j++) {
+                  const obj = arr[j]
                   if (obj.value === rowValue[self.emailFieldIndex]) {
                     foundDuplicate = obj.value
                   }
-                })
-              })
+                }
+              }
               if (foundDuplicate !== undefined) {
                 self.duplicateEmailsFound += 1
-                self.duplicateEmailsList.push(foundDuplicate)
+                self.duplicateEmailsList[self.duplicateEmailsList.length] = foundDuplicate
+                // self.duplicateEmailsList.push(foundDuplicate)
               } else {
                 const exampleCard: any = []
                 const singleRow: any = []
                 let counter = 0
                 const freeFields: any = []
-                for(let cellIndex = 0; cellIndex < rowValue.length; cellIndex++){
+                for (let cellIndex = 0; cellIndex < rowValue.length; cellIndex++) {
                   let cellValue = rowValue[cellIndex]
                   if (!cellValue) {
-                    cellValue = ''
+                    cellValue = '-'
                   }
                   counter += 1
                   const columnName = typeof self.mappings[cellIndex].dbfield === 'string' ? self.mappings[cellIndex].dbfield : 'customFields'
@@ -596,27 +608,35 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                   // }
                   const myObj: any = {}
                   myObj.fieldName = columnName
-                  myObj.value = typeof self.mappings[cellIndex].dbfield === 'string' ? cellValue : { value: self.mappings[cellIndex].dbfield, cellVal: rowValue[cellIndex] ? rowValue[cellIndex] : '' }
+                  myObj.value = typeof self.mappings[cellIndex].dbfield === 'string' ? cellValue : { value: self.mappings[cellIndex].dbfield, cellVal: rowValue[cellIndex] ? rowValue[cellIndex] : '-' }
                   // myObj[columnName] = cellValue;
                   // self.datafordb.push(myObj);
                   if (columnName !== 'dnassign') {
-                    singleRow.push(myObj)
+                    singleRow[singleRow.length] = myObj
+                    // singleRow.push(myObj)
                     if (columnName === 'customFields') {
-                      freeFields.push({ label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex] })
+                      freeFields[freeFields.length] = { label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex] }
+                      // freeFields.push({label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex]})
                     } else {
-                      const foundDbField = self.dbfields.filter(x => x.value === columnName)
-                      exampleCard.push({ label: foundDbField[0].label, value: myObj.value })
+                      for (let i = 0; i < self.dbfields.length; i++) {
+                        const x = self.dbfields[i]
+                        if (x.value === columnName) {
+                          exampleCard[exampleCard.length] = { label: x.label, value: myObj.value }
+                        }
+                      }
                     }
                   }
                   // inserted row counter
-                  // if (cellIndex === (rowValue.length - 1)) {
                   if (counter === (rowValue.length)) {
-                    const freeFieldsLabel = freeFields.map((e: any) => { return e.label })
-                    exampleCard.push({ label: self.$t('labels.freeFieldsMenu'), value: freeFieldsLabel.join(', ') })
-                    if (self.relationsToImport < 5) {
-                      self.exampleCards.push(exampleCard)
+                    const freeFieldsLabel = []
+                    for (let z = 0; z < freeFields.length; z++) {
+                      freeFieldsLabel[z] = freeFields[z].label
                     }
-                    self.datafordb.push(singleRow)
+                    if (self.relationsToImport <= 5) {
+                      if (freeFieldsLabel.length) exampleCard[exampleCard.length] = { label: self.$t('labels.freeFieldsMenu'), value: freeFieldsLabel.join(', ') }
+                      self.exampleCards[self.exampleCards.length] = exampleCard
+                    }
+                    self.datafordb[self.datafordb.length] = singleRow
                     self.relationsToImport += 1
                   }
                 }
@@ -643,11 +663,9 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
               self.duplicateEmailsFound += 1
               self.duplicateEmailsList.push(foundDuplicate)
             } else {
-              debugger
               const exampleCard: any = []
               const singleRow: any = []
-              for(let cellIndex = 0; cellIndex < rowValue.length; cellIndex++){
-                let cellValue = rowValue[cellIndex]
+              rowValue.forEach(function (cellValue: any, cellIndex: any) {
                 // find duplicate email
                 const key = Object.keys(cellValue)
                 if (key[0] === 'email') {
@@ -662,25 +680,26 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                   myObj.value = cellValue[myObj.fieldName]
                   // self.datafordb.push(myObj);
                   singleRow.push(myObj)
-                  if (self.relationsToImport < 5) {
+                  if (self.relationsToImport < 2) {
                     exampleCard.push({ label: foundDbField[0].label, value: cellValue[myObj.fieldName] })
                   }
                 }
                 // inserted row counter
                 if (cellIndex === (rowValue.length - 1)) {
-                  if (self.relationsToImport < 5) {
+                  if (self.relationsToImport < 2) {
                     self.exampleCards.push(exampleCard)
                   }
                   self.datafordb.push(singleRow)
                   self.relationsToImport += 1
                 }
-              }
+              })
             }
           } else {
             self.duplicateEmailsFound += 1
           }
         }
       }
+
       self.existingEmailsList = []
       // check on server for existing emails
       const pagination = {
@@ -699,6 +718,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       const query = 'email=in=(' + queryP + ')'
       this.relationService.search(query).then((resp: AxiosResponse) => {
         if (resp) {
+          self.isProcessing = false
           if (resp.data.content.length > 0) {
             resp.data.content.forEach((rel: any) => {
               self.existingEmailsList.push(rel.email)

@@ -217,6 +217,81 @@ export const tag = {
     }
   ]
 }
+
+export const product = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 10,
+  cols: [
+    {
+      name: 'labels.administrationId',
+      field: 'administrationId',
+      subField: null,
+      type: '',
+      authorities: ['ROLE_SUPER_ADMIN'],
+      sort: false
+    },
+    {
+      name: 'labels.id',
+      field: 'id',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.price',
+      field: 'price',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }, {
+      name: 'labels.name',
+      field: 'name',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        return getMultiLangName(item.productLanguages).name
+      }
+    },
+    {
+      name: 'labels.createdOn',
+      field: 'createdOn',
+      subField: null,
+      type: 'date',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }, {
+      name: 'labels.productCategory',
+      field: 'productCategory',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        return getMultiLangName(item.productLanguages).name
+      }
+    }, {
+      name: 'labels.productType',
+      field: 'productType',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }
+  ]
+}
 export const roles = {
   actions: {
     copy: true,
@@ -1392,7 +1467,7 @@ export const relation = {
       sort: false,
       method: function (item: any) {
         if (item.relationAddresses && item.relationAddresses.length > 0) {
-          return getCountryById(item.relationAddresses[0].countryId)
+          return getCountryById(item.relationAddresses[0].countryId).enName
         }
         return '-'
       }
@@ -1631,6 +1706,15 @@ export const columnsVisibility = {
     ruleType: true,
     createdOn: true,
     country: true,
+    itemsPerPage: 20
+  },
+  product: {
+    id: true,
+    price: true,
+    name: true,
+    createdOn: true,
+    productCategory: true,
+    productType: true,
     itemsPerPage: 20
   },
   regions: {

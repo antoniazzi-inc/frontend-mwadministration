@@ -3,7 +3,16 @@ import { MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
 @Component({
   props: {
     config: MultiLanguageConfig,
-    value: Array
+    value: {
+      type: Array
+    },
+    isValidating: Boolean
+  },
+  $_veeValidate: {
+    name () {
+      // @ts-ignore
+      return this.selectedLangauge.name
+    }
   }
 })
 export default class MultiLanguageComponent extends Vue {

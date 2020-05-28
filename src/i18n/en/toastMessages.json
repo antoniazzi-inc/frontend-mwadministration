@@ -102,5 +102,11 @@
   "relationGroupsCreated": "Relation Groups Created",
   "relationGroupsCreateError": "Relation Groups Create Error",
   "relationGroupsUpdated": "Relation Groups Updated",
-  "relationGroupsUpdateError": "Relation Groups Update Error"
+  "relationGroupsUpdateError": "Relation Groups Update Error",
+  "productCreateError": "Product Create Error",
+  "productCreated": "Product Created",
+  "productUpdated": "Product Updated",
+  "productRemoved": "Product Removed",
+  "errorUploadingImage": "Error Uploading Image",
+  "productUpdateError": "Product Update Error"
 }

@@ -122,7 +122,7 @@
                 <div class="font-weight-bold ml-2">{{getUserName()}}</div>
                 <div class="small">{{getUserRole()}}</div>
               </div>
-            <router-link to="" data-toggle="modal" @click.native="loadUser" data-target="#userProfileModal" class="dropdown-item child-link">
+            <router-link to=""  @click.native="loadUser" data-toggle="modal" data-target="#userProfileModal" class="dropdown-item child-link">
               <div class="row">
                 <div class="col-md-2 ml-2">
                   <i class="fas fa-user-tie"/>

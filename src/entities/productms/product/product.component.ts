@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import productService from '@/shared/services/productService'
+
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
 import { AxiosResponse } from 'axios'
 import { mixins } from 'vue-class-component'
@@ -9,6 +9,7 @@ import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import complexSearchComponent from '@/entities/relationms/relation/complexSearch/complexSearch.vue'
 import { EventBus } from '@/shared/eventBus'
+import ProductService from '@/shared/services/productService'
 
 @Component({
   components: {
@@ -63,7 +64,7 @@ export default class ProductComponent extends mixins(CommonHelpers, Vue) {
     this.active = true
     this.showQueryPopupForSimpleQueries = false
     this.showSearchQueries = false
-    this.productService = productService.getInstance()
+    this.productService = ProductService.getInstance()
   }
 
   public mounted () {

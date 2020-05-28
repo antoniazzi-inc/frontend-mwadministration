@@ -3,6 +3,7 @@
     <div class="form-group" v-if="$props.config.showName">
       <label>{{$t($props.config.nameLabel)}}</label>
       <input type="text" v-validate="$props.config.requiredName ? 'required' : ''" :class="{'form-control':true, invalid: errors.has('name')}" name="name" v-model="selectedValue.name"/>
+      <span class="small text-danger" v-if="$props.isValidating">{{errors.first('name')}}</span>
     </div>
     <div class="form-group" v-if="$props.config.showDescription">
       <label>{{$t($props.config.descriptionLabel)}}</label>
