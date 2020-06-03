@@ -9,6 +9,8 @@ export interface IPromotionLanguage extends IBaseEntity {
     version?: number;
     langKey?: string;
     name?: string;
+    notAvailableMessage?: string;
+    maxExceededMessage?: string;
     description?: string;
     administrationId?: number;
     promotion?: IPromotion;
@@ -21,6 +23,8 @@ constructor(
     public id?: number,
     public version?: number,
     public langKey?: string,
+    public notAvailableMessage?: string,
+    public maxExceededMessage?: string,
     public name?: string,
     public description?: string,
     public administrationId?: number,

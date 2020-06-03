@@ -8,7 +8,6 @@ import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import complexSearchComponent from '@/entities/relationms/relation/complexSearch/complexSearch.vue'
-import { EventBus } from '@/shared/eventBus'
 import ProductService from '@/shared/services/productService'
 
 @Component({
@@ -89,7 +88,7 @@ export default class ProductComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public editProduct (prod: any) {
-    this.$router.push({ name: 'EditProducts', params: { id: prod.id } })
+    this.$router.push({ name: 'EditProduct', params: { id: prod.id } })
   }
 
   public deleteProduct (prod: any) {

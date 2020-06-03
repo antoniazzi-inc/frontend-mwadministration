@@ -181,7 +181,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     const dtoEdit: any = []
     this.isSaving = true
     this.resizeImages().then(resp => {
-      $.each(resp, function (k, v:any) {
+      $.each(resp, function (k, v: any) {
         // @ts-ignore
         if (v.id && v.id > 0) {
           // @ts-ignore

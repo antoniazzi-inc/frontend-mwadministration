@@ -313,15 +313,19 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
             resolve(false)
           }
         } else {
-          this.$validator.validateAll({
-            url: this.product.typeDigital.url
-          }).then(valid => {
-            if (valid) {
-              resolve(true)
-            } else {
-              resolve(false)
-            }
-          })
+          if (this.product.productType === 'COURSE') {
+            this.$validator.validateAll({
+              url: this.product.typeDigital.url
+            }).then(valid => {
+              if (valid) {
+                resolve(true)
+              } else {
+                resolve(false)
+              }
+            })
+          } else {
+            resolve(true)
+          }
         }
       }
     })
@@ -464,6 +468,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
       switch (this.product.productType) {
         case 'DIGITAL':
           dto.typeDigital = self.product.typeDigital
+          dto.typeDigital.notPaidDownload = false
           break
         case 'COURSE':
           dto.typeCourse = self.product.typeCourse

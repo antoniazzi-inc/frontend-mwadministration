@@ -79,27 +79,28 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
 
     @Watch('product', { immediate: true, deep: true })
     public updateProd (newVal: any) {
-      this.payBtn = newVal.payButtonJson.buttonName && newVal.payButtonJson.width && newVal.payButtonJson.height ? newVal.payButtonJson : {
-        emptyCart: true,
-        buttonName: 'Add to cart !',
-        shoppingCartLanguage: 'en',
-        fontName: 'Montserrat-Regular',
-        fontUrl: 'http://fonts.gstatic.com/s/montserrat/v12/JTUSjIg1_i6t8kCHKm459WlhzQ.woff',
-        fontSize: '25',
-        fontColor: '#E1DADA',
-        borderColor: '#000000',
-        backgroundColor: '#E80808',
-        shadowColor: '#B2AAAA',
-        roundCorners: '0',
-        shadowSize: '-4',
-        height: '50',
-        width: '300',
-        borderThickness: '12',
-        borderStyle: 'none'
-      }
+      this.payBtn = newVal && newVal.payButtonJson && newVal.payButtonJson.buttonName && newVal.payButtonJson.width &&
+      newVal.payButtonJson.height ? newVal.payButtonJson : {
+          emptyCart: true,
+          buttonName: 'Add to cart !',
+          shoppingCartLanguage: 'en',
+          fontName: 'Montserrat-Regular',
+          fontUrl: 'http://fonts.gstatic.com/s/montserrat/v12/JTUSjIg1_i6t8kCHKm459WlhzQ.woff',
+          fontSize: '25',
+          fontColor: '#E1DADA',
+          borderColor: '#000000',
+          backgroundColor: '#E80808',
+          shadowColor: '#B2AAAA',
+          roundCorners: '0',
+          shadowSize: '-4',
+          height: '50',
+          width: '300',
+          borderThickness: '12',
+          borderStyle: 'none'
+        }
       const self = this
       Vue.nextTick(function () {
-        self.selectedFont = newVal.payButtonJson.fontName ? newVal.payButtonJson.fontName : self.payBtn.fontName
+        self.selectedFont = newVal.payButtonJson && newVal.payButtonJson.fontName ? newVal.payButtonJson.fontName : self.payBtn.fontName
         self.generateStyleForButton(self.payBtn)
       })
     }
@@ -166,6 +167,10 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
 
     public updateBackgroundColor (color: any) {
       this.payBtn.backgroundColor = color.hex
+    }
+
+    public updateShadowColor (color: any) {
+      this.payBtn.shadowColor = color.hex
     }
 
     public updateBorderColor (color: any) {

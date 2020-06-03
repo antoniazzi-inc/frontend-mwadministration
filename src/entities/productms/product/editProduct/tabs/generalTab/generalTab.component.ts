@@ -1,12 +1,9 @@
 import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
-import JhiMultiLanguageComponent from '@/components/multiLanguage/multiLanguage.vue'
-import JhiToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
-import UploadWidget from '@/components/uploadWidget/upload-widget.vue'
-import SearchableSingleSelectComponent from '@/components/searchableSelect/searchableSingleSelect.vue'
+import UploadWidget from '@/components/uploadWidget/uploadWidget.vue'
 import { Money } from 'v-money'
-import SearchableMultiSelectComponent from '@/components/searchableSelect/searchableMultiSelect.vue'
-import DatePickerComponent from '@/components/dateComponent/DatePickerComponent.vue'
 import moment from 'moment'
+import flatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
 import { IProduct, Product } from '@/shared/models/ProductModel'
 import { AxiosResponse } from 'axios'
 import { mixins } from 'vue-class-component'
@@ -14,24 +11,42 @@ import CommonHelpers from '@/shared/commonHelpers'
 import typeservicesService from '@/shared/services/type-servicesService'
 import ProductService from '@/shared/services/productService'
 import productcategoriesService from '@/shared/services/product-categoriesService'
+import MultiLanguageComponent from '@/components/multiLanguage/MultiLanguage.vue'
+import { IMultiLanguageConfig, MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
+import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
+import { ProductLanguage } from '@/shared/models/ProductLanguageModel'
 @Component({
   props: {
     product: Object
   },
   components: {
-    'jhi-multi-language': JhiMultiLanguageComponent,
+    flatPickr,
+    MultiLanguageComponent,
     money: Money,
-    'toggle-switch': JhiToggleSwitch,
+    'toggle-switch': ToggleSwitch,
     'upload-widget': UploadWidget,
-    'single-select': SearchableSingleSelectComponent,
-    'multi-select': SearchableMultiSelectComponent,
-    'date-picker-component': DatePickerComponent
+    SearchableSelectComponent
   }
 })
 export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     public typeServiceService: any = typeservicesService.getInstance()
     public productCategoryService: any = productcategoriesService.getInstance()
     public productService: any = ProductService.getInstance()
+    public validFromConfig: any = {
+      wrap: true,
+      altInput: false,
+      dateFormat: 'm-d-Y',
+      minDate: moment().format('MM-DD-YYYY')
+    }
+
+    public validToConfig: any = {
+      wrap: true,
+      altInput: false,
+      dateFormat: 'm-d-Y',
+      minDate: moment().format('MM-DD-YYYY')
+    }
 
     public availableFrom: any = null;
     public availableTo: any = null;
@@ -45,52 +60,23 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     public availableToError: any = false;
     public isInclusive: any = false;
     public inclusivePrice: any = 0;
-    public multiLangConfig: any = {
-      showName: true,
-      showDescription: true,
-      nameLabel: 'vueadminApp.productmsProduct.productName',
-      descriptionLabel: 'vueadminApp.productmsProduct.productDesc',
-      requiredName: true,
-      requiredDescription: false,
-      enableUndoBtn: false,
-      enableRemoveBtn: true,
-      enableSaveBtn: false,
-      showLangs: true
-    };
+    public multiLangConfig: IMultiLanguageConfig = new MultiLanguageConfig(true, true,
+      'labels.productName', 'labels.productDescription', false,
+      false, false, true, true, false)
 
-    public multiLangMaxExceedConfig: any = {
-      showName: false,
-      showDescription: true,
-      nameLabel: '',
-      descriptionLabel: 'vueadminApp.productmsProduct.MaxExceedMessage', // this.$t('vueadminApp.productmsProduct.MaxExceedMessage'),
-      requiredName: false,
-      requiredDescription: false,
-      enableUndoBtn: false,
-      enableRemoveBtn: true,
-      enableSaveBtn: false,
-      showLangs: false
-    };
+    public multiLangMaxExceedConfig: IMultiLanguageConfig = new MultiLanguageConfig(false, true,
+      '', 'labels.MaxExceedMessage', false,
+      true, false, false, false, false)
 
-    public multiLangNotAvailableConfig: any = {
-      showName: false,
-      showDescription: true,
-      nameLabel: '',
-      descriptionLabel: 'vueadminApp.productmsProduct.NotAvailableMessage',
-      requiredName: true,
-      requiredDescription: false,
-      enableUndoBtn: false,
-      enableRemoveBtn: true,
-      enableSaveBtn: false,
-      showLangs: false
-    };
+    public multiLangNotAvailableConfig: IMultiLanguageConfig = new MultiLanguageConfig(false, true,
+      '', 'labels.NotAvailableMessage', false,
+      true, false, false, false, false)
 
     public isSubscription: any = false;
     public allProductsCategories: any = [];
-    public multiSelectConfig: any = {
-      required: false,
-      trackBy: 'code',
-      allowEmpty: true
-    };
+    public multiSelectConfig: any =new SearchableSelectConfig('code',
+      'labels.chooseCategory', '', false,
+      false, true, true, false)
 
     public money: any = {
       decimal: ',',
@@ -99,12 +85,6 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       suffix: '',
       precision: 2,
       masked: false
-    };
-
-    public availableFromConfig: any = {
-    };
-
-    public availableToConfig: any = {
     };
 
     public allTaxRates: any = [
@@ -128,11 +108,11 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       this.AvailableProductLanguages = []
       this.selectedCategories = []
       this.productCopy = newVal
-      this.availableFrom = this.$props.product.availableFrom ? this.$props.product.availableFrom : null
-      this.availableTo = this.$props.product.availableTo ? this.$props.product.availableTo : null
-      if (moment(this.availableFrom).isBefore(moment())) {
-        this.availableFromConfig.minDate = this.availableFrom
-        this.availableToConfig.minDate = this.availableFrom
+      this.availableFrom = this.$props.product.availableFrom ? moment(this.$props.product.availableFrom).format('MM-DD-YYYY') : null
+      this.availableTo = this.$props.product.availableTo ? moment(this.$props.product.availableTo).format('MM-DD-YYYY') : null
+      if (moment(this.$props.product.availableFrom).isBefore(moment())) {
+        this.validFromConfig.minDate = this.availableFrom
+        this.validToConfig.minDate = this.availableFrom
       }
       const selectedCat: any = []
       $.each(self.allProductsCategories, function (k, v: any) {
@@ -158,7 +138,6 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
         })
       })
       this.calculateInclusivePrice()
-      this.validateSave()
     }
 
     @Watch('productCopy', { immediate: true, deep: true })
@@ -174,25 +153,9 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     public mounted () {
       this.allProductsCategories = this.$store.state.lookups.categories
       this.allTaxRates = this.$store.state.lookups.taxRates
-      this.availableFromConfig = {
-        allowInput: false,
-        altInput: true,
-        dateFormat: 'Y-m-d',
-        minDate: 'today',
-        calendarLabel: 'vueadminApp.productmsProduct.availableFrom',
-        showClearBtn: false
-      }
-      this.availableToConfig = {
-        allowInput: false,
-        altInput: true,
-        dateFormat: 'Y-m-d',
-        // @ts-ignore
-        minDate: new Date().fp_incr(1),
-        calendarLabel: 'vueadminApp.productmsProduct.availableTo',
-        showClearBtn: true
-      }
     }
 
+    public removeLang (lang: any) {}
     public updateLang (lang: any) {
       let index = null
       if (this.productCopy.productLanguages && this.productCopy.productLanguages.length) {
@@ -219,7 +182,9 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public addNewLang (lang: any) {
-      this.productCopy.productLanguages ? this.productCopy.productLanguages.push(lang) : this.productCopy.productLanguages = [lang]
+      const lng = new ProductLanguage(undefined, undefined, undefined, undefined, lang,
+        '', '', '', '')
+      this.productCopy.productLanguages ? this.productCopy.productLanguages.push(lng) : this.productCopy.productLanguages = [lng]
     }
 
     public calculateInclusivePrice () {
@@ -285,7 +250,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       if (this.productCopy.productType === 'SERVICE') {
         this.typeServiceService.put(this.productCopy.typeService).then((resp: AxiosResponse) => {})
       }
-      this.productService().update(dto).then((resp: AxiosResponse) => {
+      this.productService.put(dto).then((resp: AxiosResponse) => {
         self.setAlert('productUpdated', 'success')
         self.$emit('updateProduct', resp)
       })

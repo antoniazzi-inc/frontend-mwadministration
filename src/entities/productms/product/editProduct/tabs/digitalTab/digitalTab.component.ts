@@ -1,14 +1,14 @@
 import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
-import UploadWidget from '@/components/uploadWidget/upload-widget.vue'
+import UploadWidget from '@/components/uploadWidget/uploadWidget.vue'
 import Trumbowyg from 'vue-trumbowyg'
 import 'trumbowyg/dist/ui/trumbowyg.css'
-import MultiLangHtmlEditorComponent from '@/components/multiLangHtmlEditor/multiLangHtmlEditor.vue'
+
 import { mixins } from 'vue-class-component'
 import { ITypeDigital, TypeDigital } from '@/shared/models/TypeDigitalModel'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import CommonHelpers from '@/shared/commonHelpers'
 import { IProduct, Product } from '@/shared/models/ProductModel'
-import { AxiosResponse } from 'axios'
+import MultiLanguageHtmlEditorComponent from '@/components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue'
 
 @Component({
   props: {
@@ -19,7 +19,7 @@ import { AxiosResponse } from 'axios'
     'upload-widget': UploadWidget,
     trumbowyg: Trumbowyg,
     'toggle-switch': ToggleSwitch,
-    MultiLangHtmlEditorComponent: MultiLangHtmlEditorComponent
+    MultiLangHtmlEditorComponent: MultiLanguageHtmlEditorComponent
   }
 })
 export default class DigitalTabComponent extends mixins(CommonHelpers, Vue) {

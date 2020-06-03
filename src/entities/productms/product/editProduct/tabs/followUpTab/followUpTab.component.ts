@@ -1,27 +1,26 @@
 import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
-import SearchableMultiSelectComponent from '@/components/searchableSelect/searchableMultiSelect.vue'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
-import tagService from '@/shared/services/tagService'
-import relationGroupService from '@/shared/services/relationGroupService'
 import followupactionsService from '@/shared/services/followup-actionsService'
 import { FollowupAction, IFollowupAction } from '@/shared/models/FollowupActionModel'
 import { IProduct, Product } from '@/shared/models/ProductModel'
 import { AxiosResponse } from 'axios'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 
 @Component({
   props: {
     product: Object
   },
   components: {
-    'multi-select': SearchableMultiSelectComponent,
+    SearchableSelectComponent,
     'toggle-switch': ToggleSwitch
   }
 })
 export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     public followupActionService: any = followupactionsService.getInstance()
-    public followupAction: any = new FollowupAction();
+    public followupAction: any = new FollowupAction(undefined, undefined, undefined, undefined, undefined, 0, false);
     public productCopy: IProduct = new Product();
     public allListManagers: any = [];
     public selectedTags: any = [];
@@ -32,22 +31,18 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     public selectedListManagers: any = [];
     public allGroups: any = [];
     public allTags: any = [];
-    public multiSelectConfig = {
-      required: false,
-      trackBy: 'name',
-      allowEmpty: true
-    };
+    public multiSelectConfig: ISearchableSelectConfig = new SearchableSelectConfig('name',
+      'labels.chooseOption', '', false,
+      false, true, true, false)
 
-    public multiSelectTagConfig = {
-      required: false,
-      trackBy: 'code',
-      allowEmpty: true
-    };
+    public multiSelectTagConfig: ISearchableSelectConfig = new SearchableSelectConfig('code',
+      'labels.chooseOption', '', false,
+      false, true, true, false)
 
     @Watch('product', { immediate: true, deep: true })
     public updateProd (newVal: any) {
       this.productCopy = newVal
-      this.followupAction = newVal.followupAction !== null ? newVal.followupAction : new FollowupAction()
+      this.followupAction = newVal.followupAction !== null ? newVal.followupAction : new FollowupAction(undefined, undefined, undefined, undefined, undefined, 0, false)
       this.fillInObject()
     }
 
@@ -76,26 +71,34 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
           })
         })
         $.each(self.allGroups, function (k, v: any) {
-          $.each(self.followupAction.addCustomerToGroupIdsJson, function (key, val: any) {
-            if (v.id === val) {
-              self.customerAddToGroup.push(v)
-            }
-          })
-          $.each(self.followupAction.removeCustomerFromGroupIdsJson, function (key, val) {
-            if (v.id === val) {
-              self.customerRemoveFromGroup.push(v)
-            }
-          })
-          $.each(self.followupAction.addBeneficiaryToGroupIdsJson, function (key, val) {
-            if (v.id === val) {
-              self.beneficiaryAddToGroup.push(v)
-            }
-          })
-          $.each(self.followupAction.removeCustomerFromGroupIdsJson, function (key, val) {
-            if (v.id === val) {
-              self.beneficiaryRemoveFromGroup.push(v)
-            }
-          })
+          if (self.followupAction && self.followupAction.addCustomerToGroupIdsJson) {
+            $.each(self.followupAction.addCustomerToGroupIdsJson, function (key, val: any) {
+              if (v.id === val) {
+                self.customerAddToGroup.push(v)
+              }
+            })
+          }
+          if (self.followupAction && self.followupAction.removeCustomerFromGroupIdsJson) {
+            $.each(self.followupAction.removeCustomerFromGroupIdsJson, function (key, val) {
+              if (v.id === val) {
+                self.customerRemoveFromGroup.push(v)
+              }
+            })
+          }
+          if (self.followupAction && self.followupAction.addBeneficiaryToGroupIdsJson) {
+            $.each(self.followupAction.addBeneficiaryToGroupIdsJson, function (key, val) {
+              if (v.id === val) {
+                self.beneficiaryAddToGroup.push(v)
+              }
+            })
+          }
+          if (self.followupAction && self.followupAction.removeCustomerFromGroupIdsJson) {
+            $.each(self.followupAction.removeCustomerFromGroupIdsJson, function (key, val) {
+              if (v.id === val) {
+                self.beneficiaryRemoveFromGroup.push(v)
+              }
+            })
+          }
         })
       })
     }

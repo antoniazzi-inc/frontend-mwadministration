@@ -1,7 +1,6 @@
 import { Component, Inject, Vue } from 'vue-property-decorator'
 import Trumbowyg from 'vue-trumbowyg'
 import 'trumbowyg/dist/ui/trumbowyg.css'
-import JhiToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import { Money } from 'v-money'
 import { AxiosResponse } from 'axios'
 import CommonHelpers from '@/shared/commonHelpers'
@@ -11,13 +10,14 @@ import ProductService from '@/shared/services/productService'
 import { IProduct, Product } from '@/shared/models/ProductModel'
 import { AffiliateAgreement, IAffiliateAgreement } from '@/shared/models/AffiliateAgreementModel'
 import { AffiliateAgreementProduct, IAffiliateAgreementProduct } from '@/shared/models/AffiliateAgreementProductModel'
+import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 @Component({
   props: {
     product: Object
   },
   components: {
     trumbowyg: Trumbowyg,
-    'toggle-switch': JhiToggleSwitch,
+    'toggle-switch': ToggleSwitch,
     money: Money
   }
 })

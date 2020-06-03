@@ -68,7 +68,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
 
   public mounted () {
     EventBus.$on('refreshRelations', (content: any) => {
-      this.$t('labels.relationsImported', content)
+      this.setAlert('relationsImported', 'success')
       // @ts-ignore
       this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, undefined)
     })

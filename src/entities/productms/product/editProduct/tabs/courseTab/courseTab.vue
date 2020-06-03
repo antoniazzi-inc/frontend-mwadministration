@@ -2,7 +2,7 @@
     <div class="row">
         <div class="element-wrapper col-md-9">
             <div class="element-box">
-                <div class="form-desc">{{$t('productCoursesSettings')}}</div>
+                <div class="form-desc">{{$t('labels.productCoursesSettings')}}</div>
                 <form>
                 </form>
             </div>

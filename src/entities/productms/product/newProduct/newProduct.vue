@@ -75,13 +75,17 @@
           <div class="form-group row">
               <div class="col-md-6 pl-0 ml-0">
                 <label>{{$t('labels.validFrom')}}</label>
+                <div class="date-input">
                 <flat-pickr :config="validFromConfig" class="single-daterange form-control"
                             id="validFromDate" v-model="availableFrom"/>
+                </div>
               </div>
               <div class="col-md-6 pr-0 mr-0">
                 <label>{{$t('labels.validTo')}}</label>
+                <div class="date-input">
                 <flat-pickr :config="validToConfig" class="single-daterange form-control"
                             id="validToDate" v-model="availableTo"/>
+                </div>
                 <span class="small text-danger" v-if="isValidatingStep2 && availableTo !== null && validateAvailableTo">{{$t('labels.validToMustBeAfterValidFrom')}}</span>
               </div>
           </div>

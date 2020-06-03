@@ -57,33 +57,32 @@ module.exports = {
         },
         changeOrigin: true
       },
-      '/socket': {
+      '/administrationms/socket': {
         target: {
           // host: '46.217.82.127',
           host: 'localhost',
           protocol: 'http:',
-          port: 18081
+          port: 8080
         },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://46.217.82.127:180801')
-          proxyReq.setHeader('origin', 'http://localhost:18081')
+          proxyReq.setHeader('origin', 'http://localhost:8080/administrationms/socket')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
         ws: false,
         changeOrigin: true
       },
-      '^/relation-socket': {
+      '/relationms/socket': {
         target: {
           // host: '46.217.82.127',
           host: 'localhost',
           protocol: 'http:',
-          port: 18080
+          port: 8080
         },
-        pathRewrite: { '^/relation-socket': '/socket' },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://46.217.82.127:180801')
-          proxyReq.setHeader('origin', 'http://localhost:18080')
+          proxyReq.setHeader('origin', 'http://localhost:8080/relationms/socket')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },

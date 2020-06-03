@@ -1,10 +1,8 @@
 import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
-import SearchableMultiSelectComponent from '@/components/searchableSelect/searchableMultiSelect.vue'
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import Trumbowyg from 'vue-trumbowyg'
 import 'trumbowyg/dist/ui/trumbowyg.css'
-import PaymentScheduleComponent from '@/entities/productms/product/product-editor/payment-schedule.vue'
 import { mixins } from 'vue-class-component'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import CommonHelpers from '@/shared/commonHelpers'
@@ -17,13 +15,16 @@ import { IPaymentSchedule, PaymentSchedule } from '@/shared/models/PaymentSchedu
 import { IProductPaymentMethod } from '@/shared/models/ProductPaymentMethodModel'
 import { ProductSubscription } from '@/shared/models/ProductSubscriptionModel'
 import { AxiosResponse } from 'axios'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
+import PaymentScheduleComponent from '../../payment-schedule.vue'
 @Component({
   props: {
     product: Object,
     clicked: Boolean
   },
   components: {
-    'multi-select': SearchableMultiSelectComponent,
+    SearchableSelectComponent,
     'toggle-switch': ToggleSwitch,
     flatPickr,
     trumbowyg: Trumbowyg,
@@ -54,11 +55,9 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       allowEmpty: true
     };
 
-    public multiSelectConfigPayment: Record<string, any> = {
-      required: false,
-      trackBy: 'name',
-      allowEmpty: true
-    };
+    public multiSelectConfigPayment: ISearchableSelectConfig = new SearchableSelectConfig('name',
+      'labels.choosePaymentMethods', '', false,
+      false, true, true, false)
 
     public startDateConfig: Record<string, any> = {
       allowInput: false,
@@ -77,7 +76,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
     @Watch('product', { immediate: true, deep: true })
     public updateProd (newVal: any) {
       if (newVal.productSubscription !== null && !this.isSubscription) this.isSubscription = true
-      if (newVal.paymentSchedules !== null && newVal.paymentSchedules.length > 0 && !this.isSubscription) this.sentAnnouncement = true
+      if (newVal && newVal.paymentSchedules && newVal.paymentSchedules !== null && newVal.paymentSchedules.length > 0 && !this.isSubscription) this.sentAnnouncement = true
       this.populatePaymentMethods(newVal)
       this.productCopy = newVal
     }
@@ -154,8 +153,9 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
     }
 
     public paymentMethodChanged (method: any) {
+      if (!method) return
       this.selectedPaymentMethods.push(method)
-      this.productCopy.productPaymentMethods ? this.productCopy.productPaymentMethods.push(method.value) : this.productCopy.productPaymentMethods = [method.value]
+      this.productCopy && this.productCopy.productPaymentMethods ? this.productCopy.productPaymentMethods.push(method.value) : this.productCopy.productPaymentMethods = [method.value]
       this.savePaymentMethod(method)
     }
 

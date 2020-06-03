@@ -613,6 +613,15 @@
   "productDescription": "Product Description",
   "newProduct": "New Product",
   "thumbnail": "Thumbnail",
+  "price": "Price",
+  "features": "Features",
+  "payments": "Payments",
+  "checkout": "Checkout",
+  "branding": "Branding",
+  "followUp": "Follow Up",
+  "payBtn": "Pay Button",
+  "productCategory": "Product Category",
+  "productType": "Product Type",
   "finalStep": "Final Step",
   "productDetails": "Product Details"
 }

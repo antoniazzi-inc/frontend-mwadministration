@@ -1,6 +1,5 @@
 import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
-import JhiMultiLanguageComponent from '@/components/multiLanguage/multiLanguage.vue'
-import JhiToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
+import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import { mixins } from 'vue-class-component'
 import { Money } from 'v-money'
 import draggable from 'vuedraggable'
@@ -12,14 +11,17 @@ import { Attribute, IAttribute } from '@/shared/models/AttributeModel'
 import { AttributeValue, IAttributeValue } from '@/shared/models/AttributeValueModel'
 import { AttributeLanguage } from '@/shared/models/AttributeLanguageModel'
 import { AxiosResponse } from 'axios'
+import MultiLanguageComponent from '@/components/multiLanguage/MultiLanguage.vue'
+import { IMultiLanguageConfig, MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
+import { Language } from '@/shared/models/language.model'
 @Component({
   props: {
     product: Object,
     clicked: Boolean
   },
   components: {
-    'jhi-multi-language': JhiMultiLanguageComponent,
-    'toggle-switch': JhiToggleSwitch,
+    MultiLanguageComponent,
+    'toggle-switch': ToggleSwitch,
     money: Money,
     draggable
   },
@@ -66,31 +68,14 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
       masked: false
     }
 
-    public multiLangConfig = {
-      showName: true,
-      showDescription: false,
-      nameLabel: 'featureName',
-      descriptionLabel: '',
-      requiredName: true,
-      requiredDescription: false,
-      enableUndoBtn: false,
-      enableRemoveBtn: true,
-      enableSaveBtn: false,
-      showLangs: true
-    };
+    public multiLangConfig: IMultiLanguageConfig = new MultiLanguageConfig(true, false,
+      'labels.featureName', '', false, false, false,
+      true, true, false)
 
-    public multiLangConfigOption = {
-      showName: true,
-      showDescription: false,
-      nameLabel: 'featureOptionName',
-      descriptionLabel: '',
-      requiredName: true,
-      requiredDescription: false,
-      enableUndoBtn: false,
-      enableRemoveBtn: true,
-      enableSaveBtn: false,
-      showLangs: true
-    };
+    public multiLangConfigOption: IMultiLanguageConfig =
+      new MultiLanguageConfig(true, false,
+        'labels.featureOptionName', '', false, false, false,
+        true, true, false)
 
     @Watch('product', { immediate: true, deep: true })
     public updateProd (newVal: any) {
@@ -351,10 +336,11 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public addNewFeatureLang (lang: any) {
+      const lng = new Language(undefined, undefined, lang, '')
       if (this.selectedProductFeature.attributeLanguages) {
-        this.selectedProductFeature.attributeLanguages.push(lang)
+        this.selectedProductFeature.attributeLanguages.push(lng)
       } else {
-        this.selectedProductFeature.attributeLanguages = [lang]
+        this.selectedProductFeature.attributeLanguages = [lng]
       }
     }
 
@@ -377,10 +363,11 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public addNewFeatureOptionLang (lang: any) {
+      const lng = new Language(undefined, undefined, lang, '')
       if (this.selectedAttributeValue.attributeValueLanguages) {
-        this.selectedAttributeValue.attributeValueLanguages.push(lang)
+        this.selectedAttributeValue.attributeValueLanguages.push(lng)
       } else {
-        this.selectedAttributeValue.attributeValueLanguages = [lang]
+        this.selectedAttributeValue.attributeValueLanguages = [lng]
       }
     }
 

@@ -1,7 +1,5 @@
-import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
-import SearchableMultiSelectComponent from '@/components/searchableSelect/searchableMultiSelect.vue'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Money } from 'v-money'
-import SearchableSingleSelectComponent from '@/components/searchableSelect/searchableSingleSelect.vue'
 import { mixins } from 'vue-class-component'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import CommonHelpers from '@/shared/commonHelpers'
@@ -12,14 +10,16 @@ import { ITypePhysical, TypePhysical } from '@/shared/models/TypePhysicalModel'
 import typephysicalsService from '@/shared/services/type-physicalsService'
 import productdeliverymethodsService from '@/shared/services/product-delivery-methodsService'
 import { AxiosResponse } from 'axios'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
+import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 @Component({
   props: {
     product: Object,
     clicked: Boolean
   },
   components: {
-    'multi-select': SearchableMultiSelectComponent,
-    'single-select': SearchableSingleSelectComponent,
+    'multi-select': SearchableSelectComponent,
+    'single-select': SearchableSelectComponent,
     'toggle-switch': ToggleSwitch,
     money: Money
   }
@@ -37,11 +37,9 @@ export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
     public itemToDelete: number|null = null;
     public allRegions: IRegion[] = [];
     public typePhysical: ITypePhysical|any = new TypePhysical();
-    public multiSelectConfig = {
-      required: false,
-      trackBy: 'name',
-      allowEmpty: true
-    };
+    public multiSelectConfig: SearchableSelectConfig = new SearchableSelectConfig('name',
+      'labels.chooseOption', '', false,
+      false, true, true, false)
 
     public allFulfilments = [];
     public allShippingMethods = [];

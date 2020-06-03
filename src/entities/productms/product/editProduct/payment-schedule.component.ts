@@ -1,15 +1,15 @@
-import {Component, Inject, Vue, Watch} from 'vue-property-decorator'
+import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { Money } from 'v-money'
-import JhiToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
-import {IPaymentSchedule, PaymentSchedule} from "@/shared/models/PaymentScheduleModel";
-import CommonHelpers from "@/shared/commonHelpers";
-import ProductService from "@/shared/services/productService";
-import paymentschedulesService from "@/shared/services/payment-schedulesService";
-import paymentscheduleoptionsService from "@/shared/services/payment-schedule-optionsService";
-import {IProduct, Product} from "@/shared/models/ProductModel";
-import {IPaymentScheduleOption, PaymentScheduleOption} from "@/shared/models/PaymentScheduleOptionModel";
-import {AxiosResponse} from "axios";
+import { IPaymentSchedule, PaymentSchedule } from '@/shared/models/PaymentScheduleModel'
+import CommonHelpers from '@/shared/commonHelpers'
+import ProductService from '@/shared/services/productService'
+import paymentschedulesService from '@/shared/services/payment-schedulesService'
+import paymentscheduleoptionsService from '@/shared/services/payment-schedule-optionsService'
+import { IProduct, Product } from '@/shared/models/ProductModel'
+import { IPaymentScheduleOption, PaymentScheduleOption } from '@/shared/models/PaymentScheduleOptionModel'
+import { AxiosResponse } from 'axios'
+import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 @Component({
   props: {
     product: Object,
@@ -17,13 +17,13 @@ import {AxiosResponse} from "axios";
   },
   components: {
     money: Money,
-    'toggle-switch': JhiToggleSwitch
+    'toggle-switch': ToggleSwitch
   }
 })
 export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue) {
-    public productService:any = ProductService.getInstance()
-    public paymentScheduleService:any = paymentschedulesService.getInstance()
-    public paymentScheduleOptionService:any = paymentscheduleoptionsService.getInstance()
+    public productService: any = ProductService.getInstance()
+    public paymentScheduleService: any = paymentschedulesService.getInstance()
+    public paymentScheduleOptionService: any = paymentscheduleoptionsService.getInstance()
     public productCopy: IProduct;
     public productCopyBackup: IProduct|null;
     public editMode: boolean;
@@ -55,16 +55,18 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
         masked: false
       }
     }
-    @Watch('product', {immediate: true, deep: true})
-    public updateProduct(newVal:any){
+
+    @Watch('product', { immediate: true, deep: true })
+    public updateProduct (newVal: any) {
       this.productCopy = newVal
       if (this.productCopyBackup === null) {
         this.productCopyBackup = JSON.parse(JSON.stringify(newVal))
       }
       this.paymentSchedules = newVal.paymentSchedules && newVal.paymentSchedules.length ? newVal.paymentSchedules : []
     }
-    @Watch('addNewPayment', {immediate: true, deep: true})
-    public updateAddNewPayment(newVal:any){
+
+    @Watch('addNewPayment', { immediate: true, deep: true })
+    public updateAddNewPayment (newVal: any) {
       if (newVal) {
         this.editMode = true
         this.paymentSchedules = [new PaymentSchedule()]
@@ -72,6 +74,7 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
         this.editMode = false
       }
     }
+
     public cancel () {
       this.editMode = false
       this.addNew = false
@@ -97,11 +100,11 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
       }
       this.selectedPaymentSchedule.product = product
       if (this.selectedPaymentSchedule.id) {
-        this.paymentScheduleService().update(this.selectedPaymentSchedule).then((resp:AxiosResponse) => {
+        this.paymentScheduleService().update(this.selectedPaymentSchedule).then((resp: AxiosResponse) => {
           self.editMode = false
           self.addNew = false
           let index = null
-          $.each(self.productCopy.paymentSchedules, function (k, v:any) {
+          $.each(self.productCopy.paymentSchedules, function (k, v: any) {
             if (v.id === resp.data.id) {
               index = k
             }
@@ -114,7 +117,7 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
           this.setAlert('productUpdated', 'success')
         })
       } else {
-        this.paymentScheduleService().create(this.selectedPaymentSchedule).then((resp:AxiosResponse) => {
+        this.paymentScheduleService().create(this.selectedPaymentSchedule).then((resp: AxiosResponse) => {
           this.cleanSchedules().then(() => {
             self.editMode = false
             self.addNew = false
@@ -130,8 +133,8 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
     public cleanSchedules () {
       const self = this
       return new Promise(resolve => {
-        const schedules:any = []
-        $.each(self.productCopy.paymentSchedules, function (k, v:any) {
+        const schedules: any = []
+        $.each(self.productCopy.paymentSchedules, function (k, v: any) {
           if (v.id) {
             schedules.push(v)
           }
@@ -148,12 +151,12 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
 
     public removePaymentSchedule () {
       const self = this
-      this.paymentScheduleService().delete(this.scheduleToDelete?.id).then((resp:AxiosResponse) => {
+      this.paymentScheduleService().delete(this.scheduleToDelete?.id).then((resp: AxiosResponse) => {
         // @ts-ignore
         self.$vueOnToast.pop('success', self.$t('paymentScheduleDeleted'))
         self.closeDialog()
         let index = null
-        $.each(self.productCopy.paymentSchedules, function (k, v:any) {
+        $.each(self.productCopy.paymentSchedules, function (k, v: any) {
           if (v.id === self.scheduleToDelete?.id) {
             index = k
           }
@@ -161,7 +164,7 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
         if (index !== null && self.productCopy.paymentSchedules) {
           self.productCopy.paymentSchedules.splice(index, 1)
         }
-        $.each(self.productCopy.paymentSchedules, function (k, v:any) {
+        $.each(self.productCopy.paymentSchedules, function (k, v: any) {
           if (v.id === self.selectedPaymentSchedule.id && self.productCopy.paymentSchedules) {
             self.productCopy.paymentSchedules[k] = self.selectedPaymentSchedule
           }
@@ -172,12 +175,12 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
 
     public RemoveScheduleOption () {
       const self = this
-      this.paymentScheduleOptionService().delete(this.scheduleOptionToDelete?.id).then((resp:AxiosResponse) => {
+      this.paymentScheduleOptionService().delete(this.scheduleOptionToDelete?.id).then((resp: AxiosResponse) => {
         // @ts-ignore
         this.setAlert('paymentScheduleOptionDeleted', 'success')
         self.closeDialog()
         let index = null
-        $.each(self.selectedPaymentSchedule.paymentScheduleOptions, function (k, v:any) {
+        $.each(self.selectedPaymentSchedule.paymentScheduleOptions, function (k, v: any) {
           if (v.id === self.scheduleOptionToDelete?.id) {
             index = k
           }
@@ -185,7 +188,7 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
         if (index !== null) {
           self.selectedPaymentSchedule.paymentScheduleOptions?.splice(index, 1)
         }
-        $.each(self.productCopy.paymentSchedules, function (k, v:any) {
+        $.each(self.productCopy.paymentSchedules, function (k, v: any) {
           if (v.id === self.selectedPaymentSchedule.id && self.productCopy.paymentSchedules) {
             self.productCopy.paymentSchedules[k] = self.selectedPaymentSchedule
           }
@@ -194,7 +197,7 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
       })
     }
 
-    public editPaymentSchedule (item:any) {
+    public editPaymentSchedule (item: any) {
       this.selectedPaymentSchedule = item
       this.editMode = true
       this.addNew = false
@@ -208,11 +211,11 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
       }
     }
 
-    public prepareRemoveScheduleOption (option:any) {
+    public prepareRemoveScheduleOption (option: any) {
       this.scheduleOptionToDelete = option
     }
 
-    public prepareRemoveSchedule (item:any) {
+    public prepareRemoveSchedule (item: any) {
       this.scheduleToDelete = item
     }
 }

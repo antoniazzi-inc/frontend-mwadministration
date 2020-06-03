@@ -1,11 +1,12 @@
 import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
-import SearchableMultiSelectComponent from '@/components/searchableSelect/searchableMultiSelect.vue'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import promotionsService from '@/shared/services/promotionsService'
 import ProductService from '@/shared/services/productService'
 import { IProduct, Product } from '@/shared/models/ProductModel'
 import { AxiosResponse } from 'axios'
+import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 
 @Component({
   props: {
@@ -14,7 +15,7 @@ import { AxiosResponse } from 'axios'
     newPromotion: Boolean
   },
   components: {
-    'multi-select': SearchableMultiSelectComponent
+    SearchableSelectComponent
   }
 })
 export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
@@ -23,11 +24,10 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
   public allDiscounts = [];
   public isNewAdded = false;
   public selectedDiscounts: any = [];
-  public multiSelectConfig = {
-    required: false,
-    trackBy: 'label',
-    allowEmpty: true
-  };
+  public multiSelectConfig: ISearchableSelectConfig =
+    new SearchableSelectConfig('label',
+      'labels.chooseOption', '', false,
+      false, true, true, false)
 
   public productCopy: IProduct = new Product();
   public productCopyBackup: any = null;

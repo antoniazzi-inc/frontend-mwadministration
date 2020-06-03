@@ -1,19 +1,23 @@
 <template>
-    <div class="row">
+    <div class="row text-left">
         <div class="element-wrapper col-md-9">
             <div class="element-box">
-                <div class="form-desc">{{$t('productDiscountsSettings')}}</div>
+                <div class="form-desc">{{$t('labels.productDiscountsSettings')}}</div>
                 <form>
                     <div class="form-group">
-                        <label class="control-label">{{$t('chooseDiscounts')}}</label>
-                        <multi-select :options="allDiscounts" :config="multiSelectConfig" :value="selectedDiscounts" @onRemove="removeDiscount" @onAdd="addDiscount"></multi-select>
+                        <label class="control-label">{{$t('labels.chooseDiscounts')}}</label>
+                      <searchable-select-component :config="multiSelectConfig"
+                                                   :options="allDiscounts"
+                                                   :value="selectedDiscounts"
+                                                   @onChange="addDiscount"
+                                                   @onDelete="removeDiscount"/>
                     </div>
                 </form>
                 <div class="row">
                     <div class="col-md-12 text-right">
                         <div class="form-buttons-w">
-                            <button class="btn btn-outline-primary" @click.prevent="cancel">{{$t('cancel')}}</button>
-                            <button class="btn btn-primary" @click.prevent="save">{{$t('save')}}</button>
+                            <button class="btn btn-outline-primary" @click.prevent="cancel">{{$t('buttons.cancel')}}</button>
+                            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
                         </div>
                     </div>
                 </div>
@@ -22,9 +26,9 @@
         <div class="element-wrapper col-md-3">
             <div class="element-box">
                 <div class="form-desc" style="color:#808080;">
-                    {{$t('dontForgetToClickSave')}}
+                    {{$t('labels.dontForgetToClickSave')}}
                 </div>
-                <router-link to="/entity/promotion/new">{{$t('newPromotionWizard')}}</router-link>
+                <router-link to="/promotions/new">{{$t('labels.newPromotionWizard')}}</router-link>
                 <hr/>
             </div>
         </div>

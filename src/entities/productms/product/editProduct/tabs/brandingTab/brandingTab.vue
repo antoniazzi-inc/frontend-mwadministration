@@ -37,8 +37,8 @@
                             <div class="row">
                                 <div class="form-group col-md-12">
                                     <label class="form-control-label">{{$t('branding.backToCallingPage')}}</label>
-                                    <toggle-switch :on-text="$t('global.yes')"
-                                                   :off-text="$t('global.no')"
+                                    <toggle-switch :on-text="$t('labels.yes')"
+                                                   :off-text="$t('labels.no')"
                                                    :value.sync="backToCallingPage"></toggle-switch>
                                 </div>
                             </div>
@@ -167,7 +167,7 @@
                     <div class="mt-4" id="editImageBody">
                         <div class="row">
                             <div class="col-md-12">
-                                <image-editor @saveEditedPicture="updateEdited" :image="selectedImage"></image-editor>
+                                <!--<image-editor @saveEditedPicture="updateEdited" :image="selectedImage"></image-editor>-->
                             </div>
                         </div>
                     </div>
@@ -181,7 +181,7 @@
         </div>
     </div>
 </template>
-<script lang="ts" src="src/entities/productms/product/editProduct/tabs/brandingTab/brandingTab.component.ts"></script>
+<script lang="ts" src="./brandingTab.component.ts"></script>
 <style>
     .deleteImage{
         position: absolute;

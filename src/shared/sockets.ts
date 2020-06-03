@@ -61,6 +61,7 @@ export default class Sockets extends Vue {
           if (resp && resp.type && resp.type.toLowerCase() === 'relation' && resp.action && resp.action.toLowerCase() === 'create') {
             EventBus.$emit('refreshRelations', resp.content)
           } else {
+            debugger
             this.updateLookups(resp)
           }
         })
@@ -100,6 +101,14 @@ export default class Sockets extends Vue {
       case 'taxrate':
         lookupData = this.store.state.lookups.taxRates
         lookupName = 'taxRates'
+        break
+      case 'group':
+        lookupData = this.store.state.lookups.groups
+        lookupName = 'groups'
+        break
+      case 'customfield':
+        lookupData = this.store.state.lookups.freeFields
+        lookupName = 'freeFields'
         break
     }
     if (lookupName === '') {

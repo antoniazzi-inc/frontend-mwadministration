@@ -1,16 +1,14 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue } from 'vue-property-decorator'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
-import RelationService from '@/shared/services/relationService'
 import { AxiosResponse } from 'axios'
-import gravatarImg from 'vue-gravatar'
-import RelationEditTabsComponent from '@/entities/relationms/relation/editRelation/tabs/relationEditTabs.vue'
+import ProductEditTabsComponent from '@/entities/productms/product/editProduct/tabs/productEditTabs.vue'
+import ProductService from '@/shared/services/productService'
+import { IProduct, Product } from '@/shared/models/ProductModel'
 
 @Component({
   components: {
-    'v-gravatar': gravatarImg,
-    RelationEditTabsComponent
+    ProductEditTabsComponent
   },
   beforeRouteEnter (to, from, next) {
     next((vm: any) => {
@@ -24,31 +22,27 @@ import RelationEditTabsComponent from '@/entities/relationms/relation/editRelati
   }
 })
 export default class EditProductComponent extends mixins(Vue, CommonHelpers) {
-  public relation: any;
-  public relationService: any;
+  public product: IProduct;
+  public productService: any;
 
   constructor () {
     super()
-    this.relation = new RelationEntity()
-    this.relationService = RelationService.getInstance()
+    this.product = new Product()
+    this.productService = ProductService.getInstance()
   }
 
-  public retrieveItem (id: number) {
-    this.relationService.get(id).then((resp: AxiosResponse) => {
-      this.relation = resp.data
+  public retrieveItem (id: any) {
+    this.productService.get(id).then((resp: AxiosResponse) => {
+      this.product = resp.data
     })
   }
 
-  public updateRelation (rel: IRelationEntity) {
-    if (rel && rel.id) {
-      this.retrieveItem(rel.id)
+  public updateProduct (prod: IProduct) {
+    if (prod && prod.id) {
+      this.retrieveItem(prod.id)
     } else {
-      this.retrieveItem(this.relation.id)
+      this.retrieveItem(this.product.id)
     }
-  }
-
-  public getFullName () {
-    return this.getRelationFullName(this.relation)
   }
 
   public editRelationProfile () {
@@ -59,17 +53,5 @@ export default class EditProductComponent extends mixins(Vue, CommonHelpers) {
   public editRelationGroups () {
     // @ts-ignore
     this.$refs.editTabs.changeTabs('profile', 'groups')
-  }
-
-  public getCategoryName () {
-    let result = ''
-    if (this.relation.relationProfile && this.relation.relationProfile.categoryId) {
-      this.$store.state.lookups.categories.forEach((cat: any) => {
-        if (cat.id === this.relation.relationProfile.categoryId) {
-          result = cat.code
-        }
-      })
-    }
-    return result
   }
 }

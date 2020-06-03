@@ -21,7 +21,7 @@ export default class BaseImage extends Vue {
     private _image: any;
     private _id: any;
 
-    constructor (base64:any, contentType:any, name:any, id?:any) {
+    constructor (base64: any, contentType: any, name: any, id?: any) {
       super()
       this.setDimensions(base64, contentType)
       this._base64 = base64
@@ -106,7 +106,7 @@ export default class BaseImage extends Vue {
       this._image = value
     }
 
-    public static checkOrientation (width:any, height:any) {
+    public static checkOrientation (width: any, height: any) {
       if (width > height) {
         return 'landscape'
       } else if (width < height) {
@@ -116,7 +116,7 @@ export default class BaseImage extends Vue {
       }
     }
 
-    public static checkAspectRation (width:any, height:any, orientation:any) {
+    public static checkAspectRation (width: any, height: any, orientation: any) {
       switch (orientation) {
         case 'landscape':
           return width / height
@@ -130,7 +130,7 @@ export default class BaseImage extends Vue {
       }
     }
 
-    public setDimensions (base64:any, contentType:any) {
+    public setDimensions (base64: any, contentType: any) {
       const self = this
       const promise = new Promise(resolve => {
         const dim = {
@@ -157,7 +157,7 @@ export default class BaseImage extends Vue {
     }
 
     public checkSide () {
-      let side:any = null
+      let side: any = null
       const resizeTo = []
       switch (this._orientation) {
         case 'landscape':
@@ -186,7 +186,7 @@ export default class BaseImage extends Vue {
 
     public resizeAll () {
       const self = this
-      const resizedImages:any = []
+      const resizedImages: any = []
       const sides = this.checkSide()
       $.each(sides, function (k, v) {
         resizedImages.push(self.resize(v))
@@ -194,10 +194,10 @@ export default class BaseImage extends Vue {
       return { name: this.name.replace(/ /g, '_'), images: resizedImages, contentType: this.contentType }
     }
 
-    public resize (sizeToResize:any) {
+    public resize (sizeToResize: any) {
       const canvas = document.createElement('canvas')
       // @ts-ignore
-      const ctx:any = canvas.getContext('2d')
+      const ctx: any = canvas.getContext('2d')
       let width = 0
       let height = 0
       switch (this._orientation) {
