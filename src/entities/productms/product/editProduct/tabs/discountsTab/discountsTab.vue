@@ -17,7 +17,7 @@
                     <div class="col-md-12 text-right">
                         <div class="form-buttons-w">
                             <button class="btn btn-outline-primary" @click.prevent="cancel">{{$t('buttons.cancel')}}</button>
-                            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+                            <button class="btn btn-primary ml-2" @click.prevent="save">{{$t('buttons.save')}}</button>
                         </div>
                     </div>
                 </div>

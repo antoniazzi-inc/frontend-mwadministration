@@ -39,7 +39,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label class="form-control-label">{{$t('labels.shippingMethod')}}</label>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createProductPayment" @click="addNewShipping">{{$t('buttons.add')}}</button>
+                            <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#createProductPayment" @click="addNewShipping">{{$t('buttons.add')}}</button>
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -62,7 +62,7 @@
                                                     <i class="os-icon os-icon-ui-49"></i>
                                                 </div>
                                                 <div class="text-danger ml-3 cursor-pointer" data-toggle="modal" data-target="#removeEntityShipping" @click.prevent="prepareRemove(index)">
-                                                    <i class="os-icon os-icon-ui-15"></i>
+                                                    <i class="fas fa-trash-alt"></i>
                                                 </div>
                                             </div>
                                         </td>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="form-buttons-w text-right">
                         <button class="btn btn-outline-primary" @click.prevent="cancel">{{$t('buttons.cancel')}}</button>
-                        <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+                        <button class="btn btn-primary ml-2" @click.prevent="save">{{$t('buttons.save')}}</button>
                     </div>
                 </form>
                 <!--<b-modal ref="removeEntityShipping" id="removeEntityShipping" >

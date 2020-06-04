@@ -6,7 +6,7 @@
 
                         <form>
                                     <div class="form-group">
-                                        <label class="control-label">{{$t('labels.Available')}}</label>
+                                        <label class="control-label">{{$t('labels.available')}}</label>
                                         <toggle-switch id="repeatSubscription1"
                                                        :on-text="$t('labels.yes')"
                                                        :off-text="$t('labels.no')"
@@ -35,7 +35,7 @@
                             </div>
                             <div class="form-buttons-w text-right">
                                 <button class="btn btn-outline-primary" @click.prevent="cancel">{{$t('buttons.cancel')}}</button>
-                                <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+                                <button class="btn btn-primary ml-2" @click.prevent="save">{{$t('buttons.save')}}</button>
                             </div>
                         </form>
 

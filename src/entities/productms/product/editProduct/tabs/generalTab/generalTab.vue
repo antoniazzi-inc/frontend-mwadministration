@@ -42,15 +42,15 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <div v-if="product.productType === 'SERVICE'">
-                                <label class="control-label">{{$t('labels.priceType')}}</label>
-                                <select class="form-control" v-model="productCopy.typeService.priceType">
-                                    <option value="fixed">{{$t('labels.typefixed')}}</option>
-                                    <option value="hourly">{{$t('labels.typehourly')}}</option>
-                                    <option value="15minutes">{{$t('labels.type15minutes')}}</option>
-                                    <option value="daily">{{$t('labels.typedaily')}}</option>
-                                </select>
-                            </div>
+                          <div class="form-group" v-if="product.productType === 'SERVICE'">
+                            <label class="control-label">{{$t('labels.priceType')}}</label>
+                            <select :class="{'form-control': true}" v-model="productCopy.typeService.priceType">
+                              <option value="fixed">{{$t('labels.fixed')}}</option>
+                              <option value="hourly">{{$t('labels.hourly')}}</option>
+                              <option value="15minutes">{{$t('labels.15minutes')}}</option>
+                              <option value="daily">{{$t('labels.daily')}}</option>
+                            </select>
+                          </div>
                         </div>
                     </div>
 
@@ -91,7 +91,7 @@
                             <input type="text" class="form-control" v-model="productCopy.sku" name="sku"/>
                         </div>
                         <div class="col-md-6">
-                            <label class="control-label">{{$t('labels.maxitems')}}</label>
+                            <label class="control-label">{{$t('labels.maxItems')}}</label>
                             <input type="number" class="form-control" v-model="productCopy.stock" name="maxItemsToSell"/>
                         </div>
                     </div>
@@ -111,13 +111,13 @@
                                                    :on-text="$t('labels.yes')"
                                                    :off-text="$t('labels.no')"
                                                    :value.sync="productCopy.euTax"/>
-                                    <p><small>{{$t('labels.taxRatesFromCustomersCountry')}}<router-link to=""> {{$t('global.moreInfo')}}</router-link></small></p>
+                                    <p><small>{{$t('labels.taxRatesFromCustomersCountry')}}<router-link to=""> {{$t('labels.moreInfo')}}</router-link></small></p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="row p-0 m-0">
-                                <div class="col-md-6 p-0 m-0">
+                                <div class="col-md-7 p-0 m-0">
                                     <label class="control-label">{{$t('labels.roundedTotal')}}</label>
                                     <toggle-switch id="repeatSubscription1"
                                                    :on-text="$t('labels.yes')"
@@ -125,7 +125,7 @@
                                                    :value.sync="productCopy.priceRounding"/>
                                     <p><small>{{$t('labels.finalCalculatedTotalMustBeRoundedTo5Cents')}}</small></p>
                                 </div>
-                                <div class="col-md-6 p-0 m-0">
+                                <div class="col-md-5 p-0 m-0">
                                         <label class="control-label">{{$t('labels.userDefinedPrice')}}</label>
                                         <toggle-switch id="repeatSubscription"
                                                        :on-text="$t('labels.yes')"

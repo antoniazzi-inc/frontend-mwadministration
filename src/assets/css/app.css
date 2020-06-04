@@ -39,6 +39,21 @@
 .date-input .form-control{
     padding-left: 35px;
 }
+.form-header {
+    margin-bottom: 1rem;
+    padding-top: 0.5rem;
+    display: block;
+}
+
+.form-desc {
+    color: #999;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    font-size: 0.9rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: block;
+}
 .profile-tile {
     display: -webkit-box;
     display: -ms-flexbox;

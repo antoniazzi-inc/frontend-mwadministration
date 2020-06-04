@@ -1,7 +1,13 @@
 <template>
   <div class="container-fluid">
-    <div class="row">
+    <div class="row text-left">
       <div class="col-md-12">
+        <h5 class="form-header"><strong>{{getProductName()}}</strong></h5>
+        <div class="form-desc">
+          {{$t('labels.created')}} {{ product.createdOn | formatDate}}
+          {{$t('labels.and')}}
+          {{$t('labels.updated')}} {{ product.updatedOn | formatDate}}
+        </div>
         <product-edit-tabs-component :product="product" ref="editTabs"
                                       @updateProduct="updateProduct"></product-edit-tabs-component>
       </div>

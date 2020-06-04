@@ -44,7 +44,9 @@ export default class EditProductComponent extends mixins(Vue, CommonHelpers) {
       this.retrieveItem(this.product.id)
     }
   }
-
+  public getProductName () {
+    return this.getMultiLangName(this.product.productLanguages).name
+  }
   public editRelationProfile () {
     // @ts-ignore
     this.$refs.editTabs.changeTabs('profile', 'general')

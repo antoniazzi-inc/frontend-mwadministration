@@ -63,7 +63,7 @@
                                 </b-card>
                             </div>-->
                             <div class="justify-content-center text-center">
-                                <p>{{$t('labels.nodata')}}</p>
+                                <p>{{$t('labels.noData')}}</p>
                             </div>
                         </div>
                         <div class="col-md-3" style="padding-top:3em;">
@@ -75,7 +75,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div v-if="selectedProductFeature && selectedProductFeature.id == 0" class="larger">{{$t('buttons.create')}}</div>
-                            <div v-else class="larger">{{$t('labels.createOrEdit')}} {{getAttributeName(selectedProductFeature && selectedProductFeature.attributeLanguages ? selectedProductFeature.attributeLanguages : undefined)}}</div>
+                            <div v-else class="larger">{{$t('labels.createOrEditFeatures')}} {{getAttributeName(selectedProductFeature && selectedProductFeature.attributeLanguages ? selectedProductFeature.attributeLanguages : undefined)}}</div>
                             <form>
                                 <div class="form-group">
                                   <multi-language-component
@@ -89,13 +89,13 @@
                                     <label class="form-control-label">{{$t('labels.availableForCustomers')}}</label>
                                     <toggle-switch :on-text="$t('labels.yes')"
                                                    :off-text="$t('labels.no')"
-                                                   :value.sync="selectedProductFeature.visibleInFrontEnd"></toggle-switch>
+                                                   :value.sync="selectedProductFeature.visibleInFrontEnd"/>
                                 </div>
                                 <div class="form-group col-md-6 pt-3 pull-left">
                                     <label class="form-control-label">{{$t('labels.multipleValues')}}</label>
                                     <toggle-switch :on-text="$t('labels.yes')"
                                                    :off-text="$t('labels.no')"
-                                                   :value.sync="selectedProductFeature.multipleValues"></toggle-switch>
+                                                   :value.sync="selectedProductFeature.multipleValues"/>
                                 </div>
                             </form>
                         </div>
@@ -165,7 +165,7 @@
                                         <div class="form-group row">
                                             <div class="col-md-12">
                                                 <button type="submit" @click.prevent="saveOptionField($event)" class="btn btn-outline-primary mb-2 pull-right ml-2"><span v-if="selectedOption.id > 0">{{$t('buttons.save')}}</span><span v-else>{{$t('buttons.saveOption')}}</span></button>
-                                                <button type="submit" @click.prevent="backToViewMode($event)" class="btn btn-outline-warning mb-2 pull-right ml-2">{{$t('buttons.cancel')}}</button>
+                                                <button type="submit" @click.prevent="backToViewMode($event)" class="btn btn-outline-warning mb-2 ml-2">{{$t('buttons.cancel')}}</button>
                                             </div>
                                         </div>
                                     </form>
@@ -177,7 +177,7 @@
                         <div class="col-md-12 text-right">
                             <div class="form-buttons-w">
                                 <button class="btn btn-outline-primary" @click.prevent="cancel">{{$t('buttons.cancel')}}</button>
-                                <button class="btn btn-primary" @click.prevent="save" :disabled="($refs.featureLang && $refs.featureLang.selectedLang.name === '') || (selectedProductFeature.attributeValues && selectedProductFeature.attributeValues.length === 0)">{{$t('buttons.save')}}</button>
+                                <button class="btn btn-primary ml-2" @click.prevent="save" :disabled="($refs.featureLang && $refs.featureLang.selectedLang.name === '') || (selectedProductFeature.attributeValues && selectedProductFeature.attributeValues.length === 0)">{{$t('buttons.save')}}</button>
                             </div>
                         </div>
                     </div>

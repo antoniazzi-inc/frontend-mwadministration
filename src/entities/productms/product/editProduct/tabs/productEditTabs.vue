@@ -55,7 +55,7 @@
     </ul>
       <button type="button" class="btn btn-link backToListBtn" @click="goBack">{{$t('buttons.backToList')}}</button>
     </div>
-    <div class="tab-content">
+    <div class="tab-content mt-3">
       <div :class="{'tab-pane': true, 'active': currentTab === 'general'}" id="general" role="tabpanel"
            aria-labelledby="general-tab">
         <general-tab-component :product="product" @update="updateProduct"/>
