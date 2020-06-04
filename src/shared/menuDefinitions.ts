@@ -139,12 +139,6 @@ export const MenuDefinitions = [
       icon: '',
       path: '/products-shopping-cart-settings',
       authorities: ['*']
-    },
-    {
-      name: 'labels.shoppingCartProducts',
-      icon: '',
-      path: '/products-shopping-cart-products',
-      authorities: ['*']
     }]
   }, {
     name: 'labels.orders',

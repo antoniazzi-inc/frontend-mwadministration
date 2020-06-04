@@ -198,6 +198,11 @@
                                 <div v-else class="uppercase font-hg text-danger impsumm">{{duplicateEmailsFound}}</div>
                               </div>
                               <div class="col-md-3 col-sm-3 col-xs-3 text-center">
+                                <div class="font-grey-mint font-sm" v-html="$t('labels.invalidEmails')"></div>
+                                <div v-if="invalidEmails.length" class="uppercase font-hg text-success impsumm">0</div>
+                                <div v-else class="uppercase font-hg text-danger impsumm">{{invalidEmails.length}}</div>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-xs-3 text-center">
                                 <div class="font-grey-mint font-sm" v-html="$t('labels.existing')"></div>
                                 <div class="uppercase font-hg text-success impsumm">{{existingEmailsList.length}}</div>
                               </div>

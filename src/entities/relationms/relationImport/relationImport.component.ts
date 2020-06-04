@@ -46,6 +46,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public fileType: any;
   public excelFile: any;
   public rows: any[];
+  public invalidEmails: any[];
   public allFreeFileds: any[];
   public mappings: any[];
   public dbfields: any[];
@@ -89,6 +90,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     this.duplicateEmailsFound = 0
     this.duplicateEmailsList = []
     this.existingEmailsList = []
+    this.invalidEmails = []
     this.relationsToImport = 0
     this.exampleCards = []
     this.numRowsInFile = 0
@@ -150,7 +152,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
         undefined, undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, undefined)
-      const relProfile: any = new RelationProfile(undefined, undefined, '', '', '', '', '',
+      const relProfile: any = new RelationProfile(undefined, undefined, '', '', '-', '', '',
         '', '', 0, '', '', false, undefined, undefined, undefined, undefined, undefined, undefined)
       const newRel: any = new RelationEntity(undefined, undefined, undefined, undefined, undefined,
         undefined, 'default_' + Math.random(), Math.random().toString(), '', true, self.$store.state.currentLanguage,
@@ -572,77 +574,81 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
           // Check if there is a email column
           if (self.emailFieldIndex >= 0) {
             // Check if there is an empty email value
-            if (rowValue[self.emailFieldIndex] !== undefined && rowValue[self.emailFieldIndex] !== '') {
-              // Set the email values to lowercase
-              rowValue[self.emailFieldIndex] = rowValue[self.emailFieldIndex].toLowerCase()
-              emails[emails.length] = rowValue[self.emailFieldIndex]
-              // emails.push(rowValue[self.emailFieldIndex])
-              debugger
-              for (let i = 0; i < self.datafordb.length; i++) {
-                const arr = self.datafordb[i]
-                for (let j = 0; j < arr.length; j++) {
-                  const obj = arr[j]
-                  if (obj.value === rowValue[self.emailFieldIndex]) {
-                    foundDuplicate = obj.value
+            if(self.validateEmail(rowValue[self.emailFieldIndex]) === false) {
+              self.invalidEmails.push(rowValue[self.emailFieldIndex])
+            }else{
+              if (rowValue[self.emailFieldIndex] !== undefined && rowValue[self.emailFieldIndex] !== '') {
+                // Set the email values to lowercase
+                rowValue[self.emailFieldIndex] = rowValue[self.emailFieldIndex].toLowerCase()
+                emails[emails.length] = rowValue[self.emailFieldIndex]
+                // emails.push(rowValue[self.emailFieldIndex])
+                for (let i = 0; i < self.datafordb.length; i++) {
+                  const arr = self.datafordb[i]
+                  for (let j = 0; j < arr.length; j++) {
+                    const obj = arr[j]
+                    if (obj.value === rowValue[self.emailFieldIndex]) {
+                      foundDuplicate = obj.value
+                    }
                   }
                 }
-              }
-              if (foundDuplicate !== undefined) {
-                self.duplicateEmailsFound += 1
-                self.duplicateEmailsList[self.duplicateEmailsList.length] = foundDuplicate
-                // self.duplicateEmailsList.push(foundDuplicate)
-              } else {
-                const exampleCard: any = []
-                const singleRow: any = []
-                let counter = 0
-                const freeFields: any = []
-                for (let cellIndex = 0; cellIndex < rowValue.length; cellIndex++) {
-                  let cellValue = rowValue[cellIndex]
-                  if (!cellValue) {
-                    cellValue = '-'
-                  }
-                  counter += 1
-                  const columnName = typeof self.mappings[cellIndex].dbfield === 'string' ? self.mappings[cellIndex].dbfield : 'customFields'
-                  // if (columnName === 'dnassign') {
-                  // 	return;
-                  // }
-                  const myObj: any = {}
-                  myObj.fieldName = columnName
-                  myObj.value = typeof self.mappings[cellIndex].dbfield === 'string' ? cellValue : { value: self.mappings[cellIndex].dbfield, cellVal: rowValue[cellIndex] ? rowValue[cellIndex] : '-' }
-                  // myObj[columnName] = cellValue;
-                  // self.datafordb.push(myObj);
-                  if (columnName !== 'dnassign') {
-                    singleRow[singleRow.length] = myObj
-                    // singleRow.push(myObj)
-                    if (columnName === 'customFields') {
-                      freeFields[freeFields.length] = { label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex] }
-                      // freeFields.push({label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex]})
-                    } else {
-                      for (let i = 0; i < self.dbfields.length; i++) {
-                        const x = self.dbfields[i]
-                        if (x.value === columnName) {
-                          exampleCard[exampleCard.length] = { label: x.label, value: myObj.value }
+                if (foundDuplicate !== undefined) {
+                  self.duplicateEmailsFound += 1
+                  self.duplicateEmailsList[self.duplicateEmailsList.length] = foundDuplicate
+                  // self.duplicateEmailsList.push(foundDuplicate)
+                } else {
+
+                  const exampleCard: any = []
+                  const singleRow: any = []
+                  let counter = 0
+                  const freeFields: any = []
+                  for (let cellIndex = 0; cellIndex < rowValue.length; cellIndex++) {
+                    let cellValue = rowValue[cellIndex]
+                    if (!cellValue) {
+                      cellValue = '-'
+                    }
+                    counter += 1
+                    const columnName = typeof self.mappings[cellIndex].dbfield === 'string' ? self.mappings[cellIndex].dbfield : 'customFields'
+                    // if (columnName === 'dnassign') {
+                    // 	return;
+                    // }
+                    const myObj: any = {}
+                    myObj.fieldName = columnName
+                    myObj.value = typeof self.mappings[cellIndex].dbfield === 'string' ? cellValue : { value: self.mappings[cellIndex].dbfield, cellVal: rowValue[cellIndex] ? rowValue[cellIndex] : '-' }
+                    // myObj[columnName] = cellValue;
+                    // self.datafordb.push(myObj);
+                    if (columnName !== 'dnassign') {
+                      singleRow[singleRow.length] = myObj
+                      // singleRow.push(myObj)
+                      if (columnName === 'customFields') {
+                        freeFields[freeFields.length] = { label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex] }
+                        // freeFields.push({label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex]})
+                      } else {
+                        for (let i = 0; i < self.dbfields.length; i++) {
+                          const x = self.dbfields[i]
+                          if (x.value === columnName) {
+                            exampleCard[exampleCard.length] = { label: x.label, value: myObj.value }
+                          }
                         }
                       }
                     }
-                  }
-                  // inserted row counter
-                  if (counter === (rowValue.length)) {
-                    const freeFieldsLabel = []
-                    for (let z = 0; z < freeFields.length; z++) {
-                      freeFieldsLabel[z] = freeFields[z].label
+                    // inserted row counter
+                    if (counter === (rowValue.length)) {
+                      const freeFieldsLabel = []
+                      for (let z = 0; z < freeFields.length; z++) {
+                        freeFieldsLabel[z] = freeFields[z].label
+                      }
+                      if (self.relationsToImport <= 5) {
+                        if (freeFieldsLabel.length) exampleCard[exampleCard.length] = { label: self.$t('labels.freeFieldsMenu'), value: freeFieldsLabel.join(', ') }
+                        self.exampleCards[self.exampleCards.length] = exampleCard
+                      }
+                      self.datafordb[self.datafordb.length] = singleRow
+                      self.relationsToImport += 1
                     }
-                    if (self.relationsToImport <= 5) {
-                      if (freeFieldsLabel.length) exampleCard[exampleCard.length] = { label: self.$t('labels.freeFieldsMenu'), value: freeFieldsLabel.join(', ') }
-                      self.exampleCards[self.exampleCards.length] = exampleCard
-                    }
-                    self.datafordb[self.datafordb.length] = singleRow
-                    self.relationsToImport += 1
                   }
                 }
+              } else {
+                self.duplicateEmailsFound += 1
               }
-            } else {
-              self.duplicateEmailsFound += 1
             }
           }
         } else {
@@ -710,13 +716,14 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       let queryP = ''
       emails.forEach((email: any, ind: any) => {
         if (ind < emails.length - 1) {
-          queryP += `${email},`
+          queryP += `"${email}",`
         } else {
-          queryP += `${email}`
+          queryP += `"${email}"`
         }
       })
       const query = 'email=in=(' + queryP + ')'
-      this.relationService.search(query).then((resp: AxiosResponse) => {
+      debugger
+      this.relationService.search(query.trim()).then((resp: AxiosResponse) => {
         if (resp) {
           self.isProcessing = false
           if (resp.data.content.length > 0) {
