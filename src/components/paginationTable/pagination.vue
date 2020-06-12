@@ -17,12 +17,12 @@
       <ul data-v-c588cb8e="" class="pagination">
         <li class="page-item" @click.prevent="toFirstPage"><a class="page-link">&lt;&lt;</a></li>
         <li class="page-item" @click.prevent="backPage"><a class="page-link">&lt;</a></li>
-          <template v-for="(item, index) in $props.totalPages">
-            <li @click.prevent="changePage(index)"
-                :class="{'page-item': true, 'active': index === currentPage}" :key="index">
-              <a class="page-link">{{index + 1}}</a>
-            </li>
-          </template>
+        <li class="page-item disabled" v-if="clickedIndex >= sequenceToDisplay.length && clickedIndex > 5"><a class="page-link">...</a></li>
+        <li :class="{'page-item': true, 'active': clickedIndex === item}" v-for="(item, index) in sequenceToDisplay"
+            :key="index" @click.prevent.stop="changePageFromBtn(item, index)">
+          <a class="page-link">{{item}}</a>
+        </li>
+        <li class="page-item disabled" v-if="clickedIndex <= $props.totalPages - 2"><a class="page-link">...</a></li>
         <li class="page-item" @click.prevent="nextPage"><a class="page-link">&gt;</a></li>
         <li class="page-item" @click.prevent="toLastPage"><a class="page-link">&gt;&gt;</a></li>
       </ul>

@@ -21,7 +21,6 @@ module.exports = {
       errors: true
     },
     headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
       'Access-Control-Allow-Credentials': 'true',

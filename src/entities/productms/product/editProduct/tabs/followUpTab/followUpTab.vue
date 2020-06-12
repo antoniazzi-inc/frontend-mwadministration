@@ -94,7 +94,7 @@
                         </div>
                     </div>
                     <div class="form-buttons-w text-right">
-                        <button class="btn btn-primary" @click.prevent="save">{{$t('buttonssave')}}</button>
+                        <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
                     </div>
                 </form>
 

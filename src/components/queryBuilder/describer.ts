@@ -1,7 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
-
-import { isArray, isObject, isString } from 'util'
 import CommonHelpers from '@/shared/commonHelpers'
 @Component
 export default class Describer extends mixins(CommonHelpers, Vue) {
@@ -58,12 +56,12 @@ export default class Describer extends mixins(CommonHelpers, Vue) {
       const condition = rule.query.condition ? rule.query.condition.label : ''
       const operator = rule.query.op ? rule.query.op.value ? rule.query.op.value.label : '' : ''
       let value = ''
-      if (isString(rule.query.value.value)) {
+      if (typeof rule.query.value.value === 'string') {
         value = rule.query.value.value
       } else
-      if (isString(rule.query.value)) {
+      if (typeof rule.query.value === 'string') {
         value = rule.query.value
-      } else if (isArray(rule.query.value.value)) {
+      } else if (Array.isArray(rule.query.value.value)) {
         let finalVal = ''
         rule.query.value.value.forEach((val: any, ind: any) => {
           if (ind < rule.query.value.value.length - 1) {
@@ -73,7 +71,7 @@ export default class Describer extends mixins(CommonHelpers, Vue) {
           }
         })
         value = finalVal
-      } else if (isObject(rule.query.value)) {
+      } else if (typeof rule.query.value === 'object') {
         value = rule.query.value.value.label
       }
       const translation = this.$t(desc, { condition: condition, operator: operator, value: value })

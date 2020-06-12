@@ -16,9 +16,9 @@
                             <label class="form-control-label">{{$t('labels.availablePaymentMethods')}}</label>
                           <small class="cursor-pointer pl-4 text-primary" @click="includeAllPaymentMethods">{{$t('labels.addAllPaymentMethods')}}</small>
                           <searchable-select-component :config="multiSelectConfigPayment"
-                                                       :options="allPaymentMethods"
+                                                       :options="$store.state.lookups.paymentMethods"
                                                        :value="selectedPaymentMethods"
-                                                       @onChange="paymentMethodChanged"
+                                                       @onSelected="paymentMethodChanged"
                                                        @onDelete="removePaymentMethod"/>
                         </div>
                     </div>
@@ -71,11 +71,11 @@
                     <div class="row" v-else>
                         <div class="form-group col-md-6">
                             <label class="form-control-label">{{$t('labels.paymentSchedules')}}</label>
-                            <button type="button" class="btn btn-outline-primary" @click.prevent="addNewPaymentSchedule">
+                            <button type="button" class="btn btn-outline-primary ml-2" @click.prevent="addNewPaymentSchedule">
                               <i class="fas fa-plus"></i> {{$t('buttons.createNew')}}</button>
                         </div>
                         <div class="form-group col-md-12">
-                            <payment-schedule ref="paymentSchedule" :product="productCopy" :addNewPayment="addNewPayment" @onCancel="cancelPaymentSchedule" @productUpdated="updateProduct"></payment-schedule>
+                            <payment-schedule ref="paymentSchedule" :product="productCopy" :addNewPayment="addNewPayment" @onCancel="cancelPaymentSchedule" @productUpdated="updateProduct"/>
                         </div>
                     </div>
                     <div v-if="sentAnnouncement">

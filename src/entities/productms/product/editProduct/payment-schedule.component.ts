@@ -1,4 +1,4 @@
-import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { Money } from 'v-money'
 import { IPaymentSchedule, PaymentSchedule } from '@/shared/models/PaymentScheduleModel'
@@ -10,6 +10,7 @@ import { IProduct, Product } from '@/shared/models/ProductModel'
 import { IPaymentScheduleOption, PaymentScheduleOption } from '@/shared/models/PaymentScheduleOptionModel'
 import { AxiosResponse } from 'axios'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
+import Store from '@/store/index'
 @Component({
   props: {
     product: Object,
@@ -49,7 +50,7 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
       this.money = {
         decimal: ',',
         thousands: '.',
-        prefix: '€',
+        prefix: Store.state.currency,
         suffix: '',
         precision: 2,
         masked: false
@@ -88,19 +89,11 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
       const self = this
       const product = {
         id: this.productCopy.id,
-        administrationId: this.productCopy.administrationId,
-        version: this.productCopy.version,
-        createdOn: this.productCopy.createdOn,
-        updatedOn: this.productCopy.updatedOn,
-        availableTo: this.productCopy.availableTo,
-        availableFrom: this.productCopy.availableFrom,
-        price: this.productCopy.price,
-        tax: this.productCopy.tax,
-        productType: this.productCopy.productType
+        version: this.productCopy.version
       }
       this.selectedPaymentSchedule.product = product
       if (this.selectedPaymentSchedule.id) {
-        this.paymentScheduleService().update(this.selectedPaymentSchedule).then((resp: AxiosResponse) => {
+        this.paymentScheduleService.put(this.selectedPaymentSchedule).then((resp: AxiosResponse) => {
           self.editMode = false
           self.addNew = false
           let index = null
@@ -117,7 +110,7 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
           this.setAlert('productUpdated', 'success')
         })
       } else {
-        this.paymentScheduleService().create(this.selectedPaymentSchedule).then((resp: AxiosResponse) => {
+        this.paymentScheduleService.post(this.selectedPaymentSchedule).then((resp: AxiosResponse) => {
           this.cleanSchedules().then(() => {
             self.editMode = false
             self.addNew = false
@@ -145,15 +138,17 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
     }
 
     public closeDialog () {
-      (<any> this.$refs.removeEntityPaymentSchedule).hide();
-      (<any> this.$refs.removeEntityPaymentScheduleOption).hide()
+      // @ts-ignore
+      $(this.$refs.removeEntityPaymentSchedule).modal('hide')
+      // @ts-ignore
+      $(this.$refs.removeEntityPaymentScheduleOption).modal('hide')
     }
 
     public removePaymentSchedule () {
       const self = this
-      this.paymentScheduleService().delete(this.scheduleToDelete?.id).then((resp: AxiosResponse) => {
+      this.paymentScheduleService.delete(this.scheduleToDelete?.id).then((resp: AxiosResponse) => {
         // @ts-ignore
-        self.$vueOnToast.pop('success', self.$t('paymentScheduleDeleted'))
+        this.setAlert('paymentScheduleDeleted', 'success')
         self.closeDialog()
         let index = null
         $.each(self.productCopy.paymentSchedules, function (k, v: any) {
@@ -175,7 +170,7 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
 
     public RemoveScheduleOption () {
       const self = this
-      this.paymentScheduleOptionService().delete(this.scheduleOptionToDelete?.id).then((resp: AxiosResponse) => {
+      this.paymentScheduleOptionService.delete(this.scheduleOptionToDelete?.id).then((resp: AxiosResponse) => {
         // @ts-ignore
         this.setAlert('paymentScheduleOptionDeleted', 'success')
         self.closeDialog()

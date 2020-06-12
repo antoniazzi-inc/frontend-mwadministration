@@ -83,7 +83,8 @@ export default class ContactsSubTabComponent extends mixins(Vue, CommonHelpers) 
       this.relationAddressService.post(address).then((resp: AxiosResponse) => {
         if (resp) {
           this.setAlert('relationAddressCreated', 'success')
-          this.relationCopy.relationAddresses?.push(resp.data)
+          this.relationCopy.relationAddresses ? this.relationCopy.relationAddresses.push(resp.data)
+            : this.relationCopy.relationAddresses = [resp.data]
         } else {
           this.setAlert('relationAddressError', 'error')
         }
@@ -97,13 +98,13 @@ export default class ContactsSubTabComponent extends mixins(Vue, CommonHelpers) 
       this.relationAddressService.delete(address.id).then((resp: AxiosResponse) => {
         if (resp) {
           this.setAlert('relationAddressRemoved', 'success')
-          this.relationCopy.relationAddresses?.splice(index, 1)
+          if (this.relationCopy.relationAddresses) this.relationCopy.relationAddresses.splice(index, 1)
         } else {
           this.setAlert('relationAddressError', 'error')
         }
       })
     } else {
-      this.relationCopy.relationAddresses?.splice(index, 1)
+      if (this.relationCopy.relationAddresses) this.relationCopy.relationAddresses.splice(index, 1)
     }
   }
 
@@ -132,7 +133,8 @@ export default class ContactsSubTabComponent extends mixins(Vue, CommonHelpers) 
       } else {
         this.setAlert('relationCommunicationError', 'error')
       }
-      this.relationCopy.relationPhones?.push(result.data)
+      this.relationCopy.relationPhones ? this.relationCopy.relationPhones.push(result.data)
+        : this.relationCopy.relationPhones = [result.data]
     }
   }
 
@@ -162,13 +164,13 @@ export default class ContactsSubTabComponent extends mixins(Vue, CommonHelpers) 
       this.relationPhoneService.delete(phone.id).then((resp: AxiosResponse) => {
         if (resp) {
           this.setAlert('relationCommunicationRemoved', 'success')
-          this.relationCopy.relationPhones?.splice(index, 1)
+          if (this.relationCopy.relationPhones) this.relationCopy.relationPhones.splice(index, 1)
         } else {
           this.setAlert('relationCommunicationRemoveError', 'error')
         }
       })
     } else {
-      this.relationCopy.relationPhones?.splice(index, 1)
+      if (this.relationCopy.relationPhones) this.relationCopy.relationPhones.splice(index, 1)
     }
   }
 }

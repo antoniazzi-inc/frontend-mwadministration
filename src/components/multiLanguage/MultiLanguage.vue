@@ -20,8 +20,18 @@
               </span>
                 </span>
       </div>
+      <div class="btn-group" v-if="!$props.config.showLangs && availableLangs">
+                <span :key="index" to="" v-for="(lang, index) in availableLangs" @click="changeLanguage(index)"
+                      :class="{btn: true, 'btn-outline-primary ml-0 btn-small btn-rounded': true,
+                      'active': selectedLanguage === index}">
+                    <span style="font-size:0.8em">
+                 <img class="img-fluid" :src="`./assets/images/flags/${index}.png`"/>
+                      <i class="ml-1 fa fa-check" v-if="checkIfHasValue(index)"></i>
+              </span>
+                </span>
+      </div>
       <div class="float-right">
-        <button type="button" class="btn btn-danger" v-if="$props.value && $props.value.length > 1 && checkIfHasValue(selectedLanguage)">
+        <button type="button" class="btn btn-danger" v-if="$props.value && $props.value.length > 1 && checkIfHasValue(selectedLanguage) && $props.config.enableRemoveBtn">
           <i class="fa fa-trash-alt" @click="removeLanguage()"/>
         </button>
       </div>

@@ -30,16 +30,16 @@ export default class SearchRules extends mixins(Vue) {
 
     constructor (props: any) {
       super(props)
-      this.allOperators = props.operator,
+      this.allOperators = props.operator
       this.commonRules = [{
         id: 'relFields',
-        label: 'Relation Field',
+        label: 'labels.relationField',
         description: 'labels.relationFieldLabel',
         searchQuery: null,
         conditions: [
           {
             id: 'firstName',
-            label: 'First Name',
+            label: 'labels.firstName',
             value: null,
             outputElement: { type: 'text', options: null },
             operator: { id: 'textOperators', type: 'singleSelect', options: this.allOperators.textOperators, secondLvlOperatorCondition: null },
@@ -48,7 +48,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'LastName',
-            label: 'Last Name',
+            label: 'labels.lastName',
             value: null,
             outputElement: { type: 'text', options: null },
             operator: { id: 'textOperators', type: 'singleSelect', options: this.allOperators.textOperators, secondLvlOperatorCondition: null },
@@ -57,7 +57,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'company',
-            label: 'Company',
+            label: 'labels.company',
             value: null,
             outputElement: { type: 'text', options: null },
             operator: { id: 'textOperators', type: 'singleSelect', options: this.allOperators.textOperators, secondLvlOperatorCondition: null },
@@ -66,7 +66,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'email',
-            label: 'email',
+            label: 'labels.email',
             value: null,
             outputElement: { type: 'text', options: null },
             operator: { id: 'textOperators', type: 'singleSelect', options: this.allOperators.textOperators, secondLvlOperatorCondition: null },
@@ -75,7 +75,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'created',
-            label: 'Created On',
+            label: 'labels.createdOn',
             value: null,
             outputElement: { type: 'date', options: null },
             operator: { id: 'dateOperators', type: 'singleSelect', options: this.allOperators.dateOperators, secondLvlOperatorCondition: null },
@@ -84,7 +84,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'gender',
-            label: 'Gender',
+            label: 'labels.gender',
             value: null,
             outputElement: { type: 'singleSelect', options: this.allOperators.genderOperators },
             operator: { id: 'equalOperators', type: 'singleSelect', options: this.allOperators.equalOperators, secondLvlOperatorCondition: null },
@@ -93,7 +93,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'postalCode',
-            label: 'Postal Code',
+            label: 'labels.postalCode',
             value: null,
             outputElement: { type: 'text', options: null },
             operator: { id: 'textOperators', type: 'singleSelect', options: this.allOperators.textOperators, secondLvlOperatorCondition: null },
@@ -102,7 +102,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'city',
-            label: 'City',
+            label: 'labels.city',
             value: null,
             outputElement: { type: 'text', options: null },
             operator: { id: 'textOperators', type: 'singleSelect', options: this.allOperators.textOperators, secondLvlOperatorCondition: null },
@@ -111,7 +111,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'phone',
-            label: 'Phone',
+            label: 'labels.phone',
             value: null,
             outputElement: { type: 'text', options: null },
             operator: { id: 'textOperators', type: 'singleSelect', options: this.allOperators.textOperators, secondLvlOperatorCondition: null },
@@ -120,7 +120,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'website',
-            label: 'Website',
+            label: 'labels.website',
             value: null,
             outputElement: { type: 'text', options: null },
             operator: { id: 'textOperators', type: 'singleSelect', options: this.allOperators.textOperators, secondLvlOperatorCondition: null },
@@ -129,7 +129,7 @@ export default class SearchRules extends mixins(Vue) {
           },
           {
             id: 'birthDate',
-            label: 'Birth Date',
+            label: 'labels.birthDate',
             value: null,
             outputElement: { type: 'date', options: null },
             operator: { id: 'dateOperators', type: 'singleSelect', options: this.allOperators.dateOperators, secondLvlOperatorCondition: null },
@@ -143,7 +143,7 @@ export default class SearchRules extends mixins(Vue) {
       },
       {
         id: 'freefields',
-        label: 'Free Fields',
+        label: 'labels.freeFields',
         description: 'labels.freeFieldsComplexSearch',
         searchQuery: '(relationCustomFields.customField.id=={conditionId} and relationCustomFields.value)',
         searchQueryOption: '(relationCustomFields.customField.id=={conditionId} and relationCustomFields.customFieldOption.id=={conditionOptionId} and relationCustomFields.value)',
@@ -160,7 +160,7 @@ export default class SearchRules extends mixins(Vue) {
         }
       }, {
         id: 'groups',
-        label: 'Groups',
+        label: 'labels.groups',
         searchQuery: 'relationGroups.groupId',
         description: 'labels.complexSearchGroups',
         conditions: [],
@@ -176,7 +176,7 @@ export default class SearchRules extends mixins(Vue) {
         }
       }, {
         id: 'points',
-        label: 'Points',
+        label: 'labels.points',
         searchQuery: 'relationProfile.points',
         description: 'labels.complexSearchPoints',
         conditions: [],
@@ -194,7 +194,7 @@ export default class SearchRules extends mixins(Vue) {
         id: 'categories',
         searchQuery: 'relationProfile.categoryId',
         description: 'labels.complexSearchCategories',
-        label: 'Category',
+        label: 'labels.category',
         conditions: [],
         operator: null,
         outputElement: {
@@ -203,7 +203,7 @@ export default class SearchRules extends mixins(Vue) {
         }
       }, {
         id: 'tags',
-        label: 'Tags',
+        label: 'labels.tags',
         searchQuery: 'relationTags.tagId',
         description: 'labels.complexSearchTags',
         conditions: [],
@@ -221,7 +221,7 @@ export default class SearchRules extends mixins(Vue) {
       this.automationRules = [
         {
           id: 'listmgr',
-          label: 'List Manager',
+          label: 'labels.listManager',
           searchQuery: 'notKnown',
           description: 'labels.listmgr',
           conditions: [],
@@ -237,7 +237,7 @@ export default class SearchRules extends mixins(Vue) {
           }
         }, {
           id: 'workflow',
-          label: 'Workflow',
+          label: 'labels.workflow',
           searchQuery: 'notKnown',
           description: 'labels.workflow',
           conditions: [],
@@ -257,7 +257,7 @@ export default class SearchRules extends mixins(Vue) {
           }
         }, {
           id: 'mailing',
-          label: 'Mailing',
+          label: 'labels.mailing',
           searchQuery: 'notKnown',
           description: 'labels.mailing',
           conditions: [],
@@ -270,7 +270,7 @@ export default class SearchRules extends mixins(Vue) {
           outputElement: []
         }, {
           id: 'email',
-          label: 'Email',
+          label: 'labels.email',
           searchQuery: 'notKnown',
           description: 'labels.emailComplexSearch',
           conditions: [],
@@ -286,7 +286,7 @@ export default class SearchRules extends mixins(Vue) {
           }
         }, {
           id: 'link',
-          label: 'Link',
+          label: 'labels.link',
           searchQuery: 'notKnown',
           description: 'labels.link',
           conditions: [],
@@ -294,7 +294,7 @@ export default class SearchRules extends mixins(Vue) {
           outputElement: {}
         }, {
           id: 'regions',
-          label: 'Regions',
+          label: 'labels.regions',
           searchQuery: 'notKnown',
           conditions: [],
           operator: null,
@@ -307,7 +307,7 @@ export default class SearchRules extends mixins(Vue) {
       this.shopRules = [
         {
           id: 'orders',
-          label: 'Orders',
+          label: 'labels.orders',
           searchQuery: 'notKnown',
           description: 'labels.complexSearchOrders',
           conditions: [],
@@ -315,7 +315,7 @@ export default class SearchRules extends mixins(Vue) {
           outputElement: null
         }, {
           id: 'orderamount',
-          label: 'Order Amount',
+          label: 'labels.orderAmount',
           searchQuery: 'notKnown',
           conditions: [],
           operator: {
@@ -330,7 +330,7 @@ export default class SearchRules extends mixins(Vue) {
           }
         }, {
           id: 'orderquantity',
-          label: 'Order Quantity',
+          label: 'labels.orderQuantity',
           searchQuery: 'notKnown',
           description: 'labels.orderQuantity',
           conditions: [],
@@ -346,7 +346,7 @@ export default class SearchRules extends mixins(Vue) {
           }
         }, {
           id: 'iscustomer',
-          label: 'Is Customer',
+          label: 'labels.isCustomer',
           searchQuery: 'customer',
           description: 'labels.isCustomer',
           conditions: [],
@@ -357,7 +357,7 @@ export default class SearchRules extends mixins(Vue) {
           }
         }, {
           id: 'isAffiliate',
-          label: 'Is Affiliate',
+          label: 'labels.isAffiliate',
           searchQuery: 'affiliateId',
           description: 'labels.isAffiliate',
           conditions: [],

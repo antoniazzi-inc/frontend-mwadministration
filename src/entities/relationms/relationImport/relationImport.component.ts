@@ -10,9 +10,10 @@ import RelationService from '@/shared/services/relationService'
 import { AxiosResponse } from 'axios'
 import { RelationEntity } from '@/shared/models/relationModel'
 import { RelationProfile } from '@/shared/models/relation-profile.model'
-import { RelationAddress } from '@/shared/models/relation-address.model'
+import { AddressType, RelationAddress } from '@/shared/models/relation-address.model'
 import { Company } from '@/shared/models/company.model'
 import { PhoneType } from '@/shared/models/company-phone.model'
+
 @Component({
   components: {
     'v-gravatar': gravatarImg,
@@ -26,6 +27,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public existingGroup: number;
   public relationService: any;
   public duplicateEmailsFound: number;
+  public numberOfExisingEmails: number;
   public delimiterFields: boolean;
   public isUploading: boolean;
   public insertEmptyValues: boolean;
@@ -88,6 +90,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     this.datafordb = []
     this.emailFieldIndex = ''
     this.duplicateEmailsFound = 0
+    this.numberOfExisingEmails = 0
     this.duplicateEmailsList = []
     this.existingEmailsList = []
     this.invalidEmails = []
@@ -143,15 +146,15 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     self.datafordb.forEach(function (rel) {
       const row: any = []
       const relationAddress: any = new RelationAddress(undefined, undefined, undefined, '', '', '',
-        150, undefined, '', '', '', undefined,
+        150, undefined, '', '', '', AddressType.OTHER,
         true, true, true, undefined, undefined, undefined, undefined)
       const relationPhone: any = []
       const relationCustomFields: any = []
       const relationCompany = new Company(undefined, undefined, undefined, undefined,
-        undefined, '', undefined, undefined, undefined, undefined,
+        undefined, '', undefined, undefined, '', undefined,
         undefined, undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, undefined)
+        undefined, undefined, undefined, { id: 1, version: 0 })
       const relProfile: any = new RelationProfile(undefined, undefined, '', '', '-', '', '',
         '', '', 0, '', '', false, undefined, undefined, undefined, undefined, undefined, undefined)
       const newRel: any = new RelationEntity(undefined, undefined, undefined, undefined, undefined,
@@ -177,6 +180,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
           if (!fvalue) fvalue = self.getCountryByIso(fvalue)
         } else if (fld.fieldName.toLowerCase() === 'companyname') {
           relationCompany.name = fvalue
+          relationCompany.alias = fvalue
         } else if (fld.fieldName.toLowerCase() === 'customfields') {
           relationCustomFields.push({ customField: { id: fvalue.value.id, version: fvalue.value.version }, value: fvalue.cellVal })
         } else if (fld.fieldName.toLowerCase() === 'phone2ork') {
@@ -574,9 +578,9 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
           // Check if there is a email column
           if (self.emailFieldIndex >= 0) {
             // Check if there is an empty email value
-            if(self.validateEmail(rowValue[self.emailFieldIndex]) === false) {
+            if (rowValue[self.emailFieldIndex] && self.validateEmail(rowValue[self.emailFieldIndex]) === false) {
               self.invalidEmails.push(rowValue[self.emailFieldIndex])
-            }else{
+            } else {
               if (rowValue[self.emailFieldIndex] !== undefined && rowValue[self.emailFieldIndex] !== '') {
                 // Set the email values to lowercase
                 rowValue[self.emailFieldIndex] = rowValue[self.emailFieldIndex].toLowerCase()
@@ -596,7 +600,6 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                   self.duplicateEmailsList[self.duplicateEmailsList.length] = foundDuplicate
                   // self.duplicateEmailsList.push(foundDuplicate)
                 } else {
-
                   const exampleCard: any = []
                   const singleRow: any = []
                   let counter = 0
@@ -722,13 +725,14 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
         }
       })
       const query = 'email=in=(' + queryP + ')'
-      debugger
+      this.isProcessing = true
       this.relationService.search(query.trim()).then((resp: AxiosResponse) => {
         if (resp) {
           self.isProcessing = false
           if (resp.data.content.length > 0) {
             resp.data.content.forEach((rel: any) => {
               self.existingEmailsList.push(rel.email)
+              self.numberOfExisingEmails = resp.data.totalElements
             })
           }
         }
@@ -738,6 +742,6 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
 
   public calculateImport () {
     if (this.overwrite) return this.numRowsInFile - this.duplicateEmailsFound
-    else return this.numRowsInFile - this.duplicateEmailsFound - this.existingEmailsList.length
+    else return this.numRowsInFile - this.duplicateEmailsFound - this.numberOfExisingEmails
   }
 }

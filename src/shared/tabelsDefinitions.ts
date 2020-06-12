@@ -251,7 +251,9 @@ export const product = {
       type: '',
       authorities: ['*'],
       sort: false,
-      method: null
+      method: function (item: any) {
+        return item.price + Store.state.currency
+      }
     }, {
       name: 'labels.name',
       field: 'name',
@@ -279,7 +281,7 @@ export const product = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        return getMultiLangName(item.productLanguages).name
+        return '-----TODO----'
       }
     }, {
       name: 'labels.productType',

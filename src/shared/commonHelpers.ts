@@ -2,7 +2,6 @@ import { Vue, Component } from 'vue-property-decorator'
 import { ILanguage, Language } from '@/shared/models/language.model'
 import { columnsVisibility } from '@/shared/tabelsDefinitions'
 import { Country } from '@/shared/models/country.model'
-import { isObject, isString } from 'util'
 import axios from 'axios'
 @Component
 export default class CommonHelpers extends Vue {
@@ -224,7 +223,7 @@ export default class CommonHelpers extends Vue {
 
   public getQueryVal (value: any) {
     let val = null
-    if (isString(value.value)) {
+    if (typeof value.value === 'string') {
       val = value.value
     } else if (value.value.length) {
       let finalVal = ''
@@ -244,7 +243,7 @@ export default class CommonHelpers extends Vue {
         }
       })
       val = finalVal
-    } else if (isObject(value.value)) {
+    } else if (typeof value.value === 'object') {
       if (value.value.labelValue) {
         val = value.value.labelValue
       } else if (value.value.value.id) {
@@ -547,12 +546,8 @@ export default class CommonHelpers extends Vue {
     })
   }
 
-  validateEmail(email:any)
-  {
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
-    {
-      return (true)
-    }
-    return (false)
+  validateEmail (email: any) {
+    const re = /\S+@\S+\.\S+/
+    return re.test(email)
   }
 }

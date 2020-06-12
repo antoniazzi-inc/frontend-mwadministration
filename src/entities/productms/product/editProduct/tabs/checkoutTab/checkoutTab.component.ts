@@ -147,18 +147,29 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
 
     public save () {
       this.productCopy.registrationSettingsJson = JSON.stringify(this.registrationSettingsJson)
-      this.productService().update(this.productCopy).then((resp: AxiosResponse) => {
+      const dto = JSON.parse(JSON.stringify(this.productCopy))
+      dto.typeDigital = undefined
+      dto.typeService = undefined
+      dto.typePhysical = undefined
+      dto.followupAction = undefined
+      dto.productSubscription = undefined
+      this.productService.put(dto).then((resp: AxiosResponse) => {
         this.setAlert('productUpdated', 'success')
+        this.$emit('update', resp.data)
       })
     }
 
     public saveTermsAndConditions () {
-      const dto = {
-        id: this.$props.product.id,
-        termsAndConditions: this.termsAndConditions
-      }
-      this.productService().updateTermsAndConditions(dto).then((resp: AxiosResponse) => {
+      this.productCopy.termsAndConditionsJson = this.termsAndConditions
+      const dto = JSON.parse(JSON.stringify(this.productCopy))
+      dto.typeDigital = undefined
+      dto.typeService = undefined
+      dto.typePhysical = undefined
+      dto.followupAction = undefined
+      dto.productSubscription = undefined
+      this.productService.put(dto).then((resp: AxiosResponse) => {
         this.setAlert('productUpdated', 'success')
+        this.$emit('update', resp.data)
       })
     }
 }

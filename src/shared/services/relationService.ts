@@ -29,6 +29,6 @@ export default class RelationService extends BaseEntityService<IRelationEntity> 
   }
 
   public async search (entity: any) {
-    return this.postRequest(`${this.url}/search`, entity)
+    return this.postRequest(`${this.url}/search?size=65534&page=1`, entity)
   }
 }

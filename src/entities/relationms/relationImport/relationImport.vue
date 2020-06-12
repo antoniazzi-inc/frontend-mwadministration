@@ -199,12 +199,12 @@
                               </div>
                               <div class="col-md-3 col-sm-3 col-xs-3 text-center">
                                 <div class="font-grey-mint font-sm" v-html="$t('labels.invalidEmails')"></div>
-                                <div v-if="invalidEmails.length" class="uppercase font-hg text-success impsumm">0</div>
+                                <div v-if="invalidEmails.length === 0" class="uppercase font-hg text-success impsumm">0</div>
                                 <div v-else class="uppercase font-hg text-danger impsumm">{{invalidEmails.length}}</div>
                               </div>
                               <div class="col-md-3 col-sm-3 col-xs-3 text-center">
                                 <div class="font-grey-mint font-sm" v-html="$t('labels.existing')"></div>
-                                <div class="uppercase font-hg text-success impsumm">{{existingEmailsList.length}}</div>
+                                <div class="uppercase font-hg text-success impsumm">{{numberOfExisingEmails}}</div>
                               </div>
                               <div class="col-md-3 col-sm-3 col-xs-3 text-center">
                                 <div class="font-grey-mint font-sm" v-html="$t('labels.toBeImported')"></div>
@@ -227,6 +227,14 @@
                               <div style="background-color:#fafafa; overflow: hidden; margin-top:0.5em; height:80px;">
                                 <ul class="list-group" style="overflow-y: scroll; margin:0.5em; height:100%">
                                   <li v-for="(existingEmail, ind) in existingEmailsList" :key="ind">{{existingEmail}}</li>
+                                </ul>
+                              </div>
+                            </div>
+                            <div v-if="invalidEmails.length > 0" style="margin-top:2em;">
+                              <div v-if="!overwrite" class="font-grey-mint font-sm" v-html="$t('labels.invalidEmails')"></div>
+                              <div style="background-color:#fafafa; overflow: hidden; margin-top:0.5em; height:80px;">
+                                <ul class="list-group" style="overflow-y: scroll; margin:0.5em; height:100%">
+                                  <li v-for="(invalidEmail, ind) in invalidEmails" :key="ind">{{invalidEmail}}</li>
                                 </ul>
                               </div>
                             </div>

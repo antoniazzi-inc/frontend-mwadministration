@@ -5,7 +5,7 @@ export default class  typephysicalsService extends BaseEntityService<ITypePhysic
     private static instance: typephysicalsService;
 
     private constructor() {
-        super('/api/productms//api/type-physicals')
+        super('/api/productms/api/type-physicals')
     }
 
     public static getInstance(): typephysicalsService {

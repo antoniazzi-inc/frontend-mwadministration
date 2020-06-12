@@ -3,7 +3,7 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-12">
-                    <label style="font-size:1.1em;" class="form-control-label pull-left">{{ rule.label }}</label>
+                    <label style="font-size:1.1em;" class="form-control-label pull-left">{{ $t(rule.label) }}</label>
                     <button class="close pull-right" @click="remove">&times;</button>
                 </div>
             </div>

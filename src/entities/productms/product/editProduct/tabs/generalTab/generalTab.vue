@@ -23,7 +23,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <p v-show="inclusive() > 0"><small>{{$t('labels.inclusivePriceIs')}}: {{inclusive()}}€</small></p>
+                                <p v-show="inclusive() > 0"><small>{{$t('labels.inclusivePriceIs')}}: {{inclusive()}}{{$store.state.currency}}</small></p>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -139,17 +139,17 @@
                         <div class="form-group col-sm-6">
                           <multi-language-component
                             :config="multiLangMaxExceedConfig"
-                            :value="product.productLanguages"
+                            :value="maxExceededMessage"
                             :langs="maxExceededMessage"
-                            :availableLangs="AvailableProductLanguages"
+                            :availableLangs="availableProductLanguages"
                             @onChange="updateMaxExceedLang"/>
                         </div>
                         <div class="form-group col-sm-6">
                           <multi-language-component
                             :config="multiLangNotAvailableConfig"
-                            :value="product.productLanguages"
+                            :value="notAvailableMessage"
                             :langs="maxExceededMessage"
-                            :availableLangs="AvailableProductLanguages"
+                            :availableLangs="availableProductLanguages"
                             @onChange="updateNotAvailableLang"/>
                         </div>
                     </div>
@@ -159,19 +159,41 @@
                 </form>
 
         </div>
-        <!--<div class="element-wrapper col-md-3">
-            <b-modal ref="createNewProduct" id="createNewProduct" >
-                <span slot="modal-title"><span>{{$t('global.messages.saveChangesFirst')}}</span></span>
-                <div class="mt-4 text-center">
-                    <p>{{$t('global.messages.unsavedChangesWillBeDiscarded')}}?</p>
-                    <p>{{$t('global.messages.pleaseSave')}}?</p>
+        <div class="element-wrapper col-md-3">
+          <div class="element-box">
+            <div class="form-desc" style="color:#808080;">
+                {{$t('labels.dontForgetToClickSave')}}
+            </div>
+            <router-link to="" tag="button" data-toggle="modal" data-target="#createNewProduct" id="jh-create-entity"
+                         class="btn btn-primary float-right jh-create-entity create-product">
+                <span  v-text="$t('buttons.createNew')"></span>
+            </router-link>
+          </div>
+          <div class="modal" data-backdrop="static" data-keyboard="false" id="createNewProduct" tabindex="-1" role="dialog" ref="createNewProduct">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5>{{$t('labels.saveChangesFirst')}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
-                <div slot="modal-footer">
-                    <button type="button" class="btn btn-secondary" v-text="$t('entity.action.cancel')" v-on:click="closeDialog()">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="jhi-confirm-delete-product" v-on:click="goToNewProduct()">{{$t('global.messages.continueAnyway')}}</button>
+                <div class="modal-body">
+                  <div class="mt-4">
+                    <p>{{$t('labels.unsavedChangesWillBeDiscarded')}}</p>
+                    <p>{{$t('labels.pleaseSave')}}</p>
+                  </div>
                 </div>
-            </b-modal>
-        </div>-->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" @click="goToNewProduct">
+                    {{$t('buttons.continueAnyway')}}
+                  </button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
 </template>
 <script lang="ts" src="./generalTab.component.ts"></script>

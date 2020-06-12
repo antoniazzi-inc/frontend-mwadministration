@@ -1,4 +1,4 @@
-import { Component, Inject, Vue } from 'vue-property-decorator'
+import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
 import Trumbowyg from 'vue-trumbowyg'
 import 'trumbowyg/dist/ui/trumbowyg.css'
 import { Money } from 'v-money'
@@ -11,6 +11,7 @@ import { IProduct, Product } from '@/shared/models/ProductModel'
 import { AffiliateAgreement, IAffiliateAgreement } from '@/shared/models/AffiliateAgreementModel'
 import { AffiliateAgreementProduct, IAffiliateAgreementProduct } from '@/shared/models/AffiliateAgreementProductModel'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
+import Store from '@/store/index'
 @Component({
   props: {
     product: Object
@@ -39,7 +40,7 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     public moneyFixed = {
       decimal: ',',
       thousands: '.',
-      prefix: '€',
+      prefix: Store.state.currency,
       suffix: '',
       precision: 2,
       masked: false
@@ -54,14 +55,36 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
       masked: false
     }
 
+    @Watch('product', { immediate: true, deep: true })
+    public updatedProd (newVal: any) {
+      this.productCopy = newVal
+      this.productBackup = JSON.parse(JSON.stringify(newVal))
+      this.fixedReward = newVal.generalFlatCommission ? newVal.generalFlatCommission : 0
+      this.percentageReward = newVal.generalPercentageCommission ? newVal.generalPercentageCommission : 0
+      this.isSalesInfo = !!newVal.affiliateSalesInfoJson
+    }
+
     public save () {
-      if (this.fixedReward > 0) {
-        this.productCopy.generalFlatCommission = this.fixedReward
+      const dto = JSON.parse(JSON.stringify(this.productCopy))
+      dto.typeDigital = undefined
+      dto.typeService = undefined
+      dto.typePhysical = undefined
+      dto.followupAction = undefined
+      dto.typeCourse = undefined
+      dto.productSubscription = undefined
+      if (this.isAvailable) {
+        if (this.fixedReward > 0) {
+          dto.generalFlatCommission = this.fixedReward
+        }
+        if (this.percentageReward > 0) {
+          dto.generalPercentageCommission = this.percentageReward
+        }
+      } else {
+        dto.generalFlatCommission = null
+        dto.generalPercentageCommission = null
+        dto.affiliateSalesInfoJson = null
       }
-      if (this.percentageReward > 0) {
-        this.productCopy.generalPercentageCommission = this.percentageReward
-      }
-      this.productService.update(this.productCopy).then((resp: AxiosResponse) => {
+      this.productService.put(dto).then((resp: AxiosResponse) => {
         this.setAlert('productUpdated', 'success')
       })
     }

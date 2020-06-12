@@ -60,7 +60,7 @@
           </div>
           <div class="form-buttons-w text-right">
             <button class="btn btn-primary" @click.prevent="cancel">{{$t('buttons.cancel')}}</button>
-            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+            <button class="btn btn-primary ml-2" @click.prevent="save">{{$t('buttons.save')}}</button>
           </div>
         </form>
       </div>

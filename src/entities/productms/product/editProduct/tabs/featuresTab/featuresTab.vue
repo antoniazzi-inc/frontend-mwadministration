@@ -2,67 +2,103 @@
     <div class="row text-left">
         <div class="element-wrapper col-md-12">
             <div class="element-box">
-                <!--<b-modal ref="removeEntityAttribute" id="removeEntityAttribute" >
-                    <span slot="modal-title"><span id="labels.delete.question" v-text="$t('entity.delete.title')">Confirm delete operation</span></span>
-                    <div class="mt-4">
-                        <p id="jhi-delete-attribute-heading" v-bind:title="$t('labels.delete.question')">Are you sure you want to delete this Attribute?</p>
+              <div class="modal" data-backdrop="static" data-keyboard="false" id="removeEntityAttribute" tabindex="-1" role="dialog" ref="removeEntityAttribute">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5>{{$t('labels.confirmDelete')}}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
                     </div>
-                    <div slot="modal-footer">
-                        <button type="button" class="btn btn-secondary" v-text="$t('entity.action.cancel')" v-on:click="closeDialog()">Cancelz</button>
-                        <button type="button" class="btn btn-primary" id="jhi-confirm-delete-attribute" v-text="$t('entity.action.delete')" v-on:click.prevent="removeAttribute">Deletez</button>
+                    <div class="modal-body">
+                      <div class="mt-4">
+                        <h5>{{$t('labels.areYouSureToDelete')}}</h5>
+                      </div>
                     </div>
-                </b-modal>
-
-                <b-modal ref="removeEntityAttributeOption" id="removeEntityAttributeOption" >
-                    <span slot="modal-title"><span id="labelsOption.delete.question" v-text="$t('entity.delete.title')">Confirm delete operation</span></span>
-                    <div class="mt-4">
-                        <p id="jhi-delete-attribute-option-heading" v-bind:title="$t('labelsOption.delete.question')">Are you sure you want to delete this Attribute Option?</p>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" @click="removeAttribute">
+                        {{$t('buttons.confirm')}}
+                      </button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
                     </div>
-                    <div slot="modal-footer">
-                        <button type="button" class="btn btn-secondary" v-text="$t('entity.action.cancel')" v-on:click="closeDialog()">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="jhi-confirm-delete-attribute-option" v-text="$t('entity.action.delete')" v-on:click="RemoveAttributeOption">Delete</button>
+                  </div>
+                </div>
+              </div>
+              <div class="modal" data-backdrop="static" data-keyboard="false" id="removeEntityAttributeOption" tabindex="-1" role="dialog" ref="removeEntityAttributeOption">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5>{{$t('labels.confirmDelete')}}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
                     </div>
-                </b-modal>-->
+                    <div class="modal-body">
+                      <div class="mt-4">
+                        <h5>{{$t('labels.areYouSureToDelete')}}</h5>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" @click="RemoveAttributeOption">
+                        {{$t('buttons.confirm')}}
+                      </button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
                 <div class="form-desc" v-if="!editMode">
                     <div class="row">
                         <div class="col-md-9">
                             <p>{{$t('labels.title')}}</p>
-                            <!--<div role="tablist" v-if="productCopy.attributes && productCopy.attributes.length">
-                                <b-card no-body class="mb-1" @click.prevent="selectedProductFeature = item" v-for="(item, index) in productCopy.attributes" :key="index">
-                                    <b-card-header header-tag="header" class="p-1" role="tab">
-                                        <b-button class="col-md-11" href="#" v-b-toggle="'accordion' + index" variant="info">{{getAttributeName(item.attributeLanguages ? item.attributeLanguages : undefined)}}</b-button>
-                                        <b-button-close class="m-2" v-b-modal.removeEntityAttribute @click.prevent="prepareRemoveAttribute(item)"></b-button-close>
-                                        <b-button-close class="m-2" @click.prevent="editAttribute(item)"><i class="dashicons dashicons-edit"></i> </b-button-close>
-                                    </b-card-header>
-                                    <b-collapse :id="'accordion'+index" :accordion="'my-accordion'+index" role="tabpanel">
-                                        <b-card-body>
-                                            <table class="table table-striped">
-                                                <thead>
-                                                <th>{{$t('labels.name')}}</th>
-                                                <th>{{$t('labels.fieldIndex')}}</th>
-                                                <th>{{$t('labels.additionalCosts')}}</th>
-                                                <th>{{$t('labels.stock')}}</th>
-                                                <th>&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                <tr v-for="(option, key) in item.attributeValues" :key="key">
-                                                    <td>{{getAttributeName(productCopy.attributes[index].attributeValues[key].attributeValueLanguages)}}</td>
-                                                    <td>{{option.orderIndex}}</td>
-                                                    <td>{{option.price}}</td>
-                                                    <td>{{option.stock}}</td>
-                                                    <td>
-                                                        <div class="text-danger ml-3 cursor-pointer" v-b-modal.removeEntityAttributeOption @click.prevent="prepareRemoveAttributeOption(productCopy.attributes[index].attributeValues[key])">
-                                                            <i class="os-icon os-icon-ui-15"></i>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </b-card-body>
-                                    </b-collapse>
-                                </b-card>
-                            </div>-->
-                            <div class="justify-content-center text-center">
+
+                          <template v-if="productCopy.attributes && productCopy.attributes.length">
+                            <div class="accordion" id="accordionFeatures">
+                              <template @click.prevent="selectedProductFeature = item" v-for="(item, index) in productCopy.attributes">
+                                <div class="card" :key="index">
+                                  <div class="card-header row pl-0 ml-0 pr-0 mr-0 align-items-center" :id="'headingOne' + index" data-toggle="collapse" :data-target="'#collapseOne' + index">
+                                    <h2 class="mb-0 col-md-10">
+                                      <button class="btn btn-link" type="button" data-toggle="collapse" :aria-controls="'collapseOne' + index">
+                                        {{getAttributeName(item.attributeLanguages ? item.attributeLanguages : undefined)}}
+                                      </button>
+                                    </h2>
+                                    <div class="col-md-2 text-right">
+                                      <i class="fas fa-edit text-warning" @click="editAttribute(item)"/>
+                                      <i class="fas fa-trash-alt text-danger ml-2" data-toggle="modal" data-target="#removeEntityAttribute" @click.prevent="prepareRemoveAttribute(item)"/>
+                                    </div>
+                                  </div>
+                                  <div :id="'collapseOne' + index" class="collapse" :aria-labelledby="'headingOne' + index" data-parent="#accordionFeatures">
+                                    <div class="card-body">
+                                      <table class="table table-striped">
+                                        <thead>
+                                        <th>{{$t('labels.name')}}</th>
+                                        <th>{{$t('labels.fieldIndex')}}</th>
+                                        <th>{{$t('labels.additionalCosts')}}</th>
+                                        <th>{{$t('labels.stock')}}</th>
+                                        <th>&nbsp;</th>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="(option, key) in item.attributeValues" :key="key">
+                                          <td>{{getAttributeName(productCopy.attributes[index].attributeValues[key].attributeValueLanguages)}}</td>
+                                          <td>{{option.orderIndex}}</td>
+                                          <td>{{option.price}} {{$store.state.currency}}</td>
+                                          <td>{{option.stock}}</td>
+                                          <td>
+                                            <div class="text-danger ml-3 cursor-pointer" data-target="#removeEntityAttributeOption" data-toggle="modal" @click.prevent="prepareRemoveAttributeOption(productCopy.attributes[index].attributeValues[key])">
+                                              <i class="fas fa-trash-alt text-danger"></i>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                              </template>
+                            </div>
+                          </template>
+                            <div class="justify-content-center text-center" v-else>
                                 <p>{{$t('labels.noData')}}</p>
                             </div>
                         </div>
@@ -85,12 +121,12 @@
                                     @onChange="updateFeatureLang"
                                     @onRemove="removeFeatureLang"/>
                                 </div>
-                                <div class="form-group col-md-6 pt-3 pull-left">
-                                    <label class="form-control-label">{{$t('labels.availableForCustomers')}}</label>
-                                    <toggle-switch :on-text="$t('labels.yes')"
-                                                   :off-text="$t('labels.no')"
-                                                   :value.sync="selectedProductFeature.visibleInFrontEnd"/>
-                                </div>
+                              <div class="form-group col-md-6 pt-3 pull-left">
+                                <label class="form-control-label">{{$t('labels.availableForCustomers')}}</label>
+                                <toggle-switch :on-text="$t('labels.yes')"
+                                               :off-text="$t('labels.no')"
+                                               :value.sync="selectedProductFeature.visibleInFrontEnd"/>
+                              </div>
                                 <div class="form-group col-md-6 pt-3 pull-left">
                                     <label class="form-control-label">{{$t('labels.multipleValues')}}</label>
                                     <toggle-switch :on-text="$t('labels.yes')"

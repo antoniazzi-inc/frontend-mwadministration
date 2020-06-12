@@ -12,14 +12,15 @@ import productdeliverymethodsService from '@/shared/services/product-delivery-me
 import { AxiosResponse } from 'axios'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import Store from '@/store/index'
+
 @Component({
   props: {
     product: Object,
     clicked: Boolean
   },
   components: {
-    'multi-select': SearchableSelectComponent,
-    'single-select': SearchableSelectComponent,
+    SearchableSelectComponent,
     'toggle-switch': ToggleSwitch,
     money: Money
   }
@@ -41,6 +42,14 @@ export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
       'labels.chooseOption', '', false,
       false, true, true, false)
 
+    public singleSelectConfig: SearchableSelectConfig = new SearchableSelectConfig('label',
+      'labels.chooseShippingMethod', '', false,
+      false, true, false, false)
+
+    public singleSelectRegionConfig: SearchableSelectConfig = new SearchableSelectConfig('name',
+      'labels.chooseRegion', '', false,
+      false, true, false, false)
+
     public allFulfilments = [];
     public allShippingMethods = [];
     public selectedShippingMethods = [];
@@ -55,7 +64,7 @@ export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
     public money = {
       decimal: ',',
       thousands: '.',
-      prefix: '€',
+      prefix: Store.state.currency,
       suffix: '',
       precision: 2,
       masked: false
@@ -137,17 +146,19 @@ export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
     }
 
     public closeDialogShipping () {
-      (<any> this.$refs.createProductPayment).hide()
+      // @ts-ignore
+      $(this.$refs.createProductPayment).modal('hide')
     }
 
     public closeDialogRemove () {
-      (<any> this.$refs.removeEntityShipping).hide()
+      // @ts-ignore
+      $(this.$refs.removeEntityShipping).modal('hide')
     }
 
     public addNewShippingMethod () {
       if (this.editItemMode == true) {
         // @ts-ignore
-        this.itemToEdit.regionId = this.selectedRegion.value.id
+        this.itemToEdit.regionId = this.selectedRegion.id
 
         if (this.itemToEdit) {
           // @ts-ignore
@@ -156,15 +167,7 @@ export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
           this.itemToEdit.itemPrice = this.itemPrice
           this.itemToEdit.product = {
             id: this.productCopy.id,
-            administrationId: this.productCopy.administrationId,
-            version: this.productCopy.version,
-            createdOn: this.productCopy.createdOn,
-            updatedOn: this.productCopy.updatedOn,
-            availableTo: this.productCopy.availableTo,
-            availableFrom: this.productCopy.availableFrom,
-            price: this.productCopy.price,
-            tax: this.productCopy.tax,
-            productType: this.productCopy.productType
+            version: this.productCopy.version
           }
         }
         this.productDeliveryMethodService.put(this.itemToEdit).then((resp: AxiosResponse) => {
@@ -187,20 +190,12 @@ export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
         // @ts-ignore
         delivery.deliveryMethodId = this.selectedShippingMethod.value.id
         // @ts-ignore
-        delivery.regionId = this.selectedRegion.value.id
+        delivery.regionId = this.selectedRegion.id
         delivery.basePrice = this.basePrice
         delivery.itemPrice = this.itemPrice
         delivery.product = {
           id: this.productCopy.id,
-          administrationId: this.productCopy.administrationId,
-          version: this.productCopy.version,
-          createdOn: this.productCopy.createdOn,
-          updatedOn: this.productCopy.updatedOn,
-          availableTo: this.productCopy.availableTo,
-          availableFrom: this.productCopy.availableFrom,
-          price: this.productCopy.price,
-          tax: this.productCopy.tax,
-          productType: this.productCopy.productType
+          version: this.productCopy.version
         }
         this.productDeliveryMethodService.post(delivery).then((resp: AxiosResponse) => {
           this.setAlert('deliveryMethodCreated', 'success')
@@ -264,10 +259,14 @@ export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
         if (self.typePhysical.shippingCostsJson) { self.typePhysical.shippingCostsJson[k].regionId = v.regionId.id }
       })
       if (this.typePhysical.id) {
+        this.typePhysical.weight = parseInt(this.typePhysical.weight)
+        this.typePhysical.height = parseInt(this.typePhysical.height)
+        this.typePhysical.depth = parseInt(this.typePhysical.depth)
+        this.typePhysical.length = parseInt(this.typePhysical.length)
         this.typePhysicalService.put(this.typePhysical).then((resp: AxiosResponse) => {
           // @ts-ignore
           this.setAlert('productUpdated', 'success')
-          this.typePhysical = resp
+          this.typePhysical = resp.data
         })
       }
     }

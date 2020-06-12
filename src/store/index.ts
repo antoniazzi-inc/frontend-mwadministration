@@ -10,6 +10,7 @@ export default new Vuex.Store({
     authorities: [],
     authenticated: false,
     currentLanguage: 'en',
+    currency: '€',
     lookups: {
       categories: [],
       groups: [],
@@ -21,6 +22,7 @@ export default new Vuex.Store({
       taxRates: [],
       companies: [],
       paymentMethods: [],
+      deliveryMethods: [],
       roles: [],
       permissions: [],
       administrationBusiness: []
@@ -90,6 +92,9 @@ export default new Vuex.Store({
     },
     paymentMethods (state, newState) {
       state.lookups.paymentMethods = newState
+    },
+    deliveryMethods (state, newState) {
+      state.lookups.deliveryMethods = newState
     },
     administrationBusiness (state, newState) {
       state.lookups.administrationBusiness = newState

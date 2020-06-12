@@ -23,6 +23,8 @@ import FreeFieldService from '@/shared/services/freeFieldService'
 import RoleService from '@/shared/services/roleService'
 import PermissionsService from '@/shared/services/permissionService'
 import PaymentMethodService from '@/shared/services/paymentMethodService'
+import DeliveryMethodService from '@/shared/services/deliveryMethodService'
+import RegionService from '@/shared/services/regionService'
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -45,6 +47,8 @@ export default class App extends mixins(Vue, CommonHelpers) {
     taxRateService = TaxRateService.getInstance();
     companyService = CompanyService.getInstance();
     businessService = BusinessService.getInstance();
+    regionService = RegionService.getInstance();
+    deliveryMethodService = DeliveryMethodService.getInstance();
     counter = 0;
     sockets = new Sockets({ url: 'http://localhost:18081/' });
     relationSocket = new Sockets({ url: 'http://localhost:18080/' });
@@ -99,6 +103,10 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.counter++
         this.$store.commit('tags', resp.data.content)
       })
+      this.regionService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        this.$store.commit('regions', resp.data.content)
+      })
       this.paymentService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
         const methods: any = []
@@ -109,6 +117,17 @@ export default class App extends mixins(Vue, CommonHelpers) {
           })
         })
         this.$store.commit('paymentMethods', methods)
+      })
+      this.deliveryMethodService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        const methods: any = []
+        resp.data.content?.forEach((delivery: any) => {
+          methods.push({
+            label: this.getMultiLangName(delivery.deliveryMethodLanguages).name,
+            value: delivery
+          })
+        })
+        this.$store.commit('deliveryMethods', methods)
       })
       this.companyService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++

@@ -1,20 +1,24 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
+import Store from '@/store/index'
 @Component({
   props: {
     config: MultiLanguageConfig,
     value: {
       type: Array
     },
-    isValidating: Boolean
+    isValidating: Boolean,
+    availableLangs: Object
   }
 })
 export default class MultiLanguageComponent extends Vue {
-  selectedLanguage: string
-  selectedValue: any
+  public selectedLanguage: string
+  public selectedValue: any
+  public allAvailableLanguages: any
   constructor () {
     super()
     this.selectedLanguage = ''
+    this.allAvailableLanguages = Store.state.languages
     this.selectedValue = {
       name: '',
       description: '',

@@ -82,7 +82,7 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
       this.payBtn = newVal && newVal.payButtonJson && newVal.payButtonJson.buttonName && newVal.payButtonJson.width &&
       newVal.payButtonJson.height ? newVal.payButtonJson : {
           emptyCart: true,
-          buttonName: 'Add to cart !',
+          buttonName: 'Add To Cart!',
           shoppingCartLanguage: 'en',
           fontName: 'Montserrat-Regular',
           fontUrl: 'http://fonts.gstatic.com/s/montserrat/v12/JTUSjIg1_i6t8kCHKm459WlhzQ.woff',
@@ -116,11 +116,15 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
       this.payBtn.fontName = this.selectedFont
       // @ts-ignore
       this.payBtn.fontUrl = this.getFontUrl()
-      const dto = {
-        id: this.$props.product.id,
-        payButton: this.payBtn
-      }
-      this.productService().updatePayBtn(dto).then((resp: AxiosResponse) => {
+      const dto = this.$props.product
+      dto.payButtonJson = this.payBtn
+      dto.typeDigital = undefined
+      dto.typeService = undefined
+      dto.typePhysical = undefined
+      dto.followupAction = undefined
+      dto.typeCourse = undefined
+      dto.productSubscription = undefined
+      this.productService.put(dto).then((resp: AxiosResponse) => {
         self.setAlert('productUpdated', 'success')
       })
     }

@@ -17,6 +17,7 @@ import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import { ProductLanguage } from '@/shared/models/ProductLanguageModel'
+import Store from '@/store/index'
 @Component({
   props: {
     product: Object
@@ -53,7 +54,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     public productCopy: IProduct = new Product();
     public maxExceededMessage: any = [];
     public notAvailableMessage: any = [];
-    public AvailableProductLanguages: any = [];
+    public availableProductLanguages: any = {};
     public selectedCategories: any = null;
     public availableFromError: any = false;
     public isSaveDisabled: any = false;
@@ -66,11 +67,11 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
     public multiLangMaxExceedConfig: IMultiLanguageConfig = new MultiLanguageConfig(false, true,
       '', 'labels.MaxExceedMessage', false,
-      true, false, false, false, false)
+      false, false, false, false, false)
 
     public multiLangNotAvailableConfig: IMultiLanguageConfig = new MultiLanguageConfig(false, true,
       '', 'labels.NotAvailableMessage', false,
-      true, false, false, false, false)
+      false, false, false, false, false)
 
     public isSubscription: any = false;
     public allProductsCategories: any = [];
@@ -81,7 +82,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     public money: any = {
       decimal: ',',
       thousands: '.',
-      prefix: '€',
+      prefix: Store.state.currency,
       suffix: '',
       precision: 2,
       masked: false
@@ -105,7 +106,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       const self = this
       this.maxExceededMessage = []
       this.notAvailableMessage = []
-      this.AvailableProductLanguages = []
+      this.availableProductLanguages = {}
       this.selectedCategories = []
       this.productCopy = newVal
       this.availableFrom = this.$props.product.availableFrom ? moment(this.$props.product.availableFrom).format('MM-DD-YYYY') : null
@@ -132,10 +133,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
           langKey: v.langKey,
           description: v.notAvailableMessage
         })
-        self.AvailableProductLanguages.push({
-          langKey: v.langKey,
-          name: v.langKey
-        })
+        self.availableProductLanguages[v.langKey] = self.$store.state.languages[v.langKey]
       })
       this.calculateInclusivePrice()
     }
@@ -173,12 +171,13 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public goToNewProduct () {
-      this.$router.push('/entity/product/new')
+      this.$router.push('/products/new')
       this.closeDialog()
     }
 
     public closeDialog () {
-      (<any> this.$refs.createNewProduct).hide()
+      // @ts-ignore
+      $(this.$refs.createNewProduct).modal('hide')
     }
 
     public addNewLang (lang: any) {
@@ -250,9 +249,14 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       if (this.productCopy.productType === 'SERVICE') {
         this.typeServiceService.put(this.productCopy.typeService).then((resp: AxiosResponse) => {})
       }
+      dto.typeDigital = undefined
+      dto.typeService = undefined
+      dto.typePhysical = undefined
+      dto.followupAction = undefined
+      dto.productSubscription = undefined
       this.productService.put(dto).then((resp: AxiosResponse) => {
         self.setAlert('productUpdated', 'success')
-        self.$emit('updateProduct', resp)
+        self.$emit('update', resp)
       })
     }
 

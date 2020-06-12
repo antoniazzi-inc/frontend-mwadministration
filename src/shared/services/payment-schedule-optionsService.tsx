@@ -5,7 +5,7 @@ export default class  paymentscheduleoptionsService extends BaseEntityService <I
     private static instance: paymentscheduleoptionsService;
 
     private constructor() {
-        super('/api/payment-schedule-options')
+        super('api/productms/api/payment-schedule-options')
     }
 
     public static getInstance(): paymentscheduleoptionsService {

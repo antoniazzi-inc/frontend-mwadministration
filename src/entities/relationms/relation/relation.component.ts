@@ -68,7 +68,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
 
   public mounted () {
     EventBus.$on('refreshRelations', (content: any) => {
-      if(content === 'FAILED'){
+      if (content === 'FAILED') {
         this.setAlert('relationsImportError', 'error')
       } else {
         this.setAlert('relationsImported', 'success')

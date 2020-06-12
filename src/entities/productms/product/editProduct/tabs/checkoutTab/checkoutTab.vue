@@ -32,7 +32,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in registrationSettingsJson.billingAddress" :key="index">
-                  <td>{{$t(item.name)}}</td>
+                  <td>{{$t('labels.' + item.name)}}</td>
                   <td>
                     <toggle-switch
                       :on-text="$t('labels.yes')"
@@ -59,7 +59,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in registrationSettingsJson.deliveryAddress" :key="index">
-                  <td>{{$t(item.name)}}</td>
+                  <td>{{$t('labels.' + item.name)}}</td>
                   <td>
                     <toggle-switch
                       :on-text="$t('labels.yes')"
@@ -89,7 +89,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, index) in registrationSettingsJson.relationFields" :key="index">
-                  <td>{{$t(item.name)}}</td>
+                  <td>{{$t('labels.' + item.name)}}</td>
                   <td>
                     <toggle-switch
                       :on-text="$t('labels.yes')"
@@ -189,7 +189,7 @@
               </div>
             </div>
             <div class="form-buttons-w text-right">
-              <button class="btn btn-primary" @click.prevent="save">{{$t('buttonssave')}}</button>
+              <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
             </div>
           </form>
         </div>

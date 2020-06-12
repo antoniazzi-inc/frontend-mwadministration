@@ -20,7 +20,7 @@ import SearchableSelectComponent from '@/components/searchableSelect/searchableS
 })
 export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     public followupActionService: any = followupactionsService.getInstance()
-    public followupAction: any = new FollowupAction(undefined, undefined, undefined, undefined, undefined, 0, false);
+    public followupAction: any = new FollowupAction(undefined, undefined, 0, undefined, undefined, undefined, undefined);
     public productCopy: IProduct = new Product();
     public allListManagers: any = [];
     public selectedTags: any = [];
@@ -42,7 +42,7 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     @Watch('product', { immediate: true, deep: true })
     public updateProd (newVal: any) {
       this.productCopy = newVal
-      this.followupAction = newVal.followupAction !== null ? newVal.followupAction : new FollowupAction(undefined, undefined, undefined, undefined, undefined, 0, false)
+      this.followupAction = newVal.followupAction && newVal.followupAction.id ? newVal.followupAction : new FollowupAction(undefined, undefined, undefined, undefined, undefined, undefined, undefined)
       this.fillInObject()
     }
 
@@ -131,27 +131,14 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
       })
       this.followupAction.product = {
         id: this.productCopy.id,
-        administrationId: this.productCopy.administrationId,
-        version: this.productCopy.version,
-        createdOn: this.productCopy.createdOn,
-        updatedOn: this.productCopy.updatedOn,
-        availableTo: this.productCopy.availableTo,
-        availableFrom: this.productCopy.availableFrom,
-        price: this.productCopy.price,
-        tax: this.productCopy.tax,
-        productLanguages: this.productCopy.productLanguages,
-        productType: this.productCopy.productType
+        version: this.productCopy.version
       }
       if (this.followupAction.id) {
-        this.followupActionService().update(this.followupAction).then((resp: AxiosResponse) => {
+        this.followupActionService.put(this.followupAction).then((resp: AxiosResponse) => {
           this.setAlert('productUpdated', 'success')
         })
       } else {
-        const dto = {
-          id: this.$props.product.id,
-          followupAction: this.followupAction
-        }
-        this.followupActionService().create(dto).then((resp: AxiosResponse) => {
+        this.followupActionService.post(this.followupAction).then((resp: AxiosResponse) => {
           this.setAlert('productUpdated', 'success')
         })
       }

@@ -6,7 +6,7 @@ import { Money } from 'v-money'
 import CommonHelpers from '@/shared/commonHelpers'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
-
+import Store from '@/store/index'
 @Component({
   components: {
     SearchableSelectComponent,
@@ -30,7 +30,7 @@ export default class ConditionComponentComponent extends mixins(Vue, CommonHelpe
     public money = {
       decimal: ',',
       thousands: '.',
-      prefix: '€',
+      prefix: Store.state.currency,
       suffix: '',
       precision: 2,
       masked: false

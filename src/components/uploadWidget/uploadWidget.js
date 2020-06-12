@@ -3,6 +3,26 @@ import ImageCompressor from '@xkeshi/image-compressor'
 import FileUpload from 'vue-upload-component'
 
 export default {
+  /*props: {
+    accept: {
+      type: String,
+      default: 'image/png,image/gif,image/jpeg,image/webp'
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    uploadAuto: {
+      type: Boolean,
+      default: false
+    },
+    editFile: {
+      type: Object
+    },
+    allFiles: {
+      type: Array
+    }
+  },*/
   components: {
     FileUpload
   },
@@ -11,8 +31,6 @@ export default {
       files: [],
       accept: 'image/png,image/gif,image/jpeg,image/webp',
       extensions: 'gif,jpg,jpeg,png,webp',
-      // extensions: ['gif', 'jpg', 'jpeg','png', 'webp'],
-      // extensions: /\.(gif|jpe?g|png|webp)$/i,
       minSize: 1024,
       size: 1024 * 1024 * 10,
       multiple: true,
@@ -28,7 +46,7 @@ export default {
         'X-Csrf-Token': 'xxxx'
       },
       data: {
-        "_csrf_token": 'xxxxxx'
+        _csrf_token: 'xxxxxx'
       },
       autoCompress: 1024 * 1024,
       uploadAuto: false,
@@ -47,7 +65,6 @@ export default {
   },
   watch: {
     'editFile.show' (newValue, oldValue) {
-      // 关闭了 自动删除 error
       if (!newValue && oldValue) {
         this.$refs.upload.update(this.editFile.id, { error: this.editFile.error || '' })
       }
@@ -78,19 +95,15 @@ export default {
     inputFilter (newFile, oldFile, prevent) {
       if (newFile && !oldFile) {
         // Before adding a file
-        // 添加文件前
         // Filter system files or hide files
-        // 过滤系统文件 和隐藏文件
         if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
           return prevent()
         }
         // Filter php html js file
-        // 过滤 php html js 文件
         if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
           return prevent()
         }
         // Automatic compression
-        // 自动压缩
         if (newFile.file && newFile.type.substr(0, 6) === 'image/' && this.autoCompress > 0 && this.autoCompress < newFile.size) {
           newFile.error = 'compressing'
           const imageCompressor = new ImageCompressor(null, {
@@ -114,14 +127,12 @@ export default {
       }
       if (newFile && (!oldFile || newFile.file !== oldFile.file)) {
         // Create a blob field
-        // 创建 blob 字段
         newFile.blob = ''
         const URL = window.URL || window.webkitURL
         if (URL && URL.createObjectURL) {
           newFile.blob = URL.createObjectURL(newFile.file)
         }
         // Thumbnails
-        // 缩略图
         newFile.thumb = ''
         if (newFile.blob && newFile.type.substr(0, 6) === 'image/') {
           newFile.thumb = newFile.blob
@@ -130,6 +141,7 @@ export default {
     },
     // add, update, remove File Event
     inputFile (newFile, oldFile) {
+      this.$emit('onUpload', newFile);
       if (newFile && oldFile) {
         // update
         if (newFile.active && !oldFile.active) {
@@ -140,22 +152,19 @@ export default {
           }
         }
         if (newFile.progress !== oldFile.progress) {
-          // progress
+          this.$emit('onProgress', newFile)
         }
         if (newFile.error && !oldFile.error) {
-          // error
+          this.$emit('onError', newFile)
         }
         if (newFile.success && !oldFile.success) {
-          // success
+          this.$emit('onSuccess', newFile)
         }
       }
       if (!newFile && oldFile) {
         // remove
         if (oldFile.success && oldFile.response.id) {
-          // $.ajax({
-          //   type: 'DELETE',
-          //   url: '/upload/delete?id=' + oldFile.response.id,
-          // })
+          this.$emit('onRemove', oldFile)
         }
       }
       // Automatically activate upload
@@ -197,7 +206,7 @@ export default {
       this.editFile.error = ''
       this.editFile.show = false
     },
-    // add folader
+    // add folder
     onAddFolader () {
       if (!this.$refs.upload.features.directory) {
         this.alert('Your browser does not support')

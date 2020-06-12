@@ -34,5 +34,8 @@ constructor(
     public attributeLanguages?: IAttributeLanguage[],
     public attributeValues?: IAttributeValue[],
   ){
+  this.multipleValues = this.multipleValues ? this.multipleValues : false;
+  this.visible = this.visible ? this.visible : true;
+  this.visibleInFrontEnd = this.visibleInFrontEnd ? this.visibleInFrontEnd : false;
   }
 };

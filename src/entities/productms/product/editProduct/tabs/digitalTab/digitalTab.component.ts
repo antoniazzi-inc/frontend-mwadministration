@@ -9,6 +9,8 @@ import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import CommonHelpers from '@/shared/commonHelpers'
 import { IProduct, Product } from '@/shared/models/ProductModel'
 import MultiLanguageHtmlEditorComponent from '@/components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue'
+import { AxiosResponse } from 'axios'
+import typedigitalsService from '@/shared/services/type-digitalsService'
 
 @Component({
   props: {
@@ -26,6 +28,7 @@ export default class DigitalTabComponent extends mixins(CommonHelpers, Vue) {
     public digitalType: ITypeDigital;
     public productCopy: IProduct;
     public productCopyBackup: any;
+    public typeDigitalService: any;
     public digitalEmail: any ={
       subject: '',
       content: {},
@@ -41,6 +44,7 @@ export default class DigitalTabComponent extends mixins(CommonHelpers, Vue) {
     constructor () {
       super()
       this.digitalType = new TypeDigital()
+      this.typeDigitalService = typedigitalsService.getInstance()
       this.productCopy = new Product()
       this.productCopyBackup = null
       this.isSaving = false
@@ -126,13 +130,13 @@ export default class DigitalTabComponent extends mixins(CommonHelpers, Vue) {
         sendToAddress: this.digitalEmail.sendToAddress,
         sendFromAddress: this.digitalEmail.sendFromAddress
       }
-      /* this.typeDigitalService().update(this.digitalType).then((resp:AxiosResponse) => {
-          this.setAlert('productUpdated','success')
-            if(this.productCopy.typeDigital) {
-              this.productCopy.typeDigital = resp.data;
-            }
-            this.productCopyBackup = JSON.parse(JSON.stringify(self.productCopy));
-            this.uploadNewFile=false;
-        }); */
+      this.typeDigitalService.put(this.digitalType).then((resp: AxiosResponse) => {
+        this.setAlert('productUpdated', 'success')
+        if (this.productCopy.typeDigital) {
+          this.productCopy.typeDigital = resp.data
+        }
+        this.productCopyBackup = JSON.parse(JSON.stringify(self.productCopy))
+        this.uploadNewFile = false
+      })
     }
 }

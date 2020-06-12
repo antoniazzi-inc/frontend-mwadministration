@@ -1,6 +1,6 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
 import { IProduct } from '@/shared/models/ProductModel'
-
+import axios from 'axios'
 export default class ProductService extends BaseEntityService<IProduct> {
   private static instance: ProductService;
 
@@ -42,6 +42,21 @@ export default class ProductService extends BaseEntityService<IProduct> {
   public loadAllMedia (pagination: any) {
     return new Promise(resolve => {
       resolve(true)
+    })
+  }
+
+  public updateTermsAndConditions (entity: any) {
+    return new Promise(resolve => {
+      resolve(true)
+    })
+  }
+
+  public updatePayButton (entity: any) {
+    debugger
+    return new Promise(resolve => {
+      axios.put('api/productms/api/products/' + entity.id + '/pay-button', entity.payButton).then(function (res) {
+        resolve(res.data)
+      })
     })
   }
 }

@@ -20,6 +20,10 @@ import { TypePhysical } from '@/shared/models/TypePhysicalModel'
 import { ProductSubscription } from '@/shared/models/ProductSubscriptionModel'
 import { AxiosResponse } from 'axios'
 import ProductService from '@/shared/services/productService'
+import mediasService from '@/shared/services/mediasService'
+import BaseImage from '@/shared/baseImage'
+import Store from '@/store/index'
+import { FollowupAction } from '@/shared/models/FollowupActionModel'
 
 @Component({
   components: {
@@ -42,6 +46,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   public product: any;
   public selectedType: any;
   public selectedProductType: any;
+  public mediaService: any;
   public validFromConfig: any;
   public isSaving: boolean;
   public isInclusive: boolean;
@@ -67,6 +72,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     this.selectedType = 'typeDigital'
     this.availableFrom = new Date()
     this.availableTo = null
+    this.mediaService = mediasService.getInstance()
     this.allTaxRates = this.$store.state.lookups.taxRates
     this.typeCourses = []
     this.previewImages = []
@@ -99,7 +105,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
       dateFormat: 'm-d-Y',
       minDate: moment().format('MM-DD-YYYY')
     }
-    this.moneyConfig = new MoneyConfig(undefined, undefined, '', '€', 0, false)
+    this.moneyConfig = new MoneyConfig(undefined, undefined, '', Store.state.currency, 0, false)
   }
 
   public resetProductTypes () {
@@ -202,12 +208,13 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public onComplete (e: any) {
+    const self = this
     const pagination: any = {
       page: 0,
       size: 1,
       sort: ['id,desc']
     }
-    this.productService.getAll(pagination, 'payButtonJson.exist=true').then((lastCreated: AxiosResponse) => {
+    this.productService.getAll(pagination, 'payButtonJson=null=false').then((lastCreated: AxiosResponse) => {
       this.product.payButtonJson = lastCreated && lastCreated.data.content.length > 0 ? lastCreated.data.content[0].payButtonJson : {}
       this.isSaving = true
       this.product.userDefinedPrice = false
@@ -232,7 +239,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
                     id: resp.data.id,
                     params: dtoImages
                   }
-                  this.productService().createOnBucket(toSend).then((resp: AxiosResponse) => {
+                  self.mediaService.post(toSend).then((resp: AxiosResponse) => {
                     if (resp) {
                       this.isSaving = false
                       this.setAlert('productCreated', 'success')
@@ -266,7 +273,8 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
         this.$validator.validateAll({
           'Start Date': this.product.productSubscription.startDate,
           period: this.product.productSubscription.period,
-          'Subscription Max Terms': this.product.productSubscription.maxTimes
+          'Subscription Max Terms': this.product.productSubscription.maxTimes,
+          tax: this.product.tax
         }).then(valid => {
           if (valid) {
             self.isValidatingStep2 = true
@@ -349,6 +357,17 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
+  public imageUploadError (img: any) {}
+  public imageLoaded (img: any) {
+    this.convertFileToBase64(img.file).then(resp => {
+      this.previewImages.push(new BaseImage(resp, img.file.type, img.file.name))
+    })
+  }
+
+  public onImageRemove (img: any) {
+
+  }
+
   public addProductLang (lang: any) {
     let index = null
     if (this.product.productLanguages) {
@@ -369,8 +388,12 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public tabChanged (old: any, newIndex: any) {
-    this.step = newIndex + 1
-    if (newIndex < old) this.$validator.reset()
+    if (newIndex < old) {
+      this.step = newIndex - 1
+      this.$validator.reset()
+    } else {
+      this.step = newIndex + 1
+    }
   }
 
   public changeProductLang (lang: any) {
@@ -458,6 +481,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
         tax: self.product.tax,
         media: self.product.media,
         archived: false,
+        followupAction: new FollowupAction(),
         availableForAffiliates: false,
         quickCheckout: false,
         userDefinedPrice: false,
@@ -539,7 +563,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public goBack () {
-    this.$router.go(-1)
+    this.$router.push('/products')
   }
 
   public uploadDigitalFile (files: any) {

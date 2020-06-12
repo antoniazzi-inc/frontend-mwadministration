@@ -55,7 +55,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       allowEmpty: true
     };
 
-    public multiSelectConfigPayment: ISearchableSelectConfig = new SearchableSelectConfig('name',
+    public multiSelectConfigPayment: ISearchableSelectConfig = new SearchableSelectConfig('label',
       'labels.choosePaymentMethods', '', false,
       false, true, true, false)
 
@@ -75,7 +75,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
 
     @Watch('product', { immediate: true, deep: true })
     public updateProd (newVal: any) {
-      if (newVal.productSubscription !== null && !this.isSubscription) this.isSubscription = true
+      if (newVal.productSubscription && newVal.productSubscription !== null && !this.isSubscription) this.isSubscription = true
       if (newVal && newVal.paymentSchedules && newVal.paymentSchedules !== null && newVal.paymentSchedules.length > 0 && !this.isSubscription) this.sentAnnouncement = true
       this.populatePaymentMethods(newVal)
       this.productCopy = newVal
@@ -103,15 +103,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
     }
 
     public retrieve () {
-      const self = this
-      const paymentMethods: any = []
-      $.each(this.$store.state.lookups.paymentMethods, function (k, v) {
-        paymentMethods.push({
-          name: v && v.paymentMethodLanguages.length > 0 ? self.getMultiLangName(v.paymentMethodLanguages).name : '',
-          value: v
-        })
-      })
-      this.$set(this, 'allPaymentMethods', paymentMethods)
+      this.selectedPaymentMethods = []
       this.populatePaymentMethods(this.productCopy)
     }
 
@@ -130,7 +122,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       const self = this
       this.selectedPaymentMethods = []
       const selectedMethods: any = []
-      $.each(self.allPaymentMethods, function (k, v) {
+      $.each(self.$store.state.lookups.paymentMethods, function (k, v) {
         $.each(newVal.productPaymentMethods, function (i, j) {
           if (v.value.id === j.paymentMethodId || v.value.id === j.id) {
             selectedMethods.push(v)
@@ -178,9 +170,9 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
     }
 
     public includeAllPaymentMethods () {
-      this.selectedPaymentMethods = this.allPaymentMethods
+      this.selectedPaymentMethods = this.$store.state.lookups.paymentMethods
       const methods: any = []
-      $.each(this.allPaymentMethods, function (k, v) {
+      $.each(this.$store.state.lookups.paymentMethods, function (k, v) {
         methods.push(v.value)
       })
       this.productCopy.productPaymentMethods = methods
@@ -189,16 +181,8 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
 
     public saveAllPaymentMethod (methods: any) {
       const product = {
-        id: this.productCopy.id,
-        administrationId: this.productCopy.administrationId,
-        version: this.productCopy.version,
-        createdOn: this.productCopy.createdOn,
-        updatedOn: this.productCopy.updatedOn,
-        availableTo: this.productCopy.availableTo,
-        availableFrom: this.productCopy.availableFrom,
-        price: this.productCopy.price,
-        tax: this.productCopy.tax,
-        productType: this.productCopy.productType
+        id: this.$props.product.id,
+        version: this.$props.product.version
       }
       const dto: any = []
       $.each(methods, function (k, v) {
@@ -209,6 +193,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
         })
       })
       this.productPaymentMethodService.createMultiple(dto).then((resp: AxiosResponse) => {
+        this.populatePaymentMethods(resp.data)
         this.setAlert('paymentCreated', 'success')
         this.productCopy.productPaymentMethods ? this.productCopy.productPaymentMethods.push(resp.data) : this.productCopy.productPaymentMethods = [resp.data]
         this.$emit('update', this.productCopy)
@@ -219,20 +204,12 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       const dto = {
         product: {
           id: this.productCopy.id,
-          administrationId: this.productCopy.administrationId,
-          version: this.productCopy.version,
-          createdOn: this.productCopy.createdOn,
-          updatedOn: this.productCopy.updatedOn,
-          availableTo: this.productCopy.availableTo,
-          availableFrom: this.productCopy.availableFrom,
-          price: this.productCopy.price,
-          tax: this.productCopy.tax,
-          productType: this.productCopy.productType
+          version: this.productCopy.version
         },
         paymentMethodId: method.value.id,
         paymentMethodType: method.value.paymentMethodType
       }
-      this.productPaymentMethodService().create(dto).then((resp: AxiosResponse) => {
+      this.productPaymentMethodService.post(dto).then((resp: AxiosResponse) => {
         this.setAlert('paymentCreated', 'success')
         this.productCopy.productPaymentMethods ? this.productCopy.productPaymentMethods.push(resp.data) : this.productCopy.productPaymentMethods = [resp.data]
         this.$emit('update', this.productCopy)
@@ -252,13 +229,14 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
           // @ts-ignore
           this.productCopy.productSubscription.announcementJson = {
             email: this.announcementJson,
-            sendBeforeNew: this.$props.product.productSubscription.announcementJson.sendBeforeNew
+            sendBeforeNew: this.$props.product.productSubscription.announcementJson
+              ? this.$props.product.productSubscription.announcementJson.sendBeforeNew : false
           }
         } else {
           this.productCopy.productSubscription ? this.productCopy.productSubscription.announcementJson = undefined : undefined
         }
         if (this.productCopy.productSubscription && this.productCopy.productSubscription.id) {
-          this.productSubscriptionService().update(this.productCopy.productSubscription).then((resp: AxiosResponse) => {
+          this.productSubscriptionService.put(this.productCopy.productSubscription).then((resp: AxiosResponse) => {
             this.setAlert('productUpdated', 'success')
             this.productCopy.productSubscription = resp.data
             this.$emit('update', this.productCopy)
@@ -269,16 +247,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
             this.productCopy.productSubscription.version = this.$store.state.userIdentity.version
             this.productCopy.productSubscription.product = {
               id: this.productCopy.id,
-              administrationId: this.productCopy.administrationId,
-              version: this.productCopy.version,
-              createdOn: this.productCopy.createdOn,
-              updatedOn: this.productCopy.updatedOn,
-              availableTo: this.productCopy.availableTo,
-              availableFrom: this.productCopy.availableFrom,
-              price: this.productCopy.price,
-              tax: this.productCopy.tax,
-              productLanguages: this.productCopy.productLanguages,
-              productType: this.productCopy.productType
+              version: this.productCopy.version
             }
           }
           const dto = {

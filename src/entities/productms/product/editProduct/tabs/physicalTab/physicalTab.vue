@@ -7,9 +7,9 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label class="form-control-label">{{$t('labels.fulfilmentParty')}}</label>
-                            <multi-select :config="multiSelectConfig" :options="allFulfilments" :value="selectedFulfilments"
+                            <searchable-select-component :config="multiSelectConfig" :options="allFulfilments" :value="selectedFulfilments"
                                           @onAdd="fulfilmentChanged"
-                                          @onRemove="removeFulfilment"></multi-select>
+                                          @onRemove="removeFulfilment"/>
                         </div>
                         <div class="form-group col-md-6">
                             <div class="row">
@@ -76,47 +76,75 @@
                         <button class="btn btn-primary ml-2" @click.prevent="save">{{$t('buttons.save')}}</button>
                     </div>
                 </form>
-                <!--<b-modal ref="removeEntityShipping" id="removeEntityShipping" >
-                    <span slot="modal-title"><span v-text="$t('entity.delete.title')">Confirm delete operation</span></span>
+              <div class="modal" data-backdrop="static" data-keyboard="false" id="removeEntityShipping" tabindex="-1" role="dialog" ref="removeEntityShipping">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5>{{$t('labels.confirmDelete')}}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
                     <div class="modal-body">
-                        <p v-bind:title="$t('vueadminApp.administrationmsDeliveryMethod.delete.question')">Are you sure you want to delete this Payment Method?</p>
+                      <div class="mt-4">
+                        <h5>{{$t('labels.areYouSureToDelete')}}</h5>
+                      </div>
                     </div>
-                    <div slot="modal-footer">
-                        <button type="button" class="btn btn-secondary" v-text="$t('entity.action.cancel')" v-on:click="closeDialogRemove()">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="jhi-confirm-delete-paymentMethod" v-text="$t('entity.action.delete')" v-on:click="removeShipping()">Delete</button>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" @click="removeShipping">
+                        {{$t('buttons.confirm')}}
+                      </button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
                     </div>
-                </b-modal>
-                <b-modal ref="createProductPayment" id="createProductPayment" size="l" :no-close-on-backdrop="true">
-                    <span slot="modal-title">{{$t('vueadminApp.administrationmsDeliveryMethod.home.createLabel')}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="modal" data-backdrop="static" data-keyboard="false" id="createProductPayment" tabindex="-1" role="dialog" ref="createProductPayment">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5>{{$t('labels.createLabel')}}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
                     <div class="modal-body">
-                        <form>
-                           <div class="form-group">
-                               <label class="form-control-label">{{$t('labels.home.shippingTitle')}}</label>
-                               <single-select :config="multiSelectConfig" :options="allShippingMethods" :value="selectedShippingMethod"
-                                              @onChange="shippingMethodChanged"
-                                              @onRemove="removeShippingMethod"></single-select>
-                           </div>
-                           <div class="form-group">
-                               <label class="form-control-label">{{$t('labels.region')}}</label>
-                               <single-select :config="multiSelectConfig" :options="allRegions" :value="selectedRegion"
-                                              @onChange="regionChanged"
-                                              @onRemove="removeRegion"></single-select>
-                           </div>
-                           <div class="form-group">
-                               <label class="form-control-label">{{$t('labels.basePrice')}}</label>
-                               <money v-model="basePrice" class="form-control" name="priceAmount"  v-bind="money"></money>
-                           </div>
-                           <div class="form-group">
-                               <label class="form-control-label">{{$t('labels.itemPrice')}}</label>
-                               <money v-model="itemPrice" class="form-control" name="priceAmount"  v-bind="money"></money>
-                           </div>
-                        </form>
+                      <form>
+                        <div class="form-group">
+                          <label class="form-control-label">{{$t('labels.shippingMethod')}}</label>
+                          <searchable-select-component :config="singleSelectConfig"
+                                                       :options="$store.state.lookups.deliveryMethods"
+                                                       :value="selectedShippingMethod"
+                                                       @onChange="shippingMethodChanged"
+                                                       @onDelete="removeShippingMethod"/>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-control-label">{{$t('labels.region')}}</label>
+                          <searchable-select-component :config="singleSelectRegionConfig"
+                                                       :options="$store.state.lookups.regions"
+                                                       :value="selectedRegion"
+                                                       @onChange="regionChanged"
+                                                       @onDelete="removeRegion"/>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-control-label">{{$t('labels.basePrice')}}</label>
+                          <money v-model="basePrice" class="form-control" name="priceAmount"  v-bind="money"></money>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-control-label">{{$t('labels.itemPrice')}}</label>
+                          <money v-model="itemPrice" class="form-control" name="priceAmount"  v-bind="money"></money>
+                        </div>
+                      </form>
                     </div>
-                    <div slot="modal-footer">
-                            <button class="btn btn-outline-primary" @click.prevent="closeDialogShipping">{{$t('cancel')}}</button>
-                            <button class="btn btn-primary" @click.prevent="addNewShippingMethod">{{$t('save')}}</button>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" @click="addNewShippingMethod">
+                        {{$t('buttons.confirm')}}
+                      </button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
                     </div>
-                </b-modal>-->
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
     </div>

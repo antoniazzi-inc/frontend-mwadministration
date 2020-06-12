@@ -13,13 +13,13 @@ import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
   props: ['type', 'query', 'index', 'rules', 'maxDepth', 'depth', 'styled', 'onlyActiveEntities']
 })
 export default class GroupComponent extends mixins(Vue) {
-    public selectedRule: object;
-    public selectedRules: [];
-    public showDesc: boolean;
+  public selectedRule: object;
+  public selectedRules: [];
+  public showDesc: boolean;
 
   public multiSelectConfig: SearchableSelectConfig = new SearchableSelectConfig('label',
     'labels.chooseOption', '', false,
-    false, true, true, false)
+    false, true, true, false);
 
   constructor () {
     super()
@@ -28,10 +28,6 @@ export default class GroupComponent extends mixins(Vue) {
     // @ts-ignore
     this.selectedRule = []
     this.showDesc = false
-  }
-
-  public created () {
-    this.selectedRule = [this.$props.rules[0]]
   }
 
   get queryDesc () {
@@ -45,6 +41,10 @@ export default class GroupComponent extends mixins(Vue) {
     }
     classObject['depth-' + this.$props.depth.toString()] = this.$props.styled
     return classObject
+  }
+
+  public created () {
+    this.selectedRule = [this.$props.rules[0]]
   }
 
   public ruleById (ruleId: any) {
@@ -72,15 +72,15 @@ export default class GroupComponent extends mixins(Vue) {
       type: 'rule',
       query: {
         // @ts-ignore
-        rule: e.id,	// the rule name
-        ruleObj: e,	// the rule name
+        rule: e.id, // the rule name
+        ruleObj: e, // the rule name
         // @ts-ignore
-        op: this.selectedRule.operator ? this.selectedRule.operator : null,						// operator ('contains', 'equals', 'orderedbefore', etc)
+        op: this.selectedRule.operator ? this.selectedRule.operator : null, // operator ('contains', 'equals', 'orderedbefore', etc)
         // @ts-ignore
         value: this.selectedRule.id === 'orderamount' || this.selectedRule.id === 'orderquantity' ? 0 : '',
-        date: '',						// date if rule includes a 'before' or 'after' clause
-        attr: '',						// name of rel-field, free-field or id of email in case of a clicked-link rule
-        attrvalue: ''					// comma-separated list of selected product atr_value pairs
+        date: '', // date if rule includes a 'before' or 'after' clause
+        attr: '', // name of rel-field, free-field or id of email in case of a clicked-link rule
+        attrvalue: ''// comma-separated list of selected product atr_value pairs
       }
     })
   }

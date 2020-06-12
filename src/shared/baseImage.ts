@@ -187,6 +187,7 @@ export default class BaseImage extends Vue {
     public resizeAll () {
       const self = this
       const resizedImages: any = []
+      debugger
       const sides = this.checkSide()
       $.each(sides, function (k, v) {
         resizedImages.push(self.resize(v))
@@ -195,6 +196,7 @@ export default class BaseImage extends Vue {
     }
 
     public resize (sizeToResize: any) {
+      debugger
       const canvas = document.createElement('canvas')
       // @ts-ignore
       const ctx: any = canvas.getContext('2d')

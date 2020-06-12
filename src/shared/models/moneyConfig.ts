@@ -1,3 +1,4 @@
+import Store from '../../store/index'
 export interface IMoneyConfig {
   decimal?: string;
   thousands?: string;
@@ -18,7 +19,7 @@ export class MoneyConfig implements IMoneyConfig {
   ) {
     this.decimal = this.decimal ? this.decimal : ','
     this.thousands = this.thousands ? this.thousands : '.'
-    this.prefix = this.prefix !== undefined ? this.prefix : '€'
+    this.prefix = this.prefix !== undefined ? this.prefix : Store.state.currency
     this.suffix = this.suffix ? this.suffix : ''
     this.precision = this.precision && this.precision >= 0 ? this.precision : 2
     this.masked = this.masked ? this.masked : false

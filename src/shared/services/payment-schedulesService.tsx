@@ -5,7 +5,7 @@ export default class  paymentschedulesService extends BaseEntityService<IPayment
     private static instance: paymentschedulesService;
 
     private constructor() {
-        super('/api/payment-schedules')
+        super('api/productms/api/payment-schedules')
     }
 
     public static getInstance(): paymentschedulesService {

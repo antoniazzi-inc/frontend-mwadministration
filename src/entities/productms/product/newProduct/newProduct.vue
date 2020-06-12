@@ -104,7 +104,7 @@
                   </div>
                 </div>
                 <span v-if="product.price <= 0.1 && isValidatingStep2" class="text-danger small">{{$t('labels.priceIsRequired')}}</span>
-                <p v-show="inclusive() > 0"><small>{{$t('labels.inclusivePriceIs')}}: {{inclusive()}}€</small></p>
+                <p v-show="inclusive() > 0"><small>{{$t('labels.inclusivePriceIs')}}: {{inclusive()}}{{$store.state.currency}}</small></p>
               </div>
             </div>
             <div class="col-md-6 pt-2">
@@ -125,9 +125,10 @@
           </div>
           <div class="form-group">
             <label class="control-label">{{$t('labels.taxRate')}}</label>
-            <select :class="{'form-control': true}" v-model="product.tax" @change="calculateTax()">
+            <select :class="{'form-control': true, invalid: errors.has('tax')}" v-model="product.tax" @change="calculateTax()" v-validate="'required'" name="tax">
               <option v-for="(item, index) in allTaxRates" :key="index" :value="item.rate">{{item.rate}}%</option>
             </select>
+            <span class="small text-danger">{{errors.first('tax')}}</span>
           </div>
           <div class="form-group col-md-6">
             <div class="row">
@@ -183,7 +184,7 @@
         </form>
       </tab-content>
       <tab-content :title="$t('labels.thumbnail')" icon="fas fa-receipt" :before-change="validateStep" >
-        <upload-widget/>
+        <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove"/>
       </tab-content>
       <tab-content :title="$t('labels.finalStep')" icon="fas fa-receipt" :before-change="validateStep" >
         <h5 class="text-danger" v-if="product.productType === 'DIGITAL'">{{$t('labels.pleaseUploadAfileOrProvideALink')}}</h5>

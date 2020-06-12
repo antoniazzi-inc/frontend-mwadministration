@@ -73,7 +73,7 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
 
   public getAllDiscounts () {
     const self = this
-    this.promotionService.getAll({ page: 0, size: 1000, sort: {} }, undefined).then((resp: AxiosResponse) => {
+    this.promotionService.getAll({ page: 0, size: 1000, sort: 'id,asc' }, undefined).then((resp: AxiosResponse) => {
       const allDiscount: any = []
       if (resp.data && resp.data.length) {
         $.each(resp.data, function (k, v) {
