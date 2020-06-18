@@ -100,6 +100,13 @@ module.exports = {
           console.log(proxyReq)
         },
         changeOrigin: true
+      },
+      '/getFromCloud': {
+        target: 'https://storage.googleapis.com',
+        pathRewrite: {
+          '^/getFromCloud': ''
+        },
+        changeOrigin: true
       }
     }
   }

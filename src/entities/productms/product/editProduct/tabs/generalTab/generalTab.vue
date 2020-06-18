@@ -64,7 +64,7 @@
                           <searchable-select-component :config="multiSelectConfig"
                                                        :options="allProductsCategories"
                                                        :value="selectedCategories"
-                                                       @onAdd="addNewCategory"
+                                                       @onSelected="addNewCategory"
                                                        @onRemove="removeCategory"/>
                         </div>
                     </div>

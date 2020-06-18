@@ -18,6 +18,7 @@ import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import { ProductLanguage } from '@/shared/models/ProductLanguageModel'
 import Store from '@/store/index'
+import {ProductCategory} from "@/shared/models/ProductCategoryModel";
 @Component({
   props: {
     product: Object
@@ -116,7 +117,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
         this.validToConfig.minDate = this.availableFrom
       }
       const selectedCat: any = []
-      $.each(self.allProductsCategories, function (k, v: any) {
+      $.each(self.$store.state.lookups.categories, function (k, v: any) {
         $.each(self.productCopy.productCategories, function (i, j: any) {
           if (v.id === j.categoryId) {
             selectedCat.push(v)
@@ -243,8 +244,11 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       this.productCopy.availableTo = this.productCopy.availableTo ? moment(this.productCopy.availableTo, 'YYYY-MM-DDTHH:mm')._d : null
       // @ts-ignore
       this.productCopy.availableFrom = this.productCopy.availableFrom ? moment(this.productCopy.availableFrom, 'YYYY-MM-DDTHH:mm')._d : this.$props.product.availableFrom
+      this.selectedCategories.forEach((item:any,ind:any) =>{
+        self.productCopy.productCategories?.push(new ProductCategory(undefined,undefined,undefined,undefined,undefined,item.id, {id: self.productCopy.id, version: self.productCopy.version},))
+      })
+
       const dto = JSON.parse(JSON.stringify(this.productCopy))
-      dto.productCategories = null
       dto.attributes = null
       if (this.productCopy.productType === 'SERVICE') {
         this.typeServiceService.put(this.productCopy.typeService).then((resp: AxiosResponse) => {})
@@ -252,7 +256,6 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       dto.typeDigital = undefined
       dto.typeService = undefined
       dto.typePhysical = undefined
-      dto.followupAction = undefined
       dto.productSubscription = undefined
       this.productService.put(dto).then((resp: AxiosResponse) => {
         self.setAlert('productUpdated', 'success')
@@ -276,23 +279,15 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public addNewCategory (category: any) {
-      this.save()
+
       const dto = {
         categoryId: category.id,
         product: {
           id: this.productCopy.id,
-          administrationId: this.productCopy.administrationId,
           version: this.productCopy.version,
-          createdOn: this.productCopy.createdOn,
-          updatedOn: this.productCopy.updatedOn,
-          availableTo: this.productCopy.availableTo,
-          availableFrom: this.productCopy.availableFrom,
-          price: this.productCopy.price,
-          tax: this.productCopy.tax,
-          productType: this.productCopy.productType
         }
       }
-      this.productCategoryService().create(dto).then((resp: AxiosResponse) => {
+      this.productCategoryService.post(dto).then((resp: AxiosResponse) => {
         this.setAlert('productCategoryUpdated', 'success')
         this.productCopy.productCategories ? this.productCopy.productCategories.push(resp.data) : this.productCopy.productCategories = [resp.data]
       })
@@ -307,7 +302,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
           idToDelete = v.id
         }
       })
-      this.productCategoryService().delete(idToDelete).then((resp: AxiosResponse) => {
+      this.productCategoryService.delete(idToDelete).then((resp: AxiosResponse) => {
         this.setAlert('productCategoryDeleted', 'success')
         if (index !== null && this.productCopy.productCategories) {
           this.productCopy.productCategories.splice(index, 1)

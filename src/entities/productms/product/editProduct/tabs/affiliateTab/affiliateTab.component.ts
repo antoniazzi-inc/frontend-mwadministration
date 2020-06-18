@@ -59,8 +59,8 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     public updatedProd (newVal: any) {
       this.productCopy = newVal
       this.productBackup = JSON.parse(JSON.stringify(newVal))
-      this.fixedReward = newVal.generalFlatCommission ? newVal.generalFlatCommission : 0
-      this.percentageReward = newVal.generalPercentageCommission ? newVal.generalPercentageCommission : 0
+      this.fixedReward = newVal.generalFlatCommission ? newVal.generalFlatCommission : this.fixedReward
+      this.percentageReward = newVal.generalPercentageCommission ? newVal.generalPercentageCommission : this.percentageReward
       this.isSalesInfo = !!newVal.affiliateSalesInfoJson
     }
 
@@ -69,10 +69,9 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
       dto.typeDigital = undefined
       dto.typeService = undefined
       dto.typePhysical = undefined
-      dto.followupAction = undefined
       dto.typeCourse = undefined
       dto.productSubscription = undefined
-      if (this.isAvailable) {
+      if (this.productCopy.availableForAffiliates) {
         if (this.fixedReward > 0) {
           dto.generalFlatCommission = this.fixedReward
         }

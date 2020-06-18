@@ -121,7 +121,6 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
       dto.typeDigital = undefined
       dto.typeService = undefined
       dto.typePhysical = undefined
-      dto.followupAction = undefined
       dto.typeCourse = undefined
       dto.productSubscription = undefined
       this.productService.put(dto).then((resp: AxiosResponse) => {

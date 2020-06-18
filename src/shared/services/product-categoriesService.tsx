@@ -5,7 +5,7 @@ export default class  productcategoriesService extends BaseEntityService<IProduc
     private static instance: productcategoriesService;
 
     private constructor() {
-        super('/api/rpductms/api/product-categories')
+        super('/api/productms/api/product-categories')
     }
 
     public static getInstance(): productcategoriesService {

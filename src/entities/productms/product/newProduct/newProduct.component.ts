@@ -239,13 +239,13 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
                     id: resp.data.id,
                     params: dtoImages
                   }
-                  self.mediaService.post(toSend).then((resp: AxiosResponse) => {
+                  self.productService.createOnBucket(toSend).then((resp: AxiosResponse) => {
                     if (resp) {
-                      this.isSaving = false
-                      this.setAlert('productCreated', 'success')
-                      this.goBack()
+                      self.isSaving = false
+                      self.setAlert('productCreated', 'success')
+                      self.goBack()
                     } else {
-                      this.isSaving = false
+                      self.isSaving = false
                       this.setAlert('errorUploadingImage', 'error')
                     }
                   })
@@ -562,17 +562,24 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     this.product.typeDigital.url = this.checkForUrlHttps(this.product.typeDigital.url)
   }
 
+  public digitalUploadError (obj:any) {}
+  public digitalLoaded (obj:any) {
+    this.uploadDigitalFile(obj)
+  }
+  public digitalRemove (obj:any) {}
+
   public goBack () {
     this.$router.push('/products')
   }
 
-  public uploadDigitalFile (files: any) {
+  public uploadDigitalFile (file: any) {
     const self = this
-    if (files.length) {
-      self.convertFileToBase64(files[0].file).then(resp => {
+    if (file) {
+      self.convertFileToBase64(file.file).then(resp => {
         self.product.typeDigital.body = resp
-        self.product.typeDigital.bodyContentType = files[0].file.type
-        self.product.typeDigital.bodyName = files[0].name
+        self.product.typeDigital.bodyContentType = file.type
+        self.product.typeDigital.bodyName = file.name
+
       })
     }
   }

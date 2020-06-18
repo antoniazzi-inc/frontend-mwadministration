@@ -31,8 +31,8 @@ import PaymentTabComponent from '@/entities/productms/product/editProduct/tabs/p
     FollowUpTabComponent,
     AffiliateTabComponent,
     PaymentTabComponent,
-    CheckoutTabComponent
-    /* BrandingTabComponent */
+    CheckoutTabComponent,
+    BrandingTabComponent
   }
 })
 export default class ProductEditTabsComponent extends mixins(Vue, CommonHelpers) {

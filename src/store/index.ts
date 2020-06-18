@@ -24,6 +24,8 @@ export default new Vuex.Store({
       paymentMethods: [],
       deliveryMethods: [],
       roles: [],
+      promotions: [],
+      invoiceTemplates: [],
       permissions: [],
       administrationBusiness: []
     },

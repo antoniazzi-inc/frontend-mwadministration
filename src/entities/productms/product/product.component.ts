@@ -9,6 +9,7 @@ import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import complexSearchComponent from '@/entities/relationms/relation/complexSearch/complexSearch.vue'
 import ProductService from '@/shared/services/productService'
+import {productType} from "@/shared/models/ProductModel";
 
 @Component({
   components: {
@@ -20,15 +21,17 @@ import ProductService from '@/shared/services/productService'
 })
 export default class ProductComponent extends mixins(CommonHelpers, Vue) {
   public productService: any
-  public searchableTagsConfig: ISearchableSelectConfig
+  public searchableProductTypeConfig: ISearchableSelectConfig
   public searchableCatsConfig: ISearchableSelectConfig
   public searchableGroupsConfig: ISearchableSelectConfig
   public currentSearchName: string
   public currentSearchEmail: string
   public currentSearchGroups: any[]
   public currentSearchTags: any[]
-  public selectedTags: any[]
+  public selectedProductTypes: any
+  public selectedPromotion: any
   public selectedGroups: any[]
+  public allProductTypes: any[]
   public selectedCategories: any
   public currentSearchCategory: string
   public active: boolean
@@ -43,23 +46,25 @@ export default class ProductComponent extends mixins(CommonHelpers, Vue) {
   public complexId = 0;
   constructor () {
     super()
-    this.searchableTagsConfig = new SearchableSelectConfig('code',
-      'labels.selectTags', '', false,
-      false, true, true, false)
-    this.searchableCatsConfig = new SearchableSelectConfig('code',
+    this.searchableProductTypeConfig = new SearchableSelectConfig('label',
+      'labels.selectProductType', '', false,
+      false, true, false, false)
+    this.searchableCatsConfig = new SearchableSelectConfig('label',
+      'labels.selectPromotion', '', false,
+      false, true, false, false)
+    this.searchableGroupsConfig = new SearchableSelectConfig('code',
       'labels.selectCategory', '', false,
-      false, true, true, false)
-    this.searchableGroupsConfig = new SearchableSelectConfig('name',
-      'labels.selectGroups', '', false,
       false, true, false, false)
     this.currentSearchName = ''
     this.currentSearchEmail = ''
     this.currentSearchTags = []
+    this.allProductTypes = []
     this.currentSearchGroups = []
-    this.selectedTags = []
+    this.selectedProductTypes = null
     this.currentSearchCategory = ''
     this.selectedGroups = []
     this.selectedCategories = null
+    this.selectedPromotion = null
     this.active = true
     this.showQueryPopupForSimpleQueries = false
     this.showSearchQueries = false
@@ -67,22 +72,97 @@ export default class ProductComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public mounted () {
+    this.allProductTypes = [{
+      label: this.$t('labels.digital'),
+      value: productType.DIGITAL
+    }, {
+      label: this.$t('labels.service'),
+      value: productType.SERVICE
+    }, {
+      label: this.$t('labels.course'),
+      value: productType.COURSE
+    }, {
+      label: this.$t('labels.physical'),
+      value: productType.PHYSICAL
+    }, {
+      label: this.$t('labels.voucher'),
+      value: productType.VOUCHER
+    }]
 
   }
 
   public simpleSearch () {
-
+    const queryArray: any = []
+    if (this.currentSearchName !== '') {
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: 'sku',
+          value: this.currentSearchName,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: false
+        }, {
+          key: 'productLanguages.name',
+          value: this.currentSearchName,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: false,
+        }, {
+          key: 'productLanguages.description',
+          value: this.currentSearchName,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: false
+        }]
+      })
+    }
+    if(this.selectedProductTypes !== null) {
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: 'productType',
+          value: this.selectedProductTypes.value.toString(),
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: true
+        }]
+      })
+    }
+    if(this.selectedCategories !== null) {
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: 'productCategories.categoryId',
+          value: this.selectedCategories.id.toString(),
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: true
+        }]
+      })
+    }
+    if(this.selectedPromotion !== null) {
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: 'promotions.id',
+          value: this.selectedPromotion.id,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: false
+        }]
+      })
+    }
+    const finalQ = this.queryBuilder(queryArray)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/productms/api/products', undefined, finalQ)
   }
 
   public clear () {
-    this.currentSearchEmail = ''
     this.currentSearchName = ''
-    this.currentSearchTags = []
-    this.selectedTags = []
-    this.currentSearchCategory = ''
+    this.selectedProductTypes = null
     this.selectedCategories = null
-    this.currentSearchGroups = []
-    this.selectedGroups = []
+    this.selectedPromotion = null
     // @ts-ignore
     this.$refs.paginationTable.retrieveData('api/productms/api/products', undefined, undefined)
   }
@@ -105,57 +185,27 @@ export default class ProductComponent extends mixins(CommonHelpers, Vue) {
     }
   }
 
-  public tagSearchChanged (tag: any) {
-    this.currentSearchTags.push(tag)
+  public productTypeSearchChanged (productType: any) {
+    this.selectedProductTypes = productType
   }
 
-  public tagSearchRemoved (tag: any) {
-    let index = null
-    $.each(this.currentSearchTags, function (k, v) {
-      if (v.id === tag.id) {
-        index = k
-      }
-    })
-    if (index !== null) {
-      this.currentSearchTags.splice(index, 1)
-    }
+  public productTypeSearchRemoved (tag: any) {
+    this.selectedProductTypes = null
   }
 
-  public groupSearchChanged (group: any) {
-    this.currentSearchGroups.push(group)
-  }
-
-  public groupSearchRemoved (group: any) {
-    let index = null
-    $.each(this.currentSearchGroups, function (k, v) {
-      if (v.id === group.id) {
-        index = k
-      }
-    })
-    if (index !== null) {
-      this.currentSearchGroups.splice(index, 1)
-    }
-  }
 
   public categorySearchChanged (category: any) {
     this.selectedCategories = category
-    this.currentSearchCategory += category.id
   }
 
   public categorySearchRemoved () {
-    this.selectedCategories = {}
-    this.currentSearchCategory = ''
+    this.selectedCategories = null
   }
 
-  public startComplexSearch (query: any) {
-    console.log(query)
-    // @ts-ignore
-    this.$refs.paginationTable.retrieveData('api/productms/api/products', undefined, query)
+  public promotionSearchChanged (promo:any) {
+    this.selectedCategories = promo
   }
-
-  public openSearchQueries (isForSimpleQueries: any) {
-    this.showQueryPopupForSimpleQueries = isForSimpleQueries
-    this.showSearchQueries = true;
-    (<any> this.$refs.searchQueries).show()
+  public promotionSearchRemoved () {
+    this.selectedPromotion = null
   }
 }

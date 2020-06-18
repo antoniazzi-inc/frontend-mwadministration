@@ -114,7 +114,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
   public addNewFeature () {
     const self = this
     const newFeature = new Attribute()
-    newFeature.attributeLanguages = [new AttributeLanguage()]
+    newFeature.attributeLanguages = [new AttributeValueLanguage(undefined,undefined,undefined,undefined, this.$store.state.currentLanguage, '')]
     newFeature.attributeLanguages[0].langKey = this.$store.state.currentLanguage
     Vue.nextTick(function () {
       self.selectedProductFeature = newFeature
@@ -151,6 +151,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
         if (resp) {
           this.editModeAttribute = false
           this.setAlert('featureOptionAdded', 'success')
+          this.$emit('update')
         }
       })
     } else if (this.selectedOption.id && this.selectedProductFeature.id) {
@@ -161,6 +162,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
       }
       this.attributeValueService.put(dto).then((resp: AxiosResponse) => {
         if (resp) {
+          this.$emit('update')
           this.editModeAttribute = false
           this.setAlert('featureOptionEdited', 'success')
         }
@@ -182,6 +184,12 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
     this.allOptions[event.oldDraggableIndex].orderIndex = newIndex
     this.attributeValueService.updateMultiple(this.allOptions).then((resp: AxiosResponse) => {
       if (resp) {
+        let options:any = []
+        resp.data.forEach((option:any)=>{
+          option.attribute = undefined
+          options.push(option)
+        })
+        this.allOptions = options
         this.resetIndexes(resp.data)
         this.setAlert('attributeIndexChanged', 'success')
         this.$emit('update')
@@ -391,27 +399,37 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
 
   public updateFeatureOptionLang (lang: any) {
     let index = null
-    $.each(this.selectedAttributeValue.attributeValueLanguages, function (k, v: any) {
+    $.each(this.selectedOption.attributeValueLanguages, function (k, v: any) {
       if (v.langKey === lang.langKey) {
         index = k
       }
     })
-    if (index !== null && this.selectedAttributeValue.attributeValueLanguages) {
-      this.selectedAttributeValue.attributeValueLanguages[index] = lang
+    if (index !== null && this.selectedOption.attributeValueLanguages) {
+      this.selectedOption.attributeValueLanguages[index] = lang
+      if(!this.selectedOption.attributeValueLanguages[index].id) this.selectedOption.value = this.selectedOption.attributeValueLanguages &&
+      this.selectedOption.attributeValueLanguages[0] && this.selectedOption.attributeValueLanguages[0].name ?
+        this.selectedOption.attributeValueLanguages[0].name.replace(/[^a-zA-Z0-9_]/g, '') : this.selectedOption.value
     } else {
-      this.addNewFeatureOptionLang(lang)
+      this.addNewFeatureOptionLang(lang.langKey)
     }
-    this.selectedOption.value = this.selectedAttributeValue.attributeValueLanguages &&
-    this.selectedAttributeValue.attributeValueLanguages[0].name
-      ? this.selectedAttributeValue.attributeValueLanguages[0].name.replace(/[^a-zA-Z0-9_]/g, '') : ''
   }
 
   public addNewFeatureOptionLang (lang: any) {
-    const lng = new AttributeValueLanguage(undefined, undefined, undefined, undefined, lang, '')
-    if (this.selectedAttributeValue.attributeValueLanguages) {
-      this.selectedAttributeValue.attributeValueLanguages.push(lng)
-    } else {
-      this.selectedAttributeValue.attributeValueLanguages = [lng]
+    let index = null
+    $.each(this.selectedOption.attributeValueLanguages, function (k, v: any) {
+      if (v.langKey === lang) {
+        index = k
+      }
+    })
+    if (index !== null && this.selectedOption.attributeValueLanguages) {
+      this.selectedOption.attributeValueLanguages[index] = lang
+    }else {
+      const lng = new AttributeValueLanguage(undefined, undefined, undefined, undefined, lang, '')
+      if (this.selectedOption.attributeValueLanguages) {
+        this.selectedOption.attributeValueLanguages.push(lng)
+      } else {
+        this.selectedOption.attributeValueLanguages = [lng]
+      }
     }
   }
 

@@ -1,14 +1,12 @@
 import Component, { mixins } from 'vue-class-component'
-import SpinnerComponent from '@/components/spinner/spinner.vue'
 import Vue from 'vue'
-import UploadWidget from '@/components/uploadWidget/upload-widget.vue'
+import UploadWidget from '../uploadWidget/uploadWidget.vue'
 import { Inject, Watch } from 'vue-property-decorator'
 import CommonHelpers from '@/shared/commonHelpers'
 import ProductService from '@/shared/services/productService'
 import { AxiosResponse } from 'axios'
 @Component({
   components: {
-    spinner: SpinnerComponent,
     'upload-widget': UploadWidget
   },
   props: {
@@ -104,11 +102,13 @@ export default class MediaLibraryComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public openMediaLibrary () {
-      (<any> this.$refs.mediaLibrary).show()
+      //@ts-ignore
+      $(this.$refs.mediaLibrary).modal('show')
     }
 
     public closeMediaLibrary () {
-      (<any> this.$refs.mediaLibrary).hide()
+      //@ts-ignore
+      $(this.$refs.mediaLibrary).modal('hide')
     }
 
     public removeImage () {

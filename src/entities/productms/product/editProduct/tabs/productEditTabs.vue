@@ -102,7 +102,7 @@
       </div>
       <div :class="{'tab-pane': true, 'active': currentTab === 'branding'}" id="branding" role="tabpanel"
            aria-labelledby="branding-tab">
-        <!--<branding-tab-component :clicked="currentTab === 'branding'" :product="product"  @update="updateProduct"/>-->
+        <branding-tab-component :clicked="currentTab === 'branding'" :product="product"  @update="updateProduct"/>
       </div>
     </div>
   </div>

@@ -15,9 +15,11 @@ export default class ProductService extends BaseEntityService<IProduct> {
     return ProductService.instance
   }
 
-  public createOnBucket (obj: any) {
+  public createOnBucket (entity: any) {
     return new Promise(resolve => {
-      resolve(true)
+      axios.post('api/productms/api/products/'+entity.id+'/media', entity.params).then(function(res) {
+        resolve(res.data);
+      });
     })
   }
 
@@ -52,7 +54,6 @@ export default class ProductService extends BaseEntityService<IProduct> {
   }
 
   public updatePayButton (entity: any) {
-    debugger
     return new Promise(resolve => {
       axios.put('api/productms/api/products/' + entity.id + '/pay-button', entity.payButton).then(function (res) {
         resolve(res.data)

@@ -182,13 +182,12 @@
                                           <multi-language-component
                                             :config="multiLangConfigOption"
                                             :value="selectedOption.attributeValueLanguages"
-                                            @onAdd="addNewFeatureOptionLang"
                                             @onChange="updateFeatureOptionLang"
                                             @onRemove="removeFeatureOptionLang"/>
                                         </div>
                                         <div :class="{'form-group': true}">
                                             <label for="value">{{$t('labels.enterValue')}}</label>
-                                            <input :class="{'form-control': true, invalid: errors.has('value')}" name="value" id="value" type="text" v-model="selectedOption.value" required/>
+                                            <input :class="{'form-control': true, invalid: errors.has('value')}" name="value" id="value" type="text" v-model="selectedOption.value"/>
                                         </div>
                                         <div :class="{'form-group': true}">
                                             <label>{{$t('labels.additionalCosts')}}</label>

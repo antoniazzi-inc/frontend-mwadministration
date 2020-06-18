@@ -184,7 +184,7 @@
         </form>
       </tab-content>
       <tab-content :title="$t('labels.thumbnail')" icon="fas fa-receipt" :before-change="validateStep" >
-        <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove"/>
+        <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove" v-if="step === 3"/>
       </tab-content>
       <tab-content :title="$t('labels.finalStep')" icon="fas fa-receipt" :before-change="validateStep" >
         <h5 class="text-danger" v-if="product.productType === 'DIGITAL'">{{$t('labels.pleaseUploadAfileOrProvideALink')}}</h5>
@@ -202,9 +202,9 @@
                    name="url" v-validate="'required|url'"/>
             <span class="small text-danger">{{errors.first('url')}}</span>
           </div>
-          <div class="form-group" v-if="product.productType === 'DIGITAL' && notUrl">
+          <div class="form-group" v-if="product.productType === 'DIGITAL' && notUrl && step === 4">
             <label class="control-label">{{$t('labels.orUploadFile')}}</label>
-            <upload-widget/>
+            <upload-widget @onError="digitalUploadError" @onUpload="digitalLoaded" @onRemove="digitalRemove" :accept="'application/*'" :extensions="'pdf,xls,zip,rar'"/>
           </div>
           <div class="form-group" v-if="product.productType === 'COURSE'">
             <label class="col-md-6 control-label">{{$t('labels.selectCourse')}}</label>

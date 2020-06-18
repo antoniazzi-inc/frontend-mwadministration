@@ -4,25 +4,24 @@
       <h3>Drop files to upload</h3>
     </div>
     <div class="upload">
-      <div class="table-responsive">
+      <div class="table-responsive" style="min-height: 300px">
         <table class="table table-hover">
           <thead>
           <tr>
             <th>#</th>
-            <th>Thumb</th>
-            <th>Name</th>
-            <th>Size</th>
-            <th>Speed</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>{{$t('labels.thumb')}}</th>
+            <th>{{$t('labels.name')}}</th>
+            <th>{{$t('labels.size')}}</th>
+            <th>{{$t('labels.status')}}</th>
+            <th>{{$t('labels.action')}}</th>
           </tr>
           </thead>
           <tbody>
           <tr v-if="!files.length">
             <td colspan="7">
               <div class="text-center p-5">
-                <h4>Drop files anywhere to upload<br/>or</h4>
-                <label :for="name" class="btn btn-lg btn-primary">Select Files</label>
+                <h4>{{$t('labels.dropFilesAnywhere')}}<br/>{{$t('labels.or')}}</h4>
+                <label :for="name" class="btn btn-lg btn-primary">{{$t('labels.selectFiles')}}</label>
               </div>
             </td>
           </tr>
@@ -30,7 +29,7 @@
             <td>{{index}}</td>
             <td>
               <img v-if="file.thumb" :src="file.thumb" width="40" height="auto" />
-              <span v-else>No Image</span>
+              <span v-else>{{$t('labels.noImage')}}</span>
             </td>
             <td>
               <div class="filename">
@@ -41,27 +40,25 @@
               </div>
             </td>
             <td>{{file.size | formatSize}}</td>
-            <td>{{file.speed | formatSize}}</td>
-
             <td v-if="file.error">{{file.error}}</td>
-            <td v-else-if="file.success">success</td>
-            <td v-else-if="file.active">active</td>
-            <td v-else></td>
+            <td v-else-if="file.success">{{$t('labels.success')}}</td>
+            <td v-else-if="file.active">{{$t('labels.active')}}</td>
+            <td v-else>{{$t('labels.success')}}</td>
             <td>
               <div class="btn-group">
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button">
-                  Action
+                  {{$t('buttons.action')}}
                 </button>
                 <div class="dropdown-menu">
-                  <a :class="{'dropdown-item': true, disabled: file.active || file.success || file.error === 'compressing'}" data-toggle="modal" data-target="#modal-edit-file" href="#" @click.prevent="file.active || file.success || file.error === 'compressing' ? false :  onEditFileShow(file)">Edit</a>
-                  <a :class="{'dropdown-item': true, disabled: !file.active}" href="#" @click.prevent="file.active ? $refs.upload.update(file, {error: 'cancel'}) : false">Cancel</a>
+                  <a :class="{'dropdown-item': true, disabled: file.active || file.success || file.error === 'compressing'}" data-toggle="modal" data-target="#modal-edit-file" href="#" @click.prevent="file.active || file.success || file.error === 'compressing' ? false :  onEditFileShow(file)">{{$t('buttons.edit')}}</a>
+                  <a :class="{'dropdown-item': true, disabled: !file.active}" href="#" @click.prevent="file.active ? $refs.upload.update(file, {error: 'cancel'}) : false">{{$t('buttons.cancel')}}</a>
 
                   <a class="dropdown-item" href="#" v-if="file.active" @click.prevent="$refs.upload.update(file, {active: false})">Abort</a>
-                  <a class="dropdown-item" href="#" v-else-if="file.error && file.error !== 'compressing' && $refs.upload.features.html5" @click.prevent="$refs.upload.update(file, {active: true, error: '', progress: '0.00'})">Retry upload</a>
+                 <!-- <a class="dropdown-item" href="#" v-else-if="file.error && file.error !== 'compressing' && $refs.upload.features.html5" @click.prevent="$refs.upload.update(file, {active: true, error: '', progress: '0.00'})">{{$t('labels.re')}}</a>
                   <a :class="{'dropdown-item': true, disabled: file.success || file.error === 'compressing'}" href="#" v-else @click.prevent="file.success || file.error === 'compressing' ? false : $refs.upload.update(file, {active: true})">Upload</a>
-
+-->
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#" @click.prevent="$refs.upload.remove(file)">Remove</a>
+                  <a class="dropdown-item" href="#" @click.prevent="$refs.upload.remove(file)">{{$t('buttons.remove')}}</a>
                 </div>
               </div>
             </td>
@@ -94,18 +91,18 @@
             Select
           </file-upload>
           <div class="dropdown-menu">
-            <label class="dropdown-item" :for="name">Add files</label>
-            <a class="dropdown-item" href="#" @click="onAddFolader">Add folder</a>
-            <a class="dropdown-item" href="#" @click.prevent="addData.show = true">Add data</a>
+            <label class="dropdown-item" :for="name">{{$t('buttons.add')}}</label>
+            <a class="dropdown-item" href="#" v-if="directory" @click="onAddFolader">{{$t('labels.addFolder')}}</a>
+            <a class="dropdown-item" href="#" v-if="directory" @click.prevent="addData.show = true">{{$t('labels.addData')}}</a>
           </div>
         </div>
-        <button type="button" class="btn btn-success" v-if="!$refs.upload || !$refs.upload.active" @click.prevent="$refs.upload.active = true">
+        <button type="button" class="btn btn-success" v-if="directUpload && (!$refs.upload || !$refs.upload.active)" @click.prevent="$refs.upload.active = true">
           <i class="fa fa-arrow-up" aria-hidden="true"></i>
-          Start Upload
+          {{$t('labels.startUpload')}}
         </button>
-        <button type="button" class="btn btn-danger"  v-else @click.prevent="$refs.upload.active = false">
+        <button type="button" class="btn btn-danger"  v-else-if="directUpload" @click.prevent="$refs.upload.active = false">
           <i class="fa fa-stop" aria-hidden="true"></i>
-          Stop Upload
+          {{$t('labels.stopUpload')}}
         </button>
       </div>
     </div>
@@ -144,42 +141,42 @@
         </div>
       </div>
     </div>
-    <div data-backdrop="static" data-keyboard="false" :class="{modal: true}" id="modal-edit-file" tabindex="-1" role="dialog">
+    <div data-backdrop="static" ref="editImageModal" data-keyboard="false" :class="{modal: true}" id="modal-edit-file" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Edit file</h5>
-            <button type="button" class="close"  @click.prevent="editFile.show = false">
-              <span>&times;</span>
+            <h5 class="modal-title">{{$t('labels.edit')}}</h5>
+            <button type="button" data-dismiss="modal" class="close"  @click.prevent="editFile.show = false">
+              <span >&times;</span>
             </button>
           </div>
           <form @submit.prevent="onEditorFile">
             <div class="modal-body">
               <div class="form-group">
-                <label for="name">Name:</label>
+                <label for="name">{{$t('labels.name')}}:</label>
                 <input type="text" class="form-control" required id="name"  placeholder="Please enter a file name" v-model="editFile.name">
               </div>
               <div class="form-group" v-if="editFile.show && editFile.blob && editFile.type && editFile.type.substr(0, 6) === 'image/'">
-                <label>Image: </label>
+                <label>{{$t('labels.image')}}: </label>
                 <div class="edit-image">
                   <img :src="editFile.blob" ref="editImage" />
                 </div>
 
                 <div class="edit-image-tool">
                   <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-primary" @click="editFile.cropper.rotate(-90)" title="cropper.rotate(-90)"><i class="fa fa-undo" aria-hidden="true"></i></button>
-                    <button type="button" class="btn btn-primary" @click="editFile.cropper.rotate(90)"  title="cropper.rotate(90)"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-primary" @click="rotateLeft" title="cropper.rotate(-90)"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-primary" @click="rotateRight"  title="cropper.rotate(90)"><i class="fa fa-repeat" aria-hidden="true"></i></button>
                   </div>
                   <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-primary" @click="editFile.cropper.crop()" title="cropper.crop()"><i class="fa fa-check" aria-hidden="true"></i></button>
-                    <button type="button" class="btn btn-primary" @click="editFile.cropper.clear()" title="cropper.clear()"><i class="fa fa-remove" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-primary" @click="crop" title="cropper.crop()"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-primary" @click="clear" title="cropper.clear()"><i class="fa fa-remove" aria-hidden="true"></i></button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" @click.prevent="editFile.show = false">Close</button>
-              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" @click.prevent="editFile.show = false">{{$t('buttons.close')}}</button>
+              <button type="submit" class="btn btn-primary">{{$t('buttons.save')}}</button>
             </div>
           </form>
         </div>

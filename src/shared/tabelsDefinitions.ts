@@ -281,7 +281,15 @@ export const product = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        return '-----TODO----'
+        let result:any = []
+        Store.state.lookups.categories.forEach((cat:any)=>{
+          item.productCategories.forEach((prodCat:any)=>{
+            if(cat.id === prodCat.categoryId){
+              result.push(cat.code)
+            }
+          })
+        })
+        return result.join(', ')
       }
     }, {
       name: 'labels.productType',

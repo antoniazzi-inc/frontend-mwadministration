@@ -151,7 +151,6 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
       dto.typeDigital = undefined
       dto.typeService = undefined
       dto.typePhysical = undefined
-      dto.followupAction = undefined
       dto.productSubscription = undefined
       this.productService.put(dto).then((resp: AxiosResponse) => {
         this.setAlert('productUpdated', 'success')
@@ -159,13 +158,15 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
       })
     }
 
+    public checkForHttps () {
+      this.termsAndConditions.linkToConditions = this.checkForUrlHttps(this.termsAndConditions.linkToConditions)
+    }
     public saveTermsAndConditions () {
       this.productCopy.termsAndConditionsJson = this.termsAndConditions
       const dto = JSON.parse(JSON.stringify(this.productCopy))
       dto.typeDigital = undefined
       dto.typeService = undefined
       dto.typePhysical = undefined
-      dto.followupAction = undefined
       dto.productSubscription = undefined
       this.productService.put(dto).then((resp: AxiosResponse) => {
         this.setAlert('productUpdated', 'success')

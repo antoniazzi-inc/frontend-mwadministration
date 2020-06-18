@@ -3,10 +3,14 @@ import ImageCompressor from '@xkeshi/image-compressor'
 import FileUpload from 'vue-upload-component'
 
 export default {
-  /*props: {
+  props: {
     accept: {
       type: String,
       default: 'image/png,image/gif,image/jpeg,image/webp'
+    },
+    extensions: {
+      type: String,
+      default: ''
     },
     multiple: {
       type: Boolean,
@@ -16,25 +20,20 @@ export default {
       type: Boolean,
       default: false
     },
-    editFile: {
-      type: Object
-    },
     allFiles: {
       type: Array
     }
-  },*/
+  },
   components: {
     FileUpload
   },
   data () {
     return {
       files: [],
-      accept: 'image/png,image/gif,image/jpeg,image/webp',
-      extensions: 'gif,jpg,jpeg,png,webp',
       minSize: 1024,
       size: 1024 * 1024 * 10,
-      multiple: true,
       directory: false,
+      directUpload: false,
       drop: true,
       dropDirectory: true,
       addIndex: false,
@@ -49,7 +48,6 @@ export default {
         _csrf_token: 'xxxxxx'
       },
       autoCompress: 1024 * 1024,
-      uploadAuto: false,
       isOption: false,
       addData: {
         show: false,
@@ -64,34 +62,35 @@ export default {
     }
   },
   watch: {
-    'editFile.show' (newValue, oldValue) {
-      if (!newValue && oldValue) {
-        this.$refs.upload.update(this.editFile.id, { error: this.editFile.error || '' })
-      }
-      if (newValue) {
-        this.$nextTick(function () {
-          if (!this.$refs.editImage) {
-            return
-          }
-          const cropper = new Cropper(this.$refs.editImage, {
-            autoCrop: false
-          })
-          this.editFile = {
-            ...this.editFile,
-            cropper
-          }
-        })
-      }
-    },
     'addData.show' (show) {
       if (show) {
         this.addData.name = ''
         this.addData.type = ''
         this.addData.content = ''
       }
+    },
+    'allFiles' (allFiles) {
+      this.files = allFiles
     }
   },
+  mounted () {
+    $(this.$refs.editImageModal).on('shown.bs.modal', this.editImageShow)
+  },
   methods: {
+    editImageShow () {
+      this.$nextTick(function () {
+        if (!this.$refs.editImage) {
+          return
+        }
+        const cropper = new Cropper(this.$refs.editImage, {
+          autoCrop: false
+        })
+        this.editFile = {
+          ...this.editFile,
+          cropper
+        }
+      })
+    },
     inputFilter (newFile, oldFile, prevent) {
       if (newFile && !oldFile) {
         // Before adding a file
@@ -174,6 +173,19 @@ export default {
         }
       }
     },
+    rotateLeft () {
+      this.editFile.cropper.rotate(-90)
+    },
+    rotateRight () {
+      this.editFile.cropper.rotate(90)
+    },
+    crop () {
+      this.editFile.cropper.crop()
+      this.onEditorFile()
+    },
+    clear () {
+      this.editFile.cropper.clear()
+    },
     alert (message) {
       alert(message)
     },
@@ -185,6 +197,7 @@ export default {
       this.$refs.upload.update(file, { error: 'edit' })
     },
     onEditorFile () {
+      $(this.$refs.editImageModal).modal('hide')
       if (!this.$refs.upload.features.html5) {
         this.alert('Your browser does not support')
         this.editFile.show = false
