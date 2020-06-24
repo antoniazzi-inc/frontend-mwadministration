@@ -1,7 +1,7 @@
 <template>
     <div class="anil_nepal">
         <label class="switch switch-left-right">
-            <input ref="switchBtn" class="switch-input form-control" @change="changeToggle($event)" type="checkbox">
+            <input ref="switchBtn" class="switch-input form-control" @click="emitClick($event)" @change="changeToggle($event)" type="checkbox">
             <span class="switch-label" :data-on="onText" :data-off="offText"></span> <span class="switch-handle"></span>
         </label>
     </div>

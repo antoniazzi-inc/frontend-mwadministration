@@ -72,7 +72,7 @@ export default class MultiLanguageHtmlEditorComponent extends Vue {
   }
 
   public mounted () {
-    this.allContent = this.$props.content
+    this.allContent = this.$props.content ? this.$props.content : {}
     this.selectedContent = this.$props.content[this.$store.state.currentLanguage]
   }
 
@@ -81,13 +81,28 @@ export default class MultiLanguageHtmlEditorComponent extends Vue {
     if (newVal) {
       this.allContent = newVal
       this.selectedContent = newVal[this.selectedLang.langKey]
+    } else {
+      this.selectedContent = ''
     }
   }
 
   @Watch('availableLangs', { immediate: true, deep: true })
   public availableLanguages (newVal: any) {
     if (newVal.length) {
-      this.allAvailableLanguages = newVal
+      let allAvailableLanguages:any = []
+      for (const key in this.$store.state.languages) {
+        if (this.$store.state.languages.hasOwnProperty(key)) {
+          newVal.forEach((l:any, i:any) => {
+            if(l === key){
+              allAvailableLanguages.push({
+                name: this.$store.state.languages[key].name,
+                langKey: key
+              })
+            }
+          })
+        }
+      }
+      this.allAvailableLanguages = allAvailableLanguages
     }
   }
 
@@ -117,8 +132,17 @@ export default class MultiLanguageHtmlEditorComponent extends Vue {
     this.$emit('contentChanged', this.allContent)
   }
 
-  public checkIfHasValue () {
-    return true
+  public checkIfHasValue (lang:any) {
+    let hasVal = false
+    let self = this
+    $.each(this.allAvailableLanguages, function (k, v) {
+      if (v.langKey === lang) {
+        if(self.allContent[self.allAvailableLanguages[k].langKey]){
+          hasVal = true
+        }
+      }
+    })
+    return hasVal
   }
 
   public removeLang () {

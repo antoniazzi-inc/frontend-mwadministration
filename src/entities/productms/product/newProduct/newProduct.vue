@@ -3,11 +3,12 @@
     <form-wizard @on-complete="onComplete"
                  :title="$t('labels.newProduct')"
                  :subtitle="''"
-                 @on-change="tabChanged"
                  shape="tab"
+                 @on-change="changeTab"
+                 :start-index="step"
                  color="#1c4cc3"
                  error-color="#ff4949">
-      <tab-content :title="product.productType.toLowerCase() + ' ' + $t('labels.product')" :before-change="validateStep" icon="fas fa-user-tie">
+      <tab-content @click="step = 0" :title="product.productType.toLowerCase() + ' ' + $t('labels.product')" icon="fas fa-user-tie">
         <div class="row justify-content-center">
           <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
             <router-link @click.native.prevent="changeProductType('DIGITAL')" to="" :class="{'profile-tile-box': true, active: product.productType === 'DIGITAL'}">
@@ -61,7 +62,7 @@
           </div>
         </div>
       </tab-content>
-      <tab-content :title="$t('labels.productDetails')" icon="fas fa-tags" :before-change="validateStep">
+      <tab-content  @click="step = 1" :title="$t('labels.productDetails')" icon="fas fa-tags">
         <form>
           <div class="form-group">
             <multi-language-component
@@ -183,12 +184,23 @@
           </div>
         </form>
       </tab-content>
-      <tab-content :title="$t('labels.thumbnail')" icon="fas fa-receipt" :before-change="validateStep" >
-        <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove" v-if="step === 3"/>
+      <tab-content  @click="step = 2" :title="$t('labels.thumbnail')" icon="fas fa-receipt" >
+        <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove" v-if="step === 2"/>
       </tab-content>
-      <tab-content :title="$t('labels.finalStep')" icon="fas fa-receipt" :before-change="validateStep" >
+      <tab-content  @click="step = 3" :title="$t('labels.finalStep')" icon="fas fa-receipt">
         <h5 class="text-danger" v-if="product.productType === 'DIGITAL'">{{$t('labels.pleaseUploadAfileOrProvideALink')}}</h5>
-        <form>
+        <div class="row m-5" v-if="isSaving">
+          <div class="col-md-12 m-5 p-5 text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <p class="mt-5">{{$t('labels.pleaseWait')}}</p>
+            <div class="progress mt-2">
+              <div class="progress-bar" role="progressbar" :style="{width: `${progress}%`}" :aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100">{{progress}}%</div>
+            </div>
+          </div>
+        </div>
+        <form v-else>
           <div class="form-group" v-if="product.productType === 'DIGITAL'">
             <label class="control-label">{{$t('labels.uploadFile')}}</label>
             <toggle-switch
@@ -202,7 +214,7 @@
                    name="url" v-validate="'required|url'"/>
             <span class="small text-danger">{{errors.first('url')}}</span>
           </div>
-          <div class="form-group" v-if="product.productType === 'DIGITAL' && notUrl && step === 4">
+          <div class="form-group" v-if="product.productType === 'DIGITAL' && notUrl && step === 3">
             <label class="control-label">{{$t('labels.orUploadFile')}}</label>
             <upload-widget @onError="digitalUploadError" @onUpload="digitalLoaded" @onRemove="digitalRemove" :accept="'application/*'" :extensions="'pdf,xls,zip,rar'"/>
           </div>
@@ -221,6 +233,9 @@
           </div>
         </form>
       </tab-content>
+      <button @click="stepBack" slot="prev" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.back')}}</button>
+      <button @click="stepForward" slot="next" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.next')}}</button>
+      <button slot="finish" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.finish')}}</button>
     </form-wizard>
   </div>
 </template>

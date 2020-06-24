@@ -40,6 +40,9 @@ export interface IProduct extends IBaseEntity {
     archived?: boolean;
     termsAndConditionsJson?: ITermsAndConditions;
     comingSoon?: boolean;
+    forceDirectPayment?: boolean;
+    featuredImageId?: number;
+    announcementMailJson?: string;
     ledgerAccountName?: string;
     payButtonJson?: IPayButton;
     euTax?: boolean;
@@ -91,6 +94,9 @@ constructor(
     public archived?: boolean,
     public termsAndConditionsJson?: ITermsAndConditions,
     public comingSoon?: boolean,
+    public forceDirectPayment?: boolean,
+    public featuredImageId?: number,
+    public announcementMailJson?: string,
     public ledgerAccountName?: string,
     public payButtonJson?: IPayButton,
     public euTax?: boolean,

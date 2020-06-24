@@ -13,6 +13,7 @@ export interface ITypeDigital extends IBaseEntity {
     notPaidDownload?: boolean;
     bodyName?: string;
     bodyContentType?: string;
+    body?: any;
 }
 
 export class TypeDigital implements ITypeDigital {
@@ -27,6 +28,7 @@ constructor(
     public notPaidDownload?: boolean,
     public bodyName?: string,
     public bodyContentType?: string,
+    public body?: any,
   ){
   }
 };

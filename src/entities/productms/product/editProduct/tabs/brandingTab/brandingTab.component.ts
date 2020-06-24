@@ -54,6 +54,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public upsellCart3 = '';
   public socialAffiliates = '';
   public resizedImages: any = [];
+  public allMediaFiles: any = [];
   public imagesToResize: any = [];
   public affiliateSalesInfo = '';
   public checkoutUpsell = '';
@@ -80,6 +81,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   constructor() {
     super();
     this.allMedia = [];
+    this.allMediaFiles = [];
     this.allInvoiceTemplates = [];
     this.uploadConfigBranding = {};
     this.editFile = {
@@ -89,6 +91,10 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       name: '',
       cropper: ''
     }
+  }
+
+  public makeBase64(media: any) {
+
   }
 
   @Watch('product', {immediate: true, deep: true})
@@ -104,10 +110,43 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       this.affiliateSalesInfo = upsell.affiliateSalesInfo;
       this.backToCallingPage = upsell.backToCallingPage
     }
+    this.productCopy.featuredImageId = 118
     if (newVal.thankYouPageSettingsJson && JSON.parse(newVal.thankYouPageSettingsJson)) {
       const thankyou = JSON.parse(newVal.thankYouPageSettingsJson);
       this.thankYouContent = thankyou.thankYouContent;
       this.thankYouRedirect = thankyou.thankYouRedirect
+    }
+    if (newVal.media && newVal.media.length) {
+      let currMedia:any = [];
+      this.allMediaFiles = []
+      newVal.media.forEach((media: IMedia, k: any) => {
+        this.loadProperImage(media).then(resp=>{
+          let blobEl = this.b64toBlob(resp, media.bodyContentType)
+          currMedia.push({
+            "fileObject": true,
+            "size": 38252,
+            "name": media.name,
+            "type": media.bodyContentType,
+            "active": false,
+            "error": "",
+            "success": false,
+            "isFeatured": this.productCopy.featuredImageId === media.id ? true : false,
+            "putAction": "/upload/put",
+            "postAction": "/upload/post",
+            "timeout": 0,
+            "file": new File([blobEl], media.name ? media.name : ''),
+            "response": {},
+            "progress": "0.00",
+            "speed": 0,
+            "data": {"_csrf_token": "xxxxxx"},
+            "headers": {"X-Csrf-Token": "xxxx"},
+            "id": "ngpbwnosreb" + k,
+            "blob": URL.createObjectURL(blobEl),
+            "thumb": URL.createObjectURL(blobEl)
+          })
+        })
+      })
+      this.allMediaFiles = currMedia
     }
     this.salesPageUrl = newVal.salesPageUrl;
     this.uploadConfigBranding = {
@@ -372,7 +411,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
      })
      this.$forceUpdate()*/
     //@ts-ignore
-    $(this.$refs.editImageUploaded).modal('hide')
+    $(this.$refs.editImageUploaded).modal('hide');
     return
   }
 
@@ -454,11 +493,43 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     })
   }
 
+  public resetFeatureImage() {
+    let self = this
+    return new Promise(resolve => {
+      for(let i=0;i<self.allMediaFiles.length;i++){
+        self.$set(self.allMediaFiles[i], "isFeatured", false)
+      }
+      resolve()
+    })
+  }
+  public changeFeaturedImage(e: any) {
+    let self = this
+    if(e.isFeatured){
+      this.resetFeatureImage().then(()=>{
+          self.productCopy.featuredImageId = self.allMediaFiles[e.index].id
+          self.$set(self.allMediaFiles[e.index], "isFeatured", true)
+      })
+    } else {
+      this.resetFeatureImage().then(()=>{
+        self.$set(self.allMediaFiles[e.index], "isFeatured", true)
+      })
+    }
+  }
   public imageUploadError(e: any) {
   }
 
   public imageLoaded(e: any) {
-    debugger
+    let index = null
+    this.allMediaFiles.forEach((media:any, ind:number)=>{
+      if(media.id === e.id){
+        index = ind
+      }
+    })
+    if(index !== null){
+      this.allMediaFiles[index] = e
+    } else {
+      this.allMediaFiles.push(e)
+    }
   }
 
   public onImageRemove(e: any) {

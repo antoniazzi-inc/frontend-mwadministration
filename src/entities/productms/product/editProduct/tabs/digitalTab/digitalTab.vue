@@ -17,8 +17,7 @@
           </div>
           <div class="form-group" v-if="uploadNewFile">
             <label class="form-control-label">{{$t('labels.FileUpload')}}</label>
-            <upload-widget v-if="clicked" ref="uploadDigital" :busy="isSaving" :config="uploadConfig"
-                           @input="uploadFile"/>
+            <upload-widget v-if="clicked" @onError="digitalUploadError" @onUpload="uploadFile" @onRemove="digitalRemove" :accept="'*/*'" :extensions="'pdf,xls,zip,rar'"/>
           </div>
           <div class="form-group">
             <label class="form-control-label">{{$t('labels.emailSubject')}}</label>
@@ -46,7 +45,7 @@
           </div>
           <div class="form-group">
             <label class="form-control-label">{{$t('labels.content')}}</label>
-            <MultiLangHtmlEditorComponent :availableLangs="['en', 'nl']"
+            <MultiLangHtmlEditorComponent :availableLangs="[]"
                                           :content.sync="digitalEmail.content"
                                           @contentChanged="updateEmailContent"></MultiLangHtmlEditorComponent>
           </div>

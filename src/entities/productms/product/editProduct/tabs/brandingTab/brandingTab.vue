@@ -152,28 +152,9 @@
                 </div>
                 <div :class="{'tab-pane': true, 'active': currentTab === 'images'}" id="images" role="tabpanel" aria-labelledby="images-tab">
                   <div class="row">
-                    <div class="form-group mt-3 col-md-12">
-                      <div class="row">
-                        <template v-for="(item, index) in productCopy.media">
-                          <div data-toggle="tooltip" data-placement="right" :title="item.name" :class="{'media-thumb cursor-pointer': true}"  :key="index">
-                            <div data-toggle="modal" data-target="#editImageUploaded" @click.prevent.stop="editImage(item, index)" :class="{'image-holder': true}" :alt="item.name" :style="{background: 'url('+createImageUrl(item)+')'}">
-                            </div>
-                            <div :class="{'image-info text-center': true}">
-                              <div class="name">
-                                <span>{{item.name}}</span>
-                              </div>
-                              <span class="size">{{item.size}}</span>
-                            </div>
-                            <i class="deleteImage fas fa-times text-danger" data-toggle="modal" data-target="removeEntityImage" @click.prevent="prepareRemoveImage(item)"></i>
-                          </div>
-                        </template>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
                     <div class="form-group mt-4 col-md-12">
                       <button class="btn btn-outline-primary mb-2" @click="loadImageGallery(false)">{{$t('labels.openMediaLibrary')}}</button>
-                      <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove" :multiple="true"/>
+                      <upload-widget @onError="imageUploadError" @changeFeaturedImage="changeFeaturedImage" :showFeaturedFlag="true" :allFiles="allMediaFiles" @onUpload="imageLoaded" @onRemove="onImageRemove" :multiple="true"/>
                     </div>
                   </div>
                   <div class="form-buttons-w text-right">

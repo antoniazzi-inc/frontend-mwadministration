@@ -51,8 +51,14 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
       ],
       companyAndTaxes: {
         orderAsCompany: false,
-        companyName: '',
-        vatNumber: '',
+        companyName: {
+          visible: false,
+          required: false
+        },
+        vatNumber: {
+          visible: false,
+          required: false
+        },
         vatCalculation: ''
       },
       freeFields: []
@@ -107,8 +113,14 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         ],
         companyAndTaxes: {
           orderAsCompany: false,
-          companyName: '',
-          vatNumber: '',
+          companyName: {
+            visible: false,
+            required: false
+          },
+          vatNumber: {
+            visible: false,
+            required: false
+          },
           vatCalculation: ''
         },
         freeFields: []

@@ -82,7 +82,7 @@
                       <flat-pickr :config="validToConfig" class="single-daterange form-control"
                                   id="validToDate" v-model="availableTo"/>
                       </div>
-                      <span class="small text-danger" v-if="availableTo !== null">{{$t('labels.validToMustBeAfterValidFrom')}}</span>
+                      <!--<span class="small text-danger" v-if="availableTo !== null">{{$t('labels.validToMustBeAfterValidFrom')}}</span>-->
                     </div>
                   </div>
                     <div class="row">

@@ -56,6 +56,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   public availableTo: Date | any;
   public isSubscription: boolean;
   public step: number;
+  public progress: any;
   public validToConfig: any;
   public allTaxRates: any[];
   public previewImages: any[];
@@ -68,7 +69,8 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
 
   constructor () {
     super()
-    this.step = 1
+    this.step = 0
+    this.progress = 0
     this.selectedType = 'typeDigital'
     this.availableFrom = new Date()
     this.availableTo = null
@@ -214,62 +216,90 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
       size: 1,
       sort: ['id,desc']
     }
-    this.productService.getAll(pagination, 'payButtonJson=null=false').then((lastCreated: AxiosResponse) => {
-      this.product.payButtonJson = lastCreated && lastCreated.data.content.length > 0 ? lastCreated.data.content[0].payButtonJson : {}
-      this.isSaving = true
-      this.product.userDefinedPrice = false
-      this.product.archived = false
-      this.product.availableForAffiliates = false
-      this.product.quickCheckout = false
-      this.prepareDto().then(dto => {
-        this.product.availableFrom = moment(this.availableFrom, 'YYYY-MM-DDTHH:mm')
-        this.product.availableTo = moment(this.availableTo, 'YYYY-MM-DDTHH:mm')
-        this.productService.post(dto).then((resp: AxiosResponse) => {
-          if (resp) {
-            if (this.previewImages.length > 0) {
-              const dtoImages: any = []
-              this.resizeImages().then((images: any) => {
-                $.each(images, function (k, v) {
-                  dtoImages.push({
-                    name: v.name,
-                    images: v.images,
-                    bodyContentType: v.contentType
+    this.validateStep().then(resp=>{
+      if(resp){
+        this.productService.getAll(pagination, 'payButtonJson=null=false').then((lastCreated: AxiosResponse) => {
+          this.product.payButtonJson = lastCreated && lastCreated.data.content.length > 0 ? lastCreated.data.content[0].payButtonJson : {}
+          this.isSaving = true
+          this.product.userDefinedPrice = false
+          this.product.archived = false
+          this.product.availableForAffiliates = false
+          this.product.quickCheckout = false
+          this.prepareDto().then(dto => {
+            this.product.availableFrom = moment(this.availableFrom, 'YYYY-MM-DDTHH:mm')
+            this.product.availableTo = moment(this.availableTo, 'YYYY-MM-DDTHH:mm')
+            this.productService.post(dto, function (progress:any) {
+              self.progress = progress
+            }).then((resp: AxiosResponse) => {
+              if (resp) {
+                if (this.previewImages.length > 0) {
+                  const dtoImages: any = []
+                  this.resizeImages().then((images: any) => {
+                    $.each(images, function (k, v) {
+                      dtoImages.push({
+                        name: v.name,
+                        images: v.images,
+                        bodyContentType: v.contentType
+                      })
+                      const toSend = {
+                        id: resp.data.id,
+                        params: dtoImages
+                      }
+                      self.productService.createOnBucket(toSend).then((resp: AxiosResponse) => {
+                        if (resp) {
+                          self.isSaving = false
+                          self.setAlert('productCreated', 'success')
+                          self.goBack()
+                        } else {
+                          self.isSaving = false
+                          this.setAlert('errorUploadingImage', 'error')
+                        }
+                      })
+                    })
                   })
-                  const toSend = {
-                    id: resp.data.id,
-                    params: dtoImages
-                  }
-                  self.productService.createOnBucket(toSend).then((resp: AxiosResponse) => {
-                    if (resp) {
-                      self.isSaving = false
-                      self.setAlert('productCreated', 'success')
-                      self.goBack()
-                    } else {
-                      self.isSaving = false
-                      this.setAlert('errorUploadingImage', 'error')
-                    }
-                  })
-                })
-              })
-            } else {
-              this.isSaving = false
-              this.setAlert('productCreated', 'success')
-              this.goBack()
-            }
-          } else {
-            this.setAlert('productCreateError', 'error')
-          }
+                } else {
+                  this.isSaving = false
+                  this.setAlert('productCreated', 'success')
+                  this.goBack()
+                }
+              } else {
+                this.setAlert('productCreateError', 'error')
+              }
+            })
+          })
         })
-      })
+      }
     })
   }
 
+  public changeTab (e:any, a:any) {
+    this.step = a
+  }
+  public stepBack () {
+    if(this.step <= 0){
+      return
+    } else {
+      this.step -= 1;
+      this.$validator.reset();
+    }
+  }
+  public stepForward () {
+    if(this.step >= 3){
+      return
+    } else {
+      this.validateStep().then(resp=>{
+        if(resp){
+          this.step += 1;
+        }
+      })
+    }
+  }
   public validateStep () {
     const self = this
     return new Promise((resolve, reject) => {
-      if (this.step === 1) {
+      if (this.step === 0) {
         resolve(true)
-      } else if (this.step === 2) {
+      } else if (this.step === 1) {
         this.$validator.validateAll({
           'Start Date': this.product.productSubscription.startDate,
           period: this.product.productSubscription.period,
@@ -311,9 +341,9 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
             resolve(false)
           }
         })
-      } else if (this.step === 3) {
+      } else if (this.step === 2) {
         resolve(true)
-      } else if (this.step === 4) {
+      } else if (this.step === 3) {
         if (this.product.productType === 'COURSE') {
           if (this.selectedCourse) {
             resolve(true)
@@ -321,16 +351,24 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
             resolve(false)
           }
         } else {
-          if (this.product.productType === 'COURSE') {
-            this.$validator.validateAll({
-              url: this.product.typeDigital.url
-            }).then(valid => {
-              if (valid) {
-                resolve(true)
-              } else {
+          if (this.product.productType === 'DIGITAL') {
+            if(this.notUrl) {
+              if(!this.product.typeDigital.body || !this.product.typeDigital.bodyContentType || !this.product.typeDigital.bodyName){
                 resolve(false)
+              } else {
+                resolve(true)
               }
-            })
+            } else{
+              this.$validator.validateAll({
+                url: this.product.typeDigital.url
+              }).then(valid => {
+                if (valid) {
+                  resolve(true)
+                } else {
+                  resolve(false)
+                }
+              })
+            }
           } else {
             resolve(true)
           }
@@ -384,15 +422,6 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
     if (index === null) {
       this.product.productLanguages ? this.product.productLanguages.push(newLang) : this.product.productLanguages = [newLang]
-    }
-  }
-
-  public tabChanged (old: any, newIndex: any) {
-    if (newIndex < old) {
-      this.step = newIndex - 1
-      this.$validator.reset()
-    } else {
-      this.step = newIndex + 1
     }
   }
 
@@ -513,6 +542,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
 
   public addNewCourse () {
     this.prepareDto().then(resp => {
+      sessionStorage.setItem('tempProductStep', this.step.toString())
       sessionStorage.setItem('tempProduct', JSON.stringify(resp))
       // @ts-ignore
       this.$router.push({
@@ -534,6 +564,10 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   public loadProductFromSessionStorage () {
     const self = this
     const prod: any = sessionStorage.getItem('tempProduct')
+    const step: any = sessionStorage.getItem('tempProductStep')
+    if(step >= 0){
+      this.step = step
+    }
     const product: any = JSON.parse(prod)
     if (product) {
       this.changeProductType('COURSE')

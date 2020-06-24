@@ -19,8 +19,8 @@ export default abstract class BaseEntityService<T> extends BaseService {
     }
   }
 
-  public async post (entity: T): Promise<AxiosResponse> {
-    return super.postRequest(this.url, entity)
+  public async post (entity: T, onUploadProgress?:any): Promise<AxiosResponse> {
+    return super.postRequest(this.url, entity, onUploadProgress)
   }
 
   public async patch (entity: T): Promise<AxiosResponse> {

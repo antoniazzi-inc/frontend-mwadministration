@@ -14,6 +14,7 @@
             <th>{{$t('labels.size')}}</th>
             <th>{{$t('labels.status')}}</th>
             <th>{{$t('labels.action')}}</th>
+            <th v-if="showFeaturedFlag">{{$t('labels.featuredImage')}}</th>
           </tr>
           </thead>
           <tbody>
@@ -25,7 +26,7 @@
               </div>
             </td>
           </tr>
-          <tr v-for="(file, index) in files" :key="file.id">
+          <tr v-for="(file, index) in files" :key="file.id" :class="{'text-danger': maxFileSizeExceedError}">
             <td>{{index}}</td>
             <td>
               <img v-if="file.thumb" :src="file.thumb" width="40" height="auto" />
@@ -40,9 +41,9 @@
               </div>
             </td>
             <td>{{file.size | formatSize}}</td>
-            <td v-if="file.error">{{file.error}}</td>
-            <td v-else-if="file.success">{{$t('labels.success')}}</td>
+            <td v-if="file.success">{{$t('labels.success')}}</td>
             <td v-else-if="file.active">{{$t('labels.active')}}</td>
+            <td v-else-if="maxFileSizeExceedError">{{$t('labels.maxFileSizeExceedError')}}</td>
             <td v-else>{{$t('labels.success')}}</td>
             <td>
               <div class="btn-group">
@@ -61,6 +62,12 @@
                   <a class="dropdown-item" href="#" @click.prevent="$refs.upload.remove(file)">{{$t('buttons.remove')}}</a>
                 </div>
               </div>
+            </td>
+            <td v-if="showFeaturedFlag">
+              <toggle-switch :on-text="$t('labels.yes')"
+                             :off-text="$t('labels.no')"
+                             @clicked="changeFeaturedImage({event: $event, index: index})"
+                             :value="file.isFeatured"></toggle-switch>
             </td>
           </tr>
           </tbody>

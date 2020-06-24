@@ -11,6 +11,7 @@ export default new Vuex.Store({
     authenticated: false,
     currentLanguage: 'en',
     currency: '€',
+    maxUploadSize: 50000, //KB
     lookups: {
       categories: [],
       groups: [],

@@ -1,6 +1,7 @@
 import Cropper from 'cropperjs'
 import ImageCompressor from '@xkeshi/image-compressor'
 import FileUpload from 'vue-upload-component'
+import ToggleSwitch from '../toggleSwitch/toggleSwitch.vue'
 
 export default {
   props: {
@@ -16,16 +17,24 @@ export default {
       type: Boolean,
       default: false
     },
+    showFeaturedFlag: {
+      type: Boolean,
+      default: false
+    },
     uploadAuto: {
       type: Boolean,
       default: false
     },
     allFiles: {
-      type: Array
+      type: Array,
+      default: function () {
+        return []
+      }
     }
   },
   components: {
-    FileUpload
+    FileUpload,
+    ToggleSwitch
   },
   data () {
     return {
@@ -34,11 +43,13 @@ export default {
       size: 1024 * 1024 * 10,
       directory: false,
       directUpload: false,
+      isFeatured: false,
       drop: true,
       dropDirectory: true,
       addIndex: false,
       thread: 3,
       name: 'file',
+      maxFileSizeExceedError: false,
       postAction: '/upload/post',
       putAction: '/upload/put',
       headers: {
@@ -69,14 +80,22 @@ export default {
         this.addData.content = ''
       }
     },
-    'allFiles' (allFiles) {
-      this.files = allFiles
+    allFiles: {
+      handler: function (allFiles) {
+        this.files = allFiles
+      },
+      deep: true,
+      immediate: true
     }
   },
   mounted () {
     $(this.$refs.editImageModal).on('shown.bs.modal', this.editImageShow)
   },
   methods: {
+    changeFeaturedImage (obj) {
+      this.isFeatured = obj.event
+      this.$emit('changeFeaturedImage', { isFeatured: obj.event, index: obj.index })
+    },
     editImageShow () {
       this.$nextTick(function () {
         if (!this.$refs.editImage) {
@@ -140,8 +159,15 @@ export default {
     },
     // add, update, remove File Event
     inputFile (newFile, oldFile) {
-      this.$emit('onUpload', newFile);
+      this.$emit('onUpload', newFile)
       if (newFile && oldFile) {
+        // max upload size
+        if (newFile && newFile.size >= 0 && newFile.size / 1000 > this.$store.state.maxUploadSize) {
+          this.maxFileSizeExceedError = true
+          return
+        } else {
+          this.maxFileSizeExceedError = false
+        }
         // update
         if (newFile.active && !oldFile.active) {
           // beforeSend
@@ -161,9 +187,18 @@ export default {
         }
       }
       if (!newFile && oldFile) {
+        this.maxFileSizeExceedError = false
         // remove
         if (oldFile.success && oldFile.response.id) {
           this.$emit('onRemove', oldFile)
+        }
+      }
+      if (newFile && !oldFile) {
+        if (newFile && newFile.size >= 0 && newFile.size / 1000 > this.$store.state.maxUploadSize) {
+          this.maxFileSizeExceedError = true
+          return
+        } else {
+          this.maxFileSizeExceedError = false
         }
       }
       // Automatically activate upload

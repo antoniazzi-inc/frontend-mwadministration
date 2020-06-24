@@ -10,7 +10,7 @@
                             <toggle-switch
                                 :on-text="$t('labels.yes')"
                                 :off-text="$t('labels.no')"
-                                :value.sync="forceDirectPayment"/>
+                                :value.sync="productCopy.forceDirectPayment"/>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="form-control-label">{{$t('labels.availablePaymentMethods')}}</label>

@@ -353,7 +353,7 @@ export default class CommonHelpers extends Vue {
     const reader = new FileReader()
     reader.onload = (function (theFile) {
       return function (e: any) {
-        resolve(e.currentTarget.result.replace(/^data:(image|application|video)\/(png|jpeg|jpg|pdf|doc|docx|avi|mp4);base64,/, ''))
+        resolve(e.currentTarget.result.replace(/^data:(image|application|video)\/(png|jpeg|json|jpg|pdf|doc|docx|avi|mp4);base64,/, ''))
       }
     })(file)
     reader.readAsDataURL(file)

@@ -29,6 +29,9 @@ export default class ToggleSwitch extends Vue {
       this.selectedValue = false
     }
 
+    public emitClick (e: any) {
+      this.$emit('clicked', e.currentTarget.checked)
+    }
     public mounted () {
       if (this.$props.value) {
         // @ts-ignore
