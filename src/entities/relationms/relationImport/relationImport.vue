@@ -174,6 +174,11 @@
                         </div>
                       </tab-content>
                       <tab-content :title="$t('labels.startImport')" :before-change="validateStep" icon="fas fa-file-import">
+                        <div class="loader-import text-center justify-content-center align-items-center align-content-center" v-if="isProcessing">
+                          <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                        </div>
                         <p v-html="$t('labels.importInfo')"></p>
                         <div class="row" style="margin-top:2em;">
                           <div class="col-md-5 pre-scrollable">

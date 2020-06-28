@@ -28,7 +28,11 @@ export default class RelationService extends BaseEntityService<IRelationEntity> 
     return this.postRequest(`${this.url}/import`, entity)
   }
 
-  public async search (entity: any) {
-    return this.postRequest(`${this.url}/search?size=65534&page=1`, entity)
+  public async search (entity: any, onDownloadProgress?:any ) {
+    return this.postRequest(`${this.url}/searchNoPage`, entity, function (progress:any) {
+
+      }, function (progress:any) {
+      if (onDownloadProgress) onDownloadProgress(progress)
+    })
   }
 }

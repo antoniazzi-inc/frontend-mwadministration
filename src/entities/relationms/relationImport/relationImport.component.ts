@@ -145,24 +145,23 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
     const relationsToCreate: any = []
     self.datafordb.forEach(function (rel) {
       const row: any = []
-      const relationAddress: any = new RelationAddress(undefined, undefined, undefined, '', '', '',
+      let relationAddress: any = new RelationAddress(undefined, undefined, undefined, '', '', '',
         150, undefined, '', '', '', AddressType.OTHER,
         true, true, true, undefined, undefined, undefined, undefined)
-      const relationPhone: any = []
-      const relationCustomFields: any = []
-      const relationCompany = new Company(undefined, undefined, undefined, undefined,
+      let relationPhone: any = []
+      let relationCustomFields: any = []
+      let relationCompany = new Company(undefined, undefined, undefined, undefined,
         undefined, '', undefined, undefined, '', undefined,
         undefined, undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, { id: 1, version: 0 })
-      const relProfile: any = new RelationProfile(undefined, undefined, '', '', '-', '', '',
+      let relProfile: any = new RelationProfile(undefined, undefined, '', '', '-', '', '',
         '', '', 0, '', '', false, undefined, undefined, undefined, undefined, undefined, undefined)
-      const newRel: any = new RelationEntity(undefined, undefined, undefined, undefined, undefined,
+      let newRel: any = new RelationEntity(undefined, undefined, undefined, undefined, undefined,
         undefined, 'default_' + Math.random(), Math.random().toString(), '', true, self.$store.state.currentLanguage,
         false, undefined, undefined, undefined, undefined, relProfile, undefined, undefined,
         undefined, undefined, undefined, undefined, undefined, undefined,
         undefined, [], [], undefined)
-
       rel.forEach(function (fld: any) {
         let fvalue = fld.value
         if (fld.fieldName === 'categoryId') {
@@ -183,11 +182,6 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
           relationCompany.alias = fvalue
         } else if (fld.fieldName.toLowerCase() === 'customfields') {
           relationCustomFields.push({ customField: { id: fvalue.value.id, version: fvalue.value.version }, value: fvalue.cellVal })
-        } else if (fld.fieldName.toLowerCase() === 'phone2ork') {
-          relationPhone.push({
-            number: fvalue,
-            phoneType: PhoneType.WORK
-          })
         } else if (fld.fieldName.toLowerCase() === 'phonehome') {
           relationPhone.push({
             number: fvalue,
@@ -204,13 +198,11 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
             phoneType: PhoneType.WORK
           })
         }
-        row.push({ label: fld.fieldName, value: fvalue })
         if (fld.fieldName === 'email') {
-          if (self.existingEmailsList.find(x => x === fld.value) === undefined) row.push({ label: 'exists', value: 'false' })
-          else row.push({ label: 'exists', value: 'true' })
+          row.push({ label: fld.fieldName, value: fvalue })
         }
       })
-      payload.relations.push(row)
+      if(row && row.length) payload.relations.push(row)
       row.forEach((item: any) => {
         if (newRel[item.label] !== undefined) {
           newRel[item.label] = item.value
@@ -250,7 +242,33 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       })
       relationsToCreate.push(newRel)
     })
-    this.relationService.import(relationsToCreate).then((resp: AxiosResponse) => {
+    let dtoToSend:any = []
+      relationsToCreate.forEach((relation:any)=>{
+      let isContaining:any = null
+      let isInvalid:any = false
+      self.existingEmailsList.forEach(usr=>{
+          if(usr.email === relation.email) {
+            isContaining = usr
+          }
+      })
+      self.invalidEmails.forEach(email=>{
+          if(email === relation.email) {
+            isInvalid = true
+          }
+      })
+        debugger
+      if (isContaining === null && !isInvalid){
+        dtoToSend.push(relation)
+      } else {
+        if(self.overwrite){
+          let newRelation = relation
+          newRelation.id = isContaining.id
+          if(!isInvalid) dtoToSend.push(relation)
+        }
+      }
+    })
+
+    this.relationService.import(dtoToSend).then((resp: AxiosResponse) => {
       if (resp) {
         this.setAlert('relationsCreated', 'success')
         this.goBack()
@@ -726,13 +744,18 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       })
       const query = 'email=in=(' + queryP + ')'
       this.isProcessing = true
-      this.relationService.search(query.trim()).then((resp: AxiosResponse) => {
+      this.relationService.search(query.trim(), function (process:any) {
+        //TODO wait from server content-length response header in order to calculate correctly
+            self.isProcessing = false
+          if(process === 100){
+            //self.isProcessing = false
+          }
+      }).then((resp: AxiosResponse) => {
         if (resp) {
-          self.isProcessing = false
-          if (resp.data.content.length > 0) {
-            resp.data.content.forEach((rel: any) => {
-              self.existingEmailsList.push(rel.email)
-              self.numberOfExisingEmails = resp.data.totalElements
+          if (resp.data.length > 0) {
+            self.numberOfExisingEmails = resp.data.length
+            resp.data.forEach((rel: any) => {
+              self.existingEmailsList.push({email: rel.email, id: rel.id})
             })
           }
         }

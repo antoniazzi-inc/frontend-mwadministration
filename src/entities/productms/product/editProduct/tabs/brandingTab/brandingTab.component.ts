@@ -123,6 +123,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
         this.loadProperImage(media).then(resp=>{
           let blobEl = this.b64toBlob(resp, media.bodyContentType)
           currMedia.push({
+            "mediaId": media.id,
             "fileObject": true,
             "size": 38252,
             "name": media.name,
@@ -204,9 +205,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     const self = this;
     self.imagesToResize = [];
     $.each(images, function (k, v) {
-      self.convertFileToBase64(v.file).then(resp => {
-        self.imagesToResize.push(new BaseImage(resp, v.type, v.name))
-      })
+      self.imagesToResize.push(new BaseImage(v.blob, v.type, v.name))
     })
   }
 
@@ -239,10 +238,11 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     this.resizeImages().then(resp => {
       $.each(resp, function (k, v: any) {
         // @ts-ignore
-        if (v.id && v.id > 0) {
+        if (v.id) {
           // @ts-ignore
           dtoEdit.push({id: v.id})
         } else {
+          debugger
           dtoCreate.push({
             name: v.name,
             images: v.images,
@@ -255,7 +255,11 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
         params: dtoCreate
       };
       if (dtoEdit.length > 0) {
-        $.each(dtoEdit, function (k, v) {
+        //this.setAlert('productImagesUpdated', 'success');
+        this.isSaving = false;
+        //this.closeDialog();
+        //this.updateProduct()
+        /*$.each(dtoEdit, function (k, v) {
           if (self.productCopy.media) {
             self.productCopy.media.push(v)
           } else {
@@ -267,7 +271,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
           this.isSaving = false;
           this.closeDialog();
           this.updateProduct()
-        })
+        })*/
       }
       if (dtoCreate.length > 0) {
         this.productService.createOnBucket(toSend).then((resp: AxiosResponse) => {
@@ -348,7 +352,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   }
 
   public editImage(image: any, index: any) {
-    const self = this;
+    /*const self = this;
     this.loadProperImage(image).then((resp: string) => {
 
       Vue.nextTick(function () {
@@ -362,7 +366,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
           //@ts-ignore
           $(self.$refs.editImageUploaded).modal('show')
       })
-    })
+    })*/
   }
 
   public rotateLeft() {
@@ -440,15 +444,30 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
 
   public resizeImages() {
     const self = this;
-    return new Promise(resolve => {
-      $.each(self.imagesToResize, function (k, v) {
-        if (v.id === undefined) {
-          self.resizedImages.push(v.resizeAll())
+    return new Promise(async resolve => {
+      let index:any = 0
+      let resizedImgs:any = []
+      await $.each(self.allMediaFiles, async function (k, v) {
+        if (v.mediaId === undefined) {
+           new BaseImage(v.blob, v.file.type, v.file.name, undefined, function (image:any) {
+             debugger
+             let dtoImg =  image.resizeAll()
+             resizedImgs.push(dtoImg)
+             index = k
+             if(k === self.allMediaFiles.length - 1) {
+               self.resizedImages = resizedImgs
+               resolve(resizedImgs)
+             }
+           })
         } else {
-          self.resizedImages.push({id: v.id})
+          index = k
+          resizedImgs.push({id: v.mediaId})
         }
       });
-      resolve(self.resizedImages)
+      if(index === self.allMediaFiles.length - 1)  {
+        self.resizedImages = resizedImgs
+        resolve(resizedImgs)
+      }
     })
   }
 

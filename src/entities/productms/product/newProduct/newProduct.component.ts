@@ -397,9 +397,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
 
   public imageUploadError (img: any) {}
   public imageLoaded (img: any) {
-    this.convertFileToBase64(img.file).then(resp => {
-      this.previewImages.push(new BaseImage(resp, img.file.type, img.file.name))
-    })
+    this.previewImages.push(new BaseImage(img.blob, img.file.type, img.file.name))
   }
 
   public onImageRemove (img: any) {

@@ -15,7 +15,7 @@ export default abstract class BaseService {
     })
   }
 
-  public async postRequest (url: string, obj: any, uploadProgress?: any): Promise<AxiosResponse> {
+  public async postRequest (url: string, obj: any, uploadProgress?: any, downloadProgress?: any): Promise<AxiosResponse> {
     return new Promise<AxiosResponse>(resolve => {
       axios.post(url, obj, {
         onUploadProgress: function(progressEvent) {
@@ -23,6 +23,12 @@ export default abstract class BaseService {
           console.log(percentCompleted + '%')
           if(uploadProgress) {
             uploadProgress(percentCompleted)
+          }
+        },
+        onDownloadProgress: function(progressEvent) {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          if(downloadProgress) {
+            downloadProgress(percentCompleted)
           }
         }
       }).then(resp => {

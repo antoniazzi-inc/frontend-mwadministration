@@ -11,9 +11,10 @@ export default class BaseImage extends Vue {
     public static size1 = 360;
     public static size0 = 240;
     public static sizeT = 150;
+    public onLoad:any = undefined;
     private _width: number;
     private _height: number;
-    private _base64: string;
+    private _blob: string;
     private _orientation: string;
     private _aspectRatio: any;
     private _contentType: string;
@@ -21,16 +22,17 @@ export default class BaseImage extends Vue {
     private _image: any;
     private _id: any;
 
-    constructor (base64: any, contentType: any, name: any, id?: any) {
+    constructor (blob: any, contentType: any, name: any, id?: any, loaded?:any) {
       super()
-      this.setDimensions(base64, contentType)
-      this._base64 = base64
+      this.setDimensions(blob, contentType)
+      this._blob = blob
       this._contentType = contentType
       this._name = name
       this._id = id || undefined
       this._width = 0
       this._height = 0
-      this._orientation = ''
+      this.onLoad = loaded
+      this._orientation = 'landscape'
       this._aspectRatio = 0
     }
 
@@ -58,12 +60,12 @@ export default class BaseImage extends Vue {
       this._height = value
     }
 
-    get base64 (): string {
-      return this._base64
+    get blob (): string {
+      return this._blob
     }
 
-    set base64 (value: string) {
-      this._base64 = value
+    set blob (value: string) {
+      this._blob = value
     }
 
     get orientation (): string {
@@ -130,30 +132,27 @@ export default class BaseImage extends Vue {
       }
     }
 
-    public setDimensions (base64: any, contentType: any) {
+    public setDimensions (blob: any, contentType: any) {
       const self = this
-      const promise = new Promise(resolve => {
         const dim = {
           width: 0,
           height: 0
         }
-        const selectedImage = 'data:' + contentType + ';base64,' + base64
+        const selectedImage = blob
         this.image = new Image()
         this.image.src = selectedImage
         this.image.onload = function () {
+
+          // @ts-ignore
+          self._width = self.image.naturalWidth
+          // @ts-ignore
+          self._height = self.image.naturalHeight
+          self._orientation = BaseImage.checkOrientation(self._width, self._height)
+          self._aspectRatio = BaseImage.checkAspectRation(self._width, self._height, self._orientation)
           dim.width = self.image.naturalWidth
           dim.height = self.image.naturalHeight
-          resolve(dim)
+          if(self.onLoad) self.onLoad(self)
         }
-      })
-      promise.then(resp => {
-        // @ts-ignore
-        this._width = resp.width
-        // @ts-ignore
-        this._height = resp.height
-        this._orientation = BaseImage.checkOrientation(this._width, this._height)
-        this._aspectRatio = BaseImage.checkAspectRation(this._width, this._height, this._orientation)
-      })
     }
 
     public checkSide () {
@@ -191,6 +190,7 @@ export default class BaseImage extends Vue {
       $.each(sides, function (k, v) {
         resizedImages.push(self.resize(v))
       })
+      debugger
       return { name: this.name.replace(/ /g, '_'), images: resizedImages, contentType: this.contentType }
     }
 
