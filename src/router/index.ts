@@ -38,6 +38,9 @@ import NewRelationFreeFieldsComponent from '@/entities/relationms/relationFreeFi
 import ProductComponent from '@/entities/productms/product/product.vue'
 import NewProductComponent from '@/entities/productms/product/newProduct/newProduct.vue'
 import EditProductComponent from '@/entities/productms/product/editProduct/editProduct.vue'
+import PromotionComponent from "@/entities/productms/promotion/promotion.vue";
+import NewPromotionComponent from "@/entities/productms/promotion/newPromotion/newPromotion.vue";
+import EditPromotionComponent from "@/entities/productms/promotion/editPromotion/editPromotion.vue";
 
 Vue.use(VueRouter)
 
@@ -196,9 +199,18 @@ const routes = [
     name: 'ProductsDashboard',
     component: HomeDashboard
   }, {
-    path: '/products/promotions',
+    path: '/promotions',
     name: 'Promotions',
-    component: HomeDashboard
+    component: PromotionComponent
+  },{
+    path: '/promotions/new',
+    name: 'newPromotion',
+    component: NewPromotionComponent
+  }, {
+    path: '/promotions/edit/:id',
+    name: 'EditPromotion',
+    component: EditPromotionComponent,
+    params: { id: null }
   }, {
     path: '/products-shopping-cart-settings',
     name: 'ShoppingCartSettings',

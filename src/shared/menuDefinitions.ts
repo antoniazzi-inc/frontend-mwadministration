@@ -131,7 +131,7 @@ export const MenuDefinitions = [
     {
       name: 'labels.promotions',
       icon: '',
-      path: '/products/promotions',
+      path: '/promotions',
       authorities: ['*']
     },
     {

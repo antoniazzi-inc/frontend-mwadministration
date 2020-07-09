@@ -34,6 +34,7 @@ export interface IPromotion extends IBaseEntity {
     availableTo?: Moment;
     recurrent?: boolean;
     typeTimeBased?: ITypeTimeBased;
+    promotionType?: promotionType;
     typeCouponBased?: ITypeCouponBased;
     typePersonalCouponBased?: ITypePersonalCouponBased;
     typeAffiliateBased?: ITypeAffiliateBased;
@@ -71,5 +72,6 @@ constructor(
     public products?: IProduct[],
     public attributeValues?: IAttributeValue[],
   ){
+    this.recurrent = recurrent ? recurrent : false
   }
 };

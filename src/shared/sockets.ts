@@ -60,6 +60,7 @@ export default class Sockets extends Vue {
           const resp = JSON.parse(tick.body)
           if (resp && resp.type && resp.type.toLowerCase() === 'relation' && resp.action && resp.action.toLowerCase() === 'create') {
             EventBus.$emit('refreshRelations', resp.content)
+            localStorage.removeItem('isImporting')
           } else {
             this.updateLookups(resp)
           }

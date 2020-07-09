@@ -391,6 +391,20 @@ export default class CommonHelpers extends Vue {
     // @ts-ignore
     this.$vueOnToast.pop(type, '', this.$t('toastMessages.' + message))
   }
+  /*
+   * Name: generateRandom
+   * arg: /
+   * description: Generate number text string
+   * Author: Nick Dam
+   */
+  public generateRandom() {
+    let text = ''
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_'
+    for (let i = 0; i < 6; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+    return text
+  }
 
   /*
    * Name: preselectCountry
@@ -415,78 +429,121 @@ export default class CommonHelpers extends Vue {
    * @return list of fixed relation fields
    */
   public relationFields () {
+    const freeFields: any = []
+    this.$store.state.lookups.freeFields.forEach((freeField: any) => {
+      freeFields.push({
+        label: this.getMultiLangName(freeField.customFieldLanguages).name,
+        value: freeField
+      })
+    })
     const result = [
       {
-        value: 'title',
-        label: this.$t('labels.title')
+        groupLabel: this.$t('labels.doNotAssign'),
+        groupValues: [
+          {
+            value: 'dnassign',
+            label: this.$t('labels.doNotAssign')
+          }]
       },
       {
-        value: 'firstName',
-        label: this.$t('labels.firstName')
-      }, {
-        value: 'middleName',
-        label: this.$t('labels.middleName')
+        groupLabel: this.$t('labels.relationFields'),
+        groupValues: [
+          {
+            value: 'title',
+            label: this.$t('labels.title'),
+            model: 'relationProfile'
+          },
+          {
+            value: 'firstName',
+            label: this.$t('labels.firstName'),
+            model: 'relationProfile'
+          }, {
+            value: 'middleName',
+            label: this.$t('labels.middleName'),
+            model: 'relationProfile'
+          },
+          {
+            value: 'lastName',
+            label: this.$t('labels.lastName'),
+            model: 'relationProfile'
+          },
+          {
+            value: 'email',
+            label: this.$t('labels.email'),
+            model: 'relation'
+          }, {
+            value: 'birthDate',
+            label: this.$t('labels.birthDate'),
+            model: 'relationProfile'
+          }, {
+            value: 'phoneHome',
+            label: this.$t('labels.phoneHome'),
+            model: 'phones'
+          }, {
+            value: 'phoneWork',
+            label: this.$t('labels.phoneWork'),
+            model: 'phones'
+          }, {
+            value: 'mobile',
+            label: this.$t('labels.mobile'),
+            model: 'phones'
+          }, {
+            value: 'city',
+            label: this.$t('labels.city'),
+            model: 'addresses'
+          },
+          {
+            value: 'postalCode',
+            label: this.$t('labels.postalCode'),
+            model: 'addresses'
+          },
+          {
+            value: 'street',
+            label: this.$t('labels.street'),
+            model: 'addresses'
+          }, {
+            value: 'houseNumber',
+            label: this.$t('labels.houseNumber'),
+            model: 'addresses'
+          }, {
+            value: 'countryId',
+            label: this.$t('labels.country'),
+            model: 'addresses'
+          }, {
+            value: 'description',
+            label: this.$t('labels.additionalAddressInfo'),
+            model: 'addresses'
+          },
+          {
+            value: 'gender',
+            label: this.$t('labels.gender'),
+            model: 'relationProfile'
+          }, {
+            value: 'companyName',
+            label: this.$t('labels.company'),
+            model: 'company'
+          },
+          {
+            value: 'website',
+            label: this.$t('labels.website'),
+            model: 'relationProfile'
+          }, {
+            value: 'description',
+            label: this.$t('labels.description'),
+            model: 'relationProfile'
+          }, {
+            value: 'categoryId',
+            label: this.$t('labels.category'),
+            model: 'relation'
+          }
+        ]
       },
       {
-        value: 'lastName',
-        label: this.$t('labels.lastName')
-      },
-      {
-        value: 'email',
-        label: this.$t('labels.email')
-      }, {
-        value: 'birthDate',
-        label: this.$t('labels.birthDate')
-      }, {
-        value: 'phoneHome',
-        label: this.$t('labels.phoneHome')
-      }, {
-        value: 'phoneWork',
-        label: this.$t('labels.phoneWork')
-      }, {
-        value: 'mobile',
-        label: this.$t('labels.mobile')
-      }, {
-        value: 'city',
-        label: this.$t('labels.city')
-      },
-      {
-        value: 'postalCode',
-        label: this.$t('labels.postalCode')
-      },
-      {
-        value: 'street',
-        label: this.$t('labels.street')
-      }, {
-        value: 'houseNumber',
-        label: this.$t('labels.houseNumber')
-      }, {
-        value: 'country',
-        label: this.$t('labels.country')
-      }, {
-        value: 'address_extra',
-        label: this.$t('labels.additionalAddressInfo')
-      },
-      {
-        value: 'gender',
-        label: this.$t('labels.gender')
-      }, {
-        value: 'companyName',
-        label: this.$t('labels.company')
-      },
-      {
-        value: 'website',
-        label: this.$t('labels.website')
-      }, {
-        value: 'description',
-        label: this.$t('labels.description')
-      }, {
-        value: 'categoryId',
-        label: this.$t('labels.category')
-      }, {
-        value: 'dnassign',
-        label: this.$t('labels.doNotAssign')
-      }]
+        groupLabel: this.$t('labels.freeFields'),
+        groupValues: freeFields,
+        model: 'customFields'
+      }
+      ]
     return result
   }
 

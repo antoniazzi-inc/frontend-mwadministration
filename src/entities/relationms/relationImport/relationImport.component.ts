@@ -1,279 +1,256 @@
-import { Component, Vue } from 'vue-property-decorator'
-import XLSX from 'xlsx'
-import Papa from 'papaparse'
+import {Component, Vue} from 'vue-property-decorator'
 import vue2Dropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
-import { mixins } from 'vue-class-component'
+import {mixins} from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import gravatarImg from 'vue-gravatar'
 import RelationService from '@/shared/services/relationService'
-import { AxiosResponse } from 'axios'
-import { RelationEntity } from '@/shared/models/relationModel'
-import { RelationProfile } from '@/shared/models/relation-profile.model'
-import { AddressType, RelationAddress } from '@/shared/models/relation-address.model'
-import { Company } from '@/shared/models/company.model'
-import { PhoneType } from '@/shared/models/company-phone.model'
+import {AxiosResponse} from 'axios'
+import {RelationEntity} from '@/shared/models/relationModel'
+import {RelationProfile} from '@/shared/models/relation-profile.model'
+import {RelationAddress} from '@/shared/models/relation-address.model'
+import {Company} from '@/shared/models/company.model'
+import {PhoneType} from '@/shared/models/company-phone.model'
+import Step1Component from "@/entities/relationms/relationImport/steps/step1/step1.vue";
+import Step2Component from './steps/step2/step2.vue'
+import Step3Component from "@/entities/relationms/relationImport/steps/step3/step3.vue";
+import {CustomField} from "@/shared/models/custom-field.model";
 
 @Component({
   components: {
     'v-gravatar': gravatarImg,
-    vueDropzone: vue2Dropzone
+    vueDropzone: vue2Dropzone,
+    step1: Step1Component,
+    step2: Step2Component,
+    step3: Step3Component,
   }
 })
 export default class RelationImportComponent extends mixins(CommonHelpers, Vue) {
   public step: number;
-  public relationsToImport: number;
-  public numRowsInFile: number;
-  public existingGroup: number;
-  public relationService: any;
   public duplicateEmailsFound: number;
   public numberOfExisingEmails: number;
-  public delimiterFields: boolean;
-  public isUploading: boolean;
-  public insertEmptyValues: boolean;
-  public hasHeaderField: boolean;
-  public csvDelimiter: string;
-  public newGroup: string;
-  public fileContents: string;
-  public emailFieldIndex: any;
-  public csvEscChar: string;
-  public delimiter: string;
-  public hasHeader: boolean;
-  public btnNextDisabled: boolean;
-  public isProcessing: boolean;
-  public overwrite: boolean;
-  public dropzoneOptions: any;
+  public emailIndex: any;
+  public relationService: any;
   public file: any;
-  public vcfFile: any;
-  public fileType: any;
-  public excelFile: any;
-  public rows: any[];
-  public invalidEmails: any[];
-  public allFreeFileds: any[];
-  public mappings: any[];
-  public dbfields: any[];
-  public datafordb: any[];
-  public exampleCards: any[];
-  public groups: any[];
-  public freeFields: any[];
-  public duplicateEmailsList: any[];
   public existingEmailsList: any[];
+  public uniqueRows: any[];
+  public rows: any[];
+  public exampleCards: any[];
+  public mappings: any[];
+  public importFields: any[];
+  public existingRelations: any[]
+  public invalidEmails: any[]
+  public headerRow: any[];
+  public selectedGroup: any;
+  public duplicateEmailsList: any[];
+  public isSaving: boolean;
+  public hasEmailField: boolean | null;
+  public hasHeader: boolean;
+  public overwrite: boolean;
+  public overwriteData: boolean;
+  public isImporting: string|null;
+  public delimiter: string;
+  public escChar: string;
+  public newGroup: string;
 
-  constructor () {
+
+  constructor() {
     super()
     this.relationService = RelationService.getInstance()
-    this.step = 1
-    this.file = Object
-    this.fileType = ''
-    this.mappings = []
-    this.rows = []
-    this.allFreeFileds = []
-    this.existingGroup = 0
-    this.newGroup = ''
-    this.delimiter = ''
-    this.overwrite = false
-    this.isUploading = false
-    this.insertEmptyValues = false
-    this.fileContents = ''
-    this.delimiterFields = false
-    this.isProcessing = false
-    this.hasHeaderField = false
-    this.csvDelimiter = ','
-    this.csvEscChar = '"'
-    this.hasHeader = true
-    this.excelFile = {}
-    this.vcfFile = false
-    this.dbfields = this.relationFields()
-    this.freeFields = this.$store.state.lookups.freeFields
-    this.groups = this.$store.state.lookups.groups
-    this.btnNextDisabled = true
-    this.datafordb = []
-    this.emailFieldIndex = ''
+    this.step = 0
     this.duplicateEmailsFound = 0
     this.numberOfExisingEmails = 0
+    this.exampleCards = []
     this.duplicateEmailsList = []
+    this.overwrite = false
+    this.overwriteData = false
+    this.emailIndex = null
+    this.hasEmailField = null
+    this.selectedGroup = null
+    this.newGroup = ''
+    this.file = null
+    this.isSaving = false
+    this.hasHeader = true
+    this.delimiter = ''
+    this.newGroup = ''
+    this.escChar = ''
+    this.existingRelations = []
     this.existingEmailsList = []
     this.invalidEmails = []
-    this.relationsToImport = 0
-    this.exampleCards = []
-    this.numRowsInFile = 0
-    this.dropzoneOptions = {
-      url: '#',
-      autoProcessQueue: false,
-      thumbnailWidth: 150,
-      maxFilesize: 200,
-      uploadMultiple: false,
-      acceptedFiles: ['.csv', '.xls', '.xlsx', '.xlsb', '.xlsm', '.vcf'].join(','),
-      addRemoveLinks: true,
-      headers: { 'My-Awesome-Header': 'header value' }
-    }
+    this.uniqueRows = []
+    this.rows = []
+    this.mappings = []
+    this.importFields = []
+    this.headerRow = []
+    this.isImporting = localStorage.getItem('isImporting')
   }
 
-  public mounted () {
-    this.dbfields = this.relationFields()
-    this.groups = this.$store.state.lookups.groups
-    const freeFields: any = []
-    this.$store.state.lookups.freeFields.forEach((freeField: any) => {
-      freeFields.push({
-        label: this.getMultiLangName(freeField.customFieldLanguages).name,
-        value: freeField
-      })
-    })
-    this.allFreeFileds = freeFields
+  public mounted() {
+    this.importFields = this.relationFields()
   }
 
-  public onComplete () {
-    const dto: any = []
-    const self = this
-    self.step = 4
-    const payload: any = {}
-    if (self.existingGroup !== 0) {
-      payload.existingGroup = self.existingGroup
-      payload.newGroup = ''
-    } else if (self.newGroup !== '') {
-      payload.existingGroup = 0
-      payload.newGroup = self.newGroup
-    }
-    payload.overwriteData = self.overwrite
-    payload.defaultCountryId = 150 // TODO now set to NLD, but get this from this admin country
-    /* payload.defaultLocale = AdminApp.instance().store.session.user.locale;
-    payload.defaultTimezone = Commons.timezoneByName(AdminApp.instance().store.session.user.timezone).id; */
-    payload.overwriteExistingFieldsWithEmptyValues = self.insertEmptyValues
+  /*Call when user is populating the fields*/
+  public updateMappings(mappings: any) {
+    this.mappings = mappings
+  }
 
-    // build list for server and add 'exists' flag to each record, so at serverside we know what to do
-    payload.relations = []
-    const relationsToCreate: any = []
-    self.datafordb.forEach(function (rel) {
-      const row: any = []
-      let relationAddress: any = new RelationAddress(undefined, undefined, undefined, '', '', '',
-        150, undefined, '', '', '', AddressType.OTHER,
-        true, true, true, undefined, undefined, undefined, undefined)
-      let relationPhone: any = []
-      let relationCustomFields: any = []
-      let relationCompany = new Company(undefined, undefined, undefined, undefined,
-        undefined, '', undefined, undefined, '', undefined,
-        undefined, undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, { id: 1, version: 0 })
-      let relProfile: any = new RelationProfile(undefined, undefined, '', '', '-', '', '',
-        '', '', 0, '', '', false, undefined, undefined, undefined, undefined, undefined, undefined)
-      let newRel: any = new RelationEntity(undefined, undefined, undefined, undefined, undefined,
-        undefined, 'default_' + Math.random(), Math.random().toString(), '', true, self.$store.state.currentLanguage,
-        false, undefined, undefined, undefined, undefined, relProfile, undefined, undefined,
+  /*Call when overwrite toggle button is changed*/
+  public changeOverwrite(overwrite:any) {
+    this.overwrite = overwrite
+  }
+  /*Call when overwrite Data toggle button is changed*/
+  public changeInsertEmptyValues(overwrite:any) {
+    this.overwriteData = overwrite
+  }
+
+  /*Call when import is ready*/
+  public onComplete() {
+    let self = this
+    this.isSaving = true
+    let temp: any = []
+    for (let i = 0; i < this.uniqueRows.length; i++) {
+      let relationProfile: any = new RelationProfile()
+      let relationPhones: any = []
+      let relationAddresses: any = new RelationAddress()
+      let relationCompany: any = new Company()
+      let relationCustomField: any = new CustomField()
+      let relation: any = new RelationEntity(undefined, undefined, undefined, undefined, undefined,
+        undefined, 'default_' + Math.random(), Math.random().toString(), undefined, true, this.$store.state.currentLanguage,
+        false, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, undefined, undefined, undefined,
-        undefined, [], [], undefined)
-      rel.forEach(function (fld: any) {
-        let fvalue = fld.value
-        if (fld.fieldName === 'categoryId') {
-          // try to convert the provided category name into an id
-          let cat: any = null
-          self.$store.state.lookups.categories.forEach((cate: any) => {
-            if (cate.id === fvalue) {
-              cat = cate
-            }
-          })
-          if (cat) fvalue = cat.value
-        } else if (fld.fieldName.toLowerCase() === 'country') {
-          // try to convert the provided country name into an id
-          fvalue = self.getCountryByName(fvalue)
-          if (!fvalue) fvalue = self.getCountryByIso(fvalue)
-        } else if (fld.fieldName.toLowerCase() === 'companyname') {
-          relationCompany.name = fvalue
-          relationCompany.alias = fvalue
-        } else if (fld.fieldName.toLowerCase() === 'customfields') {
-          relationCustomFields.push({ customField: { id: fvalue.value.id, version: fvalue.value.version }, value: fvalue.cellVal })
-        } else if (fld.fieldName.toLowerCase() === 'phonehome') {
-          relationPhone.push({
-            number: fvalue,
-            phoneType: PhoneType.HOME
-          })
-        } else if (fld.fieldName.toLowerCase() === 'mobile') {
-          relationPhone.push({
-            number: fvalue,
-            phoneType: PhoneType.MOBILE
-          })
-        } else if (fld.fieldName.toLowerCase() === 'phonework') {
-          relationPhone.push({
-            number: fvalue,
-            phoneType: PhoneType.WORK
-          })
+        undefined, undefined, undefined, undefined)
+      let hasPhone = false, hasAddress = false
+      let row = self.uniqueRows[i]
+      if (self.validateEmail(row[self.emailIndex])) {
+        for (let j = 0; j < this.mappings.length; j++) {
+          const fieldName = this.mappings[j].fieldName
+          const rowIndex = this.mappings[j].rowIndex
+          const model = this.mappings[j].model
+          const value = this.mappings[j].value
+          switch (model) {
+            case 'relation':
+              if (row[rowIndex])
+                relation[fieldName] = row[rowIndex]
+              break;
+            case 'relationProfile':
+              if (row[rowIndex]) {
+                if (fieldName === 'categoryId') {
+                  let cat: any = null
+                  this.$store.state.lookups.categories.forEach((cate: any) => {
+                    if (cate.id === row(rowIndex)) {
+                      cat = cate
+                    }
+                  })
+                  if (cat) relationProfile.categoryId = cat.value
+                } else {
+                  if(row[rowIndex] === 'Saskia'){
+                    debugger
+                  }
+                  relationProfile[fieldName] = row[rowIndex]
+                }
+              }
+              break;
+            case 'addresses':
+              hasAddress = true
+              if (row[rowIndex]) {
+                if (fieldName === 'countryId') {
+                  let val = this.getCountryByName(row[rowIndex])
+                  if (!val) val = this.getCountryByIso(row[rowIndex])
+                  relationAddresses.countryId = val
+                } else {
+                  relationAddresses[fieldName] = row[rowIndex]
+                }
+              }
+              break;
+            case 'phones':
+              hasPhone = true
+              if (row[rowIndex]) {
+                if (fieldName === 'phoneHome') {
+                  relationPhones.push({
+                    number: row[rowIndex],
+                    type: PhoneType.HOME
+                  })
+                } else if (fieldName === 'phoneWork') {
+                  relationPhones.push({
+                    number: row[rowIndex],
+                    type: PhoneType.WORK
+                  })
+                } else if (fieldName === 'mobile') {
+                  relationPhones.push({
+                    number: row[rowIndex],
+                    type: PhoneType.MOBILE
+                  })
+                }
+              }
+              break;
+            case 'company':
+              if (row[rowIndex]) {
+                relationCompany.business = {id: 1, version: 0}
+                relationCompany.name = row[rowIndex]
+                relationCompany.alias = row[rowIndex]
+              }
+              break;
+            case 'customFields':
+              if (row[rowIndex]) {
+                relationCustomField = {
+                  customField: {
+                    id: value.id,
+                    version: value.version
+                  },
+                  value: row[rowIndex]
+                }
+              }
+              break;
+            default:
+              break;
+          }
         }
-        if (fld.fieldName === 'email') {
-          row.push({ label: fld.fieldName, value: fvalue })
+        relation.relationProfile = relationProfile
+        relation.roles = [{ id: 3, version: 0 }]
+        if (hasPhone) {
+          relation.relationPhones = relationPhones
         }
-      })
-      if(row && row.length) payload.relations.push(row)
-      row.forEach((item: any) => {
-        if (newRel[item.label] !== undefined) {
-          newRel[item.label] = item.value
-        } else if (relProfile[item.label] !== undefined) {
-          relProfile[item.label] = item.value
-        } else if (relationAddress[item.label] !== undefined) {
-          relationAddress[item.label] = item.value
+        if (hasAddress) {
+          relation.relationAddresses = [relationAddresses]
         }
-        if (relProfile.categoryId === 0) {
-          relProfile.categoryId = undefined
+        if (relationCompany && relationCompany.name) {
+          relation.relationCompanies = [relationCompany]
         }
-        if (newRel.relationGroups?.length === 0) {
-          newRel.relationGroups = undefined
+        if(this.selectedGroup){
+          relation.relationGroups = [{
+            id: this.selectedGroup.id,
+            version: this.selectedGroup.version
+          }]
         }
-        if (relationCustomFields.length > 0) {
-          newRel.relationCustomFields = relationCustomFields
+        const existingIndex = this.existingEmailsList.findIndex(x => x.email === relation.email);
+        if(existingIndex > -1 && self.overwrite) {
+          const sysRel = this.existingEmailsList[existingIndex]
+          relation.id = sysRel.id
+          relation.username = sysRel.username
+          relation.password = sysRel.password
+          if(this.overwriteData) {
+            temp.push(relation)
+          } else {
+            let keepEmpty = this.keepRelData(relation, sysRel)
+            temp.push(keepEmpty)
+          }
         } else {
-          newRel.relationCustomFields = undefined
+          if(!self.overwrite) temp.push(relation)
         }
-        if (relationCompany.name) {
-          newRel.companies = [relationCompany]
-        }
-        if (self.existingGroup) {
-          self.$store.state.lookups.groups.forEach((group: any) => {
-            if (group.id === self.existingGroup) {
-              newRel.relationGroups = [{
-                id: group.id,
-                version: group.version
-              }]
-            }
-          })
-        }
-        if (newRel.relationProfile.birthDate === '') newRel.relationProfile.birthDate = undefined
-        newRel.relationAddresses = [relationAddress]
-        newRel.relationPhones = relationPhone.length > 0 ? relationPhone : undefined
-        newRel.roles = [{ id: 3, version: 0 }]
-      })
-      relationsToCreate.push(newRel)
-    })
-    let dtoToSend:any = []
-      relationsToCreate.forEach((relation:any)=>{
-      let isContaining:any = null
-      let isInvalid:any = false
-      self.existingEmailsList.forEach(usr=>{
-          if(usr.email === relation.email) {
-            isContaining = usr
-          }
-      })
-      self.invalidEmails.forEach(email=>{
-          if(email === relation.email) {
-            isInvalid = true
-          }
-      })
-        debugger
-      if (isContaining === null && !isInvalid){
-        dtoToSend.push(relation)
       } else {
-        if(self.overwrite){
-          let newRelation = relation
-          newRelation.id = isContaining.id
-          if(!isInvalid) dtoToSend.push(relation)
-        }
+        this.invalidEmails.push(row[self.emailIndex])
       }
-    })
-
-    this.relationService.import(dtoToSend).then((resp: AxiosResponse) => {
+    }
+    if(this.newGroup) {
+      //TODO handle adding new group
+    }
+    this.relationService.import(temp).then((resp: AxiosResponse) => {
       if (resp) {
-        this.setAlert('relationsCreated', 'success')
+        localStorage.setItem('isImporting', 'true')
+        this.setAlert('relationStartedImporting', 'success')
         this.goBack()
       } else {
-        this.setAlert('relationsError', 'error')
+        this.setAlert('relationsImportError', 'error')
         this.step = 3
       }
     })
@@ -282,489 +259,260 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
   public goBack () {
     this.$router.push('/relations')
   }
-
-  public validateStep () {
-    const self = this
-    self.isUploading = false
-    self.isProcessing = false
-    return new Promise(resolve => {
-      if (self.step === 1 && self.file) {
-        self.step2()
-        resolve(true)
-      } else if (self.step === 2) {
-        self.isProcessing = true
-        setTimeout(function () {
-          self.step3()
-          resolve(true)
-        }, 100)
-      } else resolve(!!this.file)
-    })
+  public keepRelData (toImport:any, systemRel:any) {
+    for (let j = 0; j < this.mappings.length; j++) {
+      const fieldName = this.mappings[j].fieldName
+      const model = this.mappings[j].model
+      switch (model) {
+        case 'relation':
+          toImport.username = systemRel.username
+          toImport.id = systemRel.id
+          toImport.version = systemRel.version
+          toImport.password = systemRel.password
+          if (fieldName === 'categoryId') {
+            let cat: any = null
+            this.$store.state.lookups.categories.forEach((cate: any) => {
+              if (cate.id === systemRel.categoryId) {
+                cat = cate
+              }
+            })
+            if (cat) toImport.relationProfile.categoryId = cat.value
+          }
+          if(systemRel[fieldName]){
+            toImport[fieldName] = systemRel[fieldName]
+          }
+          break;
+        case 'relationProfile':
+          if(systemRel.relationProfile[fieldName]){
+            toImport.relationProfile[fieldName] = systemRel.relationProfile[fieldName]
+          }
+          break;
+        case 'addresses':
+          const toKeep = systemRel.relationAddresses
+          if(toKeep.length){
+            toImport.relationAddresses.concat(toKeep)
+          }
+          break;
+        case 'phones':
+          const toKeepPhones = systemRel.relationPhones
+          if(toKeepPhones.length){
+            toImport.relationPhones.concat(toKeepPhones)
+          }
+          break;
+        case 'company':
+          const toKeepCompany = systemRel.companies
+          if(toKeepCompany.length){
+            toImport.companies.concat(toKeepCompany)
+          }
+          break;
+        case 'customFields':
+          const toKeepCustomFields = systemRel.relationCustomFields
+          if(toKeepCustomFields.length){
+            toImport.relationCustomFields.concat(toKeepCustomFields)
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    return toImport
   }
 
-  public handleFile (file: any) {
-    const me = this
-    me.isUploading = true
-    me.file = file
-    me.fileType = file.name.split('.').pop()
-    if (me.fileType === 'csv') {
-      me.delimiterFields = true
-      me.hasHeaderField = true
-      me.csvDelimiter = ','
-      me.csvEscChar = '""'
-      me.isUploading = false
-    } else if (me.fileType === 'vcf') {
-      me.vcfFile = true
-      me.delimiterFields = false
-      me.hasHeaderField = false
-      me.csvDelimiter = ','
-      me.csvEscChar = '""'
-      const reader = new FileReader()
-      const name = file.name
-      reader.onload = function (e: any) {
-        me.isUploading = false
-        let data = e.target.result
-        data = data.split('END:VCARD')
-        data.forEach(function (value: any, index: any) {
-          const vcfArr = []
-          value = value + 'END:VCARD'
-          const parsedData = me.parseVcf(value)
-          if (parsedData.fn !== undefined) {
-            const myObj: any = {}
-            const fullName = parsedData.fn.split(' ')
-            let firstName = ''
-            let lastName = ''
-            lastName = fullName.pop()
-            firstName = fullName[0]
-            if (lastName === undefined) {
-              lastName = ''
-            }
-            if (firstName === undefined) {
-              firstName = ''
-            }
-            myObj.firstName = firstName
-            const myObj1: any = {}
-            myObj1.lastName = lastName
-            vcfArr.push(myObj, myObj1)
-          }
-          if (parsedData.email !== undefined) {
-            const myObj: any = {}
-            myObj.email = parsedData.email[0].value[0]
-            vcfArr.push(myObj)
-          }
-          if (parsedData.tel !== undefined) {
-            const myObj: any = {}
-            myObj.mobile = parsedData.tel[0].value[0]
-            vcfArr.push(myObj)
-          }
-          if (parsedData.adr !== undefined) {
-            const myObj: any = {}
-            const adressVal = parsedData.adr[0]
-            const street = adressVal.value[0].concat(adressVal.value[1], adressVal.value[2])
-            myObj.street = adressVal.value[0].concat(adressVal.value[1], adressVal.value[2])
-            const myObj1: any = {}
-            myObj1.city = adressVal.value[3]
-            const myObj2: any = {}
-            myObj2.province = adressVal.value[4]
-            const myObj3: any = {}
-            myObj3.postalCode = adressVal.value[5]
-            const myObj4: any = {}
-            myObj4.country = adressVal.value[6]
-            vcfArr.push(myObj, myObj1, myObj2, myObj3, myObj4)
-          }
-          if (parsedData.title !== undefined) {
-            const myObj: any = {}
-            myObj.title = parsedData.title
-            vcfArr.push(myObj)
-          }
-          if (vcfArr.length > 0) {
-            me.rows.push(vcfArr)
-          }
-        })
-      }
-      reader.readAsBinaryString(me.file)
+  /*When form Wizard Tab is changed*/
+  public changeTab(e: any, a: any) {
+    this.step = a
+  }
+
+  /*Navigate form-wizard back*/
+  public stepBack() {
+    if (this.step <= 0) {
+      return
     } else {
-      me.delimiterFields = false
-      me.hasHeaderField = true
-      me.csvDelimiter = ','
-      me.csvEscChar = '""'
+      this.step -= 1;
+      this.$validator.reset();
+    }
+    this.resetValues()
+  }
 
-      // let file = file;
-      const reader = new FileReader()
-      const name = me.file.name
-      reader.onload = function (e: any) {
-        me.isUploading = false
-        const data = e.target.result
-        let result
-        let roa
-        if (me.fileType === 'xlsx' || me.fileType === 'xlsm' || me.fileType === 'xlsb') {
-          const workbook = XLSX.read(data, {
-            type: 'binary'
-          })
-          const sheet_name_list = workbook.SheetNames
-          roa = XLSX.utils.sheet_to_csv(workbook.Sheets[sheet_name_list[0]])
-        } else if (me.fileType === 'xls') {
-          // let workbook = XLS.read(data, { type: 'binary' });
-          const cfb = XLSX.CFB.read(data, {
-            type: 'binary'
-          })
-          const workbook = XLSX.parse_xlscfb(cfb)
-          const sheet_name_list = workbook.SheetNames
-          roa = XLSX.utils.make_csv(workbook.Sheets[sheet_name_list[0]])
-        }
-        if (roa.length > 0) {
-          result = roa
-        }
-        me.excelFile = result
-      }
-      reader.readAsBinaryString(me.file)
-      // reader.readAsArrayBuffer(file);
+  /*Navigate form-wizard forward*/
+  public stepForward() {
+    if (this.step >= 3) {
+      return
+    } else {
+      this.step += 1;
     }
   }
 
-  public parseVcf (input: any) {
-    // Memotoo vcard.
-    input = input.replace('item3.ADR:', 'ADR;type=HOME;:')
-    input = input.replace('ADR:', 'ADR;type=HOME;:')
-    const Re1 = /^(version|fn|title|org):(.+)$/i
-    const Re2 = /^([^:;]+);([^:]+):(.+)$/
-    const ReKey = /item\d{1,2}\./
-    const fields: any = {}
+  public resetValues() {
+    this.existingEmailsList = []
+    this.duplicateEmailsList = []
+    this.uniqueRows = []
+    this.invalidEmails = []
+  }
 
-    input.split(/\r\n|\r|\n/).forEach(function (line: any) {
-      let results, key
+  public prepareToSave() {
+    this.isSaving = false
+  }
 
-      if (Re1.test(line)) {
-        results = line.match(Re1)
-        key = results[1].toLowerCase()
-        fields[key] = results[2]
-      } else if (Re2.test(line)) {
-        results = line.match(Re2)
-        key = results[1].replace(ReKey, '').toLowerCase()
-
-        const meta: any = {}
-        results[2].split(';')
-          .map(function (p: any, i: any) {
-            const match = p.match(/([a-z]+)=(.*)/i)
-            if (match) {
-              return [match[1], match[2]]
-            } else {
-              return ['TYPE' + (i === 0 ? '' : i), p]
-            }
-          })
-          .forEach(function (p: any) {
-            meta[p[0]] = p[1]
-          })
-
-        if (!fields[key]) fields[key] = []
-
-        fields[key].push({
-          meta: meta,
-          value: results[3].split(';')
+  public checkForExistingRelations() {
+    const self = this
+    let emailIndex: any = this.mappings.findIndex(e => e.fieldName === 'email')
+    this.emailIndex = self.mappings[emailIndex].rowIndex
+    let queryP: any = ''
+    return new Promise(resolve => {
+      setTimeout(function () {
+        let ind = 0
+        self.uniqueRows.forEach((row, index) => {
+          let email = row[self.mappings[emailIndex].rowIndex]
+          if (ind < self.uniqueRows.length - 1) {
+            if (email && self.validateEmail(email)) queryP += `"${email.trim()}",`
+          } else {
+            if (email && self.validateEmail(email)) queryP += `"${email.trim()}"`
+          }
+          ind++
         })
+        const query = 'email=in=(' + queryP + ')'
+        self.relationService.search(query).then((resp: AxiosResponse) => {
+          if (resp) {
+            resolve()
+            if (resp.data.length > 0) {
+              self.numberOfExisingEmails = resp.data.length
+              resp.data.forEach((rel: any, ind: number) => {
+                self.existingEmailsList[self.existingEmailsList.length] = rel
+                if (ind <= resp.data.length - 1) {
+                  self.prepareToSave()
+                }
+              })
+            } else {
+              self.numberOfExisingEmails = 0
+              self.prepareToSave()
+            }
+          } else {
+            self.isSaving = false
+          }
+        })
+      }, 50)
+    })
+  }
+
+  /*Handle Duplicate Emails in the file*/
+  public removeDuplicates() {
+    const self = this
+    return new Promise(resolve => {
+      let mapIndex: any = this.mappings.findIndex(e => e.fieldName === 'email')
+      const eIndex = self.mappings[mapIndex].rowIndex
+      const unique = self.rows.reduce((acc, current) => {
+        const x = acc.find((item:any) => item && item[eIndex] && (item[eIndex] === current[eIndex] || item[eIndex] === ''));
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+      const duplicates = self.rows.filter(function(obj:any) { return unique.indexOf(obj) == -1; });
+      this.duplicateEmailsList = duplicates
+      this.duplicateEmailsFound = duplicates.length
+      let finalUnique:any = []
+      for(let i = 0; i < unique.length; i++){
+        if(this.validateEmail(unique[i][eIndex])){
+          if(unique[i][eIndex]) finalUnique.push(unique[i])
+        } else {
+          if(unique[i][eIndex]) this.invalidEmails.push(unique[i])
+        }
+      }
+      this.uniqueRows=finalUnique
+      resolve()
+    })
+  }
+
+  /*Validate each step separately*/
+  public validateStep() {
+    this.isSaving = true
+    let self = this
+    return new Promise(resolve => {
+      if (self.step === 0) {
+        if (self.rows && self.rows.length > 0) {
+          self.stepForward()
+          self.isSaving = false
+          resolve(true)
+        } else {
+          self.isSaving = false
+          resolve(false)
+        }
+      } else if (self.step === 1) {
+        self.hasEmailField = self.mappings.some(e => e.fieldName === 'email')
+        if (self.mappings.length > 0 && self.hasEmailField) {
+          self.isSaving = true
+          setTimeout(function () {
+            self.removeDuplicates().then(()=>{
+              self.checkForExistingRelations().then(() => {
+                resolve(true)
+              })
+            })
+          },50)
+        } else {
+          resolve(false)
+        }
+      } else if (self.step === 2) {
+        resolve(true)
       }
     })
-
-    return fields
   }
 
-  public handleRemove () {
-    const self = this
-    self.delimiterFields = false
-    self.hasHeaderField = false
-    self.btnNextDisabled = true
-    self.rows = []
-    self.mappings = []
-    self.datafordb = []
-    self.emailFieldIndex = ''
-    self.duplicateEmailsFound = 0
-    self.duplicateEmailsList = []
-    self.relationsToImport = 0
-    self.vcfFile = false
-    self.exampleCards = []
-    self.existingEmailsList = []
-    self.existingGroup = 0
-    self.newGroup = ''
-    self.file = null
+  /*When file is uploaded from step 1y*/
+  public fileUploaded(obj: any) {
+    this.headerRow = obj.rows[0]
+    if (this.hasHeader) {
+      obj.rows.shift()
+    }
+    this.rows = obj.rows
+    this.file = obj.file
+    this.duplicateEmailsFound = obj.duplicates
   }
 
-  public selectedGroup () {
-    const self = this
-    let groupLabel = ''
-    if (self.existingGroup !== 0) {
-      self.newGroup = ''
-      self.$store.state.lookups.groups.filter(function (item: any) {
-        if (item.value === self.existingGroup) {
-          groupLabel = item.label
-        }
-      })
-      return groupLabel
-    } else if (self.newGroup !== '') {
-      return self.newGroup
+  /*When file is removed from step 1y*/
+  public fileRemoved(rows: any) {
+    this.rows = []
+    this.headerRow = []
+  }
+
+  /*Update the file configuration (hasHeader, delimiter, escChar)*/
+  public updateStep1Config(config: any) {
+    this.delimiter = config.csvDelimiter
+    this.hasHeader = config.hasHeader
+    this.escChar = config.csvEscChar
+    if (config.hasHeader) {
+      typeof this.rows[0] === 'string' ? this.headerRow = this.rows[0].split(',') : this.headerRow = this.rows[0]
+      this.rows.shift()
     }
   }
 
-  foundRows () {
-    let found = (this.rows) ? this.rows.length : 0
-    if (found > 0 && this.hasHeaderField) found -= 1
-    return found
-  }
-
-  filename () {
+  public filename() {
     if (this.file) {
       const fileSize = this.file.size / 1048576
       const size = this.file.size
       if (fileSize <= 2) {
-        this.btnNextDisabled = false
         if (size < 1024) return this.file.name + ' (' + size + ' Bytes)'
         else if (size < 1048576) return this.file.name + ' (' + (size / 1024).toFixed(0) + ' KB)'
         else if (size < 1073741824) return this.file.name + ' (' + (size / 1048576).toFixed(1) + ' MB)'
         // return this.file.name + ' (' + Math.round(this.file.size / 1024) + ' kbyte)';
       } else {
-        this.btnNextDisabled = true
         return this.file.name + ' (' + size + ' kbyte)'
       }
     } else {
-      this.btnNextDisabled = true
       return ' '
     }
   }
 
-  public changeTab (oldTab: any, newTab: any) {
-    this.step = newTab + 1
+  public groupChanged(group:any) {
+    this.selectedGroup = group
   }
 
-  public step2 () {
-    const self = this
-    self.datafordb = []
-    if (self.fileType === 'vcf') {
-      self.vcfFile = true
-    } else {
-      self.vcfFile = false
-      let file
-      if (self.fileType !== 'csv') {
-        file = self.excelFile
-      } else {
-        file = self.file
-      }
-      let foundMapping: any = []
-      const results = Papa.parse(file,
-        {
-          delimiter: self.csvDelimiter,
-          encoding: 'UTF-8',
-          skipEmptyLines: true,
-          complete: function (results: any) {
-            self.rows = results.data
-            for (let i = 0; i < self.rows[0].length; i++) {
-              self.mappings.push({ index: i, dbfield: 'dnassign' })
-            }
-            const foundFields = self.rows[0].filter(function (obj: any, objindex: number) {
-              return self.dbfields.some(function (obj2: any) {
-                if (obj.toLowerCase().includes(obj2.value.toLowerCase())) {
-                  foundMapping = self.mappings.find(x => x.index === objindex)
-                  foundMapping.dbfield = obj2.value
-                }
-              })
-            })
-          }
-        }
-      )
-    }
+  public changeNewGroup(group:any) {
+    this.newGroup = group
   }
 
-  public step3 () {
-    this.datafordb = []
-    this.exampleCards = []
-    this.duplicateEmailsFound = 0
-    const emails: string[] = []
-    const self = this
-    self.numRowsInFile = self.rows.length - 1 // skip first mapping row
-    if (self.datafordb.length < 1) {
-      // Find the email field index
-      const emailFieldIndex = self.mappings.findIndex(x => x.dbfield === 'email')
-      if (emailFieldIndex > -1) {
-        self.emailFieldIndex = emailFieldIndex
-      }
-      const rowsInsertedCounter = 0
-      for (let rowIndex = 0; rowIndex <= self.rows.length - 1; rowIndex++) {
-        const rowValue = self.rows[rowIndex]
-
-        if (!self.vcfFile) {
-          if (self.hasHeader && rowIndex === 0) {
-            continue
-          }
-          let foundDuplicate
-          // Check if there is a email column
-          if (self.emailFieldIndex >= 0) {
-            // Check if there is an empty email value
-            if (rowValue[self.emailFieldIndex] && self.validateEmail(rowValue[self.emailFieldIndex]) === false) {
-              self.invalidEmails.push(rowValue[self.emailFieldIndex])
-            } else {
-              if (rowValue[self.emailFieldIndex] !== undefined && rowValue[self.emailFieldIndex] !== '') {
-                // Set the email values to lowercase
-                rowValue[self.emailFieldIndex] = rowValue[self.emailFieldIndex].toLowerCase()
-                emails[emails.length] = rowValue[self.emailFieldIndex]
-                // emails.push(rowValue[self.emailFieldIndex])
-                for (let i = 0; i < self.datafordb.length; i++) {
-                  const arr = self.datafordb[i]
-                  for (let j = 0; j < arr.length; j++) {
-                    const obj = arr[j]
-                    if (obj.value === rowValue[self.emailFieldIndex]) {
-                      foundDuplicate = obj.value
-                    }
-                  }
-                }
-                if (foundDuplicate !== undefined) {
-                  self.duplicateEmailsFound += 1
-                  self.duplicateEmailsList[self.duplicateEmailsList.length] = foundDuplicate
-                  // self.duplicateEmailsList.push(foundDuplicate)
-                } else {
-                  const exampleCard: any = []
-                  const singleRow: any = []
-                  let counter = 0
-                  const freeFields: any = []
-                  for (let cellIndex = 0; cellIndex < rowValue.length; cellIndex++) {
-                    let cellValue = rowValue[cellIndex]
-                    if (!cellValue) {
-                      cellValue = '-'
-                    }
-                    counter += 1
-                    const columnName = typeof self.mappings[cellIndex].dbfield === 'string' ? self.mappings[cellIndex].dbfield : 'customFields'
-                    // if (columnName === 'dnassign') {
-                    // 	return;
-                    // }
-                    const myObj: any = {}
-                    myObj.fieldName = columnName
-                    myObj.value = typeof self.mappings[cellIndex].dbfield === 'string' ? cellValue : { value: self.mappings[cellIndex].dbfield, cellVal: rowValue[cellIndex] ? rowValue[cellIndex] : '-' }
-                    // myObj[columnName] = cellValue;
-                    // self.datafordb.push(myObj);
-                    if (columnName !== 'dnassign') {
-                      singleRow[singleRow.length] = myObj
-                      // singleRow.push(myObj)
-                      if (columnName === 'customFields') {
-                        freeFields[freeFields.length] = { label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex] }
-                        // freeFields.push({label: self.getMultiLangName(myObj.value.customFieldLanguages).name, freeField: myObj.value, value: rowValue[cellIndex]})
-                      } else {
-                        for (let i = 0; i < self.dbfields.length; i++) {
-                          const x = self.dbfields[i]
-                          if (x.value === columnName) {
-                            exampleCard[exampleCard.length] = { label: x.label, value: myObj.value }
-                          }
-                        }
-                      }
-                    }
-                    // inserted row counter
-                    if (counter === (rowValue.length)) {
-                      const freeFieldsLabel = []
-                      for (let z = 0; z < freeFields.length; z++) {
-                        freeFieldsLabel[z] = freeFields[z].label
-                      }
-                      if (self.relationsToImport <= 5) {
-                        if (freeFieldsLabel.length) exampleCard[exampleCard.length] = { label: self.$t('labels.freeFieldsMenu'), value: freeFieldsLabel.join(', ') }
-                        self.exampleCards[self.exampleCards.length] = exampleCard
-                      }
-                      self.datafordb[self.datafordb.length] = singleRow
-                      self.relationsToImport += 1
-                    }
-                  }
-                }
-              } else {
-                self.duplicateEmailsFound += 1
-              }
-            }
-          }
-        } else {
-          // Check if there is an email key available
-          const foundKey = rowValue.filter((e: any) => e.hasOwnProperty('email'))
-          // Check for empty email value
-          let foundDuplicate
-          if (foundKey.length > 0 && foundKey[0].email !== '') {
-            self.datafordb.filter(function (arr) {
-              arr.filter(function (obj: any) {
-                if (obj.value === foundKey[0].email) {
-                  foundDuplicate = obj.value
-                }
-              })
-            })
-            console.log('foundDuplicate', foundDuplicate)
-            if (foundDuplicate !== undefined) {
-              self.duplicateEmailsFound += 1
-              self.duplicateEmailsList.push(foundDuplicate)
-            } else {
-              const exampleCard: any = []
-              const singleRow: any = []
-              rowValue.forEach(function (cellValue: any, cellIndex: any) {
-                // find duplicate email
-                const key = Object.keys(cellValue)
-                if (key[0] === 'email') {
-                  // make email lowercase
-                  cellValue.email = cellValue.email.toLowerCase()
-                }
-                // console.log('dup', foundDuplicate);
-                const foundDbField = self.dbfields.filter(x => x.value === key[0])
-                if (foundDbField.length > 0) {
-                  const myObj: any = {}
-                  myObj.fieldName = foundDbField[0].value
-                  myObj.value = cellValue[myObj.fieldName]
-                  // self.datafordb.push(myObj);
-                  singleRow.push(myObj)
-                  if (self.relationsToImport < 2) {
-                    exampleCard.push({ label: foundDbField[0].label, value: cellValue[myObj.fieldName] })
-                  }
-                }
-                // inserted row counter
-                if (cellIndex === (rowValue.length - 1)) {
-                  if (self.relationsToImport < 2) {
-                    self.exampleCards.push(exampleCard)
-                  }
-                  self.datafordb.push(singleRow)
-                  self.relationsToImport += 1
-                }
-              })
-            }
-          } else {
-            self.duplicateEmailsFound += 1
-          }
-        }
-      }
-
-      self.existingEmailsList = []
-      // check on server for existing emails
-      const pagination = {
-        page: 0,
-        size: 100000,
-        sort: ['id,asc']
-      }
-      let queryP = ''
-      emails.forEach((email: any, ind: any) => {
-        if (ind < emails.length - 1) {
-          queryP += `"${email}",`
-        } else {
-          queryP += `"${email}"`
-        }
-      })
-      const query = 'email=in=(' + queryP + ')'
-      this.isProcessing = true
-      this.relationService.search(query.trim(), function (process:any) {
-        //TODO wait from server content-length response header in order to calculate correctly
-            self.isProcessing = false
-          if(process === 100){
-            //self.isProcessing = false
-          }
-      }).then((resp: AxiosResponse) => {
-        if (resp) {
-          if (resp.data.length > 0) {
-            self.numberOfExisingEmails = resp.data.length
-            resp.data.forEach((rel: any) => {
-              self.existingEmailsList.push({email: rel.email, id: rel.id})
-            })
-          }
-        }
-      })
-    }
-  }
-
-  public calculateImport () {
-    if (this.overwrite) return this.numRowsInFile - this.duplicateEmailsFound
-    else return this.numRowsInFile - this.duplicateEmailsFound - this.numberOfExisingEmails
+  foundRows() {
+    return (this.rows) ? this.rows.length : 0
   }
 }
