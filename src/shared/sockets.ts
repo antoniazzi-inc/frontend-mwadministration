@@ -12,12 +12,15 @@ export default class Sockets extends Vue {
   public sendMessage: any;
   public connected: boolean;
   public connectedRelation: boolean;
+  public connectedProduct: boolean;
   public socket: any;
   public relationSocket: any;
+  public productSocket: any;
   public url: any;
   public store: any;
   public stompClient: any;
   public stompClientRelation: any;
+  public stompClientProduct: any;
 
   constructor (props: any) {
     super(props)
@@ -25,12 +28,15 @@ export default class Sockets extends Vue {
     this.administrationService = AdministrationService.getInstance()
     this.socket = new SockJS('/administrationms/socket')
     this.relationSocket = new SockJS('/relationms/socket')
+    this.productSocket = new SockJS('/productms/socket')
     this.receivedMessages = []
     this.sendMessage = null
     this.connected = false
     this.connectedRelation = false
+    this.connectedProduct = false
     this.stompClient = null
     this.stompClientRelation = null
+    this.stompClientProduct = null
     this.url = props && props.url ? props.url : '/socket'
   }
 
@@ -68,7 +74,24 @@ export default class Sockets extends Vue {
       },
       (error: any) => {
         console.log(error)
-        this.connected = false
+        this.connectedRelation = false
+      }
+      )
+    })
+  }
+  public connectProduct () {
+    this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
+      this.stompClientProduct = Stomp.over(this.productSocket)
+      this.stompClientProduct.connect({}, (frame: any) => {
+        this.connectedProduct = true
+        this.stompClientProduct.subscribe(`/session/${result.data.uid}`, (tick: any) => {
+          const resp = JSON.parse(tick.body)
+          this.updateLookups(resp)
+        })
+      },
+      (error: any) => {
+        console.log(error)
+        this.connectedProduct = false
       }
       )
     })
@@ -81,8 +104,12 @@ export default class Sockets extends Vue {
     if (this.stompClientRelation) {
       this.stompClientRelation.disconnect()
     }
+    if (this.stompClientProduct) {
+      this.stompClientProduct.disconnect()
+    }
     this.connected = false
     this.connectedRelation = false
+    this.connectedProduct = false
   }
 
   public updateLookups (obj: any) {

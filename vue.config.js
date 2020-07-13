@@ -89,6 +89,22 @@ module.exports = {
         ws: false,
         changeOrigin: true
       },
+      '/productms/socket': {
+        target: {
+          // host: '46.217.82.127',
+          host: 'localhost',
+          protocol: 'http:',
+          port: 8080
+        },
+        onProxyReq: proxyReq => {
+          // proxyReq.setHeader('origin', 'http://46.217.82.127:180801')
+          proxyReq.setHeader('origin', 'http://localhost:8080/productms/socket')
+          proxyReq.setHeader('sec-fetch-mode', 'no-cors')
+          proxyReq.setHeader('Sec-Fetch-Site', 'none')
+        },
+        ws: false,
+        changeOrigin: true
+      },
       '/render': {
         target: 'https://api.mjml.io/v1',
         pathRewrite: {

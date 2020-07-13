@@ -52,6 +52,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     counter = 0;
     sockets = new Sockets({ url: 'http://localhost:18081/' });
     relationSocket = new Sockets({ url: 'http://localhost:18080/' });
+    productSocket = new Sockets({ url: 'http://localhost:18082/' });
     loading = true;
     isReady = true;
     mainMenu = MenuDefinitions;
@@ -223,6 +224,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
           this.$store.commit('authenticated', account.data)
           this.sockets.connect()
           this.relationSocket.connectRelation()
+          this.productSocket.connectProduct()
         } else {
           this.$router.push('/login')
         }
