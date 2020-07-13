@@ -12,6 +12,9 @@ import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
 import CommonHelpers from "@/shared/commonHelpers";
 import {mixins} from "vue-class-component";
+import {AxiosResponse} from "axios";
+import promotionsService from "@/shared/services/promotionsService";
+import discountsService from "@/shared/services/discountsService";
 @Component({
     props: {
         promotion: Object
@@ -30,20 +33,24 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
   public multiLangConfig:IMultiLanguageConfig
   public validFromConfig:any
   public validToConfig:any
+  public promoType:any
   public availableFrom:any
   public availableTo:any
   public selectedDiscountType:any
   public selectedProduct:any
   public discountQuantityAmount:any
   public moneyPercentage:any
+  public discountService:any
+  public promotionService:any
   public discountPriceAmount:any
   public money:any
   public useMoreDecimalst:boolean
   public wholeOrder:boolean
   public allDiscountTypes:any[]
+  public freeItems:any[]
   public moneyConfig:IMoneyConfig
   public singleSelectConfig:ISearchableSelectConfig
-  public promotionCopy:IPromotion
+  public promotionCopy:any
   constructor(props:any) {
     super(props);
     this.promotionCopy = new Promotion()
@@ -65,10 +72,14 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     this.moneyConfig = new MoneyConfig(undefined, undefined, '', Store.state.currency, 0, false)
     this.availableFrom =  new Date()
     this.availableTo = null
+    this.promotionService = promotionsService.getInstance()
+    this.discountService = discountsService.getInstance()
     this.selectedProduct = null
     this.selectedDiscountType = null
     this.wholeOrder = false
+    this.promoType = ''
     this.discountQuantityAmount = 0
+    this.freeItems = []
     this.discountPriceAmount = 0
   this.money = {
     decimal: ',',
@@ -116,11 +127,58 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
   @Watch('promotion', {immediate: true, deep: true})
   public updatePromotion(newVal: any) {
     this.promotionCopy = newVal
+    const self = this
     this.availableFrom = newVal && newVal.availableFrom ? newVal.availableFrom : new Date()
     this.availableTo = newVal && newVal.availableTo ? newVal.availableTo : null
     let discountId:any = this.getDiscountType(newVal)
-    if(newVal && discountId) this.selectedDiscountType = discountId.id
-    if(discountId.id === 1 || discountId.id === 2){
+    this.promoType = discountId.type
+    if(this.promotionCopy[this.promoType]){
+      if(this.promoType === 'typeBundleBaseds' || this.promoType === 'typePriceBaseds' || this.promoType === 'typeQuantityBaseds'){
+        if (this.promotionCopy[this.promoType][0].discount && this.promotionCopy[this.promoType][0].discount.fixed !== null && this.promotionCopy[this.promoType][0].discount.fixed !== undefined) {
+          this.selectedDiscountType = 2;
+          this.discountPriceAmount = this.promotionCopy[this.promoType][0].discount.fixed;
+        } else if(this.promotionCopy[this.promoType][0].discount && this.promotionCopy[this.promoType][0].discount.percentage !== null && this.promotionCopy[this.promoType][0].discount.percentage !== undefined) {
+
+          this.selectedDiscountType = 1;
+          this.discountPriceAmount = this.promotionCopy[this.promoType][0].discount.percentage;
+        } else if(this.promotionCopy[this.promoType][0].discount && this.promotionCopy[this.promoType][0].discount.noShipping !== null && this.promotionCopy[this.promoType][0].discount.noShipping !== undefined) {
+          this.selectedDiscountType = 3;
+        } else if (this.promotionCopy[this.promoType][0].discount && this.promotionCopy[this.promoType][0].discount.freeItemsJson !== null && this.promotionCopy[this.promoType][0].discount.freeItemsJson !== undefined) {
+          this.selectedDiscountType = 4;
+          this.getSelectedProductFromDiscount(this.promotionCopy[this.promoType][0].discount.freeItemsJson);
+        }
+        this.wholeOrder = this.promotionCopy[this.promoType][0].discount ? this.promotionCopy[this.promoType][0].discount.entireOrder : false;
+      } else {
+        if (this.promotionCopy[this.promoType].discount && this.promotionCopy[this.promoType].discount.fixed !== null) {
+          this.selectedDiscountType = 2;
+          this.discountPriceAmount = this.promotionCopy[this.promoType].discount.fixed;
+        } else if(this.promotionCopy[this.promoType].discount && this.promotionCopy[this.promoType].discount.percentage !== null) {
+          this.selectedDiscountType = 1;
+          this.discountPriceAmount = this.promotionCopy[this.promoType].discount.percentage;
+        } else if(this.promotionCopy[this.promoType].discount && this.promotionCopy[this.promoType].discount.noShipping !== null) {
+          this.selectedDiscountType = 3;
+        } else if (this.promotionCopy[this.promoType].discount && this.promotionCopy[this.promoType].discount.freeItemsJson !== null) {
+          this.selectedDiscountType = 4;
+          this.getSelectedProductFromDiscount(this.promotionCopy[this.promoType].discount.freeItemsJson);
+        }
+        this.wholeOrder = this.promotionCopy[this.promoType].discount ? this.promotionCopy[this.promoType].discount.entireOrder : false;
+      }
+    }
+    if(newVal && newVal[discountId.type] && newVal[discountId.type].discount && newVal[discountId.type].discount.freeItemsJson){
+      let products:any = []
+      newVal[discountId.type].discount.freeItemsJson.products.forEach((prod:any) =>{
+        this.$store.state.lookups.products.forEach((product:any)=>{
+          if(prod.id === product.value.id) {
+            products.push({prod: product, quantity: prod.quantity})
+          }
+        })
+      })
+      Vue.nextTick(function () {
+        self.selectedProduct = products[0].prod
+      })
+      this.discountQuantityAmount = products[0].quantity
+    }
+    if(discountId.discount && (discountId.discount.id === 1 || discountId.discount.id === 2)) {
       let discountPrice = this.getDiscount(newVal)
       this.discountPriceAmount = discountPrice
     }
@@ -128,6 +186,26 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
   @Watch('availableFrom', {immediate: true, deep: true})
   public changeAvailableToMin(newVal: any) {
     this.validToConfig.minDate = moment(newVal).format('MM-DD-YYYY')
+  }
+
+  public getSelectedProductFromDiscount(freeItems:any){
+    let product:any = null;
+    let self = this;
+      if(freeItems){
+    $.each(this.$store.state.lookups.products, function (i, j) {
+        $.each(freeItems.products, function (k, v) {
+          if(j.value.id === v.id) {
+            product = j;
+            self.discountQuantityAmount = v.quantity
+          }
+        });
+    });
+      }
+    if(product !== null) {
+      Vue.nextTick(function () {
+        self.selectedProduct = product;
+      })
+    }
   }
   public addPromotionLang(lang: any) {
     let index = null
@@ -149,7 +227,6 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public showDateError() {
-    debugger
     if(this.availableTo === null) return false
     return moment(this.availableTo).isBefore(moment(this.availableFrom))
   }
@@ -192,7 +269,63 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     this.selectedProduct = null
   }
   public save(){
-
+    let self = this;
+    let dto:any = {
+      id: this.promotionCopy.id,
+      administrationId: this.promotionCopy.administrationId,
+      version: this.promotionCopy.version,
+      createdOn: this.promotionCopy.createdOn,
+      updatedOn: this.promotionCopy.updatedOn,
+      availableFrom: this.promotionCopy.availableFrom,
+      availableTo: this.promotionCopy.availableTo,
+      promotionType: this.promotionCopy.promotionType,
+      recurrent: this.promotionCopy.recurrent,
+      products: this.promotionCopy.products,
+      promotionLanguages: this.promotionCopy.promotionLanguages,
+    };
+    dto[this.promoType] = this.promotionCopy[this.promoType];
+    let updateDiscountDto:any = {
+      id: this.promotionCopy[this.promoType].discount ? this.promotionCopy[this.promoType].discount.id : this.promotionCopy[this.promoType][0].discount.id,
+      administrationId: this.promotionCopy[this.promoType].discount ? this.promotionCopy[this.promoType].discount.administrationId : this.promotionCopy[this.promoType][0].discount.administrationId,
+      version: this.promotionCopy[this.promoType].discount ? this.promotionCopy[this.promoType].discount.version : this.promotionCopy[this.promoType][0].discount.version,
+      updatedOn: this.promotionCopy[this.promoType].discount ? this.promotionCopy[this.promoType].discount.updatedOn : this.promotionCopy[this.promoType][0].discount.updatedOn,
+      createdOn: this.promotionCopy[this.promoType].discount ? this.promotionCopy[this.promoType].discount.createdOn : this.promotionCopy[this.promoType][0].discount.createdOn,
+      entireOrder: this.wholeOrder,
+      fixed: null,
+      percentage: null,
+      freeItemsJson: null,
+      noShipping: null
+    }
+    this.promotionService.put(dto).then((resp:AxiosResponse) => {
+      if(resp && resp.data){
+        this.promotionCopy = resp.data;
+        switch (self.selectedDiscountType) {
+          case 1:
+            updateDiscountDto.percentage = this.discountPriceAmount;
+            break;
+          case 2:
+            updateDiscountDto.fixed = this.discountPriceAmount;
+            break;
+          case 3:
+            updateDiscountDto.noShipping = true;
+            break;
+          case 4:
+            updateDiscountDto.freeItemsJson = this.freeItems;
+            break;
+        }
+        this.discountService.update(updateDiscountDto).then((resp1:AxiosResponse) => {
+          if(resp1 && resp1.data){
+            this.setAlert('promotionUpdated', 'success')
+            Vue.nextTick(function () {
+              self.promotionCopy[self.promoType].discount = resp1;
+              self.$emit('updatePromotion', self.promotionCopy);
+            });
+          } else {
+            this.setAlert('promotionUpdateError', 'error')
+          }
+        });
+      }
+    });
   }
   public back(){
     this.$router.push('promotions')

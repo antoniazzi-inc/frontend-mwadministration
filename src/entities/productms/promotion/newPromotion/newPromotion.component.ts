@@ -69,6 +69,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   public selectedProduct: any;
   public moneyPercentage: any;
   public singleSelectConfig: ISearchableSelectConfig;
+  public singleSelectConfigAffiliate: ISearchableSelectConfig;
   public moneyConfig: IMoneyConfig;
   public searchableConfig: ISearchableSelectConfig;
   public multiLangConfig: IMultiLanguageConfig;
@@ -132,6 +133,9 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
     this.singleSelectConfig = new SearchableSelectConfig('label',
       'labels.chooseProduct', '', true,
       false, false, false, false)
+    this.singleSelectConfigAffiliate = new SearchableSelectConfig('label',
+      'labels.chooseAffiliates', '', true,
+      false, false, false, false)
     this.progress = 0
     this.discountTypeId = 1
     this.discountPriceAmount = 0.0;
@@ -140,7 +144,9 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
     this.availableFrom = new Date()
     this.availableTo = null
     this.promotion = new Promotion(undefined, undefined, undefined, undefined,
-      undefined, promotionType.AFFILIATE)
+      undefined, promotionType.AFFILIATE, undefined, undefined, undefined
+      , undefined, undefined, undefined, new TypeAffiliateBased(undefined
+        , undefined, undefined, undefined, undefined, undefined, new Discount()))
     this.searchableConfig = new SearchableSelectConfig('enName',
       'labels.country', 'labels.addNewCourse', true,
       true, false, false, false)
@@ -272,7 +278,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
             discountName = 'freeItemsJson';
             discountValue = {
               products: [{
-                id: self.selectedProduct.id,
+                id: self.selectedProduct.value.id,
                 quantity: self.discountQuantityAmount
               }],
               attributeValues: undefined
@@ -320,7 +326,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
         case 'BUNDLE':
           let itemsJson = {
             products: [{
-              id: self.selectedBundleProduct.id,
+              id: self.selectedBundleProduct.value.id,
               quantity: self.bundleQuantity
             }],
             attributeValues: undefined
@@ -550,6 +556,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public addProduct(product: any) {
+    debugger
     this.selectedProduct = product;
   }
 

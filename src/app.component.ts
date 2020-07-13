@@ -25,6 +25,8 @@ import PermissionsService from '@/shared/services/permissionService'
 import PaymentMethodService from '@/shared/services/paymentMethodService'
 import DeliveryMethodService from '@/shared/services/deliveryMethodService'
 import RegionService from '@/shared/services/regionService'
+import promotionsService from "@/shared/services/promotionsService";
+import productService from "@/shared/services/productService";
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -47,12 +49,14 @@ export default class App extends mixins(Vue, CommonHelpers) {
     taxRateService = TaxRateService.getInstance();
     companyService = CompanyService.getInstance();
     businessService = BusinessService.getInstance();
+    productService = productService.getInstance();
+    promotionService = promotionsService.getInstance();
     regionService = RegionService.getInstance();
     deliveryMethodService = DeliveryMethodService.getInstance();
     counter = 0;
     sockets = new Sockets({ url: 'http://localhost:18081/' });
     relationSocket = new Sockets({ url: 'http://localhost:18080/' });
-    productSocket = new Sockets({ url: 'http://localhost:18082/' });
+    productSocket =null // new Sockets({ url: 'http://localhost:18082/' });
     loading = true;
     isReady = true;
     mainMenu = MenuDefinitions;
@@ -118,6 +122,28 @@ export default class App extends mixins(Vue, CommonHelpers) {
           })
         })
         this.$store.commit('paymentMethods', methods)
+      })
+      this.promotionService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        const promos: any = []
+        resp.data.content?.forEach((promotion: any) => {
+          promos.push({
+            label: this.getMultiLangName(promotion.promotionLanguages).name,
+            value: promotion
+          })
+        })
+        this.$store.commit('promotions', promos)
+      })
+      this.productService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        const products: any = []
+        resp.data.content?.forEach((prod: any) => {
+          products.push({
+            label: this.getMultiLangName(prod.productLanguages).name,
+            value: prod
+          })
+        })
+        this.$store.commit('products', products)
       })
       this.deliveryMethodService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
@@ -187,7 +213,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
 
     @Watch('counter', { immediate: true, deep: true })
     public changeReady (newVal: any) {
-      if (newVal > 11) {
+      if (newVal >= 16) {
         this.isReady = true
       }
     }
@@ -224,7 +250,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
           this.$store.commit('authenticated', account.data)
           this.sockets.connect()
           this.relationSocket.connectRelation()
-          this.productSocket.connectProduct()
+          //this.productSocket.connectProduct()
         } else {
           this.$router.push('/login')
         }

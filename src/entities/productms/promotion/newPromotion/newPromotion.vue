@@ -154,7 +154,7 @@
             name="freeItem"
             :value.sync="selectedProduct"
             @onRemove="removeProduct"
-            @onAddNew="addProduct"/>
+            @onSelected="addProduct"/>
         </div>
         <div :class="{'form-group mt-3': true}" v-if="discountTypeId===4">
           <label class="control-label">{{$t('labels.quantityAmount')}}</label>
@@ -237,7 +237,7 @@
                            :off-text="$t('labels.no')"
                            :value.sync="forAllAffiliates"></toggle-switch>
             <label class="control-label mt-3" v-if="!forAllAffiliates">{{$t('labels.selectAffiliates')}}</label>
-            <searchable-select-component :config="singleSelectConfig"
+            <searchable-select-component :config="singleSelectConfigAffiliate" v-if="!forAllAffiliates"
                                          :options="allAffiliates"
                                          :value.sync="selectedAffiliates"
                                          @onSelected="updateAffiliates"

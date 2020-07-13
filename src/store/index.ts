@@ -87,6 +87,9 @@ export default new Vuex.Store({
     products (state, newState) {
       state.lookups.products = newState
     },
+    promotions (state, newState) {
+      state.lookups.promotions = newState
+    },
     roles (state, newState) {
       state.lookups.roles = newState
     },

@@ -41,9 +41,9 @@ function getDiscount (promotionType: any) {
   if(!promotionType || !promotionType.discount){
     return ''
   }
-  if(promotionType.discount.percentage){
+  if(promotionType.discount.percentage !== undefined && promotionType.discount.percentage !== null){
     result = `${promotionType.discount.percentage}%`
-  } else if(promotionType.discount.fixed){
+  } else if(promotionType.discount.fixed !== undefined && promotionType.discount.fixed !== null){
     result = `${promotionType.discount.fixed}${Store.state.currency}`
   } else if(promotionType.discount.noShipping){
     result = 'noShipping'
@@ -412,7 +412,7 @@ export const promotion = {
             result = getDiscount(item.typeAffiliateBased)
             break;
           case 'BUNDLE':
-            result = getDiscount(item.typeBundleBaseds)
+            result = getDiscount(item.typeBundleBaseds[0])
             break;
           case 'COUPON':
             result = getDiscount(item.typeCouponBased)
@@ -424,10 +424,10 @@ export const promotion = {
             result = getDiscount(item.typePersonalCouponBased)
             break;
           case 'PRICE':
-            result = getDiscount(item.typePriceBaseds)
+            result = getDiscount(item.typePriceBaseds[0])
             break;
           case 'QUANTITY':
-            result = getDiscount(item.typeQuantityBaseds)
+            result = getDiscount(item.typeQuantityBaseds[0])
             break;
           case 'TEMPORARY_COUPON':
             result = getDiscount(item.typePersonalCouponBased)

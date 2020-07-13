@@ -634,7 +634,7 @@ export default class CommonHelpers extends Vue {
         promotionType = promotion.typeAffiliateBased
         break;
       case 'BUNDLE':
-        promotionType = promotion.typeBundleBaseds
+        promotionType = promotion.typeBundleBaseds[0]
         break;
       case 'COUPON':
         promotionType = promotion.typeCouponBased
@@ -646,10 +646,10 @@ export default class CommonHelpers extends Vue {
         promotionType = promotion.typePersonalCouponBased
         break;
       case 'PRICE':
-        promotionType = promotion.typePriceBaseds
+        promotionType = promotion.typePriceBaseds[0]
         break;
       case 'QUANTITY':
-        promotionType = promotion.typeQuantityBaseds
+        promotionType = promotion.typeQuantityBaseds[0]
         break;
       case 'TEMPORARY_COUPON':
         promotionType = promotion.typePersonalCouponBased
@@ -677,36 +677,46 @@ export default class CommonHelpers extends Vue {
    */
   public getDiscountType (promotion: any) {
     let result = null
+    let type = ''
     switch (promotion.promotionType) {
       case 'TIME':
         result = this.getDiscountTypeString(promotion.typeTimeBased)
+        type = 'typeTimeBased'
         break;
       case 'AFFILIATE':
         result = this.getDiscountTypeString(promotion.typeAffiliateBased)
+        type = 'typeAffiliateBased'
         break;
       case 'BUNDLE':
-        result = this.getDiscountTypeString(promotion.typeBundleBaseds)
+        result = this.getDiscountTypeString(promotion.typeBundleBaseds[0])
+        type = 'typeBundleBaseds'
         break;
       case 'COUPON':
         result = this.getDiscountTypeString(promotion.typeCouponBased)
+        type = 'typeCouponBased'
         break;
       case 'LOYALTY':
         result = this.getDiscountTypeString(promotion.typeLoyaltyBased)
+        type = 'typeLoyaltyBased'
         break;
       case 'PERSONAL_COUPON':
         result = this.getDiscountTypeString(promotion.typePersonalCouponBased)
+        type = 'typePersonalCouponBased'
         break;
       case 'PRICE':
-        result = this.getDiscountTypeString(promotion.typePriceBaseds)
+        result = this.getDiscountTypeString(promotion.typePriceBaseds[0])
+        type = 'typePriceBaseds'
         break;
       case 'QUANTITY':
-        result = this.getDiscountTypeString(promotion.typeQuantityBaseds)
+        result = this.getDiscountTypeString(promotion.typeQuantityBaseds[0])
+        type = 'typeQuantityBaseds'
         break;
       case 'TEMPORARY_COUPON':
         result = this.getDiscountTypeString(promotion.typePersonalCouponBased)
+        type = 'typePersonalCouponBased'
         break;
     }
-    return result
+    return {discount: result, type: type}
   }
   public getDiscountTypeString(promotionType:any){
     let result = null
