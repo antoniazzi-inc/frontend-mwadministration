@@ -63,7 +63,7 @@
                   <div class="row mt-3">
                     <div class="form-group col-md-6">
                       <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                           <label class="control-label">{{$t('labels.repeatInCaseOfSubscription')}}</label>
                           <toggle-switch
                                          :on-text="$t('labels.yes')"
@@ -73,7 +73,7 @@
                       </div>
                     </div>
                     <div class="col-md-6">
-                      <div class="col-md-4">
+                      <div class="col-md-12">
                         <div v-if="selectedDiscountType !== 3 && selectedDiscountType !== 4">
                           <label class="control-label">{{$t('labels.applyToWholeOrder')}}</label>
                           <toggle-switch

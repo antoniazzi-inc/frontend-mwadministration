@@ -10,6 +10,8 @@ import {IPromotion, Promotion} from "@/shared/models/PromotionModel";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
 import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import CommonHelpers from "@/shared/commonHelpers";
+import {mixins} from "vue-class-component";
 @Component({
     props: {
         promotion: Object
@@ -24,7 +26,7 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
 
     }
 })
-export default class GeneralTabComponent extends Vue {
+export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
   public multiLangConfig:IMultiLanguageConfig
   public validFromConfig:any
   public validToConfig:any
@@ -116,6 +118,12 @@ export default class GeneralTabComponent extends Vue {
     this.promotionCopy = newVal
     this.availableFrom = newVal && newVal.availableFrom ? newVal.availableFrom : new Date()
     this.availableTo = newVal && newVal.availableTo ? newVal.availableTo : null
+    let discountId:any = this.getDiscountType(newVal)
+    if(newVal && discountId) this.selectedDiscountType = discountId.id
+    if(discountId.id === 1 || discountId.id === 2){
+      let discountPrice = this.getDiscount(newVal)
+      this.discountPriceAmount = discountPrice
+    }
   }
   @Watch('availableFrom', {immediate: true, deep: true})
   public changeAvailableToMin(newVal: any) {

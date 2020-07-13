@@ -3,6 +3,7 @@ import { ILanguage, Language } from '@/shared/models/language.model'
 import { columnsVisibility } from '@/shared/tabelsDefinitions'
 import { Country } from '@/shared/models/country.model'
 import axios from 'axios'
+import Store from "@/store";
 @Component
 export default class CommonHelpers extends Vue {
   /*
@@ -614,5 +615,129 @@ export default class CommonHelpers extends Vue {
   validateEmail (email: any) {
     const re = /\S+@\S+\.\S+/
     return re.test(email)
+  }
+
+  /*
+   * Name: getDiscount
+   * arg: discount -> IDiscount
+   * description: Returns promotion discount
+   * Author: Nick Dam
+   */
+  public getDiscount (promotion: any) {
+    let result = null
+    let promotionType = null
+    switch (promotion.promotionType) {
+      case 'TIME':
+        promotionType = promotion.typeTimeBased
+        break;
+      case 'AFFILIATE':
+        promotionType = promotion.typeAffiliateBased
+        break;
+      case 'BUNDLE':
+        promotionType = promotion.typeBundleBaseds
+        break;
+      case 'COUPON':
+        promotionType = promotion.typeCouponBased
+        break;
+      case 'LOYALTY':
+        promotionType = promotion.typeLoyaltyBased
+        break;
+      case 'PERSONAL_COUPON':
+        promotionType = promotion.typePersonalCouponBased
+        break;
+      case 'PRICE':
+        promotionType = promotion.typePriceBaseds
+        break;
+      case 'QUANTITY':
+        promotionType = promotion.typeQuantityBaseds
+        break;
+      case 'TEMPORARY_COUPON':
+        promotionType = promotion.typePersonalCouponBased
+        break;
+    }
+    if(!promotionType || !promotionType.discount){
+      return ''
+    }
+    if(promotionType.discount.percentage){
+      result = `${promotionType.discount.percentage}%`
+    } else if(promotionType.discount.fixed){
+      result = `${promotionType.discount.fixed}${Store.state.currency}`
+    } else if(promotionType.discount.noShipping){
+      result = 'noShipping'
+    } else {
+      result = 'freeItems'
+    }
+    return result
+  }
+  /*
+   * Name: getDiscountType
+   * arg: promotion -> IPromotion
+   * description: Returns promotion discount type
+   * Author: Nick Dam
+   */
+  public getDiscountType (promotion: any) {
+    let result = null
+    switch (promotion.promotionType) {
+      case 'TIME':
+        result = this.getDiscountTypeString(promotion.typeTimeBased)
+        break;
+      case 'AFFILIATE':
+        result = this.getDiscountTypeString(promotion.typeAffiliateBased)
+        break;
+      case 'BUNDLE':
+        result = this.getDiscountTypeString(promotion.typeBundleBaseds)
+        break;
+      case 'COUPON':
+        result = this.getDiscountTypeString(promotion.typeCouponBased)
+        break;
+      case 'LOYALTY':
+        result = this.getDiscountTypeString(promotion.typeLoyaltyBased)
+        break;
+      case 'PERSONAL_COUPON':
+        result = this.getDiscountTypeString(promotion.typePersonalCouponBased)
+        break;
+      case 'PRICE':
+        result = this.getDiscountTypeString(promotion.typePriceBaseds)
+        break;
+      case 'QUANTITY':
+        result = this.getDiscountTypeString(promotion.typeQuantityBaseds)
+        break;
+      case 'TEMPORARY_COUPON':
+        result = this.getDiscountTypeString(promotion.typePersonalCouponBased)
+        break;
+    }
+    return result
+  }
+  public getDiscountTypeString(promotionType:any){
+    let result = null
+    if(!promotionType || !promotionType.discount){
+      return ''
+    }
+    if(promotionType.discount.percentage){
+      result = {
+        id: 1,
+        name: 'percentage',
+        label: 'percentage'
+      }
+    } else if(promotionType.discount.fixed){
+      result = {
+        id: 2,
+        name: 'fixed',
+        label: 'fixedAmount'
+      }
+    } else if(promotionType.discount.noShipping){
+      result = {
+        id: 3,
+        name: 'noShipping',
+        label: 'noShipping'
+      }
+    } else {
+      result =  {
+        id: 4,
+        name: 'freeItems',
+        label: 'freeItems'
+      }
+    }
+    return result
   }
 }

@@ -127,8 +127,10 @@
   }
   thead th {
     font-size: .9em!important;
+    text-align: left;
   }
   .table td {
     font-size: 0.9em;
+    text-align: left;
   }
 </style>

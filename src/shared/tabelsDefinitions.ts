@@ -1,6 +1,15 @@
 import { ILanguage, Language } from '@/shared/models/language.model'
 import Store from '../store'
 import moment from 'moment'
+import {TypeAffiliateBased} from "@/shared/models/TypeAffiliateBasedModel";
+import {Discount, IDiscount} from "@/shared/models/DiscountModel";
+import {TypeBundleBased} from "@/shared/models/TypeBundleBasedModel";
+import {TypeCouponBased} from "@/shared/models/TypeCouponBasedModel";
+import {Coupon} from "@/shared/models/CouponModel";
+import {TypeLoyaltyBased} from "@/shared/models/TypeLoyaltyBasedModel";
+import {TypePersonalCouponBased} from "@/shared/models/TypePersonalCouponBasedModel";
+import {TypePriceBased} from "@/shared/models/TypePriceBasedModel";
+import {TypeQuantityBased} from "@/shared/models/TypeQuantityBasedModel";
 const local = localStorage.getItem('tableColumns') ? localStorage.getItem('tableColumns') : ''
 const currentSettings = local ? JSON.parse(local) : {}
 
@@ -19,6 +28,28 @@ function getCountryById (id: number) {
       result = country
     }
   })
+  return result
+}
+/*
+   * Name: getDiscount
+   * arg: discount -> IDiscount
+   * description: Returns promotion discount
+   * Author: Nick Dam
+   */
+function getDiscount (promotionType: any) {
+  let result = null
+  if(!promotionType || !promotionType.discount){
+    return ''
+  }
+  if(promotionType.discount.percentage){
+    result = `${promotionType.discount.percentage}%`
+  } else if(promotionType.discount.fixed){
+    result = `${promotionType.discount.fixed}${Store.state.currency}`
+  } else if(promotionType.discount.noShipping){
+    result = 'noShipping'
+  } else {
+    result = 'freeItems'
+  }
   return result
 }
 /*
@@ -299,6 +330,121 @@ export const product = {
       authorities: ['*'],
       sort: false,
       method: null
+    }
+  ]
+}
+
+export const promotion = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 10,
+  cols: [
+    {
+      name: 'labels.administrationId',
+      field: 'administrationId',
+      subField: null,
+      type: '',
+      authorities: ['ROLE_SUPER_ADMIN'],
+      sort: false
+    },
+    {
+      name: 'labels.id',
+      field: 'id',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.available',
+      field: 'available',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        console.log(item.availableTo)
+        const from = moment(item.availableFrom).format('MM/DD/YYYY')
+        const to = item.availableTo ? moment(item.availableTo).format('MM/DD/YYYY') : null
+        if(to){
+          return `${from} - ${to}`
+        }
+        return from
+      }
+    }, {
+      name: 'labels.name',
+      field: 'name',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        return getMultiLangName(item.promotionLanguages).name
+      }
+    },
+    {
+      name: 'labels.promotionType',
+      field: 'promotionType',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }, {
+      name: 'labels.discount',
+      field: 'discount',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        let result:any = ''
+        switch (item.promotionType) {
+          case 'TIME':
+            result = getDiscount(item.typeTimeBased)
+            break;
+          case 'AFFILIATE':
+            result = getDiscount(item.typeAffiliateBased)
+            break;
+          case 'BUNDLE':
+            result = getDiscount(item.typeBundleBaseds)
+            break;
+          case 'COUPON':
+            result = getDiscount(item.typeCouponBased)
+            break;
+          case 'LOYALTY':
+            result = getDiscount(item.typeLoyaltyBased)
+            break;
+          case 'PERSONAL_COUPON':
+            result = getDiscount(item.typePersonalCouponBased)
+            break;
+          case 'PRICE':
+            result = getDiscount(item.typePriceBaseds)
+            break;
+          case 'QUANTITY':
+            result = getDiscount(item.typeQuantityBaseds)
+            break;
+          case 'TEMPORARY_COUPON':
+            result = getDiscount(item.typePersonalCouponBased)
+            break;
+        }
+        return result
+      }
+    }, {
+      name: 'labels.promotionProducts',
+      field: 'products',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        //TODO handle promotion products
+      }
     }
   ]
 }
@@ -1638,6 +1784,15 @@ export const columnsVisibility = {
     color: true,
     itemsPerPage: 20
   },
+  promotion:{
+    id: true,
+    available: true,
+    name: true,
+    promotionType: true,
+    discount: true,
+    products: true,
+    itemsPerPage: 20
+  },
   tag: {
     id: true,
     code: true,
@@ -1678,16 +1833,6 @@ export const columnsVisibility = {
     label: true,
     createdOn: true,
     category: true,
-    itemsPerPage: 20
-  },
-  promotion: {
-    id: true,
-    name: true,
-    availableFrom: true,
-    availableTo: true,
-    promotionType: true,
-    discount: true,
-    promotionProducts: true,
     itemsPerPage: 20
   },
   taxRate: {

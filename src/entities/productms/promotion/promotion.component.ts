@@ -26,7 +26,7 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public editPromotion (promo: any) {
-    this.$router.push({ name: 'EditProduct', params: { id: promo.id } })
+    this.$router.push({ name: 'EditPromotion', params: { id: promo.id } })
   }
 
   public deletePromotion (promo: any) {
@@ -35,9 +35,9 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
       this.promotionService.delete(promo.id).then((resp: AxiosResponse) => {
         this.active = true
         if (resp) {
-          this.setAlert('productRemoved', 'success')
+          this.setAlert('promotionRemoved', 'success')
         } else {
-          this.setAlert('productRemoveError', 'error')
+          this.setAlert('promotionRemoveError', 'error')
         }
       })
     }
