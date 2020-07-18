@@ -9,7 +9,7 @@
       <br/>
       <label class="control-label" v-if="!forAllAffiliates">{{$t('labels.selectAffiliates')}}</label>
       <searchable-select-component :config="multiSelectConfig" v-if="!forAllAffiliates"
-                                   :options="allAffiliates"
+                                   :options="$store.state.lookups.affiliates"
                                    :value="selectedAffiliates"
                                    @onSelected="addAffiliate"
                                    @onDelete="removeAffiliate"/>

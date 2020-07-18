@@ -108,5 +108,6 @@
   "productUpdated": "Product Updated",
   "productRemoved": "Product Removed",
   "errorUploadingImage": "Error Uploading Image",
-  "productUpdateError": "Product Update Error"
+  "productUpdateError": "Product Update Error",
+  "personalCouponUpdated": "Personal Coupon Updated"
 }

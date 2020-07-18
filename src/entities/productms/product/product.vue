@@ -12,7 +12,7 @@
       <div class="col-md-3">
         <form name="searchForm" class="form text-left" @submit.prevent.stop="simpleSearch">
           <div class="form-group mt-3">
-            <label class="form-control-label">{{$t('labels.searchByNameSkuOrDescription')}}</label>
+            <label class="form-control-label">{{$t('labels.searchByNameDescriptionOrCouponCode')}}</label>
             <input type="text" class="form-control" name="currentSearch" id="currentSearch" v-model="currentSearchName" />
           </div>
           <div class="form-group mt-3">

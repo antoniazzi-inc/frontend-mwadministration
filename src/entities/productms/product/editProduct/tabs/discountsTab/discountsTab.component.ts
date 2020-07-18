@@ -21,7 +21,6 @@ import SearchableSelectComponent from '@/components/searchableSelect/searchableS
 export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
   public promotionService: any = promotionsService.getInstance();
   public productService: any = ProductService.getInstance();
-  public allDiscounts = [];
   public isNewAdded = false;
   public selectedDiscounts: any = [];
   public multiSelectConfig: ISearchableSelectConfig =
@@ -68,27 +67,7 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public mounted () {
-    this.getAllDiscounts()
-  }
 
-  public getAllDiscounts () {
-    const self = this
-    this.promotionService.getAll({ page: 0, size: 1000, sort: 'id,asc' }, undefined).then((resp: AxiosResponse) => {
-      const allDiscount: any = []
-      if (resp.data && resp.data.length) {
-        $.each(resp.data, function (k, v) {
-          allDiscount.push({
-            id: v.id,
-            label: self.getMultiLangName(v.promotionLanguages).name,
-            promotion: v
-          })
-        })
-      }
-      this.allDiscounts = allDiscount
-      if (this.isNewAdded) {
-        this.preselectPromotion()
-      }
-    })
   }
 
   public removeDiscount (discount: any) {
@@ -104,14 +83,14 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public preselectPromotion () {
-    if (this.allDiscounts.length) {
-      this.selectedDiscounts.push(this.allDiscounts[this.allDiscounts.length - 1])
+    if (this.$store.state.lookups.promotions) {
+      this.selectedDiscounts.push(this.$store.state.lookups.promotions[this.$store.state.lookups.promotions.length - 1])
       this.isNewAdded = false
     }
   }
 
-  public addDiscount (discount: any) {
-    this.selectedDiscounts.push(discount)
+  public addDiscount (discounts: any) {
+    this.selectedDiscounts = discounts
   }
 
   public cancel () {
@@ -121,20 +100,13 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
     const discountsToSave: any = []
     $.each(this.selectedDiscounts, function (k, v) {
       const promo = {
-        id: v.id,
-        administrationId: v.promotion.administrationId,
-        availableFrom: v.promotion.availableFrom,
-        availableTo: v.promotion.availableTo,
-        recurrent: v.promotion.recurrent,
-        createdOn: v.promotion.createdOn,
-        updatedOn: v.promotion.updatedOn,
-        version: v.promotion.version,
-        promotionType: v.promotion.promotionType
+        id: v.value.id,
+        version: v.value.version
       }
       discountsToSave.push(promo)
     })
     this.productCopy.promotions = discountsToSave
-    this.productService().update(this.productCopy).then((resp: AxiosResponse) => {
+    this.productService.put(this.productCopy).then((resp: AxiosResponse) => {
       this.setAlert('productUpdated', 'success')
       this.productCopy = resp.data
       this.productCopyBackup = JSON.parse(JSON.stringify(resp.data))

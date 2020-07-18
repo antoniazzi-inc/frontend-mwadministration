@@ -102,7 +102,7 @@
           </div>
         </div>
       </tab-content>
-      <tab-content  @click="step = 1" :title="$t('labels.promotionDetails')" icon="fas fa-tags">
+      <tab-content  @click="step = 1" :title="$t('labels.promotionDetails')" :before-change="stepForward" icon="fas fa-tags">
         <form>
           <div class="form-group mt-3">
             <multi-language-component
@@ -132,7 +132,7 @@
           </div>
         </form>
       </tab-content>
-      <tab-content  @click="step = 2" :title="$t('labels.discount')" icon="fas fa-receipt" >
+      <tab-content  @click="step = 2" :title="$t('labels.discount')" :before-change="stepForward" icon="fas fa-receipt" >
         <div class="form-group mt-3">
           <label class="control-label">{{$t('labels.discountType')}}</label>
           <select class="form-control" v-model="discountTypeId">
@@ -143,7 +143,8 @@
           <label class="control-label" v-if="discountTypeId===1">{{$t('labels.percentageAmount')}}</label>
           <label class="control-label" v-if="discountTypeId===2">{{$t('labels.fixedAmount')}}</label>
           <money v-if="discountTypeId===1" v-model="discountPriceAmount" :class="{'form-control': true, invalid: errors.has('discountAmount')}" name="discountAmount"  v-bind="moneyPercentage"></money>
-          <money v-if="discountTypeId===2" v-model="discountPriceAmount" :class="{'form-control': true, invalid: errors.has('discountFixedAmount')}" name="discountFixedAmount"  v-bind="moneyConfig"></money>
+          <money v-if="discountTypeId===2" v-model="discountPriceAmount" :class="{'form-control': true, invalid: errors.has('discountAmount')}" name="discountAmount"  v-bind="moneyConfig"></money>
+          <span class="small danger">{{errors.first('discountAmount')}}</span>
         </div>
         <div :class="{'form-group mt-3': true}" v-if="discountTypeId===4">
           <label class="control-label">{{$t('labels.FreeItem')}}</label>
@@ -158,7 +159,7 @@
         </div>
         <div :class="{'form-group mt-3': true}" v-if="discountTypeId===4">
           <label class="control-label">{{$t('labels.quantityAmount')}}</label>
-          <input :class="{'form-control': true, invalid: errors.has('discountAmount')}" type="number" class="form-control" name="discountAmount" v-model="discountQuantityAmount"/>
+          <input v-validate="'min_value:1'" :class="{'form-control': true, invalid: errors.has('discountAmount')}" type="number" class="form-control" name="discountAmount" v-model="discountQuantityAmount"/>
           <span class="text-danger small">{{errors.first('discountAmount')}}</span>
         </div>
         <div class="form-group mt-3">
@@ -170,18 +171,19 @@
             :value.sync="promotion.recurrent"/>
         </div>
       </tab-content>
-      <tab-content  @click="step = 3" :title="$t('labels.finalStep')" icon="fas fa-receipt">
+      <tab-content  @click="step = 3" :before-change="stepForward" :title="$t('labels.finalStep')" icon="fas fa-receipt">
         <div class="form-group mt-3" v-if="promotion.promotionType === 'TIME'">
           <h4>{{$t('labels.pleaseClickFinish')}}</h4>
         </div>
         <div class="form-group mt-3" v-if="promotion.promotionType === 'QUANTITY'">
           <label class="control-label">{{$t('labels.threshold')}}</label>
-          <input :class="{'form-control': true, invalid: errors.has('quantity')}" type="number" v-validate="'required'" v-model="quantityType" name="quantity" class="form-control"/>
+          <input :class="{'form-control': true, invalid: errors.has('quantity')}" type="number" v-validate="'numeric|min_value:1'" v-model="quantityType" name="quantity" class="form-control"/>
           <span class="text-danger small">{{errors.first('quantity')}}</span>
         </div>
         <div class="form-group mt-3" v-if="promotion.promotionType === 'PRICE'">
           <label class="control-label">{{$t('labels.orderTotalThreshold')}}</label>
-          <money v-model="totalThreshhold" :class="{'form-control': true, invalid: errors.has('totalThreshhold')}" v-validate="'required'" name="totalThreshhold"  v-bind="moneyConfig"></money>
+          <money v-model="totalThreshhold" :class="{'form-control': true, invalid: errors.has('totalThreshhold')}" v-validate="'required|min_value:1'" name="totalThreshhold"  v-bind="moneyConfig"></money>
+          <span class="small text-danger">{{step4Error}}</span>
         </div>
         <div class="form-group mt-3" v-if="promotion.promotionType === 'COUPON'">
           <label class="control-label">{{$t('labels.couponCode')}}</label>
@@ -191,9 +193,9 @@
                 {{$t('labels.generateCode')}}
               </div>
             </div>
-            <input :class="{'form-control': true, invalid: errors.has('couponCode')}" placeholder="" type="text" v-model="couponCode" name="couponCode">
-            <span class="text-danger small">{{errors.first('couponCode')}}</span>
+            <input v-validate="'required'" :class="{'form-control': true, invalid: errors.has('couponCode')}" placeholder="" type="text" v-model="couponCode" name="couponCode">
           </div>
+          <span class="text-danger small">{{errors.first('couponCode')}}</span>
         </div>
         <div class="form-group mt-3" v-if="promotion.promotionType === 'COUPON' || promotion.promotionType === 'PERSONAL_COUPON' || promotion.promotionType === 'TEMPORARY_COUPON'">
           <label class="control-label">{{$t('labels.maxTimesUsed')}}</label>
@@ -201,7 +203,7 @@
                          :on-text="$t('labels.infinite')"
                          :off-text="$t('labels.limited')"
                          :value.sync="couponMaxTimesUsed"></toggle-switch>
-          <input :class="{'form-control mt-3': true, invalid: errors.has('couponMaxTimesUsed')}" type="number" name="couponMaxTimesUsed" v-if="!couponMaxTimesUsed" v-model="maxTimesUsed"/>
+          <input  v-validate="'numeric|min_value:1'"  :class="{'form-control mt-3': true, invalid: errors.has('couponMaxTimesUsed')}" type="number" name="couponMaxTimesUsed" v-if="!couponMaxTimesUsed" v-model="maxTimesUsed"/>
           <span class="text-danger small">{{errors.first('couponMaxTimesUsed')}}</span>
         </div>
         <div class="form-group mt-3" v-if="promotion.promotionType === 'TEMPORARY_COUPON'">
@@ -209,7 +211,7 @@
           <toggle-switch :on-text="$t('labels.hours')"
                          :off-text="$t('labels.days')"
                          :value.sync="validDays"></toggle-switch>
-          <input :class="{'form-control mt-3': true, invalid: errors.has('temporaryValid')}" type="number" name="temporaryValid"  v-model="temporaryValid"/>
+          <input v-validate="'numeric|min_value:1'" :class="{'form-control mt-3': true, invalid: errors.has('temporaryValid')}" type="number" name="temporaryValid"  v-model="temporaryValid"/>
           <span class="text-danger small">{{errors.first('temporaryValid')}}</span>
         </div>
         <div class="form-group mt-3" v-if="promotion.promotionType === 'BUNDLE'">
@@ -222,10 +224,11 @@
                            :value.sync="selectedBundleProduct"
                                          @onSelected="addBundleProduct"
                                          @onDelete="removeBundleProduct"/>
+            <span class="small text-danger">{{step4Error}}</span>
           </div>
           <div :class="{'form-group mt-3': true}">
             <label class="control-label">{{$t('labels.bundleQuantity')}}</label>
-            <input :class="{'form-control': true, invalid: errors.has('bundleQuantity')}" type="number"  name="bundleQuantity" v-model="bundleQuantity"/>
+            <input v-validate="'numeric|min_value:1'" :class="{'form-control': true, invalid: errors.has('bundleQuantity')}" type="number"  name="bundleQuantity" v-model="bundleQuantity"/>
             <span class="text-danger small">{{errors.first('bundleQuantity')}}</span>
           </div>
         </div>
@@ -242,27 +245,29 @@
                                          :value.sync="selectedAffiliates"
                                          @onSelected="updateAffiliates"
                                          @onDelete="removeAffiliates"/>
+            <span class="small text-danger">{{step4Error}}</span>
           </div>
         </div>
         <template v-if="promotion.promotionType === 'LOYALTY'">
         <div :class="{'form-group mt-3':true}">
           <label class="control-label">{{$t('labels.earnedPointsToReceiveThisPromotion')}}</label>
-          <input :class="{'form-control': true, invalid: errors.has('points')}" type="number"  name="points" v-model="earnedPoints"/>
+          <input v-validate="'numeric|min_value:1'" :class="{'form-control': true, invalid: errors.has('points')}" type="number"  name="points" v-model="earnedPoints"/>
           <span class="text-danger small">{{errors.first('points')}}</span>
         </div>
         <div class="form-group mt-3">
           <label class="control-label">{{$t('labels.totalPurchaseAmount')}}</label>
           <money v-model="totalPurchaseAmount" :class="{'form-control': true, invalid: errors.has('totalPurchaseAmount')}" name="totalPurchaseAmount"  v-bind="moneyConfig"></money>
+          <span class="text-danger small">{{step4Error}}</span>
         </div>
         <div class="form-group mt-3">
           <label class="control-label">{{$t('labels.totalPurchaseItems')}}</label>
-          <input :class="{'form-control': true, invalid: errors.has('totalPurchaseItems')}" v-model="totalPurchaseItems" name="totalPurchaseItems"/>
+          <input type="number" v-validate="'numeric|min_value:1'" :class="{'form-control': true, invalid: errors.has('totalPurchaseItems')}" v-model="totalPurchaseItems" name="totalPurchaseItems"/>
           <span class="text-danger small">{{errors.first('totalPurchaseItems')}}</span>
         </div>
         </template>
       </tab-content>
       <button @click="stepBack" slot="prev" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.back')}}</button>
-      <button @click="stepForward" slot="next" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.next')}}</button>
+      <button slot="next" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.next')}}</button>
       <button slot="finish" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.finish')}}</button>
     </form-wizard>
   </div>

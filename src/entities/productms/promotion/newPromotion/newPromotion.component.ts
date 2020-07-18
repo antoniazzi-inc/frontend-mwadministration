@@ -47,6 +47,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   public promotion: IPromotion;
   public selectedBundleProduct: any;
   public validFromConfig: any;
+  public step4Error: any;
   public isSaving: boolean;
   public isValidatingStep2: boolean;
   public couponMaxTimesUsed: boolean;
@@ -122,6 +123,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
     this.couponMaxTimesUsed = false
     this.validDays = false
     this.forAllAffiliates = false
+    this.step4Error = ''
     this.moneyPercentage = {
       decimal: ',',
       thousands: '.',
@@ -194,6 +196,13 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   @Watch('availableFrom', {immediate: true, deep: true})
   public changeAvailableToMin(newVal: any) {
     this.validToConfig.minDate = moment(newVal).format('MM-DD-YYYY')
+  }
+
+  @Watch('forAllAffiliates', {immediate: true, deep: true})
+  public changeForAllAffiliates(newVal: any) {
+    if (newVal) {
+      this.step4Error = ''
+    }
   }
 
   public generateCouponCode() {
@@ -367,7 +376,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
             //@ts-ignore
             self.promotion.typeLoyaltyBased.discount[discountName] = JSON.stringify(discountValue);
           }
-          if(self.promotion.typeLoyaltyBased){
+          if (self.promotion.typeLoyaltyBased) {
             self.promotion.typeLoyaltyBased.totalPurchaseAmount = this.totalPurchaseAmount;
             self.promotion.typeLoyaltyBased.totalPurchaseItems = this.totalPurchaseItems;
             self.promotion.typeLoyaltyBased.points = this.earnedPoints;
@@ -404,7 +413,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
             //@ts-ignore
             self.promotion.typeQuantityBaseds[0].discount[discountName] = JSON.stringify(discountValue);
           }
-          self.promotion.typeQuantityBaseds ? self.promotion.typeQuantityBaseds[0].quantity = self.quantityType : null
+          self.promotion.typeQuantityBaseds ? self.promotion.typeQuantityBaseds[0].quantity = parseInt(self.quantityType.toString()) : null
           break;
         case 'TEMPORARY_COUPON':
           self.promotion.typePersonalCouponBased && self.promotion.typePersonalCouponBased.discount ? self.promotion.typePersonalCouponBased.discount.noShipping = undefined : null
@@ -435,7 +444,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
         this.createDto().then(() => {
           this.promotion.availableFrom = moment(this.availableFrom, 'YYYY-MM-DDTHH:mm')
           this.promotion.availableTo = moment(this.availableTo, 'YYYY-MM-DDTHH:mm')
-          if(this.promotion.availableTo === null) this.promotion.availableTo = undefined
+          if (this.promotion.availableTo === null) this.promotion.availableTo = undefined
           this.promotionService.post(this.promotion).then((resp: AxiosResponse) => {
             if (resp) {
               this.setAlert('promotionCreated', 'success')
@@ -463,15 +472,20 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public stepForward() {
-    if (this.step >= 3) {
-      return
-    } else {
-      this.validateStep().then(resp => {
-        if (resp) {
-          this.step += 1;
-        }
-      })
-    }
+    let self = this
+    return new Promise(resolve => {
+      if (this.step > 3) {
+        resolve(false)
+        return
+      } else {
+        this.validateStep().then(resp => {
+          if (resp) {
+            self.step += 1;
+          }
+          resolve(resp)
+        })
+      }
+    })
   }
 
   public validateStep() {
@@ -480,18 +494,153 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
       if (this.step === 0) {
         resolve(true)
       } else if (this.step === 1) {
+        if (this.promotion.promotionLanguages && this.promotion.promotionLanguages.length && this.promotion.promotionLanguages[0].name) {
+          self.isValidatingStep2 = false
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      } else if (this.step === 2) {
         this.$validator.validateAll().then(valid => {
-          if (valid) {
-            self.isValidatingStep2 = true
+          if (this.discountTypeId === 1 || this.discountTypeId === 2) {
+            if (this.discountPriceAmount >= 1) {
+              resolve(true)
+            } else {
+              this.$validator.errors.add({
+                field: 'discountAmount',
+                msg: this.$t('labels.discountAmountBiggerThan1').toString()
+              })
+              resolve(false)
+            }
+          } else if (this.discountTypeId === 3) {
             resolve(true)
-          } else {
-            resolve(false)
+          } else if (this.discountTypeId === 4) {
+            if (this.selectedProduct && this.discountQuantityAmount > 0) {
+              resolve(true)
+            } else {
+              resolve(false)
+            }
           }
         })
-      } else if (this.step === 2) {
-        resolve(true)
-      } else if (this.step === 3) {
-        resolve(true)
+      } else if (this.step >= 3) {
+        switch (this.promotion.promotionType) {
+          case 'TIME':
+            this.step4Error = ''
+            resolve(true)
+            break;
+          case 'AFFILIATE':
+            if (this.forAllAffiliates) {
+              this.step4Error = ''
+              resolve(true)
+            } else {
+              if (this.selectedAffiliates.length) {
+                this.step4Error = ''
+                resolve(true)
+              } else {
+                this.step4Error = this.$t('labels.atLeastOneAffiliate')
+                resolve(false)
+              }
+            }
+            break;
+          case 'BUNDLE':
+            this.$validator.validateAll({bundleQuantity: this.bundleQuantity}).then(resp => {
+              if (resp && this.selectedBundleProduct && this.selectedBundleProduct.value) {
+                resolve(true)
+                this.step4Error = ''
+              } else {
+                this.step4Error = ''
+                resolve(false)
+                if (!this.selectedBundleProduct) this.step4Error = this.$t('labels.selectBundleProduct')
+              }
+            })
+            break;
+          case 'COUPON':
+            this.$validator.validateAll({
+              couponMaxTimesUsed: this.maxTimesUsed,
+              couponCode: this.couponCode
+            }).then(resp => {
+              if (resp) {
+                resolve(true)
+              } else {
+                if (this.couponCode && this.couponMaxTimesUsed) {
+                  resolve(true)
+                } else {
+                  resolve(false)
+                }
+              }
+            })
+            break;
+          case 'LOYALTY':
+            this.$validator.validateAll({
+              points: this.earnedPoints,
+              totalPurchaseItems: this.totalPurchaseItems
+            }).then(resp => {
+              if (resp && this.totalPurchaseAmount > 0) {
+                resolve(true)
+              } else {
+                this.step4Error = ''
+                if (this.totalPurchaseAmount < 1) {
+                  resolve(false)
+                  this.step4Error = this.$t('labels.totalAmountMusBeBiggerOrEqualThan1')
+                } else {
+                  if (this.couponCode && this.maxTimesUsed) {
+                    resolve(true)
+                  } else {
+                    resolve(false)
+                  }
+                }
+              }
+            })
+            break;
+          case 'PERSONAL_COUPON':
+            if (this.couponMaxTimesUsed) {
+              resolve(true)
+            } else {
+              this.$validator.validateAll({
+                couponMaxTimesUsed: this.maxTimesUsed
+              }).then(resp => {
+                resolve(resp)
+              })
+            }
+            break;
+          case 'PRICE':
+            this.$validator.validateAll({
+              totalThreshhold: this.totalThreshhold
+            }).then(resp => {
+              if (!resp) {
+                this.step4Error = this.$t('labels.priceMustBeBiggerOrEqualTo1')
+              }
+              resolve(resp)
+            })
+            break;
+          case 'QUANTITY':
+            this.$validator.validateAll({
+              quantity: this.quantityType
+            }).then(resp => {
+              resolve(resp)
+            })
+            break;
+          case 'TEMPORARY_COUPON':
+            if (this.couponMaxTimesUsed && this.temporaryValid > 0) {
+              resolve(true)
+            } else {
+              if (!this.couponMaxTimesUsed) {
+                this.$validator.validateAll({
+                  temporaryValid: this.temporaryValid,
+                  couponMaxTimesUsed: this.maxTimesUsed
+                }).then(resp => {
+                  resolve(resp)
+                })
+              } else {
+                this.$validator.validateAll({
+                  temporaryValid: this.temporaryValid
+                }).then(resp => {
+                  resolve(resp)
+                })
+              }
+            }
+            break;
+        }
       }
     })
   }
@@ -556,7 +705,6 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public addProduct(product: any) {
-    debugger
     this.selectedProduct = product;
   }
 

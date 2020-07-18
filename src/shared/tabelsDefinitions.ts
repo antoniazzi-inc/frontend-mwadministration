@@ -443,7 +443,14 @@ export const promotion = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        //TODO handle promotion products
+        let result = ''
+        item.products.forEach((product:any, ind:number) => {
+          result += getMultiLangName(product.productLanguages).name
+          if(ind < item.products.length-1) {
+            result += ', '
+          }
+        })
+        return result
       }
     }
   ]

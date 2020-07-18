@@ -7,7 +7,7 @@
                     <div class="form-group">
                         <label class="control-label">{{$t('labels.chooseDiscounts')}}</label>
                       <searchable-select-component :config="multiSelectConfig"
-                                                   :options="allDiscounts"
+                                                   :options="$store.state.lookups.promotions"
                                                    :value="selectedDiscounts"
                                                    @onChange="addDiscount"
                                                    @onDelete="removeDiscount"/>

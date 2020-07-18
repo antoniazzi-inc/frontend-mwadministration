@@ -15,6 +15,7 @@ export default new Vuex.Store({
     lookups: {
       categories: [],
       groups: [],
+      affiliates: [],
       tags: [],
       freeFields: [],
       regions: [],
@@ -68,6 +69,9 @@ export default new Vuex.Store({
     },
     taxRates (state, newState) {
       state.lookups.taxRates = newState
+    },
+    affiliates (state, newState) {
+      state.lookups.affiliates = newState
     },
     freeFields (state, newState) {
       state.lookups.freeFields = newState
