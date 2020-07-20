@@ -35,6 +35,13 @@
         </div>
       </div>
     </div>
+    <div class="col-md-12">
+      <div class="row" v-if="limitError">
+        <div class="col-md-8">
+          <span class="text-danger">{{$t('labels.maxRowsLimit', {rows: rawRows.length})}}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script type="tsx" lang="ts" src="./step1.component.ts"/>

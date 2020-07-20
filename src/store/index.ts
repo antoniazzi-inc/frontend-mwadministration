@@ -12,6 +12,7 @@ export default new Vuex.Store({
     currentLanguage: 'en',
     currency: '€',
     maxUploadSize: 50000, //KB
+    maxRelUpload: 50000,
     lookups: {
       categories: [],
       groups: [],

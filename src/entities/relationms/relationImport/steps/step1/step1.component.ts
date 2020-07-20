@@ -24,6 +24,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   public hasHeader: boolean
   public hasDelimiterFields: boolean
   public hasHeaderField: boolean
+  public limitError: boolean
   public csvDelimiter: string
   public fileType: string
   public csvEscChar: string
@@ -35,6 +36,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     this.isUploading = false
     this.hasDelimiterFields = false
     this.hasHeaderField = false
+    this.limitError = false
     this.hasHeader = true
     this.rows = []
     this.rawRows = []
@@ -84,9 +86,9 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     this.fileType = file.name.split('.').pop()
     this.csvDelimiter = ','
     this.csvEscChar = '""'
-    const reader = new FileReader()
     const name = file.name
     if (this.fileType === 'vcf') {
+      const reader = new FileReader()
       this.hasDelimiterFields = false
       this.hasHeaderField = false
       reader.onload = function (e: any) {
@@ -148,6 +150,11 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
               self.rawRows.push(vcfArr)
             }
           })
+        if(self.rawRows.length >= self.$store.state.maxRelUpload){
+          self.limitError = true
+          return
+        }
+        self.limitError = false
         self.$emit('onUpload', {rows: self.rawRows, file: self.file})
         }
         reader.readAsBinaryString(self.file)
@@ -158,6 +165,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
       this.hasDelimiterFields = false
       this.hasHeaderField = true
     }
+    const reader = new FileReader()
     reader.onload = function (e: any) {
       self.isUploading = false
       const data = e.target.result
@@ -185,6 +193,11 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
             skipEmptyLines: true,
             complete: function (results: any) {
               self.rawRows = results.data
+              if(results.data.length >= self.$store.state.maxRelUpload){
+                self.limitError = true
+                return
+              }
+              self.limitError = false
               self.$emit('onUpload', {rows: self.rawRows, file: self.file})
 
             }
@@ -199,6 +212,11 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
             skipEmptyLines: true,
             complete: function (results: any) {
               self.rawRows = results.data
+              if(results.data.length >= self.$store.state.maxRelUpload){
+                self.limitError = true
+                return
+              }
+              self.limitError = false
               self.$emit('onUpload', {rows: self.rawRows, file: self.file})
             }
           })
@@ -259,6 +277,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     this.hasHeaderField = false
     this.rows = []
     this.rawRows = []
+    this.limitError = false
     this.$emit('onRemove')
   }
 }

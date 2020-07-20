@@ -7,7 +7,7 @@
           <div class="well" v-for="(cardinfo, ind) in $props.exampleCards" :key="ind">
             <template v-for="(card, index) in cardinfo">
               <dl :key="index">
-                <dt>{{card.label}}</dt>
+                <dt>{{$t(`labels.${card.label}`)}}</dt>
                 <dd>{{card.value}}
                   <v-gravatar v-if="card.label.toLowerCase() === 'email'" class="avatar-sm" :email="card.value"
                               :size="50"></v-gravatar>

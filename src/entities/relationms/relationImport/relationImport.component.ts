@@ -363,6 +363,13 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       setTimeout(function () {
         let ind = 0
         self.uniqueRows.forEach((row, index) => {
+          if(index < 6){
+            let example:any = []
+            self.mappings.forEach((map:any, ind:any)=>{
+              example.push({label: map.fieldName, value: row[map.rowIndex]})
+            })
+            self.exampleCards.push(example)
+          }
           let email = row[self.mappings[emailIndex].rowIndex]
           if (ind < self.uniqueRows.length - 1) {
             if (email && self.validateEmail(email)) queryP += `"${email.trim()}",`
@@ -371,6 +378,12 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
           }
           ind++
         })
+        if(!queryP){
+          self.numberOfExisingEmails = 0
+          self.prepareToSave()
+          resolve()
+          return
+        }
         const query = 'email=in=(' + queryP + ')'
         self.relationService.search(query).then((resp: AxiosResponse) => {
           if (resp) {
@@ -451,6 +464,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
             })
           },50)
         } else {
+          self.isSaving = false
           resolve(false)
         }
       } else if (self.step === 2) {
