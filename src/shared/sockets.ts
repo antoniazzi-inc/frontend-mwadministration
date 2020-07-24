@@ -16,19 +16,18 @@ export default class Sockets extends Vue {
   public socket: any;
   public relationSocket: any;
   public productSocket: any;
-  public url: any;
   public store: any;
   public stompClient: any;
   public stompClientRelation: any;
   public stompClientProduct: any;
 
-  constructor (props: any) {
-    super(props)
+  constructor () {
+    super()
     this.store = store
     this.administrationService = AdministrationService.getInstance()
     this.socket = new SockJS('/administrationms/socket')
     this.relationSocket = new SockJS('/relationms/socket')
-    this.productSocket = null // new SockJS('/productms/socket')
+    this.productSocket = new SockJS('/productms/socket')
     this.receivedMessages = []
     this.sendMessage = null
     this.connected = false
@@ -37,31 +36,36 @@ export default class Sockets extends Vue {
     this.stompClient = null
     this.stompClientRelation = null
     this.stompClientProduct = null
-    this.url = props && props.url ? props.url : '/socket'
   }
 
   public connect () {
-    this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
-      this.stompClient = Stomp.over(this.socket)
-      this.stompClient.connect({}, (frame: any) => {
-        this.connected = true
-        this.stompClient.subscribe(`/session/${result.data.uid}`, (tick: any) => {
-          this.updateLookups(JSON.parse(tick.body))
-        })
-      },
-      (error: any) => {
-        console.log(error)
-        this.connected = false
-      }
-      )
+    return new Promise(resolve => {
+      this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
+        this.stompClient = Stomp.over(this.socket)
+        this.stompClient.connect({}, (frame: any) => {
+            resolve(true)
+            this.connected = true
+            this.stompClient.subscribe(`/session/${result.data.uid}`, (tick: any) => {
+              this.updateLookups(JSON.parse(tick.body))
+            })
+          },
+          (error: any) => {
+            console.log(error)
+            resolve(false)
+            this.connected = false
+          }
+        )
+      })
     })
   }
 
   public connectRelation () {
+    return new Promise(resolve => {
     this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
       this.stompClientRelation = Stomp.over(this.relationSocket)
       this.stompClientRelation.connect({}, (frame: any) => {
         this.connectedRelation = true
+          resolve(true)
         this.stompClientRelation.subscribe(`/session/${result.data.uid}`, (tick: any) => {
           const resp = JSON.parse(tick.body)
           if (resp && resp.type && resp.type.toLowerCase() === 'relation' && resp.action && resp.action.toLowerCase() === 'create') {
@@ -69,6 +73,7 @@ export default class Sockets extends Vue {
             localStorage.removeItem('isImporting')
           } else {
             this.updateLookups(resp)
+            resolve(false)
           }
         })
       },
@@ -78,12 +83,15 @@ export default class Sockets extends Vue {
       }
       )
     })
+    })
   }
   public connectProduct () {
+    return new Promise(resolve => {
     this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
       this.stompClientProduct = Stomp.over(this.productSocket)
       this.stompClientProduct.connect({}, (frame: any) => {
         this.connectedProduct = true
+          resolve(true)
         this.stompClientProduct.subscribe(`/session/${result.data.uid}`, (tick: any) => {
           const resp = JSON.parse(tick.body)
           this.updateLookups(resp)
@@ -91,9 +99,11 @@ export default class Sockets extends Vue {
       },
       (error: any) => {
         console.log(error)
+        resolve(false)
         this.connectedProduct = false
       }
       )
+    })
     })
   }
 

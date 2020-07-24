@@ -189,7 +189,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body text-left">
             <div>
               <form @submit.prevent="saveUserProfile()">
                 <div class="form-body" v-if="user.relationProfile">

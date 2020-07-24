@@ -455,6 +455,66 @@ export const promotion = {
     }
   ]
 }
+export const course = {
+  actions: {
+    copy: true,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 10,
+  cols: [
+    {
+      name: 'labels.administrationId',
+      field: 'administrationId',
+      authorities: ['ROLE_SUPER_ADMIN'],
+      subField: null,
+      type: '',
+      sort: false
+    },
+    {
+      name: 'labels.id',
+      field: 'id',
+      authorities: ['*'],
+      subField: null,
+      type: '',
+      sort: false
+    },
+    {
+      name: 'labels.name',
+      field: 'name',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (newVal: any) {
+        //TODO get the name of the course
+      }
+    },
+    {
+      name: 'labels.eventDates',
+      field: '',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (newVal: any) {
+        //TODO get the event dates of the course
+      }
+    },
+    {
+      name: 'labels.description',
+      field: 'name',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (newVal: any) {
+        //TODO get the description of the course
+      }
+    }
+    ]
+}
 export const roles = {
   actions: {
     copy: true,
@@ -1895,6 +1955,13 @@ export const columnsVisibility = {
     description: true,
     deliveryMethodType: true,
     createdOn: true,
+    itemsPerPage: 20
+  },
+  course: {
+    id: true,
+    name: true,
+    eventDates: true,
+    description: true,
     itemsPerPage: 20
   },
   paymentMethod: {

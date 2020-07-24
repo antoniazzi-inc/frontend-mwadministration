@@ -67,7 +67,7 @@ export const MenuDefinitions = [
     {
       name: 'labels.courses',
       icon: '',
-      path: '/actions-courses',
+      path: '/courses',
       authorities: ['*']
     },
     {

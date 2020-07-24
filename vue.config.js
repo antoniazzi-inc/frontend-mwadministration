@@ -31,27 +31,12 @@ module.exports = {
         target: {
           // host: '46.217.82.127',
           host: 'localhost',
-          protocol: 'http:',
+          protocol: 'https:',
           port: 8080
         },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://46.217.82.127:8080')
-          proxyReq.setHeader('origin', 'http://localhost:8080')
-          proxyReq.setHeader('sec-fetch-mode', 'no-cors')
-          proxyReq.setHeader('Sec-Fetch-Site', 'none')
-        },
-        changeOrigin: true
-      },
-      '/productms': {
-        target: {
-          // host: '46.217.82.127',
-          host: 'localhost',
-          protocol: 'http:',
-          port: 8080
-        },
-        onProxyReq: proxyReq => {
-          // proxyReq.setHeader('origin', 'http://46.217.82.127:8080')
-          proxyReq.setHeader('origin', 'http://localhost:8080')
+          proxyReq.setHeader('origin', 'https://localhost:8080')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
@@ -61,12 +46,12 @@ module.exports = {
         target: {
           // host: '46.217.82.127',
           host: 'localhost',
-          protocol: 'http:',
+          protocol: 'https:',
           port: 8080
         },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://46.217.82.127:180801')
-          proxyReq.setHeader('origin', 'http://localhost:8080/administrationms/socket')
+          proxyReq.setHeader('origin', 'https://localhost:8080/administrationms/socket')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
@@ -77,12 +62,12 @@ module.exports = {
         target: {
           // host: '46.217.82.127',
           host: 'localhost',
-          protocol: 'http:',
+          protocol: 'https:',
           port: 8080
         },
         onProxyReq: proxyReq => {
           // proxyReq.setHeader('origin', 'http://46.217.82.127:180801')
-          proxyReq.setHeader('origin', 'http://localhost:8080/relationms/socket')
+          proxyReq.setHeader('origin', 'https://localhost:8080/relationms/socket')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },
@@ -93,12 +78,11 @@ module.exports = {
         target: {
           // host: '46.217.82.127',
           host: 'localhost',
-          protocol: 'http:',
+          protocol: 'https:',
           port: 8080
         },
         onProxyReq: proxyReq => {
-          // proxyReq.setHeader('origin', 'http://46.217.82.127:180801')
-          proxyReq.setHeader('origin', 'http://localhost:8080/productms/socket')
+          proxyReq.setHeader('origin', 'https://localhost:8080/productms/socket')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
         },

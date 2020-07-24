@@ -97,7 +97,12 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+.fa-chair:before {
+  content: '\f6c0';
+}
+.fa-ban:before {
+  content: '\f05e';
+}
 .picons-thin-icon-thin-0426_money_payment_dollars_coins_cash:before {
   content: '\ea93';
 }

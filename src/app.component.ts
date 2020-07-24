@@ -54,9 +54,9 @@ export default class App extends mixins(Vue, CommonHelpers) {
     regionService = RegionService.getInstance();
     deliveryMethodService = DeliveryMethodService.getInstance();
     counter = 0;
-    sockets = new Sockets({ url: 'http://localhost:18081/' });
-    relationSocket = new Sockets({ url: 'http://localhost:18080/' });
-    productSocket =null // new Sockets({ url: 'http://localhost:18082/' });
+    sockets = new Sockets();
+    relationSocket = new Sockets();
+    productSocket = new Sockets();
     loading = true;
     isReady = true;
     mainMenu = MenuDefinitions;
@@ -243,14 +243,18 @@ export default class App extends mixins(Vue, CommonHelpers) {
     }
 
     retrieveAccount () {
-      this.accountService.retrieveAccount().then(account => {
+      this.accountService.retrieveAccount().then(async account => {
         if (account) {
           this.$store.commit('authenticate')
           this.loading = false
           this.$store.commit('authenticated', account.data)
-          this.sockets.connect()
-          this.relationSocket.connectRelation()
-          //this.productSocket.connectProduct()
+           this.sockets.connect().then(()=>{
+             this.relationSocket.connectRelation().then(()=>{
+              this.productSocket.connectProduct().then(()=>{
+
+              })
+            })
+          })
         } else {
           this.$router.push('/login')
         }

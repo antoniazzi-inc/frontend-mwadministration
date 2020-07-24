@@ -41,6 +41,8 @@ import EditProductComponent from '@/entities/productms/product/editProduct/editP
 import PromotionComponent from "@/entities/productms/promotion/promotion.vue";
 import NewPromotionComponent from "@/entities/productms/promotion/newPromotion/newPromotion.vue";
 import EditPromotionComponent from "@/entities/productms/promotion/editPromotion/editPromotion.vue";
+import CourseComponent from "@/entities/productms/course/course.vue";
+import NewCourseComponent from "@/entities/productms/course/newCourse/newCourse.vue";
 
 Vue.use(VueRouter)
 
@@ -193,6 +195,19 @@ const routes = [
     path: '/products/edit/:id',
     name: 'EditProduct',
     component: EditProductComponent,
+    params: { id: null }
+  },{
+    path: '/courses',
+    name: 'Courses',
+    component: CourseComponent
+  }, {
+    path: '/course/new',
+    name: 'newCourse',
+    component: NewCourseComponent
+  }, {
+    path: '/course/edit/:id',
+    name: 'EditCourse',
+    component: NewCourseComponent,
     params: { id: null }
   }, {
     path: '/products-dashboard',

@@ -31,10 +31,10 @@
     font-size: 20px;
     color: #047bf8;
     position: absolute;
-    padding-top: 5%;
-    left: 0;
+    -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
-    padding-left: 3%;
+    margin-left: 1%;
+    margin-top: 2%;
 }
 .date-input .form-control{
     padding-left: 35px;
@@ -198,4 +198,123 @@
     font-size: 0.9rem;
     line-height: 1.2;
     margin-top: 5px;
+}
+/*
+ #14. Progress Bar Element
+*/
+.os-progress-bar {
+    margin-bottom: 1rem;
+}
+
+.os-progress-bar .bar-labels {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.os-progress-bar .bar-labels span {
+    font-size: 0.72rem;
+}
+
+.os-progress-bar .bar-labels span.bigger {
+    font-size: 0.99rem;
+}
+
+.os-progress-bar .bar-label-left span {
+    margin-right: 5px;
+}
+
+.os-progress-bar .bar-label-left span.positive {
+    color: #619b2e;
+}
+
+.os-progress-bar .bar-label-left span.negative {
+    color: #d83536;
+}
+
+.os-progress-bar .bar-label-right span {
+    margin-left: 5px;
+}
+
+.os-progress-bar .bar-label-right span.info {
+    color: #456cf9;
+}
+
+.os-progress-bar .bar-level-1,
+.os-progress-bar .bar-level-2,
+.os-progress-bar .bar-level-3 {
+    border-radius: 12px;
+    height: 6px;
+}
+
+.os-progress-bar.blue .bar-level-1,
+.os-progress-bar.primary .bar-level-1 {
+    background-color: #f2f2f2;
+}
+
+.os-progress-bar.blue .bar-level-2,
+.os-progress-bar.primary .bar-level-2 {
+    background-color: #65affd;
+}
+
+.os-progress-bar.blue .bar-level-3,
+.os-progress-bar.primary .bar-level-3 {
+    background-color: #0362c6;
+}
+
+.os-progress-bar.warning .bar-level-1 {
+    background-color: #f2f2f2;
+}
+
+.os-progress-bar.warning .bar-level-2 {
+    background-color: #fcebb8;
+}
+
+.os-progress-bar.warning .bar-level-3 {
+    background-color: #f9d66f;
+}
+
+.os-progress-bar.danger .bar-level-1 {
+    background-color: #f2f2f2;
+}
+
+.os-progress-bar.danger .bar-level-2 {
+    background-color: #f7acac;
+}
+
+.os-progress-bar.danger .bar-level-3 {
+    background-color: #f16666;
+}
+
+.os-progress-bar.success .bar-level-1 {
+    background-color: #f2f2f2;
+}
+
+.os-progress-bar.success .bar-level-2 {
+    background-color: #c2f2ae;
+}
+
+.os-progress-bar.success .bar-level-3 {
+    background-color: #90e86c;
+}
+
+.os-progress-bar.info .bar-level-1 {
+    background-color: #f2f2f2;
+}
+
+.os-progress-bar.info .bar-level-2 {
+    background-color: #9fd9f7;
+}
+
+.os-progress-bar.info .bar-level-3 {
+    background-color: #58bef1;
+}
+
+.os-progress-bar.floated {
+    float: right;
+    width: 220px;
 }

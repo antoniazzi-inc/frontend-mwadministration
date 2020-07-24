@@ -14,14 +14,14 @@
           <div class="row mt-3" v-if="promotionCopy.promotionType === 'TEMPORARY_COUPON'">
             <div class="col-md-12">
               <label class="control-label">{{$t('labels.valid')}}</label>
-              <toggle-switch id="valid"
-                             :on-text="$t('labels.hours')"
-                             :off-text="$t('labels.days')"
-                             :value.sync="validDays"></toggle-switch>
+              <select v-model="validDays" class="form-control">
+                <option :value="true">{{$t('labels.days')}}</option>
+                <option :value="false">{{$t('labels.hours')}}</option>
+              </select>
               <input type="number" name="temporaryValid" class="form-control mt-2" v-model="temporaryValid"/>
             </div>
           </div>
-          <div class="row mt-3">
+          <div class="row mt-3" v-if="promotionCopy.promotionType !== 'TEMPORARY_COUPON'">
             <div class="col-md-6">
               <div :class="{'form-group': true}">
                 <label class="control-label">{{$t('labels.imported')}}</label>
@@ -39,10 +39,14 @@
           </div>
           <div class="form-group" v-if="imported">
             <label class="control-label">{{$t('labels.uploadCouponCodes')}}</label>
-            <!--upload coupons-->
+            <vueDropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"
+                         :duplicateCheck="true"
+                         @vdropzone-file-added="handleFile"
+                         @vdropzone-removed-file="handleRemove">
+            </vueDropzone>
             <p v-if="typePersonalCouponBased.coupons && typePersonalCouponBased.coupons.length">{{$t('labels.totalCodesFound')}} : {{typePersonalCouponBased.coupons.length}}</p>
           </div>
-          <div class="form-buttons-w text-right">
+          <div class="form-buttons-w text-right mt-3">
             <button type="button" id="cancel-save" class="btn btn-secondary" v-on:click="previousState()">
               <span v-text="$t('buttons.back')">Back</span>
             </button>
