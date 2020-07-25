@@ -142,11 +142,6 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
                     }
                   })
                   if (cat) relationProfile.categoryId = cat.value
-                } else {
-                  if(row[rowIndex] === 'Saskia'){
-                    debugger
-                  }
-                  relationProfile[fieldName] = row[rowIndex]
                 }
               }
               break;

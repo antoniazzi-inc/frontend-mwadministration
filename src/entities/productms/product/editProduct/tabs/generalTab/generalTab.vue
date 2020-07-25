@@ -65,7 +65,7 @@
                                                        :options="allProductsCategories"
                                                        :value="selectedCategories"
                                                        @onSelected="addNewCategory"
-                                                       @onRemove="removeCategory"/>
+                                                       @onDelete="removeCategory"/>
                         </div>
                     </div>
                   <div class="form-group row mt-3">

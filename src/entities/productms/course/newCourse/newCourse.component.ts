@@ -1,4 +1,4 @@
-import {Component, Vue} from 'vue-property-decorator'
+import {Component, Vue, Watch} from 'vue-property-decorator'
 import {mixins} from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import coursesService from "@/shared/services/coursesService";
@@ -18,8 +18,15 @@ import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 import {IMoneyConfig, MoneyConfig} from "@/shared/models/moneyConfig";
 import Store from "@/store";
 import {AxiosResponse} from "axios";
+import eventsService from "@/shared/services/eventsService";
 
 @Component({
+  props:{
+    courseId: {
+      type: Number,
+      required: false
+    }
+  },
   components: {
     Trumbowyg,
     MultiLanguageComponent,
@@ -29,6 +36,9 @@ import {AxiosResponse} from "axios";
   },
   beforeRouteEnter (to, from, next) {
     next((vm: any) => {
+      if(to.query.backToProducts && to.query.backToProducts == "true"){
+        vm.backToProducts = true
+      }
       if (to.params.id) {
         vm.populateCourse(to.params.id)
       }
@@ -48,6 +58,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public eventStart: any
   public moneyConfig: IMoneyConfig
   public eventEnd: any
+  public eventsService: any
   public dateConfigEnd: any
   public dateConfigStart: any
   public course: ICourse
@@ -58,6 +69,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   constructor() {
     super()
     this.courseService = coursesService.getInstance()
+    this.eventsService = eventsService.getInstance()
     this.editorConfig = {
       btnsAdd: ['foreColor', 'backColor'],
       btns: [
@@ -76,20 +88,26 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
         ['fullscreen']
       ]
     }
-    this.eventStart = moment().format('MM-DD-YYYY')
-    this.eventEnd = null
+    this.eventStart = moment().format('MM-DD-YYYY HH-MM')
+    this.eventEnd = moment().format('MM-DD-YYYY HH-MM')
+
     this.dateConfigStart = {
       wrap: true,
       altInput: false,
       dateFormat: 'm-d-Y',
+      timeFormat: 'HH-MM',
+      enableTime: true,
       minDate: moment().format('MM-DD-YYYY')
     }
     this.dateConfigEnd = {
       wrap: true,
       altInput: false,
       dateFormat: 'm-d-Y',
+      timeFormat: 'HH-MM',
+      enableTime: true
     }
-    this.course = new Course()
+    this.course = new Course(undefined, undefined, undefined, undefined, undefined,
+      undefined, [])
     this.selectedEvent = new Event()
     this.totalReservedSeats = 0
     this.moneyConfig = new MoneyConfig(',', '.', '', Store.state.currency, 2, false)
@@ -106,8 +124,16 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
       'labels.eventName', 'labels.eventDescription', false,
       false, false, true, true, false)
   }
-
-  public mounted() {
+  @Watch('courseId', {immediate: true, deep: true})
+  public initCourse(newVal:any) {
+   if(newVal){
+     this.populateCourse(newVal)
+   }
+  }
+  @Watch('eventStart', {immediate: true, deep: true})
+  public updateEventStart(newVal:any) {
+    this.$set(this.dateConfigEnd, 'minDate', newVal)
+    this.eventEnd = newVal
   }
   public populateCourse(id:any) {
     this.isSaving = true
@@ -245,7 +271,28 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     return 'Amsterdam, Netherlands';
   }
 
-  public editCurrentEvent(item: any) {
+  public editCurrentEvent(item: any, index: any) {
+    this.selectedEvent = item
+    this.editEvent = true
+  }
+  public removeCurrentEvent(item: any, index: any) {
+    this.selectedEvent = new Event()
+    if(this.course && this.course.events){
+      let event:IEvent = this.course.events[index]
+      if(event.id){
+        this.eventsService.delete(event.id).than((resp:AxiosResponse)=>{
+          if(resp){
+            this.setAlert('eventRemoved', 'success')
+            if(this.course && this.course.events) this.course.events.splice(index, 1)
+          } else {
+            this.setAlert('eventRemoveError', 'error')
+          }
+        })
+      } else {
+        this.course.events.splice(index, 1)
+        this.setAlert('eventRemoved', 'success')
+      }
+    }
   }
 
   public addNewEvent(item: any) {

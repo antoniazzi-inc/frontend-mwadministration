@@ -13,9 +13,9 @@ export interface ICourse extends IBaseEntity {
 
 export class Course implements ICourse {
 constructor(
+    public id?: number,
     public createdOn?: Moment,
     public updatedOn?: Moment,
-    public id?: number,
     public version?: number,
     public administrationId?: number,
     public pageContentJson?: string,

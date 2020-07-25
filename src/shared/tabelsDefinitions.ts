@@ -488,7 +488,7 @@ export const course = {
       authorities: ['*'],
       sort: false,
       method: function (newVal: any) {
-        //TODO get the name of the course
+        return getMultiLangName(newVal.courseLanguages).name
       }
     },
     {
@@ -510,7 +510,7 @@ export const course = {
       authorities: ['*'],
       sort: false,
       method: function (newVal: any) {
-        //TODO get the description of the course
+        return getMultiLangName(newVal.courseLanguages).description
       }
     }
     ]

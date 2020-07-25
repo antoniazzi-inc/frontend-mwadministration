@@ -46,7 +46,7 @@
               <searchable-select-component :config="searchableConfig"
                                            :options="$store.state.lookups.roles"
                                            :value="selectedRoles"
-                                           @onSelected="roleChanged"
+                                           @onChange="roleChanged"
                                            @onDelete="roleRemoved"
               ></searchable-select-component>
             </div>

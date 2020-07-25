@@ -242,7 +242,6 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
           // @ts-ignore
           dtoEdit.push({id: v.id})
         } else {
-          debugger
           dtoCreate.push({
             name: v.name,
             images: v.images,
@@ -450,7 +449,6 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       await $.each(self.allMediaFiles, async function (k, v) {
         if (v.mediaId === undefined) {
            new BaseImage(v.blob, v.file.type, v.file.name, undefined, function (image:any) {
-             debugger
              let dtoImg =  image.resizeAll()
              resizedImgs.push(dtoImg)
              index = k

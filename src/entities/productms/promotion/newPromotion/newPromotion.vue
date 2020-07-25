@@ -154,7 +154,7 @@
             :options="$store.state.lookups.products"
             name="freeItem"
             :value.sync="selectedProduct"
-            @onRemove="removeProduct"
+            @onDelete="removeProduct"
             @onSelected="addProduct"/>
         </div>
         <div :class="{'form-group mt-3': true}" v-if="discountTypeId===4">

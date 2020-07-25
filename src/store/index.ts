@@ -21,6 +21,7 @@ export default new Vuex.Store({
       freeFields: [],
       regions: [],
       products: [],
+      courses: [],
       timeZones: [],
       taxRates: [],
       companies: [],
@@ -94,6 +95,9 @@ export default new Vuex.Store({
     },
     promotions (state, newState) {
       state.lookups.promotions = newState
+    },
+    courses (state, newState) {
+      state.lookups.courses = newState
     },
     roles (state, newState) {
       state.lookups.roles = newState

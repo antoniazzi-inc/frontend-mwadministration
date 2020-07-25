@@ -190,7 +190,6 @@ export default class BaseImage extends Vue {
       $.each(sides, function (k, v) {
         resizedImages.push(self.resize(v))
       })
-      debugger
       return { name: this.name.replace(/ /g, '_'), images: resizedImages, contentType: this.contentType }
     }
 

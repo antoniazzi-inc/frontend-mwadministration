@@ -5,8 +5,10 @@ import store from '../store'
 import AdministrationService from '@/shared/services/administrationService'
 import { AxiosResponse } from 'axios'
 import { EventBus } from './eventBus'
+import CommonHelpers from "@/shared/commonHelpers";
+import {mixins} from "vue-class-component";
 @Component
-export default class Sockets extends Vue {
+export default class Sockets extends mixins(CommonHelpers, Vue) {
   public administrationService: any
   public receivedMessages: any[];
   public sendMessage: any;
@@ -25,9 +27,9 @@ export default class Sockets extends Vue {
     super()
     this.store = store
     this.administrationService = AdministrationService.getInstance()
-    this.socket = new SockJS('/administrationms/socket')
-    this.relationSocket = new SockJS('/relationms/socket')
-    this.productSocket = new SockJS('/productms/socket')
+    this.socket = null
+    this.relationSocket = null
+    this.productSocket = null
     this.receivedMessages = []
     this.sendMessage = null
     this.connected = false
@@ -39,15 +41,16 @@ export default class Sockets extends Vue {
   }
 
   public connect () {
+    this.socket = new SockJS('/administrationms/socket')
     return new Promise(resolve => {
       this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
         this.stompClient = Stomp.over(this.socket)
         this.stompClient.connect({}, (frame: any) => {
-            resolve(true)
             this.connected = true
             this.stompClient.subscribe(`/session/${result.data.uid}`, (tick: any) => {
               this.updateLookups(JSON.parse(tick.body))
             })
+            resolve(true)
           },
           (error: any) => {
             console.log(error)
@@ -60,12 +63,12 @@ export default class Sockets extends Vue {
   }
 
   public connectRelation () {
+    this.relationSocket = new SockJS('/relationms/socket')
     return new Promise(resolve => {
     this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
       this.stompClientRelation = Stomp.over(this.relationSocket)
       this.stompClientRelation.connect({}, (frame: any) => {
         this.connectedRelation = true
-          resolve(true)
         this.stompClientRelation.subscribe(`/session/${result.data.uid}`, (tick: any) => {
           const resp = JSON.parse(tick.body)
           if (resp && resp.type && resp.type.toLowerCase() === 'relation' && resp.action && resp.action.toLowerCase() === 'create') {
@@ -76,6 +79,7 @@ export default class Sockets extends Vue {
             resolve(false)
           }
         })
+          resolve(true)
       },
       (error: any) => {
         console.log(error)
@@ -86,21 +90,22 @@ export default class Sockets extends Vue {
     })
   }
   public connectProduct () {
+    this.productSocket = new SockJS('/productms/socket')
     return new Promise(resolve => {
     this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
       this.stompClientProduct = Stomp.over(this.productSocket)
       this.stompClientProduct.connect({}, (frame: any) => {
         this.connectedProduct = true
-          resolve(true)
         this.stompClientProduct.subscribe(`/session/${result.data.uid}`, (tick: any) => {
           const resp = JSON.parse(tick.body)
           this.updateLookups(resp)
         })
+          resolve(true)
       },
       (error: any) => {
         console.log(error)
-        resolve(false)
         this.connectedProduct = false
+        resolve(false)
       }
       )
     })
@@ -147,6 +152,30 @@ export default class Sockets extends Vue {
         lookupData = this.store.state.lookups.freeFields
         lookupName = 'freeFields'
         break
+      case 'promotion':
+        obj.content = {
+          label: this.getMultiLangName(obj.content.promotionLanguages).name,
+          value: obj
+        }
+        lookupData = this.store.state.lookups.promotions
+        lookupName = 'promotions'
+        break
+      case 'product':
+        obj.content = {
+          label: this.getMultiLangName(obj.content.productLanguages).name,
+          value: obj
+        }
+        lookupData = this.store.state.lookups.products
+        lookupName = 'products'
+        break
+      case 'course':
+        obj.content = {
+          label: this.getMultiLangName(obj.content.courseLanguages).name,
+          value: obj
+        }
+        lookupData = this.store.state.lookups.courses
+        lookupName = 'courses'
+        break
     }
     if (lookupName === '') {
       return
@@ -175,13 +204,8 @@ export default class Sockets extends Vue {
         break
       case 'DELETE':
         allToDelete = self.store.state.lookups[lookupName]
-        indexToDelete = null
-        this.store.state.lookups[lookupName].forEach((item: any, ind: number) => {
-          if (item.id === obj.content.id) {
-            indexToDelete = ind
-          }
-        })
-        if (indexToDelete !== null) {
+        indexToDelete = this.store.state.lookups[lookupName].findIndex((x:any) => {x.id === obj.content.id})
+        if (indexToDelete > -1) {
           allToDelete.splice(indexToDelete, 1)
           this.store.commit(lookupName, allToDelete)
         }

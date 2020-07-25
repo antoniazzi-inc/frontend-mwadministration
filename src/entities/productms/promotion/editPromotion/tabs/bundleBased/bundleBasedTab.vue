@@ -42,7 +42,7 @@
                                            :options="item.allProducts"
                                            :value="allItems[index].selectedProducts"
                                            @onSelected="addProduct($event, index)"
-                                           @onRemove="removeProduct($event, index)"/>
+                                           @onDelete="removeProduct($event, index)"/>
             </div>
             <div class="form-group-inline ml-4">
               <label class="form-control-label">{{$t('labels.selectProductFeature')}}</label>
@@ -50,7 +50,7 @@
                                            :options="item.allAttributes"
                                            :value="allItems[index].selectedAttributes"
                                            @onSelected="addAttribute($event, index)"
-                                           @onRemove="removeAttribute($event, index)"/>
+                                           @onDelete="removeAttribute($event, index)"/>
             </div>
             <div class="form-group-inline ml-4">
               <label class="form-control-label">{{$t('labels.selectProductFeatureValue')}}</label>
@@ -58,7 +58,7 @@
                                            :options="item.allAttributeValues"
                                            :value="allItems[index].selectedAttributeValues"
                                            @onSelected="addAttributeValue($event, index)"
-                                           @onRemove="removeAttributeValue($event, index)"/>
+                                           @onDelete="removeAttributeValue($event, index)"/>
             </div>
             <div class="form-group-inline ml-4">
               <label class="form-control-label">{{$t('labels.quantity')}}</label>

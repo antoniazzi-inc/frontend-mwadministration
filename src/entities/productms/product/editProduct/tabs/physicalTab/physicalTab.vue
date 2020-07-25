@@ -8,8 +8,8 @@
                         <div class="form-group col-md-6">
                             <label class="form-control-label">{{$t('labels.fulfilmentParty')}}</label>
                             <searchable-select-component :config="multiSelectConfig" :options="allFulfilments" :value="selectedFulfilments"
-                                          @onAdd="fulfilmentChanged"
-                                          @onRemove="removeFulfilment"/>
+                                          @onCreate="fulfilmentChanged"
+                                          @onDelete="removeFulfilment"/>
                         </div>
                         <div class="form-group col-md-6">
                             <div class="row">

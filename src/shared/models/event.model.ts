@@ -2,8 +2,9 @@ import { Moment } from 'moment';
 import { IEventLanguage } from './event-language.model';
 import { ICourse } from './CourseModel';
 import {IEventReservation} from "@/shared/models/eventReservation.model";
+import {IBaseEntity} from "@/shared/models/baseModel";
 
-export interface IEvent {
+export interface IEvent extends IBaseEntity{
     latitude?: number;
     longitude?: number;
     seats?: number;

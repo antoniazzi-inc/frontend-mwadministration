@@ -8,8 +8,30 @@
         </button>
       </router-link>
     </h2>
-    <div class="row">
+    <div class="row text-left">
       <div class="col-md-3">
+        <form onsubmit.prevent.stop="search">
+          <div class="form-group mt-3">
+            <label>{{$t('labels.searchByName')}}</label>
+            <input type="text" class="form-control" v-model="nameSearch">
+          </div>
+          <div class="form-group mt-3">
+            <label>{{$t('labels.searchByStartDate')}}</label>
+            <div class="date-input">
+              <flat-pickr :config="dateConfigStart" v-model="eventStart" class="single-daterange form-control"/>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label>{{$t('labels.searchByEndDate')}}</label>
+            <div class="date-input">
+              <flat-pickr :config="dateConfigStart" v-model="eventStart" class="single-daterange form-control"/>
+            </div>
+          </div>
+          <div class="text-right">
+            <button type="button" class="btn btn-outline-primary" @click="clear()">{{$t('buttons.clear')}}</button>
+            <button type="submit" class="btn btn-primary ml-2" @click="search">{{$t('buttons.search')}}</button>
+          </div>
+        </form>
       </div>
       <div class="col-md-9">
         <PaginationTableComponent

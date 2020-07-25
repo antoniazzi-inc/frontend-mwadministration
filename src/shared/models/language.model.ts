@@ -18,6 +18,7 @@ export class Language implements ILanguage {
       public langKey?: string,
       public title?: string,
       public name?: string,
+      public description?: string,
       public intro?: string,
       public helpCategory?: IHelpCategory,
       public version?: number,

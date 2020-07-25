@@ -45,18 +45,18 @@
               <searchable-select-component :config="searchableConfig"
                                            :options="helpCategories"
                                            :value="selectedHelpCategory"
-                                           @onAdd="addHelpCategory"
+                                           @onCreate="addHelpCategory"
                                            @onChange="addHelpCategory"
-                                           @onRemove="removeHelpCategory"></searchable-select-component>
+                                           @onDelete="removeHelpCategory"></searchable-select-component>
            </div>
            <div class="form-group">
              <label v-text="$t('labels.tag')">Tag</label>
              <searchable-select-component :config="searchableConfigTags"
                                           :options="helpTags"
                                           :value="selectedHelpTag"
-                                          @onAdd="addHelpTag"
+                                          @onCreate="addHelpTag"
                                           @onChange="addHelpTag"
-                                          @onRemove="removeHelpTag"></searchable-select-component>
+                                          @onDelete="removeHelpTag"></searchable-select-component>
            </div>
 
          </div>

@@ -220,8 +220,8 @@
           </div>
           <div class="form-group" v-if="product.productType === 'COURSE'">
             <label class="col-md-6 control-label">{{$t('labels.selectCourse')}}</label>
-            <searchable-select-component :config="searchableConfig"
-                                         :options="typeCourses"
+            <searchable-select-component :config="searchableConfigCourses"
+                                         :options="$store.state.lookups.courses"
                                          :value="selectedCourse"
                                          @onCreate="addNewCourse"
                                          @onSelected="updateCourse"

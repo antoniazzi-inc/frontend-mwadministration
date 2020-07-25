@@ -1,29 +1,29 @@
-import { mixins } from 'vue-class-component'
+import {mixins} from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import {Component, Vue, Watch} from 'vue-property-decorator'
 import SearchableSelectComponent from '../../../../components/searchableSelect/searchableSelect.vue'
 
-import { IMultiLanguageConfig, MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
+import {IMultiLanguageConfig, MultiLanguageConfig} from '@/shared/models/MultiLanguageConfig'
 import MultiLanguageComponent from '@/components/multiLanguage/MultiLanguage.vue'
-import { IMoneyConfig, MoneyConfig } from '@/shared/models/moneyConfig'
+import {IMoneyConfig, MoneyConfig} from '@/shared/models/moneyConfig'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
-import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import {ISearchableSelectConfig, SearchableSelectConfig} from '@/shared/models/SearchableSelectConfig'
 import UploadWidget from '@/components/uploadWidget/uploadWidget.vue'
-import { Product, productType } from '@/shared/models/ProductModel'
-import { TypeDigital } from '@/shared/models/TypeDigitalModel'
-import { TypeService } from '@/shared/models/TypeServiceModel'
+import {Product, productType} from '@/shared/models/ProductModel'
+import {TypeDigital} from '@/shared/models/TypeDigitalModel'
+import {TypeService} from '@/shared/models/TypeServiceModel'
 import moment from 'moment'
-import { TypeCourse } from '@/shared/models/TypeCourseModel'
-import { TypePhysical } from '@/shared/models/TypePhysicalModel'
-import { ProductSubscription } from '@/shared/models/ProductSubscriptionModel'
-import { AxiosResponse } from 'axios'
+import {TypeCourse} from '@/shared/models/TypeCourseModel'
+import {TypePhysical} from '@/shared/models/TypePhysicalModel'
+import {ProductSubscription} from '@/shared/models/ProductSubscriptionModel'
+import {AxiosResponse} from 'axios'
 import ProductService from '@/shared/services/productService'
 import mediasService from '@/shared/services/mediasService'
 import BaseImage from '@/shared/baseImage'
 import Store from '@/store/index'
-import { FollowupAction } from '@/shared/models/FollowupActionModel'
+import {FollowupAction} from '@/shared/models/FollowupActionModel'
 
 @Component({
   components: {
@@ -33,7 +33,7 @@ import { FollowupAction } from '@/shared/models/FollowupActionModel'
     'toggle-switch': ToggleSwitch,
     UploadWidget
   },
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     next((vm: any) => {
       if (to.query.local && to.query.local === 'true') {
         vm.loadProductFromSessionStorage()
@@ -64,10 +64,10 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   public inclusivePrice: any;
   public selectedCourse: any;
   public moneyConfig: IMoneyConfig;
-  public searchableConfig: ISearchableSelectConfig;
+  public searchableConfigCourses: ISearchableSelectConfig;
   public multiLangConfig: IMultiLanguageConfig;
 
-  constructor () {
+  constructor() {
     super()
     this.step = 0
     this.progress = 0
@@ -81,8 +81,8 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     this.productService = ProductService.getInstance()
     this.product = new Product(undefined, undefined, undefined, undefined,
       undefined, undefined, productType.DIGITAL)
-    this.searchableConfig = new SearchableSelectConfig('enName',
-      'labels.country', 'labels.addNewCourse', true,
+    this.searchableConfigCourses = new SearchableSelectConfig('label',
+      'labels.selectCourse', 'labels.addNew', true,
       true, false, false, false)
     this.isInclusive = false
     this.isValidatingStep2 = false
@@ -110,7 +110,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     this.moneyConfig = new MoneyConfig(undefined, undefined, '', Store.state.currency, 0, false)
   }
 
-  public resetProductTypes () {
+  public resetProductTypes() {
     return new Promise(resolve => {
       this.product.typeService = null
       this.product.typePhysical = null
@@ -120,13 +120,13 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     })
   }
 
-  public created () {
+  public created() {
     this.product.typeDigital = new TypeDigital()
     this.product.productSubscription = new ProductSubscription()
   }
 
-  @Watch('notUrl', { immediate: false, deep: true })
-  public updateNotUrl (newVal: any) {
+  @Watch('notUrl', {immediate: false, deep: true})
+  public updateNotUrl(newVal: any) {
     if (newVal) {
       this.product.typeDigital.url = null
     } else {
@@ -136,17 +136,17 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  @Watch('product.price', { immediate: true, deep: true })
-  public updateInclusivePrice (newVal: any) {
+  @Watch('product.price', {immediate: true, deep: true})
+  public updateInclusivePrice(newVal: any) {
     this.calculateInclusive(false)
   }
 
-  @Watch('availableFrom', { immediate: true, deep: true })
-  public changeAvailableToMin (newVal: any) {
+  @Watch('availableFrom', {immediate: true, deep: true})
+  public changeAvailableToMin(newVal: any) {
     this.validToConfig.minDate = moment(newVal).format('MM-DD-YYYY')
   }
 
-  public changeProductType (type: string) {
+  public changeProductType(type: string) {
     this.product.productType = type
     this.resetProductTypes().then(() => {
       switch (type) {
@@ -183,7 +183,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     })
   }
 
-  public resizeImages () {
+  public resizeImages() {
     const self = this
     const images: any = []
     return new Promise(resolve => {
@@ -194,7 +194,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     })
   }
 
-  public validateAvailableTo (e: any) {
+  public validateAvailableTo(e: any) {
     if (this.availableTo === null) {
       return true
     }
@@ -209,15 +209,15 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  public onComplete (e: any) {
+  public onComplete(e: any) {
     const self = this
     const pagination: any = {
       page: 0,
       size: 1,
       sort: ['id,desc']
     }
-    this.validateStep().then(resp=>{
-      if(resp){
+    this.validateStep().then(resp => {
+      if (resp) {
         this.productService.getAll(pagination, 'payButtonJson=null=false').then((lastCreated: AxiosResponse) => {
           this.product.payButtonJson = lastCreated && lastCreated.data.content.length > 0 ? lastCreated.data.content[0].payButtonJson : {}
           this.isSaving = true
@@ -228,7 +228,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
           this.prepareDto().then(dto => {
             this.product.availableFrom = moment(this.availableFrom, 'YYYY-MM-DDTHH:mm')
             this.product.availableTo = moment(this.availableTo, 'YYYY-MM-DDTHH:mm')
-            this.productService.post(dto, function (progress:any) {
+            this.productService.post(dto, function (progress: any) {
               self.progress = progress
             }).then((resp: AxiosResponse) => {
               if (resp) {
@@ -272,29 +272,32 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     })
   }
 
-  public changeTab (e:any, a:any) {
+  public changeTab(e: any, a: any) {
     this.step = a
   }
-  public stepBack () {
-    if(this.step <= 0){
+
+  public stepBack() {
+    if (this.step <= 0) {
       return
     } else {
       this.step -= 1;
       this.$validator.reset();
     }
   }
-  public stepForward () {
-    if(this.step >= 3){
+
+  public stepForward() {
+    if (this.step >= 3) {
       return
     } else {
-      this.validateStep().then(resp=>{
-        if(resp){
+      this.validateStep().then(resp => {
+        if (resp) {
           this.step += 1;
         }
       })
     }
   }
-  public validateStep () {
+
+  public validateStep() {
     const self = this
     return new Promise((resolve, reject) => {
       if (this.step === 0) {
@@ -352,13 +355,13 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
           }
         } else {
           if (this.product.productType === 'DIGITAL') {
-            if(this.notUrl) {
-              if(!this.product.typeDigital.body || !this.product.typeDigital.bodyContentType || !this.product.typeDigital.bodyName){
+            if (this.notUrl) {
+              if (!this.product.typeDigital.body || !this.product.typeDigital.bodyContentType || !this.product.typeDigital.bodyName) {
                 resolve(false)
               } else {
                 resolve(true)
               }
-            } else{
+            } else {
               this.$validator.validateAll({
                 url: this.product.typeDigital.url
               }).then(valid => {
@@ -377,7 +380,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     })
   }
 
-  public inclusive () {
+  public inclusive() {
     let price = 0
     if (this.product.tax > -1) {
       price = this.product.price + ((this.product.price / 100) * this.product.tax)
@@ -395,16 +398,18 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  public imageUploadError (img: any) {}
-  public imageLoaded (img: any) {
+  public imageUploadError(img: any) {
+  }
+
+  public imageLoaded(img: any) {
     this.previewImages.push(new BaseImage(img.blob, img.file.type, img.file.name))
   }
 
-  public onImageRemove (img: any) {
+  public onImageRemove(img: any) {
 
   }
 
-  public addProductLang (lang: any) {
+  public addProductLang(lang: any) {
     let index = null
     if (this.product.productLanguages) {
       this.product.productLanguages.forEach((currLang: any, i: any) => {
@@ -423,7 +428,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  public changeProductLang (lang: any) {
+  public changeProductLang(lang: any) {
     let index = null
     if (this.product.productLanguages && this.product.productLanguages.length > 0) {
       $.each(this.product.productLanguages, function (k, v) {
@@ -441,7 +446,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  public removeProductLang (lang: any) {
+  public removeProductLang(lang: any) {
     let index = null
     if (this.product.productLanguages && this.product.productLanguages.length > 0) {
       $.each(this.product.productLanguages, function (k, v) {
@@ -455,7 +460,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  public calculateInclusive (toChange?: any) {
+  public calculateInclusive(toChange?: any) {
     if (toChange === false) {
       return
     }
@@ -468,11 +473,11 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  public changeIsInclusive () {
+  public changeIsInclusive() {
     this.isInclusive = !this.isInclusive
   }
 
-  public calculateExclusive () {
+  public calculateExclusive() {
     const price = (this.inclusivePrice / (1 + (this.product.tax / 100)))
     const decimals = price.toString().split('.')
     if (decimals[1] && decimals[1].length > 3) {
@@ -483,7 +488,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     this.product.price = price
   }
 
-  public calculateTax () {
+  public calculateTax() {
     if (this.product.tax > -1) {
       this.product.price = this.inclusivePrice - ((this.inclusivePrice / 100) * this.product.tax)
     } else {
@@ -491,7 +496,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     }
   }
 
-  public prepareDto () {
+  public prepareDto() {
     const self = this
     return new Promise(resolve => {
       if (this.isSubscription) {
@@ -538,40 +543,41 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     })
   }
 
-  public addNewCourse () {
+  public addNewCourse() {
     this.prepareDto().then(resp => {
       sessionStorage.setItem('tempProductStep', this.step.toString())
       sessionStorage.setItem('tempProduct', JSON.stringify(resp))
       // @ts-ignore
       this.$router.push({
-        path: '/entity/course/new?backToProducts=true'
+        path: '/course/new?backToProducts=true'
       })
     })
   }
 
-  public updateCourse (course: any) {
+  public updateCourse(course: any) {
     this.selectedCourse = course
-    this.product.typeCourse.courses = [course.value]
+    this.product.typeCourse.courses = [{
+      id: course.value.id,
+      version: course.value.version,
+    }]
   }
 
-  public removeCourse () {
+  public removeCourse() {
     this.product.typeCourse.courses = []
     this.selectedCourse = null
   }
 
-  public loadProductFromSessionStorage () {
+  public loadProductFromSessionStorage() {
     const self = this
     const prod: any = sessionStorage.getItem('tempProduct')
     const step: any = sessionStorage.getItem('tempProductStep')
-    if(step >= 0){
-      this.step = step
+    let product: any = null
+    if (prod) {
+     product = JSON.parse(prod)
     }
-    const product: any = JSON.parse(prod)
     if (product) {
       this.changeProductType('COURSE')
       this.calculateInclusive()
-      this.step = 1
-      Vue.nextTick(function () {
         self.product.productLanguages = product.productLanguages
         self.availableTo = product.availableTo
         self.product.productType = product.productType
@@ -580,31 +586,37 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
         self.product.tax = product.tax
         self.product.priceRounding = product.priceRounding
         self.product.typeCourse = product.typeCourse
-        self.isSubscription = product.productSubscription !== null
+        self.isSubscription = product.productSubscription ? true : false
         self.product.productSubscription = product.productSubscription
         self.product.media = product.media
-        self.selectedCourse = self.typeCourses[self.typeCourses.length - 1]
+        self.selectedCourse = self.$store.state.lookups.courses[self.$store.state.lookups.courses.length - 1]
         sessionStorage.setItem('tempProduct', '')
-      })
-      sessionStorage.removeItem('tempProduct')
+        sessionStorage.removeItem('tempProduct')
+    }
+    if (step >= 0) {
+      self.step = parseInt(step) ? parseInt(step) : 0
     }
   }
 
-  public checkForHttp () {
+  public checkForHttp() {
     this.product.typeDigital.url = this.checkForUrlHttps(this.product.typeDigital.url)
   }
 
-  public digitalUploadError (obj:any) {}
-  public digitalLoaded (obj:any) {
+  public digitalUploadError(obj: any) {
+  }
+
+  public digitalLoaded(obj: any) {
     this.uploadDigitalFile(obj)
   }
-  public digitalRemove (obj:any) {}
 
-  public goBack () {
+  public digitalRemove(obj: any) {
+  }
+
+  public goBack() {
     this.$router.push('/products')
   }
 
-  public uploadDigitalFile (file: any) {
+  public uploadDigitalFile(file: any) {
     const self = this
     if (file) {
       self.convertFileToBase64(file.file).then(resp => {

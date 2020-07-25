@@ -27,6 +27,7 @@ import DeliveryMethodService from '@/shared/services/deliveryMethodService'
 import RegionService from '@/shared/services/regionService'
 import promotionsService from "@/shared/services/promotionsService";
 import productService from "@/shared/services/productService";
+import coursesService from "@/shared/services/coursesService";
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -53,6 +54,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     promotionService = promotionsService.getInstance();
     regionService = RegionService.getInstance();
     deliveryMethodService = DeliveryMethodService.getInstance();
+    courseService = coursesService.getInstance();
     counter = 0;
     sockets = new Sockets();
     relationSocket = new Sockets();
@@ -67,6 +69,14 @@ export default class App extends mixins(Vue, CommonHelpers) {
 
     columns: any = []
     mounted () {
+      let self = this
+      //Reload the app after 30s if the counter condition is not satisfied( some requests are not loaded properly
+      // or socket connection fails)
+      setTimeout(function () {
+        if(self.isReady === false) {
+          window.location.reload()
+        }
+      }, 30000)
       this.populateLookups()
       const conf = localStorage.getItem('tableColumns')
       const columns = conf ? JSON.parse(conf) : null
@@ -156,6 +166,17 @@ export default class App extends mixins(Vue, CommonHelpers) {
         })
         this.$store.commit('deliveryMethods', methods)
       })
+      this.courseService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        const courses: any = []
+        resp.data.content?.forEach((course: any) => {
+          courses.push({
+            label: this.getMultiLangName(course.courseLanguages).name,
+            value: course
+          })
+        })
+        this.$store.commit('courses', courses)
+      })
       this.companyService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
         this.$store.commit('companies', resp.data.content)
@@ -213,7 +234,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
 
     @Watch('counter', { immediate: true, deep: true })
     public changeReady (newVal: any) {
-      if (newVal >= 16) {
+      if (newVal > 19) {
         this.isReady = true
       }
     }
@@ -249,12 +270,20 @@ export default class App extends mixins(Vue, CommonHelpers) {
           this.loading = false
           this.$store.commit('authenticated', account.data)
            this.sockets.connect().then(()=>{
+             this.counter++
              this.relationSocket.connectRelation().then(()=>{
+               this.counter++
               this.productSocket.connectProduct().then(()=>{
-
+                this.counter++
+              }).catch(e=>{
+                this.counter++
               })
-            })
-          })
+            }).catch(e=>{
+               this.counter++
+             })
+          }).catch(e=>{
+             this.counter++
+           })
         } else {
           this.$router.push('/login')
         }

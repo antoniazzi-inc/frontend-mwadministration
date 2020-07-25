@@ -4,7 +4,7 @@
       <div class="col-md-6">
         <div name="editForm" novalidate v-on:submit.prevent="save()">
           <div>
-            <h6 class="element-header">{{$t('labels.createCourse')}}</h6>
+            <h6 v-if="$props.courseId === null" class="element-header">{{$t('labels.createCourse')}}</h6>
             <div class="form-group">
               <multi-language-component
                 :config="multiLangConfigCourse"
@@ -103,8 +103,8 @@
                   <table class="table table-striped">
                     <thead>
                     <tr>
-                      <th><span>{{$t('labels.courseName')}}</span></th>
-                      <th><span>{{$t('labels.courseDescription')}}</span></th>
+                      <th><span>{{$t('labels.eventName')}}</span></th>
+                      <th><span>{{$t('labels.eventDescription')}}</span></th>
                       <th><span>{{$t('labels.startDate')}}</span></th>
                       <th><span>{{$t('labels.endDate')}}</span></th>
                       <th><span>{{$t('labels.location')}}</span></th>
@@ -122,8 +122,11 @@
                       <td>{{totalReservedSeats}}/{{selectedEvent.seats}}</td>
                       <td class="text-center">
                         <div class="btn-group flex-btn-group-container">
-                          <div @click.prevent="editCurrentEvent(item)" class="ml-3 text-primary cursor-pointer">
+                          <div @click.prevent="editCurrentEvent(item, index)" class="ml-3 text-primary cursor-pointer">
                             <i class="os-icon os-icon-ui-49"></i>
+                          </div>
+                          <div @click.prevent="removeCurrentEvent(item, index)" class="ml-3 text-danger cursor-pointer">
+                            <i class="fas fa-trash-alt"></i>
                           </div>
                           <div class="text-success ml-3 cursor-pointer" @click="editReservations = !editReservations">
                             <i class="fas fa-chair"></i>
@@ -163,7 +166,8 @@
             <button type="button" id="cancel-save" class="btn btn-secondary" v-on:click="previousState()">
               <span v-text="$t('buttons.cancel')">Cancel</span>
             </button>
-            <button type="submit" id="save-entity" @click="save" class="btn btn-primary ml-2">
+            <button type="submit" id="save-entity" :disabled="editEvent || (course.events && course.events.length === 0) || course.courseLanguages.length === 0
+|| (course.courseLanguages.length && course.courseLanguages[0].name === '')" @click="save" class="btn btn-primary ml-2">
               <span v-text="$t('buttons.save')">Save</span>
             </button>
           </div>

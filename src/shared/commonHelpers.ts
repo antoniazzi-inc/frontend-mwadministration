@@ -208,7 +208,7 @@ export default class CommonHelpers extends Vue {
     if (langs && langs.length > 0) {
       let result = null
       langs.forEach(lang => {
-        if (lang.langKey === self.$store.state.currentLanguage) {
+        if (lang.langKey === Store.state.currentLanguage) {
           result = lang
         }
       })
