@@ -19,9 +19,14 @@ import {IMoneyConfig, MoneyConfig} from "@/shared/models/moneyConfig";
 import Store from "@/store";
 import {AxiosResponse} from "axios";
 import eventsService from "@/shared/services/eventsService";
+import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
+import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import RelationService from "@/shared/services/relationService";
+import {EventReservation, ReservationStatus} from "@/shared/models/eventReservation.model";
+import eventReservationService from "@/shared/services/eventReservation";
 
 @Component({
-  props:{
+  props: {
     courseId: {
       type: Number,
       required: false
@@ -32,11 +37,12 @@ import eventsService from "@/shared/services/eventsService";
     MultiLanguageComponent,
     flatPickr,
     Money,
-    ToggleSwitch
+    ToggleSwitch,
+    SearchableSelectComponent
   },
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     next((vm: any) => {
-      if(to.query.backToProducts && to.query.backToProducts == "true"){
+      if (to.query.backToProducts && to.query.backToProducts == "true") {
         vm.backToProducts = true
       }
       if (to.params.id) {
@@ -46,21 +52,30 @@ import eventsService from "@/shared/services/eventsService";
   }
 })
 export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
+  public relationService: any
   public courseService: any
   public editorConfig: any
   public totalReservedSeats: number
+  public selectedRowIndex: number | null
   public showHtmlEditor: boolean
   public isSaving: boolean
   public editReservations: boolean
   public unlimitedSeats: boolean
   public backToProducts: boolean
   public editEvent: boolean
+  public editWaitingList: boolean
   public eventStart: any
+  public eventReservationService: any
+  public multiSelectConfig: ISearchableSelectConfig
   public moneyConfig: IMoneyConfig
   public eventEnd: any
   public eventsService: any
   public dateConfigEnd: any
+  public allRelations: any[]
+  public selectedWaitingList: any[]
+  public selectedRelations: any[]
   public dateConfigStart: any
+  public timer: any
   public course: ICourse
   public selectedEvent: IEvent
   public multiLangConfigCourse: IMultiLanguageConfig
@@ -70,6 +85,10 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     super()
     this.courseService = coursesService.getInstance()
     this.eventsService = eventsService.getInstance()
+    this.relationService = RelationService.getInstance()
+    this.allRelations = []
+    this.selectedWaitingList = []
+    this.selectedRelations = []
     this.editorConfig = {
       btnsAdd: ['foreColor', 'backColor'],
       btns: [
@@ -88,33 +107,42 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
         ['fullscreen']
       ]
     }
-    this.eventStart = moment().format('MM-DD-YYYY HH-MM')
-    this.eventEnd = moment().format('MM-DD-YYYY HH-MM')
+    this.eventStart = moment().format('MM-DD-YYYY HH:mm')
+    this.eventEnd = moment().format('MM-DD-YYYY HH:mm')
 
+    this.multiSelectConfig = new SearchableSelectConfig('email',
+      'labels.selectRelations', 'labels.createNewField', true,
+      false, true, true, false);
     this.dateConfigStart = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
-      timeFormat: 'HH-MM',
+      dateFormat: 'm-d-Y H:i',
+      timeFormat: 'H:i',
       enableTime: true,
-      minDate: moment().format('MM-DD-YYYY')
+      time_24hr: true,
+      minDate: moment().format('MM-DD-YYYY HH:mm')
     }
     this.dateConfigEnd = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
-      timeFormat: 'HH-MM',
-      enableTime: true
+      dateFormat: 'm-d-Y H:i',
+      timeFormat: 'H:i',
+      enableTime: true,
+      time_24hr: true
     }
     this.course = new Course(undefined, undefined, undefined, undefined, undefined,
       undefined, [])
     this.selectedEvent = new Event()
     this.totalReservedSeats = 0
+    this.timer = null
+    this.selectedRowIndex = null
     this.moneyConfig = new MoneyConfig(',', '.', '', Store.state.currency, 2, false)
     this.showHtmlEditor = false
     this.isSaving = false
     this.unlimitedSeats = false
     this.backToProducts = false
+    this.editWaitingList = false
+    this.eventReservationService = eventReservationService.getInstance()
     this.editEvent = false
     this.editReservations = false
     this.multiLangConfigCourse = new MultiLanguageConfig(true, true,
@@ -124,24 +152,42 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
       'labels.eventName', 'labels.eventDescription', false,
       false, false, true, true, false)
   }
-  @Watch('courseId', {immediate: true, deep: true})
-  public initCourse(newVal:any) {
-   if(newVal){
-     this.populateCourse(newVal)
-   }
+  public mounted(){
+    this.selectedEvent.eventLanguages = []
   }
+  @Watch('courseId', {immediate: true, deep: true})
+  public initCourse(newVal: any) {
+    if (newVal) {
+      this.populateCourse(newVal)
+    }
+  }
+
   @Watch('eventStart', {immediate: true, deep: true})
-  public updateEventStart(newVal:any) {
+  public updateEventStart(newVal: any) {
     this.$set(this.dateConfigEnd, 'minDate', newVal)
     this.eventEnd = newVal
   }
-  public populateCourse(id:any) {
+
+  public populateCourse(id: any) {
     this.isSaving = true
-    this.courseService.get(id).then((resp:AxiosResponse)=>{
-      if(resp && resp.data) {
+    this.populateRelations()
+    this.courseService.get(id).then((resp: AxiosResponse) => {
+      if (resp && resp.data) {
         this.course = resp.data
       } else {
         this.setAlert('somethingWentWrnog', 'error')
+      }
+    })
+  }
+  public populateRelations(query?: any) {
+    const pagination = {
+      page: 0,
+      size: 100000,
+      sort: 'id,asc'
+    }
+    this.relationService.getAll(pagination, query).then((resp: AxiosResponse) => {
+      if (resp && resp.data) {
+        this.allRelations = resp.data.content
       }
     })
   }
@@ -166,18 +212,18 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
       });
     } else {
       this.courseService.post(this.course).then((resp: AxiosResponse) => {
-          if (resp && resp.data) {
-            this.isSaving = false
-            this.setAlert('courseCreated', 'success')
-            if (this.backToProducts) {
-              this.$router.push('/products/new?local=true')
-            } else {
-              this.$router.push('/courses')
-            }
+        if (resp && resp.data) {
+          this.isSaving = false
+          this.setAlert('courseCreated', 'success')
+          if (this.backToProducts) {
+            this.$router.push('/products/new?local=true')
           } else {
-            this.setAlert('courseCreateError', 'error')
+            this.$router.push('/courses')
           }
-        });
+        } else {
+          this.setAlert('courseCreateError', 'error')
+        }
+      });
     }
   }
 
@@ -273,17 +319,20 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
 
   public editCurrentEvent(item: any, index: any) {
     this.selectedEvent = item
+    this.totalReservedSeats = item.seats
     this.editEvent = true
   }
+
   public removeCurrentEvent(item: any, index: any) {
     this.selectedEvent = new Event()
-    if(this.course && this.course.events){
-      let event:IEvent = this.course.events[index]
-      if(event.id){
-        this.eventsService.delete(event.id).than((resp:AxiosResponse)=>{
-          if(resp){
+    this.selectedEvent.eventLanguages = []
+    if (this.course && this.course.events) {
+      let event: IEvent = this.course.events[index]
+      if (event.id) {
+        this.eventsService.delete(event.id).than((resp: AxiosResponse) => {
+          if (resp) {
             this.setAlert('eventRemoved', 'success')
-            if(this.course && this.course.events) this.course.events.splice(index, 1)
+            if (this.course && this.course.events) this.course.events.splice(index, 1)
           } else {
             this.setAlert('eventRemoveError', 'error')
           }
@@ -297,19 +346,22 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
 
   public addNewEvent(item: any) {
     this.selectedEvent = new Event();
+    this.selectedEvent.eventLanguages = []
+    this.totalReservedSeats = item.seats ? item.seats : 0
     this.editEvent = true;
   }
 
   public cancelNewEvent(item: any) {
     this.editEvent = false;
     this.selectedEvent = new Event();
+    this.selectedEvent.eventLanguages = []
   }
 
   public saveNewEvent() {
     this.editEvent = false;
     this.selectedEvent.eventStart = moment(this.eventStart);
     this.selectedEvent.eventEnd = moment(this.eventEnd);
-    if (this.course && this.course.events && this.course.events.length > 0) {
+    if (this.course && this.course.events && this.course.events.length) {
       this.course.events.push(this.selectedEvent);
     } else {
       this.course.events = [this.selectedEvent];
@@ -317,10 +369,27 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public previousState() {
-    this.$router.push('/courses');
+    this.$router.go(-1);
   }
 
   public fillSeats() {
+    let allReservations:any = []
+    this.selectedRelations.forEach(e=>{
+      allReservations.push(new EventReservation(undefined, undefined, undefined,undefined,
+        undefined,true, e.id, ReservationStatus.OCCUPIED,{id: this.selectedEvent.id, version:
+      this.selectedEvent.version}))
+    })
+    if(this.selectedEvent.eventReservations) {this.selectedEvent.eventReservations.push(allReservations)}else{
+      this.selectedEvent.eventReservations = allReservations
+    }
+    this.eventReservationService.post(allReservations).then((resp:AxiosResponse) => {
+      if(resp && resp.data){
+        this.setAlert('reservationsAdded', 'success')
+        this.populateCourse(this.course.id)
+      } else {
+        this.setAlert('reservationsAddError', 'error')
+      }
+    })
   }
 
   public sendMail() {
@@ -330,6 +399,44 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public assignSeats() {
+  }
+
+  public toggleWaitingList(item: any) {
+    if (this.editWaitingList) {
+      this.editWaitingList = false
+      this.selectedEvent = new Event()
+      this.selectedEvent.eventLanguages = []
+    } else {
+      this.selectedEvent = item
+      this.editWaitingList = true
+    }
+  }
+
+  public toggleReservations(item: any) {
+    if (this.editReservations) {
+      this.editReservations = false
+      this.selectedEvent = new Event()
+      this.selectedEvent.eventLanguages = []
+    } else {
+      this.selectedEvent = item
+      this.editReservations = true
+    }
+  }
+
+  public selectRow(item: any, index: number) {
+    this.selectedEvent = item
+    this.selectedRowIndex = index
+  }
+
+  public getEventDate(item: any) {
+    let result = ''
+    if (item.eventStart) {
+      result = moment(item.eventStart).format('MM/DD/YYYY HH:mm')
+    }
+    if (item.eventEnd) {
+      result += ` - ${moment(item.eventEnd).format('HH:mm')}`
+    }
+    return result
   }
 
   public getSeatsProgress() {
@@ -342,6 +449,71 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
       }
     }
     return total + '%';
+  }
 
+  public relationsChanged(rel: any) {
+    this.selectedRelations = rel
+  }
+
+  public removeRelation(rel: any) {
+    let index = this.selectedRelations.indexOf((r: any) => {
+      r.id === rel.id
+    })
+    if (index > -1) {
+      this.selectedRelations.splice(index, 1)
+    }
+  }
+
+  public doSearch(rel: any) {
+    if(!rel){
+      return
+    }
+    const queryArray: any = []
+    queryArray.push({
+        mainOperator: 'or',
+        children: [{
+          key: 'email',
+          value: rel,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: false
+        }]
+      },
+      {
+        mainOperator: 'or',
+        children: [{
+          key: 'relationProfile.firstName',
+          value: rel,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: false
+        }]
+      })
+    let finalQ = this.queryBuilder(queryArray)
+    this.populateRelations(finalQ)
+  }
+
+  public searchRelation(rel: any) {
+    const self = this
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      self.doSearch(rel)
+    }, 500);
+  }
+  public getRelationEmail(item: any) {
+    const index = this.allRelations.indexOf((e:any)=>{
+      item.relationId === e.id
+    })
+    if(index > -1){
+      return this.allRelations[index].email
+    } else {
+      let result = 'asd'
+      this.relationService.get(item.relationId).then((resp:AxiosResponse)=>{
+        if(resp && resp.data){
+          result = resp.data.email
+        }
+      })
+      return result
+    }
   }
 }

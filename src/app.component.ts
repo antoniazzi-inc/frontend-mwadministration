@@ -61,6 +61,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     productSocket = new Sockets();
     loading = true;
     isReady = true;
+    errorMessage:any = null;
     mainMenu = MenuDefinitions;
     customConfig = {
       timeout: 2500,
@@ -74,7 +75,10 @@ export default class App extends mixins(Vue, CommonHelpers) {
       // or socket connection fails)
       setTimeout(function () {
         if(self.isReady === false) {
-          window.location.reload()
+          self.errorMessage = self.$t('labels.somethingWentWrong')
+          setTimeout(function () {
+            window.location.reload()
+          }, 5000)
         }
       }, 30000)
       this.populateLookups()
@@ -97,7 +101,6 @@ export default class App extends mixins(Vue, CommonHelpers) {
         sort: 'id,asc'
       }
       if (!this.$store.state.authenticated) { return }
-      this.isReady = false
       this.taxRateService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
         this.$store.commit('taxRates', resp.data.content)
@@ -226,8 +229,10 @@ export default class App extends mixins(Vue, CommonHelpers) {
     }
 
     @Watch('$store.state.authenticated', { immediate: true, deep: true })
-    public getLookups (newVal: any) {
+    public async getLookups (newVal: any) {
       if (newVal) {
+        this.isReady = false
+        await this.connectSockets()
         this.populateLookups()
       }
     }
@@ -263,27 +268,36 @@ export default class App extends mixins(Vue, CommonHelpers) {
       }
     }
 
+    connectSockets () {
+      return new Promise(resolve => {
+        this.sockets.connect().then(()=>{
+          this.counter++
+          this.relationSocket.connectRelation().then(()=>{
+            this.counter++
+            this.productSocket.connectProduct().then(()=>{
+              resolve()
+              this.counter++
+            }).catch(e=>{
+              this.counter++
+              resolve()
+            })
+          }).catch(e=>{
+            this.counter++
+            resolve()
+          })
+        }).catch(e=>{
+          this.counter++
+          resolve()
+        })
+      })
+
+    }
     retrieveAccount () {
       this.accountService.retrieveAccount().then(async account => {
         if (account) {
           this.$store.commit('authenticate')
           this.loading = false
           this.$store.commit('authenticated', account.data)
-           this.sockets.connect().then(()=>{
-             this.counter++
-             this.relationSocket.connectRelation().then(()=>{
-               this.counter++
-              this.productSocket.connectProduct().then(()=>{
-                this.counter++
-              }).catch(e=>{
-                this.counter++
-              })
-            }).catch(e=>{
-               this.counter++
-             })
-          }).catch(e=>{
-             this.counter++
-           })
         } else {
           this.$router.push('/login')
         }

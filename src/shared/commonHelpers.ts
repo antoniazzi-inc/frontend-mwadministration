@@ -1,9 +1,10 @@
-import { Vue, Component } from 'vue-property-decorator'
-import { ILanguage, Language } from '@/shared/models/language.model'
-import { columnsVisibility } from '@/shared/tabelsDefinitions'
-import { Country } from '@/shared/models/country.model'
+import {Vue, Component} from 'vue-property-decorator'
+import {ILanguage, Language} from '@/shared/models/language.model'
+import {columnsVisibility} from '@/shared/tabelsDefinitions'
+import {Country} from '@/shared/models/country.model'
 import axios from 'axios'
 import Store from "@/store";
+
 @Component
 export default class CommonHelpers extends Vue {
   /*
@@ -12,7 +13,7 @@ export default class CommonHelpers extends Vue {
   * description: Returns boolean depending on the list of authorities and the user authorities
   * Author: Nick Dam
   */
-  public hasAuthority (authority: string | [], table?: any) {
+  public hasAuthority(authority: string | [], table?: any) {
     let auth: string[] = []
     let result = false
     if (typeof authority === 'string') {
@@ -44,7 +45,7 @@ export default class CommonHelpers extends Vue {
   * description: Returns object of columns visibility
   * Author: Nick Dam
   */
-  public getTableVisibilityFields (table: string) {
+  public getTableVisibilityFields(table: string) {
     let fieldsJson: any = localStorage.getItem('tableColumns')
     if (fieldsJson) {
       fieldsJson = JSON.parse(fieldsJson)
@@ -62,7 +63,7 @@ export default class CommonHelpers extends Vue {
   * description: Sets table column visibility
   * Author: Nick Dam
   */
-  public setTableVisibilityFields (table: string, value: any) {
+  public setTableVisibilityFields(table: string, value: any) {
     let fieldsJson: any = localStorage.getItem('tableColumns')
     if (fieldsJson) {
       fieldsJson = JSON.parse(fieldsJson)
@@ -77,7 +78,7 @@ export default class CommonHelpers extends Vue {
      * description: Changes column visibility depending on given column and table and set to local storage
      * Author: Nick Dam
      */
-  public changeColumnVisibility (column: any, table: string) {
+  public changeColumnVisibility(column: any, table: string) {
     const local: any = this.getTableVisibilityFields(table)
     const newVal = !local[column.id]
     local[column.id] = newVal
@@ -90,7 +91,7 @@ export default class CommonHelpers extends Vue {
    * description: Creates simple search query
    * Author: Nick Dam
    */
-  public makeSimpleSearchQuery (fields: string[], query: string, operator?: string) {
+  public makeSimpleSearchQuery(fields: string[], query: string, operator?: string) {
     let result = ''
     fields.forEach((item, key) => {
       if (key < fields.length - 1) {
@@ -113,7 +114,7 @@ export default class CommonHelpers extends Vue {
    * description: Creates search query
    * Author: Nick Dam
    */
-  public queryBuilder (queryArray: any[]) {
+  public queryBuilder(queryArray: any[]) {
     let finalQuery = ''
     queryArray.forEach((query, index) => {
       if (index === 0) {
@@ -124,7 +125,7 @@ export default class CommonHelpers extends Vue {
       query.children.forEach((children: any) => {
         children.value = children.value.replace(/\*/g, '')
         children.value = children.value.replace(/%/g, '')
-        const valueToSearch = children.exactSearch || children.inBetweenOperator === '=in=' || children.inBetweenOperator === '=out=' || children.inBetweenOperator === '=null=' || children.inBetweenOperator === '=empty=' ? children.value : '*' + children.value + '*'
+        const valueToSearch = children.exactSearch || children.inBetweenOperator === '=in=' || children.inBetweenOperator === '=out=' || children.inBetweenOperator === '=null=' || children.inBetweenOperator === '=empty=' ? `"${children.value}"` : '"*' + children.value + '*"'
         finalQuery += children.key + children.inBetweenOperator + (children.inBetweenOperator === '=in=' ? ('(' + valueToSearch + ')') : valueToSearch) + (index < query.children.length - 1 ? (' ' + children.afterOperator + ' ') : '')
       })
       if (index === queryArray.length - 1) {
@@ -136,7 +137,7 @@ export default class CommonHelpers extends Vue {
     return finalQuery
   }
 
-  public queryArrayToQueryString (queryArray: any) {
+  public queryArrayToQueryString(queryArray: any) {
     let finalQuery = ''
     const logicalOperator = queryArray.operator ? queryArray.operator.toLowerCase() : queryArray.logicalOperator ? queryArray.logicalOperator.toLowerCase() : null
     queryArray.children.forEach((obj: any, ind: any) => {
@@ -153,8 +154,7 @@ export default class CommonHelpers extends Vue {
           if (obj.query.value.value.id) {
             operator = obj.query.value.value.id
           }
-        } else
-        if (obj.query.value) {
+        } else if (obj.query.value) {
           value = this.getQueryVal(obj.query.value)
         }
         if (!value && obj.query.op === null && obj.query.value.operator === null && obj.query.value.value.value) {
@@ -168,7 +168,9 @@ export default class CommonHelpers extends Vue {
         if (condition.match('conditionId')) {
           condition.replace('{conditionId}', obj.query.condition.value)
         }
-        if (!operator) { operator = '==' }
+        if (!operator) {
+          operator = '=='
+        }
         if (operator.match('{k}')) {
           operator = operator.replace('{k}', value)
           currentQuery += condition + operator
@@ -203,7 +205,7 @@ export default class CommonHelpers extends Vue {
    * description: Returns a language object depending of the administration default language
    * Author: Nick Dam
    */
-  public getMultiLangName (langs: ILanguage[] | undefined | null) {
+  public getMultiLangName(langs: ILanguage[] | undefined | null) {
     const self = this
     if (langs && langs.length > 0) {
       let result = null
@@ -222,7 +224,7 @@ export default class CommonHelpers extends Vue {
     }
   }
 
-  public getQueryVal (value: any) {
+  public getQueryVal(value: any) {
     let val = null
     if (typeof value.value === 'string') {
       val = value.value
@@ -262,7 +264,7 @@ export default class CommonHelpers extends Vue {
    * description: Returns a country object
    * Author: Nick Dam
    */
-  public getCountryById (id: number) {
+  public getCountryById(id: number) {
     let result = {
       enName: ''
     }
@@ -280,7 +282,7 @@ export default class CommonHelpers extends Vue {
    * description: Returns a country id
    * Author: Nick Dam
    */
-  public getCountryByName (name: number) {
+  public getCountryByName(name: number) {
     let result = {
       enName: ''
     }
@@ -298,7 +300,7 @@ export default class CommonHelpers extends Vue {
    * description: Returns a country id
    * Author: Nick Dam
    */
-  public getCountryByIso (iso: string) {
+  public getCountryByIso(iso: string) {
     let result = {
       enName: ''
     }
@@ -316,7 +318,7 @@ export default class CommonHelpers extends Vue {
    * description: Returns full name of a give relation
    * Author: Nick Dam
    */
-  public getRelationFullName (relation: any) {
+  public getRelationFullName(relation: any) {
     const title = relation.relationProfile && relation.relationProfile.title
       ? relation.relationProfile.title : ''
     const firstName = relation.relationProfile && relation.relationProfile.firstName
@@ -335,7 +337,7 @@ export default class CommonHelpers extends Vue {
    *              if not adds http:// to the url and returns the new url
    * Author: Nick Dam
    */
-  public checkForUrlHttps (url: string) {
+  public checkForUrlHttps(url: string) {
     if (url.match('http')) {
       return url
     } else {
@@ -366,7 +368,7 @@ export default class CommonHelpers extends Vue {
    * description: Extract address from given array and returns address label and address type
    * Author: Nick Dam
    */
-  public extractAddress (addresses: any[]) {
+  public extractAddress(addresses: any[]) {
     let street = ''
     let number = ''
     let city = ''
@@ -379,7 +381,7 @@ export default class CommonHelpers extends Vue {
       postal = addresses[0].postalCode
       country = this.getCountryById(addresses[0].postalCode).enName
     }
-    return { label: `${street} ${number}, ${city} ${postal} ${country} `, type: addresses[0].addressType }
+    return {label: `${street} ${number}, ${city} ${postal} ${country} `, type: addresses[0].addressType}
   }
 
   /*
@@ -388,10 +390,11 @@ export default class CommonHelpers extends Vue {
    * description: Display toast message
    * Author: Nick Dam
    */
-  public setAlert (message: any, type: string) {
+  public setAlert(message: any, type: string) {
     // @ts-ignore
     this.$vueOnToast.pop(type, '', this.$t('toastMessages.' + message))
   }
+
   /*
    * Name: generateRandom
    * arg: /
@@ -413,7 +416,7 @@ export default class CommonHelpers extends Vue {
    * description: Preselect country
    * Author: Nick Dam
    */
-  public preselectCountry (id?: number) {
+  public preselectCountry(id?: number) {
     let country = new Country()
     if (!id) {
       id = 150
@@ -429,7 +432,7 @@ export default class CommonHelpers extends Vue {
   /**
    * @return list of fixed relation fields
    */
-  public relationFields () {
+  public relationFields() {
     const freeFields: any = []
     this.$store.state.lookups.freeFields.forEach((freeField: any) => {
       freeFields.push({
@@ -544,15 +547,15 @@ export default class CommonHelpers extends Vue {
         groupValues: freeFields,
         model: 'customFields'
       }
-      ]
+    ]
     return result
   }
 
-  public ifUserCanUpload4k () {
+  public ifUserCanUpload4k() {
     return false
   }
 
-  public loadProperImage (image: any) {
+  public loadProperImage(image: any) {
     const self = this
     return new Promise<any>(resolve => {
       let url = ''
@@ -562,16 +565,16 @@ export default class CommonHelpers extends Vue {
       } else {
         url = preUrl + '_1K'
       }
-      axios.get(url + '?' + Math.random(), { responseType: 'arraybuffer' }).then(function (res) {
+      axios.get(url + '?' + Math.random(), {responseType: 'arraybuffer'}).then(function (res) {
         if (!res || res.status === 404) {
           url = preUrl + '/' + image.name.replace(/(\.[\w\d_-]+)$/i, '_720p$1')
-          axios.get(url + '?' + Math.random(), { responseType: 'arraybuffer' }).then(function (res1) {
+          axios.get(url + '?' + Math.random(), {responseType: 'arraybuffer'}).then(function (res1) {
             if (!res || res.status === 404) {
               url = preUrl + '_360p?' + Math.random()
-              axios.get(url, { responseType: 'arraybuffer' }).then(function (res2) {
+              axios.get(url, {responseType: 'arraybuffer'}).then(function (res2) {
                 if (!res || res.status === 404) {
                   url = preUrl + '_thumb'
-                  axios.get(url + '?' + Math.random(), { responseType: 'arraybuffer' }).then(function (res3) {
+                  axios.get(url + '?' + Math.random(), {responseType: 'arraybuffer'}).then(function (res3) {
                     if (!res || res.status === 404) {
                       resolve(null)
                     } else {
@@ -603,7 +606,8 @@ export default class CommonHelpers extends Vue {
       })
     })
   }
-  public arrayBufferToBase64(buffer:any) {
+
+  public arrayBufferToBase64(buffer: any) {
     let binary = '';
     let bytes = new Uint8Array(buffer);
     let len = bytes.byteLength;
@@ -612,7 +616,8 @@ export default class CommonHelpers extends Vue {
     }
     return window.btoa(binary);
   }
-  validateEmail (email: any) {
+
+  validateEmail(email: any) {
     const re = /\S+@\S+\.\S+/
     return re.test(email)
   }
@@ -623,7 +628,7 @@ export default class CommonHelpers extends Vue {
    * description: Returns promotion discount
    * Author: Nick Dam
    */
-  public getDiscount (promotion: any) {
+  public getDiscount(promotion: any) {
     let result = null
     let promotionType = null
     switch (promotion.promotionType) {
@@ -655,27 +660,28 @@ export default class CommonHelpers extends Vue {
         promotionType = promotion.typePersonalCouponBased
         break;
     }
-    if(!promotionType || !promotionType.discount){
+    if (!promotionType || !promotionType.discount) {
       return ''
     }
-    if(promotionType.discount.percentage){
+    if (promotionType.discount.percentage) {
       result = `${promotionType.discount.percentage}%`
-    } else if(promotionType.discount.fixed){
+    } else if (promotionType.discount.fixed) {
       result = `${promotionType.discount.fixed}${Store.state.currency}`
-    } else if(promotionType.discount.noShipping){
+    } else if (promotionType.discount.noShipping) {
       result = 'noShipping'
     } else {
       result = 'freeItems'
     }
     return result
   }
+
   /*
    * Name: getDiscountType
    * arg: promotion -> IPromotion
    * description: Returns promotion discount type
    * Author: Nick Dam
    */
-  public getDiscountType (promotion: any) {
+  public getDiscountType(promotion: any) {
     let result = null
     let type = ''
     switch (promotion.promotionType) {
@@ -718,31 +724,32 @@ export default class CommonHelpers extends Vue {
     }
     return {discount: result, type: type}
   }
-  public getDiscountTypeString(promotionType:any){
+
+  public getDiscountTypeString(promotionType: any) {
     let result = null
-    if(!promotionType || !promotionType.discount){
+    if (!promotionType || !promotionType.discount) {
       return ''
     }
-    if(promotionType.discount.percentage){
+    if (promotionType.discount.percentage) {
       result = {
         id: 1,
         name: 'percentage',
         label: 'percentage'
       }
-    } else if(promotionType.discount.fixed){
+    } else if (promotionType.discount.fixed) {
       result = {
         id: 2,
         name: 'fixed',
         label: 'fixedAmount'
       }
-    } else if(promotionType.discount.noShipping){
+    } else if (promotionType.discount.noShipping) {
       result = {
         id: 3,
         name: 'noShipping',
         label: 'noShipping'
       }
     } else {
-      result =  {
+      result = {
         id: 4,
         name: 'freeItems',
         label: 'freeItems'

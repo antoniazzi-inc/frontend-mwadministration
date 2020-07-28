@@ -63,10 +63,10 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
     let self = this;
     if(this.promotionCopy.products && this.promotionCopy.products.length) {
       $.each(this.promotionCopy.products, function (k, v) {
-        allProd.push({
-          name: self.getMultiLangName(v.productLanguages).name,
-          value: v
-        });
+        let prodIndex = self.$store.state.lookups.products.findIndex((e:any) => e.value.id === v.id)
+        if(prodIndex > -1){
+          allProd.push(self.$store.state.lookups.products[prodIndex])
+        }
       });
       this.selectedProducts = allProd;
     }
@@ -76,11 +76,10 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
     let allCat:any = [];
     if(this.promotionCopy.promotionProductCategories && this.promotionCopy.promotionProductCategories.length) {
       $.each(this.promotionCopy.promotionProductCategories, function (k, v) {
-        $.each(self.allCategories, function (i, j:any) {
-          if(v.productCategoryId === j.id) {
-            allCat.push(j);
-          }
-        });
+        let catIndex = self.$store.state.lookups.categories.findIndex((e:any) => e.id === v.productCategoryId)
+        if(catIndex > -1){
+          allCat.push(self.$store.state.lookups.categories[catIndex])
+        }
       });
       Vue.nextTick(function () {
         self.selectedCategories = allCat;
@@ -94,12 +93,15 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
     if(this.promotionCopy.attributeValues && this.promotionCopy.attributeValues.length) {
       //@ts-ignore
       $.each(this.promotionCopy.attributeValues, function (k, v:any) {
+
         let name = v.id + ' ' + self.getMultiLangName(v.attribute.product.productLanguages).name + ' [' + self.getMultiLangName(v.attribute.attributeLanguages).name + ' = ' + self.getMultiLangName(v.attributeValueLanguages).name + ']';
+        console.log(name)
         allAttributes.push({
           code: name,
           value: v
         });
       });
+      console.log(allAttributes)
       this.currentAttributes = allAttributes;
     }
   }
@@ -173,7 +175,7 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
         }
       };
       this.promotionService.removeProducts(dto).then((resp:AxiosResponse)=>{
-        if(resp && resp.data){
+        if(resp){
           this.setAlert('PromotionProductCategoryDeleted','success')
         } else {
           this.setAlert('PromotionProductCategoryDeleteError','error')
@@ -202,13 +204,14 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
     let dto = {
       promotionId: this.promotionCopy.id,
       req:{
-        attributeValues: [{id: variant.value.id}]
+        attributeValues: [{id: variant.value.id, version: variant.value.version}]
       }
     };
     this.promotionService.assign(dto).then((resp:AxiosResponse) => {
       if(resp && resp.data){
         this.setAlert('promotionProductVariantAdded','success')
-        this.currentAttributes.push(resp.data);
+        this.promotionCopy = resp.data
+        this.$emit('updatePromo', this.promotionCopy)
       } else {
         this.setAlert('promotionProductVariantAddError','error')
       }
@@ -219,11 +222,11 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
     let dto = {
       promotionId: this.promotionCopy.id,
       req:{
-        attributeValues: [{id: variant.value.id}]
+        attributeValues: [{id: variant.value.id, version: variant.value.version}]
       }
     };
     this.promotionService.removeProducts(dto).then((resp:AxiosResponse) => {
-      if(resp && resp.data){
+      if(resp){
         this.setAlert('promotionProductsDeleted','success')
         $.each(this.currentAttributes, function (k, v) {
           if(v.value.id === variant.value.id){

@@ -31,7 +31,7 @@ export default class CourseTabComponent extends Vue {
     public handleProduct (newVal: any) {
       if(newVal && newVal.id){
         this.productCopy = newVal
-        if(newVal.typeCourse.course){
+        if(newVal && newVal.typeCourse && newVal.typeCourse.course){
           this.courseId = newVal.typeCourse.course.id
         }
       }

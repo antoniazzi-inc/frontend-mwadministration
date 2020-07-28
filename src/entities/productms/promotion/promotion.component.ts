@@ -13,7 +13,6 @@ import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/S
 import {promotionType} from "@/shared/models/PromotionModel";
 import {IMoneyConfig, MoneyConfig} from "@/shared/models/moneyConfig";
 import moment from "moment";
-import {INSTANT_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -145,13 +144,13 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
     if (this.currentSearchName !== '') {
       queryArray.push({
         mainOperator: 'and',
-        children: [/*{
-          key: 'couponCode',
+        children: [{
+          key: 'typeCouponBased.coupon.code',
           value: this.currentSearchName,
           inBetweenOperator: '==',
           afterOperator: 'or',
           exactSearch: false
-        },*/ {
+        }, {
           key: 'promotionLanguages.name',
           value: this.currentSearchName,
           inBetweenOperator: '==',
@@ -180,9 +179,9 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
       queryArray.push({
         mainOperator: 'and',
         children: [{
-          key: 'discount',
-          value: this.selectedDiscount.name.toString(),
-          inBetweenOperator: '==',
+          key: this.getSearchKey('discount').result,
+          value: this.getSearchKey('discount').value ? 'false' : this.selectedDiscount.name.toString(),
+          inBetweenOperator: this.getSearchKey('discount').value ? this.getSearchKey('discount').value : '==',
           afterOperator: '',
           exactSearch: true
         }]
@@ -192,8 +191,8 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
         mainOperator: 'and',
         children: [{
           key: 'availableFrom',
-          value: moment(this.availableFrom).format('YYYY-MM-DD'),
-          inBetweenOperator: '==',
+          value: moment(this.availableFrom).format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          inBetweenOperator: '>=',
           afterOperator: '',
           exactSearch: true
         }]
@@ -203,22 +202,77 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
         mainOperator: 'and',
         children: [{
           key: 'availableTo',
-          value: moment(this.availableTo).format('YYYY-MM-DD'),
-          inBetweenOperator: '==',
+          value: moment(this.availableTo).format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          inBetweenOperator: '<=',
           afterOperator: '',
           exactSearch: true
         }]
       })
     } if (this.percentageAmount > 0) {
-      //TODO how to search discount
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: this.getSearchKey('discount'),
+          value: this.percentageAmount,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: false
+        }]
+      })
     } if (this.currentSearchMacro !== '') {
-      //TODO how to search macro
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: 'typePersonalCouponBased.macroName',
+          value: this.currentSearchMacro,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: false
+        }]
+      })
     }
     const finalQ = this.queryBuilder(queryArray)
     // @ts-ignore
     this.$refs.paginationTable.retrieveData('api/productms/api/promotions', undefined, finalQ)
   }
 
+  public getSearchKey(key:string) {
+    let result = ''
+    let value:any = '=empty='
+    switch (key) {
+      case 'discount':
+        switch (this.selectedPromoType.value) {
+          case 'TIME':
+            result = 'typeTimeBased.discount.' + this.selectedDiscount.name
+            break;
+          case 'AFFILIATE':
+            result = 'typeAffiliateBased.discount.' + this.selectedDiscount.name
+            break;
+          case 'BUNDLE':
+            result = 'typeBundleBaseds.discount.' + this.selectedDiscount.name
+            break;
+          case 'COUPON':
+            result = 'typeCouponBased.discount.' + this.selectedDiscount.name
+            break;
+          case 'LOYALTY':
+            result = 'typeLoyaltyBased.discount.' + this.selectedDiscount.name
+            break;
+          case 'PERSONAL_COUPON':
+            result = 'typePersonalCouponBased.discount.' + this.selectedDiscount.name
+            break;
+          case 'PRICE':
+            result = 'typePriceBaseds.discount.' + this.selectedDiscount.name
+            break;
+          case 'QUANTITY':
+            result = 'typeQuantityBaseds.discount.' + this.selectedDiscount.name
+            break;
+          case 'TEMPORARY_COUPON':
+            result = 'typePersonalCouponBased.discount.' + this.selectedDiscount.name
+            break;
+        }
+    }
+    return {result: result, value: value}
+  }
   public clear() {
     this.selectedDiscount = null
     this.selectedPromoType = null

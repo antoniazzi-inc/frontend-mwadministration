@@ -17,6 +17,11 @@
                 {{$t('labels.loading')}}<span class="animate-flicker">...</span>
               </div>
             </div>
+            <div class="row">
+              <div class="text-danger col-md-12 text-center fade-enter">
+                {{errorMessage}}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -4,7 +4,6 @@ import {AxiosResponse} from "axios";
 import attributevaluesService from "@/shared/services/attribute-valuesService";
 import {mixins} from "vue-class-component";
 import CommonHelpers from "@/shared/commonHelpers";
-import productService from "@/shared/services/productService";
 import {TypeBundleBased} from "@/shared/models/TypeBundleBasedModel";
 import {Discount} from "@/shared/models/DiscountModel";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
@@ -64,7 +63,6 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     this.attributeValueService = attributevaluesService.getInstance()
     this.attributeService = attributesService.getInstance()
     this.typeBundleBasedService = typebundlebasedsService.getInstance()
-    this.productService = productService.getInstance()
     this.allBundles = []
     this.productText = []
     this.allItems = []
@@ -107,37 +105,36 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
   }
   public getSelectedProducts(id:number, index:number){
     return new Promise(resolve => {
-      this.productService.get(id).then((resp:AxiosResponse) => {
-        let prod = {
-          label: this.getMultiLangName(resp.data.productLanguages).name,
-          value: resp.data
-        };
-        resolve(prod);
-      });
+      let prodIndex = this.$store.state.lookups.products.findIndex((p:any)=> p.value.id === id)
+      if(prodIndex > -1){
+        resolve(this.$store.state.lookups.products[prodIndex]);
+      }
     });
 
   }
   public getSelectedProductsAttributes(id:any, index:any) {
     let self = this;
     return new Promise(resolve => {
-      this.productService.get(id).then((prod:AxiosResponse) => {
+      let prodIndex = this.$store.state.lookups.products.findIndex((p:any)=> p.value.id === id)
+      if(prodIndex > -1){
         let attr:any = [];
         let allAttr:any = [];
-        $.each(prod.data.attributes, function (i, j) {
+        const prod = this.$store.state.lookups.products[prodIndex].value
+        $.each(prod.attributes, function (i, j) {
           self.attributeService.get(j.id).then((attribute:AxiosResponse) => {
             allAttr.push({
-              name: self.getMultiLangName(prod.data.productLanguages).name + ' - ' + self.getMultiLangName(j.attributeLanguages).name,
+              name: self.getMultiLangName(prod.productLanguages).name + ' - ' + self.getMultiLangName(j.attributeLanguages).name,
               value: j,
               product: prod
             });
             attr.push({
               name: self.getMultiLangName(attribute.data.attributeLanguages).name,
-              value: attribute
+              value: attribute.data
             });
           });
         });
         resolve({allAttributes: allAttr, selectedAttr: attr});
-      });
+      }
     });
   }
   public editBundle(bundle: any, index: number) {
@@ -198,10 +195,12 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
   public getSelectedProductsAttributeValues(id:any, index:any) {
     let self = this;
     return new Promise(resolve => {
-      this.productService.get(id).then((prod:AxiosResponse) => {
+      let prodIndex = this.$store.state.lookups.products.findIndex((p:any)=> p.value.id === id)
+      if(prodIndex > -1){
+        const prod = this.$store.state.lookups.products[prodIndex].value
         let attrValue:any = [];
         let allAttributeValues:any = [];
-        $.each(prod.data.attributes, function (i, j) {
+        $.each(prod.value.attributes, function (i, j) {
           self.attributeService.get(j.id).then((attribute:AxiosResponse) => {
             $.each(j.attributeValues, function (k, v) {
               allAttributeValues.push({
@@ -211,12 +210,12 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
             });
             attrValue.push({
               name: self.getMultiLangName(attribute.data.attributeLanguages).name,
-              value: attribute
+              value: attribute.data
             });
           });
         });
         resolve({allAttributesValues: allAttributeValues, selectedAttributeValue: attrValue});
-      });
+      }
     });
   }
   public copyBundle(item: any, index: number) {
@@ -230,7 +229,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
       this.allItems.push(resp.data);
       if(this.promotionCopy.typeBundleBaseds) this.promotionCopy.typeBundleBaseds.push(resp.data);
       this.$emit('updatePromotion', this.promotionCopy);
-      this.editBundle(resp, this.allItems.length-1);
+      this.editBundle(resp.data, this.allItems.length-1);
     });
   }
   public removeBundleItem(item: any, index: number) {
@@ -305,11 +304,11 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     let self = this;
     return new Promise(resolve => {
       if(!product) resolve(false);
-      this.productService.get(product).then((resp:AxiosResponse) => {
-        if(resp && resp.data){
-          resolve(self.getMultiLangName(resp.data.productLanguages).name);
-        }
-      });
+      let prodIndex = this.$store.state.lookups.products.findIndex((p:any)=> p.value.id === product)
+      if(prodIndex > -1) {
+        const prod = this.$store.state.lookups.products[prodIndex].value
+        resolve(prod.label);
+      }
     });
   }
 
@@ -339,17 +338,18 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
   public addProduct(prod:any, itemIndex:any){
     let self = this;
     let allAttributes:any = [];
-    this.productService.get(prod.value.id).then((resp:AxiosResponse) => {
-      this.allItems[itemIndex].selectedProducts= prod;
-      $.each(resp.data.attributes, function (k, v) {
+      let prodIndex = this.$store.state.lookups.products.findIndex((p:any)=> p.value.id === prod.value.id)
+      if(prodIndex > -1){
+        this.allItems[itemIndex].selectedProducts = this.$store.state.lookups.products[prodIndex];
+      }
+      $.each(this.$store.state.lookups.products[prodIndex].value.attributes, function (k, v) {
         allAttributes.push({
           label: self.getMultiLangName(prod.value.productLanguages).name + ' - ' + self.getMultiLangName(v.attributeLanguages).name,
           value: v,
-          product: resp
+          product: self.$store.state.lookups.products[prodIndex].value
         }) ;
       });
       this.allItems[itemIndex].allAttributes = allAttributes;
-    });
   }
   public removeProduct(prod:any, itemIndex:any){
     let self = this;

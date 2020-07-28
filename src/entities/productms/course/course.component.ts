@@ -35,23 +35,24 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
     this.active = true
     this.nameSearch = ''
     this.courseService = coursesService.getInstance()
-    this.eventStart = moment().format('MM-DD-YYYY HH-MM')
+    this.eventStart =null
     this.eventEnd = null
 
     this.dateConfigStart = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
-      timeFormat: 'HH-MM',
+      dateFormat: 'm-d-Y H:i',
+      timeFormat: 'H:i',
       enableTime: true,
-      minDate: moment().format('MM-DD-YYYY')
+      time_24hr: true
     }
     this.dateConfigEnd = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
-      timeFormat: 'HH-MM',
-      enableTime: true
+      dateFormat: 'm-d-Y H:i',
+      timeFormat: 'H:i',
+      enableTime: true,
+      time_24hr: true
     }
   }
 
@@ -72,15 +73,15 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
         }]
       })
     }
-    /*if(this.eventStart !== null){
+    if(this.eventStart !== null){
       queryArray.push({
         mainOperator: 'and',
         children: [{
           key: 'events.eventStart',
-          value: this.eventStart,
-          inBetweenOperator: '==',
+          value: moment(this.eventStart).format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          inBetweenOperator: '>=',
           afterOperator: '',
-          exactSearch: false
+          exactSearch: true
         }]
       })
     }
@@ -89,20 +90,20 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
         mainOperator: 'and',
         children: [{
           key: 'events.eventEnd',
-          value: this.eventEnd,
-          inBetweenOperator: '==',
+          value: moment(this.eventEnd).format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          inBetweenOperator: '<=',
           afterOperator: '',
-          exactSearch: false
+          exactSearch: true
         }]
       })
-    }*/
+    }
     let finalQ = this.queryBuilder(queryArray)
     // @ts-ignore
     this.$refs.paginationTable.retrieveData('api/productms/api/courses', undefined, finalQ)
   }
 
   public clear () {
-    this.eventStart = moment().format('MM-DD-YYYY')
+    this.eventStart = moment().format('MM-DD-YYYY HH:mm')
     this.eventEnd = null
     this.nameSearch = ''
     // @ts-ignore
@@ -111,6 +112,9 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
 
   public editCourse (prod: any) {
     this.$router.push({ name: 'EditCourse', params: { id: prod.id } })
+  }
+  public copyCourse (course: any) {
+
   }
 
   public deleteCourse (prod: any) {

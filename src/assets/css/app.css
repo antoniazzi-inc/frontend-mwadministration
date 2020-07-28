@@ -31,10 +31,8 @@
     font-size: 20px;
     color: #047bf8;
     position: absolute;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
     margin-left: 1%;
-    margin-top: 2%;
+    padding-top: 1.5%;
 }
 .date-input .form-control{
     padding-left: 35px;

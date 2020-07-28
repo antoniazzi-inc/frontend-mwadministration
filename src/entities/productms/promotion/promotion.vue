@@ -41,7 +41,7 @@
                                          @onSelected="addPromoType"
                                          @onDelete="removePromoType"/>
           </div>
-          <div class="form-group mt-3">
+          <div class="form-group mt-3" v-show="selectedPromoType">
             <label class="form-control-label">{{$t('labels.searchByDiscountType')}}</label>
             <searchable-select-component :config="discountTypeConfig"
                                          :options="allDiscountTypes"
@@ -49,7 +49,7 @@
                                          @onSelected="addDiscountType"
                                          @onDelete="removeDiscountType"/>
           </div>
-          <div class="form-group mt-3">
+          <div class="form-group mt-3" v-show="selectedDiscount && selectedDiscount.id === 1">
             <label class="form-control-label">{{$t('labels.amountOfPercentage')}}</label>
             <money class="form-control" v-model="percentageAmount" name="amount" v-bind="money"></money>
           </div>

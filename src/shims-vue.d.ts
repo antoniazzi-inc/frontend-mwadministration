@@ -20,6 +20,7 @@ declare module 'mjml-column'
 declare module 'mjml-section'
 declare module 'vuedraggable'
 declare module 'mjml-text'
+declare module 'debounce'
 
 declare module 'vue-on-toast'
 declare module 'vue-gravatar' {
