@@ -382,8 +382,8 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     if(this.selectedEvent.eventReservations) {this.selectedEvent.eventReservations.push(allReservations)}else{
       this.selectedEvent.eventReservations = allReservations
     }
-    this.eventReservationService.post(allReservations).then((resp:AxiosResponse) => {
-      if(resp && resp.data){
+    this.eventReservationService.createMultiple(allReservations).then((resp:AxiosResponse) => {
+      if(resp && resp === "success"){
         this.setAlert('reservationsAdded', 'success')
         this.populateCourse(this.course.id)
       } else {
