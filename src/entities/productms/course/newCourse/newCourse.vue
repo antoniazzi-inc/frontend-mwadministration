@@ -192,15 +192,17 @@
                       <th><span>{{$t('labels.relation')}}</span></th>
                       <th><span>{{$t('labels.ordered')}}</span></th>
                       <th><span>{{$t('labels.paid')}}</span></th>
+                      <th><span>{{$t('labels.status')}}</span></th>
                       <th><span>{{$t('labels.actions')}}</span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <template v-for="(item, ind) in selectedEvent.eventReservations">
-                    <tr :key="ind" v-if="item.isPaid">
+                    <tr :key="ind" v-if="item.reservationStatus === 'OCCUPIED'">
                       <td>{{getRelationEmail(item)}}</td>
                       <td>{{item.createdOn | formatOnlyDate}}</td>
                       <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
+                      <td>{{item.reservationStatus}}</td>
                       <td>
                         <div class="btn-group flex-btn-group-container text-center justify-content-center">
                         <div @click.prevent="removeReservation(item, ind)" data-target="#deleteModal" data-toggle="modal" class="ml-3 text-danger cursor-pointer">
@@ -220,8 +222,11 @@
             </form>
             <div class="row">
               <div class="col-md-12 form-buttons-w text-left">
-                <button type="submit" data-toggle="modal" data-target="#assignRelation" class="btn btn-primary">
+                <button type="submit" data-toggle="modal" @click="populateRelations()" data-target="#assignRelation" class="btn btn-primary">
                   <span v-text="$t('labels.fillSeats')">Fill Seats</span>
+                </button>
+                <button type="submit" @click="editReservations = false" class="btn btn-outline-primary ml-2">
+                  <span v-text="$t('buttons.cancel')">Cancel</span>
                 </button>
               </div>
             </div>
@@ -238,15 +243,17 @@
                     <tr>
                       <th><span>{{$t('labels.relation')}}</span></th>
                       <th><span>{{$t('labels.date')}}</span></th>
+                      <th><span>{{$t('labels.paid')}}</span></th>
                       <th><span>{{$t('labels.status')}}</span></th>
                       <th><span>{{$t('labels.select')}}<input type="checkbox"/></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <template v-for="(item, ind) in selectedEvent.eventReservations">
-                    <tr :key="ind" v-if="!item.isPaid || item.reservationStatus === 'PENDING'">
+                    <tr :key="ind" v-if="item.reservationStatus === 'PENDING'">
                       <td>{{getRelationEmail(item)}}</td>
                       <td>{{item.createdOn | formatDate}}</td>
+                      <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
                       <td>{{item.reservationStatus}}</td>
                       <td><input :checked="selectedWaitingList.findIndex(e=>e.relationId === item.relationId)" type="checkbox"/></td>
                     </tr>
@@ -266,6 +273,9 @@
                 </button>
                 <button type="submit" @click="assignSeats" data-toggle="modal" data-target="#" class="btn btn-outline-success ml-2">
                   <span v-text="$t('labels.assign')">Assign</span>
+                </button>
+                <button type="submit" @click="editWaitingList = false" class="btn btn-outline-primary ml-2">
+                  <span v-text="$t('buttons.cancel')">Cancel</span>
                 </button>
               </div>
             </div>
@@ -291,6 +301,19 @@
                                            @onChange="relationsChanged"
                                            @onSearch="searchRelation"
                                            @onDelete="removeRelation"/>
+            </div>
+            <div class="mt-2">
+              <label class="form-control-label">{{$t('labels.isPaid')}}</label>
+              <toggle-switch :on-text="$t('labels.yes')"
+                             :off-text="$t('labels.no')"
+                             :value="isReservationPaid"/>
+            </div>
+            <div class="mt-2">
+              <label class="form-control-label">{{$t('labels.reservationStatus')}}</label>
+              <select v-model="reservationStatus" class="form-control">
+                <option value="OCCUPIED">{{$t('labels.occupied')}}</option>
+                <option value="PENDING">{{$t('labels.pending')}}</option>
+              </select>
             </div>
           </div>
           <div class="modal-footer">

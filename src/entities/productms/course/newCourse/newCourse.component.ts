@@ -64,6 +64,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public backToProducts: boolean
   public editEvent: boolean
   public editWaitingList: boolean
+  public isReservationPaid: boolean
   public eventStart: any
   public eventReservationService: any
   public multiSelectConfig: ISearchableSelectConfig
@@ -72,6 +73,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public eventEnd: any
   public eventsService: any
   public dateConfigEnd: any
+  public selectedReservation: any
   public reservationToRemove: any
   public reservationToRemoveIndex: any
   public reservationToMove: any
@@ -83,6 +85,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public pageContent: any
   public timer: any
   public selectedMoveEvent: any
+  public reservationStatus: any
   public course: ICourse
   public allEvents: []
   public selectedEvent: IEvent
@@ -147,6 +150,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     this.allEvents = []
     this.totalReservedSeats = 0
     this.timer = null
+    this.selectedReservation = null
     this.selectedMoveEvent = null
     this.reservationToRemove = null
     this.reservationToMove = null
@@ -156,7 +160,9 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     this.selectedRowIndex = null
     this.moneyConfig = new MoneyConfig(',', '.', '', Store.state.currency, 2, false)
     this.showHtmlEditor = false
+    this.reservationStatus = ReservationStatus.OCCUPIED
     this.isSaving = false
+    this.isReservationPaid = true
     this.unlimitedSeats = false
     this.backToProducts = false
     this.editWaitingList = false
@@ -173,6 +179,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
 
   public mounted() {
     this.selectedEvent.eventLanguages = []
+    this.populateRelations()
   }
 
   @Watch('courseId', {immediate: true, deep: true})
@@ -195,6 +202,12 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
         this.course = resp.data
         const content = JSON.parse(resp.data.pageContentJson)
         this.pageContent = content.htmlContent
+        if(this.selectedEvent && this.selectedEvent.id){
+          const ind = resp.data.events.findIndex((e:any) => e.id === this.selectedEvent.id)
+          if(ind > -1){
+            this.selectedEvent = resp.data.events[ind]
+          }
+        }
       } else {
         this.setAlert('somethingWentWrnog', 'error')
       }
@@ -202,7 +215,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public populateRelations(query?: any) {
-    this.allRelations = []
+    const self = this
     const pagination = {
       page: 0,
       size: 100000,
@@ -210,15 +223,15 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     }
     this.relationService.getAll(pagination, query ? query : undefined).then((resp: AxiosResponse) => {
       if (resp && resp.data) {
-        this.allRelations = resp.data.content
+        Vue.nextTick(function () {
+          self.allRelations = resp.data.content
+        })
       }
     })
   }
 
   public save() {
     this.course.pageContentJson = ''
-    this.course.createdOn = moment(this.course.createdOn, 'YYYY-MM-DDTHH:mm')
-    this.course.updatedOn = moment(this.course.updatedOn, 'YYYY-MM-DDTHH:mm')
     this.course.pageContentJson = JSON.stringify(
       {
         htmlContent: this.pageContent
@@ -356,6 +369,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
           if (resp) {
             this.setAlert('eventRemoved', 'success')
             if (this.course && this.course.events) this.course.events.splice(index, 1)
+            this.populateCourse(this.course.id)
           } else {
             this.setAlert('eventRemoveError', 'error')
           }
@@ -400,7 +414,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     let allReservations: any = []
     this.selectedRelations.forEach(e => {
       allReservations.push(new EventReservation(undefined, undefined, undefined, undefined,
-        undefined, true, e.id, ReservationStatus.OCCUPIED, this.selectedEvent.id ? {
+        undefined, this.isReservationPaid, e.id, this.reservationStatus, this.selectedEvent.id ? {
           id: this.selectedEvent.id, version:
           this.selectedEvent.version
         } : undefined))
@@ -412,7 +426,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     }
     if (this.selectedEvent.id) {
       this.eventReservationService.createMultiple(allReservations).then((resp: AxiosResponse) => {
-        if (resp && resp.data) {
+        if (resp) {
           this.setAlert('reservationsAdded', 'success')
           this.populateCourse(this.course.id)
         } else {
@@ -432,27 +446,13 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public toggleWaitingList(item: any) {
-    if (this.editWaitingList) {
-      this.editWaitingList = false
-      this.selectedEvent = new Event()
-      this.selectedEvent.eventLanguages = []
-      this.populateRelations()
-    } else {
       this.selectedEvent = item
       this.editWaitingList = true
-    }
   }
 
   public toggleReservations(item: any) {
-    if (this.editReservations) {
-      this.editReservations = false
-      this.selectedEvent = new Event()
-      this.selectedEvent.eventLanguages = []
-      this.populateRelations()
-    } else {
       this.selectedEvent = item
       this.editReservations = true
-    }
   }
 
   public selectRow(item: any, index: number) {
@@ -531,15 +531,16 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public removeReservationConfirmed(type: any) {
+    let self = this
     if (type === 'reservation') {
       if (this.reservationToRemove.id) {
         this.eventReservationService.delete(this.reservationToRemove.id).then((resp: AxiosResponse) => {
           if (resp) {
-           let ind = this.selectedRelations.findIndex((e)=> this.reservationToRemove.relationId === e.id)
-            if(ind > -1){
-             this.selectedRelations.splice(ind, 1)
+            if(self.selectedEvent.eventReservations && self.reservationToRemoveIndex >= 0){
+                self.selectedEvent.eventReservations.splice(self.reservationToRemoveIndex, 1)
             }
             this.setAlert('reservationRemoved', 'success')
+            this.populateCourse(this.course.id)
           } else {
             this.setAlert('reservationRemoveError', 'error')
           }
@@ -577,8 +578,28 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     this.reservationToMoveIndex = ind
   }
 
-  public moveReservationConfirmed(item: any) {
-
+  public moveReservationConfirmed() {
+    if(this.selectedMoveEvent.value && this.selectedMoveEvent.value.id){
+      if(this.course.events && this.selectedMoveEvent.value){
+      const ind = this.course.events.findIndex((e:any) => e.id === this.selectedMoveEvent.value.id)
+        if(ind > -1){
+          let dto = new EventReservation(undefined, undefined, undefined, undefined, undefined, this.reservationToMove.isPaid,
+            this.reservationToMove.relationId, this.reservationToMove.reservationStatus, {id: this.course.events[ind].id, version: this.course.events[ind].version})
+          this.eventReservationService.delete(this.reservationToMove.id).then((resp:AxiosResponse)=>{
+            if (resp) {
+              this.eventReservationService.post(dto).then((resp1:AxiosResponse) => {
+                if(resp1){
+                  this.setAlert('relationMoved', 'success')
+                  this.populateCourse(this.course.id)
+                } else {
+                  this.setAlert('relationMoveError', 'error')
+                }
+              })
+            }
+          })
+        }
+      }
+    }
   }
 
   public moveEventChanged(item: any) {
@@ -602,7 +623,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     if (index > -1) {
       return this.allRelations[index].email
     } else {
-      let result = 'asd'
+      let result = ''
       this.relationService.get(item.relationId).then((resp: AxiosResponse) => {
         if (resp && resp.data) {
           result = resp.data.email
