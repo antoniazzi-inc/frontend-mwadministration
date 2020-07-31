@@ -13,6 +13,8 @@
   "home": "Home",
   "yes": "Yes",
   "location": "Location",
+  "selectEvent": "Select Event",
+  "moveReservation": "Move Reservation",
   "seats": "Seats",
   "somethingWentWrong": "Something Went Wrong, please wait for browser to refresh...",
   "reservations": "Reservations",

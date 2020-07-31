@@ -19,7 +19,7 @@
                 <div class="input-group-prepend cursor-pointer">
                   <span @click="showHtmlEditor = !showHtmlEditor" class="input-group-text" id="basic-addon1">{{$t('labels.editor')}}</span>
                 </div>
-                <input v-show="!showHtmlEditor" type="text" v-model="course.pageContentJson" class="form-control"
+                <input v-show="!showHtmlEditor" type="text" v-model="pageContent" class="form-control"
                        placeholder="html editor" aria-label="" aria-describedby="basic-addon1">
               </div>
               <div v-show="showHtmlEditor">
@@ -200,8 +200,17 @@
                     <tr :key="ind" v-if="item.isPaid">
                       <td>{{getRelationEmail(item)}}</td>
                       <td>{{item.createdOn | formatOnlyDate}}</td>
-                      <td>{{item.isPaid}}</td>
-                      <td></td>
+                      <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
+                      <td>
+                        <div class="btn-group flex-btn-group-container text-center justify-content-center">
+                        <div @click.prevent="removeReservation(item, ind)" data-target="#deleteModal" data-toggle="modal" class="ml-3 text-danger cursor-pointer">
+                          <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div @click.prevent="moveReservation(item, ind)" data-target="#moveReservation" data-toggle="modal" class="ml-3 text-primary cursor-pointer">
+                          <i class="fas fa-plane"></i>
+                        </div>
+                        </div>
+                      </td>
                     </tr>
                     </template>
                     </tbody>
@@ -228,16 +237,18 @@
                     <thead>
                     <tr>
                       <th><span>{{$t('labels.relation')}}</span></th>
+                      <th><span>{{$t('labels.date')}}</span></th>
                       <th><span>{{$t('labels.status')}}</span></th>
                       <th><span>{{$t('labels.select')}}<input type="checkbox"/></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <template v-for="(item, ind) in selectedEvent.eventReservations">
-                    <tr :key="ind" v-if="item.isPaid">
+                    <tr :key="ind" v-if="!item.isPaid || item.reservationStatus === 'PENDING'">
                       <td>{{getRelationEmail(item)}}</td>
+                      <td>{{item.createdOn | formatDate}}</td>
                       <td>{{item.reservationStatus}}</td>
-                      <td><input :checked="selectedWaitingList.indexOf(e=>{e.relationId === item.relationId})" type="checkbox"/></td>
+                      <td><input :checked="selectedWaitingList.findIndex(e=>e.relationId === item.relationId)" type="checkbox"/></td>
                     </tr>
                     </template>
                     </tbody>
@@ -284,6 +295,58 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" @click="fillSeats" data-dismiss="modal">
+              {{$t('buttons.confirm')}}
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="moveReservation" tabindex="-1" role="dialog" ref="moveReservation">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>{{$t('labels.moveReservation')}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="mt-4">
+              <label class="form-control-label">{{$t('labels.selectEvent')}}</label>
+              <searchable-select-component :config="multiSelectConfigEvent"
+                                           :options="allEvents"
+                                           :value="selectedMoveEvent"
+                                           @onChange="moveEventChanged"
+                                           @onDelete="removeMoveEvent"/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="moveReservationConfirmed" data-dismiss="modal">
+              {{$t('buttons.confirm')}}
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="deleteModal" tabindex="-1" role="dialog" ref="deleteModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>{{$t('labels.confirmDelete')}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="mt-4">
+              <h5>{{$t('labels.areYouSureToDelete')}}</h5>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" @click="removeReservationConfirmed('reservation')">
               {{$t('buttons.confirm')}}
             </button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
