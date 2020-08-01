@@ -92,7 +92,7 @@
                         <span>{{$t('labels.seatsProgress')}}</span>
                       </div>
                       <div class="bar-label-right">
-                        <span class="info">{{totalReservedSeats}}/{{selectedEvent.seats}}</span>
+                        <span class="info">{{selectedEvent.eventReservations ? selectedEvent.eventReservations.length : 0}}/{{selectedEvent.seats}}</span>
                       </div>
                     </div>
                     <div class="bar-level-1" style="width: 100%">
@@ -116,18 +116,20 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item, index) in course.events"
-                        :class="index === selectedRowIndex ? 'selectedEvent cursor-pointer' : 'cursor-pointer'" :key="index"
+                        :class="index === selectedRowIndex ? 'selectedEvent cursor-pointer' : 'cursor-pointer'"
+                        :key="index"
                         @click="selectRow(item, index)">
                       <td>{{getMultiLangName(item.eventLanguages).name}}</td>
                       <td>{{getEventDate(item)}}</td>
                       <td>{{getLocation(item)}}</td>
-                      <td>{{totalReservedSeats}}/{{item.seats}}</td>
+                      <td>{{getReservedSeats(item.eventReservations)}}/{{item.seats}}</td>
                       <td class="text-center">
                         <div class="btn-group flex-btn-group-container">
                           <div @click.prevent="editCurrentEvent(item, index)" class="ml-3 text-primary cursor-pointer">
                             <i class="os-icon os-icon-ui-49"></i>
                           </div>
-                          <div @click.prevent="removeCurrentEvent(item, index)" class="ml-3 text-danger cursor-pointer">
+                          <div @click.prevent="removeCurrentEvent(item, index)" data-target="#deleteModal"
+                               data-toggle="modal" class="ml-3 text-danger cursor-pointer">
                             <i class="fas fa-trash-alt"></i>
                           </div>
                           <div class="text-success ml-3 cursor-pointer" @click="toggleReservations(item)">
@@ -182,10 +184,16 @@
       <div class="col-md-6">
         <div class="row" v-if="editReservations || editEvent">
           <div class="col-md-12">
+            <div class="row text-right">
+              <div class="col-md-6"></div>
+              <div class="col-md-6">
+                <input type="search" class="form-control mb-2" :placeholder="$t('labels.search')" v-model="reservationsListSearch" @input="doSearchReservations()"/>
+              </div>
+            </div>
             <form name="editForm" role="form" novalidate v-on:submit.prevent="save()">
               <div class="element-wrapper">
                 <h6 class="element-header" v-text="$t('labels.reservations')"></h6>
-                <div class="form-group">
+                <div class="form-group halfHeight">
                   <table class="table table-striped">
                     <thead>
                     <tr>
@@ -196,24 +204,55 @@
                       <th><span>{{$t('labels.actions')}}</span></th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-if="reservationsListSearch === ''">
                     <template v-for="(item, ind) in selectedEvent.eventReservations">
-                    <tr :key="ind" v-if="item.reservationStatus === 'OCCUPIED'">
-                      <td>{{getRelationEmail(item)}}</td>
-                      <td>{{item.createdOn | formatOnlyDate}}</td>
-                      <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
-                      <td>{{item.reservationStatus}}</td>
-                      <td>
-                        <div class="btn-group flex-btn-group-container text-center justify-content-center">
-                        <div @click.prevent="removeReservation(item, ind)" data-target="#deleteModal" data-toggle="modal" class="ml-3 text-danger cursor-pointer">
-                          <i class="fas fa-trash-alt"></i>
-                        </div>
-                        <div @click.prevent="moveReservation(item, ind)" data-target="#moveReservation" data-toggle="modal" class="ml-3 text-primary cursor-pointer">
-                          <i class="fas fa-plane"></i>
-                        </div>
-                        </div>
-                      </td>
-                    </tr>
+                      <tr :key="ind" v-if="item.reservationStatus === 'OCCUPIED'">
+                        <td>{{getRelationEmail(item)}}</td>
+                        <td>{{item.createdOn | formatDate}}</td>
+                        <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
+                        <td>{{item.reservationStatus}}</td>
+                        <td>
+                          <div class="btn-group flex-btn-group-container text-center justify-content-center">
+                            <div @click.prevent="()=>{removeReservation(item, ind); selectedDeleteMode='reservation'}" data-target="#deleteModal"
+                                 data-toggle="modal" class="ml-3 text-danger cursor-pointer">
+                              <i class="fas fa-trash-alt"></i>
+                            </div>
+                            <div @click.prevent="moveReservation(item, ind)" data-target="#moveReservation"
+                                 data-toggle="modal" class="ml-3 text-primary cursor-pointer">
+                              <i class="fas fa-plane"></i>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                    </tbody>
+                    <tbody v-else>
+                      <tr v-if="searchedReservations.length === 0">
+                        <td/>
+                        <td/>
+                        <td>{{$t('labels.noResults')}}</td>
+                        <td/>
+                        <td/>
+                      </tr>
+                    <template v-for="(item, ind) in searchedReservations">
+                      <tr :key="ind" v-if="item.reservationStatus === 'OCCUPIED'">
+                        <td>{{getRelationEmail(item)}}</td>
+                        <td>{{item.createdOn | formatDate}}</td>
+                        <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
+                        <td>{{item.reservationStatus}}</td>
+                        <td>
+                          <div class="btn-group flex-btn-group-container text-center justify-content-center">
+                            <div @click.prevent="removeReservation(item, ind)" data-target="#deleteModal"
+                                 data-toggle="modal" class="ml-3 text-danger cursor-pointer">
+                              <i class="fas fa-trash-alt"></i>
+                            </div>
+                            <div @click.prevent="moveReservation(item, ind)" data-target="#moveReservation"
+                                 data-toggle="modal" class="ml-3 text-primary cursor-pointer">
+                              <i class="fas fa-plane"></i>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
                     </template>
                     </tbody>
                   </table>
@@ -222,10 +261,11 @@
             </form>
             <div class="row">
               <div class="col-md-12 form-buttons-w text-left">
-                <button type="submit" data-toggle="modal" @click="populateRelations()" data-target="#assignRelation" class="btn btn-primary">
+                <button type="submit" :disabled="checkIfFillIsDisabled()" data-toggle="modal" @click="populateRelations()"
+                        data-target="#assignRelation" class="btn btn-primary">
                   <span v-text="$t('labels.fillSeats')">Fill Seats</span>
                 </button>
-                <button type="submit" @click="editReservations = false" class="btn btn-outline-primary ml-2">
+                <button v-if="!editEvent"  type="submit" @click="editReservations = false" class="btn btn-outline-primary ml-2">
                   <span v-text="$t('buttons.cancel')">Cancel</span>
                 </button>
               </div>
@@ -234,10 +274,16 @@
         </div>
         <div class="row mt-4" v-if="editEvent || editWaitingList">
           <div class="col-md-12">
+            <div class="row text-right">
+              <div class="col-md-6"></div>
+              <div class="col-md-6">
+                <input type="search" class="form-control mb-2" :placeholder="$t('labels.search')" v-model="waitingListSearch" @input="doSearchLists()"/>
+              </div>
+            </div>
             <form name="editForm" role="form" novalidate v-on:submit.prevent="save()">
               <div class="element-wrapper">
                 <h6 class="element-header" v-text="$t('labels.waitingList')"></h6>
-                <div class="form-group">
+                <div class="form-group halfHeight">
                   <table class="table table-striped">
                     <thead>
                     <tr>
@@ -250,13 +296,14 @@
                     </thead>
                     <tbody>
                     <template v-for="(item, ind) in selectedEvent.eventReservations">
-                    <tr :key="ind" v-if="item.reservationStatus === 'PENDING'">
-                      <td>{{getRelationEmail(item)}}</td>
-                      <td>{{item.createdOn | formatDate}}</td>
-                      <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
-                      <td>{{item.reservationStatus}}</td>
-                      <td><input :checked="selectedWaitingList.findIndex(e=>e.relationId === item.relationId)" type="checkbox"/></td>
-                    </tr>
+                      <tr :key="ind" v-if="item.reservationStatus === 'PENDING'">
+                        <td>{{getRelationEmail(item)}}</td>
+                        <td>{{item.createdOn | formatDate}}</td>
+                        <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
+                        <td>{{item.reservationStatus}}</td>
+                        <td><input :checked="selectedWaitingList.findIndex(e=>e.relationId === item.relationId)"
+                                   type="checkbox"/></td>
+                      </tr>
                     </template>
                     </tbody>
                   </table>
@@ -271,10 +318,11 @@
                 <button type="submit" @click="deleteFromWaitingList" class="btn btn-outline-danger ml-2">
                   <span v-text="$t('labels.delete')">Delete</span>
                 </button>
-                <button type="submit" @click="assignSeats" data-toggle="modal" data-target="#" class="btn btn-outline-success ml-2">
+                <button type="submit" @click="assignSeats" data-toggle="modal" data-target="#"
+                        class="btn btn-outline-success ml-2">
                   <span v-text="$t('labels.assign')">Assign</span>
                 </button>
-                <button type="submit" @click="editWaitingList = false" class="btn btn-outline-primary ml-2">
+                <button v-if="!editEvent" type="submit" @click="editWaitingList = false" class="btn btn-outline-primary ml-2">
                   <span v-text="$t('buttons.cancel')">Cancel</span>
                 </button>
               </div>
@@ -283,7 +331,8 @@
         </div>
       </div>
     </div>
-    <div class="modal" data-backdrop="static" data-keyboard="false" id="assignRelation" tabindex="-1" role="dialog" ref="assignRelation">
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="assignRelation" tabindex="-1" role="dialog"
+         ref="assignRelation">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -306,7 +355,7 @@
               <label class="form-control-label">{{$t('labels.isPaid')}}</label>
               <toggle-switch :on-text="$t('labels.yes')"
                              :off-text="$t('labels.no')"
-                             :value="isReservationPaid"/>
+                             :value.sync="isReservationPaid"></toggle-switch>
             </div>
             <div class="mt-2">
               <label class="form-control-label">{{$t('labels.reservationStatus')}}</label>
@@ -326,7 +375,8 @@
       </div>
     </div>
 
-    <div class="modal" data-backdrop="static" data-keyboard="false" id="moveReservation" tabindex="-1" role="dialog" ref="moveReservation">
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="moveReservation" tabindex="-1" role="dialog"
+         ref="moveReservation">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -354,7 +404,8 @@
         </div>
       </div>
     </div>
-    <div class="modal" data-backdrop="static" data-keyboard="false" id="deleteModal" tabindex="-1" role="dialog" ref="deleteModal">
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="deleteModal" tabindex="-1" role="dialog"
+         ref="deleteModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -369,7 +420,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal" @click="removeReservationConfirmed('reservation')">
+            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    @click="removeReservationConfirmed()">
               {{$t('buttons.confirm')}}
             </button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
@@ -381,9 +433,13 @@
 </template>
 <script src="./newCourse.component.ts" lang="ts"></script>
 <style scoped>
-  .selectedEvent{
-    -webkit-box-shadow: 0px 10px 5px -4px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 10px 5px -4px rgba(0,0,0,0.75);
-    box-shadow: 0px 10px 5px -4px rgba(0,0,0,0.75);
+  .selectedEvent {
+    -webkit-box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
+  }
+  .halfHeight{
+    max-height: 30vh;
+    overflow-y: auto;
   }
 </style>
