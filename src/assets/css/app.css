@@ -34,6 +34,16 @@
     margin-left: 1%;
     padding-top: 1.5%;
 }
+.dateHolder{
+    position: relative;
+}
+.clearDate{
+    position: absolute;
+    right: 10px;
+    line-height: 1;
+    vertical-align: middle;
+    top: 10px;
+}
 .date-input .form-control{
     padding-left: 35px;
 }

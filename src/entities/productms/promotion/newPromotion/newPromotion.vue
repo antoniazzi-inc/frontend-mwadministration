@@ -123,9 +123,11 @@
               </div>
               <div class="col-md-6">
                 <label>{{$t('labels.validTo')}}</label>
-                <div class="date-input">
-                <flat-pickr :config="validToConfig" class="single-daterange form-control"
-                            id="validToDate" v-model="availableTo"/>
+                <div class="dateHolder date-input">
+                  <flat-pickr :config="validToConfig" v-model="availableTo" class="single-daterange form-control"/>
+                  <i class="fa fa-times clearDate cursor-pointer" @click="availableTo=null">
+                    <span aria-hidden="true" class="sr-only">X</span>
+                  </i>
                 </div>
                 <span class="small text-danger" v-if="isValidatingStep2 && availableTo !== null && validateAvailableTo">{{$t('labels.validToMustBeAfterValidFrom')}}</span>
               </div>

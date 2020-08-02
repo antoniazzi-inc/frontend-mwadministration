@@ -17,14 +17,20 @@
           </div>
           <div class="form-group mt-3">
             <label>{{$t('labels.searchByStartDate')}}</label>
-            <div class="date-input">
+            <div class="dateHolder date-input">
               <flat-pickr :config="dateConfigStart" v-model="eventStart" class="single-daterange form-control"/>
+              <i class="fa fa-times clearDate cursor-pointer" @click="eventStart=null">
+                <span aria-hidden="true" class="sr-only">X</span>
+              </i>
             </div>
           </div>
           <div class="form-group mt-3">
             <label>{{$t('labels.searchByEndDate')}}</label>
-            <div class="date-input">
+            <div class="dateHolder date-input">
               <flat-pickr :config="dateConfigEnd" v-model="eventEnd" class="single-daterange form-control"/>
+              <i class="fa fa-times clearDate cursor-pointer" @click="eventEnd=null">
+                <span aria-hidden="true" class="sr-only">X</span>
+              </i>
             </div>
           </div>
           <div class="text-right">
@@ -41,6 +47,7 @@
           :noDataLabel="'labels.noCourses'"
           @onEdit="editCourse"
           @onDelete="deleteCourse"
+          @onCopy="copyCourse"
           :service="courseService"/>
       </div>
     </div>

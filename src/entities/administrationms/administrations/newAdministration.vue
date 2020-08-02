@@ -13,8 +13,12 @@
               </div>
               <div class="col-md-6 pr-0 mr-0">
                 <label>{{$t('labels.validTo')}}</label>
-                <flat-pickr :config="validToConfig" class="single-daterange form-control"
-                            id="validToDate" v-model="validTo"></flat-pickr>
+                <div class="dateHolder date-input">
+                  <flat-pickr :config="validToConfig" v-model="validTo" class="single-daterange form-control"/>
+                  <i class="fa fa-times clearDate cursor-pointer" @click="validTo=null">
+                    <span aria-hidden="true" class="sr-only">X</span>
+                  </i>
+                </div>
               </div>
             </div>
           </div>

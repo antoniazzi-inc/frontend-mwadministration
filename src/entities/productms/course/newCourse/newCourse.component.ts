@@ -199,7 +199,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
 
   @Watch('eventStart', {immediate: true, deep: true})
   public updateEventStart(newVal: any) {
-    if(!this.selectedEvent.id){
+    if (!this.selectedEvent.id) {
       this.$set(this.dateConfigEnd, 'minDate', newVal)
       this.eventEnd = newVal
     }
@@ -362,24 +362,26 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public getLocation(item: any) {
     return 'Amsterdam, Netherlands';
   }
+
   public doSearchLists() {
 
   }
+
   public doSearchReservations() {
-    let result:any = []
-    if(this.reservationsListSearch === ''){
+    let result: any = []
+    if (this.reservationsListSearch === '') {
       this.searchedReservations = []
       return
     }
-    if(this.reservationsListSearch && this.selectedEvent.eventReservations) {
-      this.selectedEvent.eventReservations.forEach((item)=>{
+    if (this.reservationsListSearch && this.selectedEvent.eventReservations) {
+      this.selectedEvent.eventReservations.forEach((item) => {
         let email = this.getRelationEmail(item)
-        if(email.includes(this.reservationsListSearch)){
+        if (email.includes(this.reservationsListSearch)) {
           result.push(item)
         }
       })
     }
-    if(result && result.length){
+    if (result && result.length) {
       this.searchedReservations = result
     }
   }
@@ -393,7 +395,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public getReservedSeats(reservations: any) {
-    if(!reservations) return 0
+    if (!reservations) return 0
     return reservations.map((item: any) => item.reservationStatus === 'OCCUPIED').length
   }
 
@@ -431,13 +433,13 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
       id: this.course.id,
       version: this.course.version
     }
-    if(this.selectedEvent.id){
+    if (this.selectedEvent.id) {
       let dto = {
         ...this.selectedEvent
       }
       dto.eventReservations = undefined
-      this.eventsService.put(dto).then((resp:AxiosResponse)=>{
-        if(resp && resp.data){
+      this.eventsService.put(dto).then((resp: AxiosResponse) => {
+        if (resp && resp.data) {
           this.setAlert('eventEdited', 'success')
           this.populateCourse(this.course.id)
         } else {
@@ -445,9 +447,9 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
         }
       })
     } else {
-      if(this.course.id){
-        this.eventsService.post(this.selectedEvent).then((resp:AxiosResponse)=>{
-          if(resp && resp.data){
+      if (this.course.id) {
+        this.eventsService.post(this.selectedEvent).then((resp: AxiosResponse) => {
+          if (resp && resp.data) {
             this.setAlert('eventEdited', 'success')
             this.populateCourse(this.course.id)
           } else {
@@ -480,28 +482,46 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
 
   public fillSeats() {
     let allReservations: any = []
-    this.selectedRelations.forEach(e => {
-      allReservations.push(new EventReservation(undefined, undefined, undefined, undefined,
-        undefined, this.isReservationPaid, e.id, this.reservationStatus, this.selectedEvent.id ? {
-          id: this.selectedEvent.id, version:
-          this.selectedEvent.version
-        } : undefined))
-    })
-    if (this.selectedEvent.eventReservations) {
-      this.selectedEvent.eventReservations.push(allReservations)
-    } else {
-      this.selectedEvent.eventReservations = allReservations
-    }
-    if (this.selectedEvent.id) {
-      this.eventReservationService.createMultiple(allReservations).then((resp: AxiosResponse) => {
-        if (resp) {
-          this.setAlert('reservationsAdded', 'success')
-          this.populateCourse(this.course.id)
-        } else {
-          this.setAlert('reservationsAddError', 'error')
+    let editEvent = false
+    if (this.selectedEvent.eventReservations && this.selectedEvent.seats)
+      if (this.selectedRelations.length + this.selectedEvent.eventReservations.length <= this.selectedEvent.seats) {
+        this.selectedRelations.forEach(e => {
+          let exists = -1
+          if (this.selectedEvent.eventReservations) {
+            exists = this.selectedEvent.eventReservations.findIndex((item: any) => item.relationId === e.id)
+          }
+          if (exists > -1) {
+            if(this.selectedEvent.eventReservations){
+              editEvent = true
+              this.$set(this.selectedEvent.eventReservations[exists], 'isPaid', this.isReservationPaid)
+              this.$set(this.selectedEvent.eventReservations[exists], 'reservationStatus', this.reservationStatus)
+              allReservations.push(this.selectedEvent.eventReservations[exists])
+            }
+          } else {
+            allReservations.push(new EventReservation(undefined, undefined, undefined, undefined,
+              undefined, this.isReservationPaid, e.id, this.reservationStatus, this.selectedEvent.id ? {
+                id: this.selectedEvent.id, version:
+                this.selectedEvent.version
+              } : undefined))
+          }
+        })
+        if(allReservations.length){
+          if (this.selectedEvent.id) {
+            this.eventReservationService.createMultiple(allReservations).then((resp: AxiosResponse) => {
+              if (resp) {
+                this.setAlert('reservationsAdded', 'success')
+                this.populateCourse(this.course.id)
+              } else {
+                this.setAlert('reservationsAddError', 'error')
+              }
+            })
+          }
         }
-      })
-    }
+      } else {
+        let toExclude = (this.selectedRelations.length + this.selectedEvent.eventReservations.length) - this.selectedEvent.seats
+        if (toExclude > 0)
+          this.setAlert('MaxSeatsLimit', 'error')
+      }
   }
 
   public sendMail() {
@@ -623,9 +643,9 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
           }
         }
       }
-    } else if(this.selectedDeleteMode === 'event'){
-      this.eventsService.delete(this.selectedEvent.id).then((resp:AxiosResponse) => {
-        if(resp){
+    } else if (this.selectedDeleteMode === 'event') {
+      this.eventsService.delete(this.selectedEvent.id).then((resp: AxiosResponse) => {
+        if (resp) {
           this.setAlert('eventRemoved', 'success')
           this.populateCourse(this.course.id)
         } else {

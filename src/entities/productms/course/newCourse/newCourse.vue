@@ -51,9 +51,11 @@
                   </div>
                   <div class="col-md-6">
                     <label>{{$t('labels.endDate')}}</label>
-                    <div class="date-input">
-                      <flat-pickr :config="dateConfigEnd" :class="{'single-daterange form-control': true}"
-                                  v-model="eventEnd"/>
+                    <div class="dateHolder date-input">
+                      <flat-pickr :config="dateConfigEnd" v-model="eventEnd" class="single-daterange form-control"/>
+                      <i class="fa fa-times clearDate cursor-pointer" @click="eventEnd=null">
+                        <span aria-hidden="true" class="sr-only">X</span>
+                      </i>
                     </div>
                   </div>
                 </div>
@@ -291,7 +293,7 @@
                       <th><span>{{$t('labels.date')}}</span></th>
                       <th><span>{{$t('labels.paid')}}</span></th>
                       <th><span>{{$t('labels.status')}}</span></th>
-                      <th><span>{{$t('labels.select')}}<input type="checkbox"/></span></th>
+                      <th><span>{{$t('labels.select')}}<input type="checkbox" class="ml-2"/></span></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -301,8 +303,7 @@
                         <td>{{item.createdOn | formatDate}}</td>
                         <td>{{item.isPaid ? $t('labels.yes') : $t('labels.no')}}</td>
                         <td>{{item.reservationStatus}}</td>
-                        <td><input :checked="selectedWaitingList.findIndex(e=>e.relationId === item.relationId)"
-                                   type="checkbox"/></td>
+                        <td><input :checked="false" type="checkbox" class="ml-2"/></td>
                       </tr>
                     </template>
                     </tbody>

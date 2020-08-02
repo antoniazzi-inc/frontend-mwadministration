@@ -73,10 +73,12 @@
       </div>
       <div class="form-row mt-3">
         <div class="col">
-          <label for="birthdateRelation" v-html="$t('labels.birthDate')"></label>
-          <div class="date-input">
-          <flat-pickr :config="dateConfig" class="single-daterange form-control"
-                      id="birthdateRelation" v-model="birthDate"></flat-pickr>
+          <label v-html="$t('labels.birthDate')"></label>
+          <div class="dateHolder date-input">
+            <flat-pickr :config="dateConfig" v-model="birthDate" class="single-daterange form-control"/>
+            <i class="fa fa-times clearDate cursor-pointer" @click="birthDate=null">
+              <span aria-hidden="true" class="sr-only">X</span>
+            </i>
           </div>
         </div>
         <div class="col">

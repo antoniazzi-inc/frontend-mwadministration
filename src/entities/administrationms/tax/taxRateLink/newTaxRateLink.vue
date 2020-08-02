@@ -11,8 +11,12 @@
           </div>
           <div class="form-group">
             <label>{{$t('labels.validTo')}}</label>
-            <flat-pickr :config="validToConfig" class="single-daterange form-control"
-                        id="validToDate" v-model="validToDate"></flat-pickr>
+            <div class="dateHolder date-input">
+              <flat-pickr :config="validToConfig" v-model="validToDate" class="single-daterange form-control"/>
+              <i class="fa fa-times clearDate cursor-pointer" @click="validToDate=null">
+                <span aria-hidden="true" class="sr-only">X</span>
+              </i>
+            </div>
           </div>
           <div class="form-group">
             <label>{{$t('labels.fromTaxRate')}}</label>

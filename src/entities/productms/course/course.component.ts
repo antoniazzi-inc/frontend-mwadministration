@@ -9,6 +9,9 @@ import coursesService from "@/shared/services/coursesService";
 import moment from "moment";
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
+import {Course} from "@/shared/models/CourseModel";
+import {Language} from "@/shared/models/language.model";
+import {Event} from "@/shared/models/event.model";
 
 @Component({
   components: {
@@ -37,14 +40,14 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
     this.courseService = coursesService.getInstance()
     this.eventStart =null
     this.eventEnd = null
-
     this.dateConfigStart = {
       wrap: true,
       altInput: false,
       dateFormat: 'm-d-Y H:i',
       timeFormat: 'H:i',
       enableTime: true,
-      time_24hr: true
+      time_24hr: true,
+      minDate: null
     }
     this.dateConfigEnd = {
       wrap: true,
@@ -103,7 +106,7 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public clear () {
-    this.eventStart = moment().format('MM-DD-YYYY HH:mm')
+    this.eventStart = null
     this.eventEnd = null
     this.nameSearch = ''
     // @ts-ignore
@@ -114,7 +117,30 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
     this.$router.push({ name: 'EditCourse', params: { id: prod.id } })
   }
   public copyCourse (course: any) {
-
+    const courseLangs = course.courseLanguages.map((lang:any)=>{
+      const name = `${this.$t('labels.copy')} ${lang.name}`
+      return new Language(undefined, undefined, lang.langKey, undefined, name, lang.description,
+        undefined, undefined, undefined, undefined, undefined)
+    })
+    const courseEvents = course.events.map((item:any)=>{
+      let langs = item.eventLanguages.map((lang:any) => {
+        return new Language(undefined, undefined, lang.langKey, undefined, lang.name, lang.description,
+          undefined, undefined, undefined, undefined, undefined)
+      })
+      return new Event(undefined, undefined, item.latitude, item.longitude, item.seats,
+        item.eventStart, item.eventEnd, item.price, undefined, undefined, undefined, langs,
+        undefined, [])
+    })
+    let dto = new Course(undefined, undefined, undefined, undefined, undefined,
+      course.pageContentJson, courseLangs, courseEvents)
+    this.courseService.post(dto).then((resp:AxiosResponse)=>{
+      if(resp && resp.data) {
+        this.setAlert('courseCopied', 'success')
+        this.clear()
+      } else {
+        this.setAlert('courseCopyError', 'error')
+      }
+    })
   }
 
   public deleteCourse (prod: any) {
