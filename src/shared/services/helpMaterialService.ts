@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IHelpContent } from '@/shared/models/help-content.model'
+import { IHelpContent } from '@/shared/models/administrationms/help-content.model'
 
 export default class HelpMaterialService extends BaseEntityService<IHelpContent> {
   private static instance: HelpMaterialService;

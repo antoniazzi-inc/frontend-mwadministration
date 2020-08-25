@@ -1,7 +1,7 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue } from 'vue-property-decorator'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationms/relationModel'
 import RelationService from '@/shared/services/relationService'
 import { AxiosResponse } from 'axios'
 import gravatarImg from 'vue-gravatar'

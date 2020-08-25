@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IAttributeValue} from "@/shared/models/AttributeValueModel";
+import {IAttributeValue} from "@/shared/models/productms/AttributeValueModel";
 import axios, {AxiosResponse} from 'axios'
 export default class  attributevaluesService extends BaseEntityService<IAttributeValue> {
     private static instance: attributevaluesService;

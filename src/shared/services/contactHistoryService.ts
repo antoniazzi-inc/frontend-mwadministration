@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IContactHistory } from '@/shared/models/contact-history.model'
+import { IContactHistory } from '@/shared/models/relationms/contact-history.model'
 
 export default class ContactHistoryService extends BaseEntityService<IContactHistory> {
   private static instance: ContactHistoryService;

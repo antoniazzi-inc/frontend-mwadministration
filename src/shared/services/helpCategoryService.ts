@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IHelpCategory } from '@/shared/models/help-category.model'
+import { IHelpCategory } from '@/shared/models/administrationms/help-category.model'
 
 export default class HelpCategoryService extends BaseEntityService<IHelpCategory> {
   private static instance: HelpCategoryService;

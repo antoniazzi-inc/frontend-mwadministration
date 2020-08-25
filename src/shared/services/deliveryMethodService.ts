@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IDeliveryMethod } from '@/shared/models/delivery-method.model'
+import { IDeliveryMethod } from '@/shared/models/administrationms/delivery-method.model'
 
 export default class DeliveryMethodService extends BaseEntityService<IDeliveryMethod> {
   private static instance: DeliveryMethodService;

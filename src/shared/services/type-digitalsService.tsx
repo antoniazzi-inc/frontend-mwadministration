@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {ITypeDigital} from "@/shared/models/TypeDigitalModel";
+import {ITypeDigital} from "@/shared/models/productms/TypeDigitalModel";
 
 export default class  typedigitalsService extends BaseEntityService<ITypeDigital> {
     private static instance: typedigitalsService;

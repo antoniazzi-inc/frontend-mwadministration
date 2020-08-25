@@ -1,14 +1,14 @@
 import {Component, Vue, Watch} from "vue-property-decorator";
 import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
-import {IPromotion, Promotion} from "@/shared/models/PromotionModel";
-import {ITypePersonalCouponBased, TypePersonalCouponBased} from "@/shared/models/TypePersonalCouponBasedModel";
+import {IPromotion, Promotion} from "@/shared/models/productms/PromotionModel";
+import {ITypePersonalCouponBased, TypePersonalCouponBased} from "@/shared/models/productms/TypePersonalCouponBasedModel";
 import {AxiosResponse} from "axios";
 import {mixins} from "vue-class-component";
 import CommonHelpers from "@/shared/commonHelpers";
 import typepersonalcouponbasedsService from "@/shared/services/type-personal-coupon-basedsService";
 import Papa from "papaparse";
 import vue2Dropzone from "vue2-dropzone";
-import {ICoupon} from "@/shared/models/CouponModel";
+import {ICoupon} from "@/shared/models/productms/CouponModel";
 
 @Component({
   props: {

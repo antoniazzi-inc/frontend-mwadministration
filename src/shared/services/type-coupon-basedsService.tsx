@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {ITypeCouponBased} from "@/shared/models/TypeCouponBasedModel";
+import {ITypeCouponBased} from "@/shared/models/productms/TypeCouponBasedModel";
 
 export default class  typecouponbasedsService extends BaseEntityService<ITypeCouponBased> {
     private static instance: typecouponbasedsService;

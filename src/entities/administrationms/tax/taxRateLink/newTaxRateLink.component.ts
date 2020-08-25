@@ -7,7 +7,7 @@ import 'flatpickr/dist/flatpickr.css'
 import moment from 'moment'
 import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import { AxiosResponse } from 'axios'
-import { ITaxRateLink, TaxRateLink } from '@/shared/models/tax-rate-link.model'
+import { ITaxRateLink, TaxRateLink } from '@/shared/models/administrationms/tax-rate-link.model'
 import TaxRateLinkService from '@/shared/services/taxRateLinkService'
 
 @Component({

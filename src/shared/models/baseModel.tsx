@@ -1,5 +1,5 @@
 import {Moment} from "moment";
-import {AdministrationEntity} from "@/shared/models/administrationModel";
+import {AdministrationEntity} from "@/shared/models/administrationms/administrationModel";
 
 export interface IBaseEntity {
   id?: number;

@@ -1,5 +1,5 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { IProduct, Product } from '@/shared/models/ProductModel'
+import { IProduct, Product } from '@/shared/models/productms/ProductModel'
 import NewCourseComponent from "@/entities/productms/course/newCourse/newCourse.vue";
 @Component({
   props: {

@@ -176,6 +176,30 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         lookupData = this.store.state.lookups.courses
         lookupName = 'courses'
         break
+      case 'paymentmethod':
+        obj.content = {
+          label: this.getMultiLangName(obj.content.paymentMethodLanguages).name,
+          value: obj
+        }
+        lookupData = this.store.state.lookups.paymentMethods
+        lookupName = 'paymentMethods'
+        break
+      case 'deliverymethod':
+        obj.content = {
+          label: this.getMultiLangName(obj.content.deliveryMethodLanguages).name,
+          value: obj
+        }
+        lookupData = this.store.state.lookups.deliveryMethods
+        lookupName = 'deliveryMethods'
+        break
+      case 'invoicetemplate':
+        obj.content = {
+          label: obj.content.name,
+          value: obj
+        }
+        lookupData = this.store.state.lookups.invoiceTemplates
+        lookupName = 'invoiceTemplates'
+        break
     }
     if (lookupName === '') {
       return

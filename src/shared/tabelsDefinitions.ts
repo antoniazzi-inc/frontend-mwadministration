@@ -1,15 +1,15 @@
 import { ILanguage, Language } from '@/shared/models/language.model'
 import Store from '../store'
 import moment from 'moment'
-import {TypeAffiliateBased} from "@/shared/models/TypeAffiliateBasedModel";
-import {Discount, IDiscount} from "@/shared/models/DiscountModel";
-import {TypeBundleBased} from "@/shared/models/TypeBundleBasedModel";
-import {TypeCouponBased} from "@/shared/models/TypeCouponBasedModel";
-import {Coupon} from "@/shared/models/CouponModel";
-import {TypeLoyaltyBased} from "@/shared/models/TypeLoyaltyBasedModel";
-import {TypePersonalCouponBased} from "@/shared/models/TypePersonalCouponBasedModel";
-import {TypePriceBased} from "@/shared/models/TypePriceBasedModel";
-import {TypeQuantityBased} from "@/shared/models/TypeQuantityBasedModel";
+import {TypeAffiliateBased} from "@/shared/models/productms/TypeAffiliateBasedModel";
+import {Discount, IDiscount} from "@/shared/models/productms/DiscountModel";
+import {TypeBundleBased} from "@/shared/models/productms/TypeBundleBasedModel";
+import {TypeCouponBased} from "@/shared/models/productms/TypeCouponBasedModel";
+import {Coupon} from "@/shared/models/productms/CouponModel";
+import {TypeLoyaltyBased} from "@/shared/models/productms/TypeLoyaltyBasedModel";
+import {TypePersonalCouponBased} from "@/shared/models/productms/TypePersonalCouponBasedModel";
+import {TypePriceBased} from "@/shared/models/productms/TypePriceBasedModel";
+import {TypeQuantityBased} from "@/shared/models/productms/TypeQuantityBasedModel";
 const local = localStorage.getItem('tableColumns') ? localStorage.getItem('tableColumns') : ''
 const currentSettings = local ? JSON.parse(local) : {}
 
@@ -331,6 +331,92 @@ export const product = {
       sort: false,
       method: null
     }
+  ]
+}
+
+export const order = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: true,
+    info: true
+  },
+  itemsPerPage: 10,
+  cols: [
+    {
+      name: 'labels.administrationId',
+      field: 'administrationId',
+      subField: null,
+      type: '',
+      authorities: ['ROLE_SUPER_ADMIN'],
+      sort: false
+    },
+    {
+      name: 'labels.id',
+      field: 'id',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.createdOn',
+      field: 'createdOn',
+      subField: null,
+      type: 'date',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }, {
+      name: 'labels.customer',
+      field: 'customer',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        //TODO handle customer display into table
+      }
+    }, {
+      name: 'labels.description',
+      field: 'description',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    },{
+      name: 'labels.nettoAmount',
+      field: 'nettoAmount',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        //TODO handle nettoAmount display into table
+      }
+    },{
+      name: 'labels.invoiceNumber',
+      field: 'invoiceNumber',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        //TODO handle invoiceNumber display into table
+      }
+    },{
+      name: 'labels.paymentStatus',
+      field: 'paymentStatus',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        //TODO handle paymentStatus display into table
+      }
+    },
   ]
 }
 

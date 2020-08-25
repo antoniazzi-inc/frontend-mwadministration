@@ -1,7 +1,7 @@
 import Component from 'vue-class-component'
 import { Vue, Watch } from 'vue-property-decorator'
-import { RelationPhone } from '@/shared/models/relation-phone.model'
-import { PhoneType } from '@/shared/models/company-phone.model'
+import { RelationPhone } from '@/shared/models/relationms/relation-phone.model'
+import { PhoneType } from '@/shared/models/relationms/company-phone.model'
 
 @Component({
   props: {

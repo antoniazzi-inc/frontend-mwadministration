@@ -6,7 +6,7 @@ import Store from "@/store";
 import MultiLanguageComponent from "@/components/multiLanguage/MultiLanguage.vue";
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
-import {IPromotion, Promotion} from "@/shared/models/PromotionModel";
+import {IPromotion, Promotion} from "@/shared/models/productms/PromotionModel";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
 import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";

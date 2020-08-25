@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IProduct } from '@/shared/models/ProductModel'
+import { IProduct } from '@/shared/models/productms/ProductModel'
 import axios from 'axios'
 export default class ProductService extends BaseEntityService<IProduct> {
   private static instance: ProductService;

@@ -1,12 +1,12 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import * as RefrenceType from '@/shared/models/contact-history.model'
+import * as RefrenceType from '@/shared/models/relationms/contact-history.model'
 import {
   ContactHistory,
   ContactHistoryReferenceType,
   ContactHistoryType,
   IContactHistory
-} from '@/shared/models/contact-history.model'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+} from '@/shared/models/relationms/contact-history.model'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationms/relationModel'
 import ContactHistoryService from '@/shared/services/contactHistoryService'
 import { AxiosResponse } from 'axios'
 import { mixins } from 'vue-class-component'

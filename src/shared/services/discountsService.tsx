@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IDiscount} from "@/shared/models/DiscountModel";
+import {IDiscount} from "@/shared/models/productms/DiscountModel";
 
 export default class  discountsService extends BaseEntityService<IDiscount> {
     private static instance: discountsService;

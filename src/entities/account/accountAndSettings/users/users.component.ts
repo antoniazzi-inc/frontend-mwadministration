@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
-import { IRole, Role } from '@/shared/models/role.model'
+import { IRole, Role } from '@/shared/models/administrationms/role.model'
 import RelationService from '@/shared/services/relationService'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import { AxiosResponse } from 'axios'

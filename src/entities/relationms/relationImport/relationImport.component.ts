@@ -6,15 +6,15 @@ import CommonHelpers from '@/shared/commonHelpers'
 import gravatarImg from 'vue-gravatar'
 import RelationService from '@/shared/services/relationService'
 import {AxiosResponse} from 'axios'
-import {RelationEntity} from '@/shared/models/relationModel'
-import {RelationProfile} from '@/shared/models/relation-profile.model'
-import {RelationAddress} from '@/shared/models/relation-address.model'
-import {Company} from '@/shared/models/company.model'
-import {PhoneType} from '@/shared/models/company-phone.model'
+import {RelationEntity} from '@/shared/models/relationms/relationModel'
+import {RelationProfile} from '@/shared/models/relationms/relation-profile.model'
+import {RelationAddress} from '@/shared/models/relationms/relation-address.model'
+import {Company} from '@/shared/models/relationms/company.model'
+import {PhoneType} from '@/shared/models/relationms/company-phone.model'
 import Step1Component from "@/entities/relationms/relationImport/steps/step1/step1.vue";
 import Step2Component from './steps/step2/step2.vue'
 import Step3Component from "@/entities/relationms/relationImport/steps/step3/step3.vue";
-import {CustomField} from "@/shared/models/custom-field.model";
+import {CustomField} from "@/shared/models/relationms/custom-field.model";
 
 @Component({
   components: {

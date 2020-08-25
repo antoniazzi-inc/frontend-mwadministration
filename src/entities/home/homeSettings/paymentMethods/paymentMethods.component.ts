@@ -9,7 +9,7 @@ import {
   PaymentMethod,
   PaymentMethodAvailability,
   PaymentMethodType
-} from '@/shared/models/payment-method.model'
+} from '@/shared/models/administrationms/payment-method.model'
 import { IMoneyConfig, MoneyConfig } from '@/shared/models/moneyConfig'
 import { IMultiLanguageConfig, MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
 import PaymentMethodService from '@/shared/services/paymentMethodService'

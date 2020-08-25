@@ -1,8 +1,8 @@
 import { Moment } from 'moment';
 import { IBaseEntity } from './baseModel';
 import { IAffiliateAgreement } from './AffiliateAgreementModel'
-import { IProduct } from './ProductModel'
-import { IAttributeValue } from './AttributeValueModel'
+import { IProduct } from './productms/ProductModel'
+import { IAttributeValue } from './productms/AttributeValueModel'
 
 export interface IAffiliateAgreementProduct extends IBaseEntity {
     createdOn?: Moment;

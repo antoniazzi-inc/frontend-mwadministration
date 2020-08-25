@@ -7,7 +7,7 @@ import ContactHistoryTabComponent
 import TasksTabComponent from '@/entities/relationms/relation/editRelation/tabs/tasksTab/tasksTab.vue'
 import OrdersTabComponent from '@/entities/relationms/relation/editRelation/tabs/ordersTab/ordersTab.vue'
 import ProfileTabComponent from '@/entities/relationms/relation/editRelation/tabs/profileTab/profileTab.vue'
-import { IRelationEntity } from '@/shared/models/relationModel'
+import { IRelationEntity } from '@/shared/models/relationms/relationModel'
 
 @Component({
   props: {

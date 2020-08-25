@@ -2,7 +2,7 @@ import {Component, Vue, Watch} from 'vue-property-decorator'
 import {mixins} from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import coursesService from "@/shared/services/coursesService";
-import {Course, ICourse} from "@/shared/models/CourseModel";
+import {Course, ICourse} from "@/shared/models/productms/CourseModel";
 import {IMultiLanguageConfig, MultiLanguageConfig} from "@/shared/models/MultiLanguageConfig";
 import Trumbowyg from 'vue-trumbowyg'
 import 'trumbowyg/dist/ui/trumbowyg.css'

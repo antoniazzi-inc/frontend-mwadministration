@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IProductCategory} from "@/shared/models/ProductCategoryModel";
+import {IProductCategory} from "@/shared/models/productms/ProductCategoryModel";
 
 export default class  productcategoriesService extends BaseEntityService<IProductCategory> {
     private static instance: productcategoriesService;

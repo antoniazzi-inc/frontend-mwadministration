@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { ICategoryEntity } from '@/shared/models/categoryModel'
+import { ICategoryEntity } from '@/shared/models/administrationms/categoryModel'
 
 export default class CategoryService extends BaseEntityService<ICategoryEntity> {
   private static instance: CategoryService;

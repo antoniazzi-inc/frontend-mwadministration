@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IPaymentMethod} from "@/shared/models/payment-method.model";
+import {IPaymentMethod} from "@/shared/models/administrationms/payment-method.model";
 import axios, {AxiosResponse} from 'axios'
 export default class  productpaymentmethodsService extends BaseEntityService<IPaymentMethod> {
     private static instance: productpaymentmethodsService;

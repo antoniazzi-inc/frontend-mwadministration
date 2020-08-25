@@ -17,7 +17,7 @@ import CompanySubTabComponent
   from '@/entities/relationms/relation/editRelation/tabs/profileTab/subTabs/companySubTab/companySubTab.vue'
 import AffiliatesSubTabComponent
   from '@/entities/relationms/relation/editRelation/tabs/profileTab/subTabs/affiliatesSubTab/affiliatesSubTab.vue'
-import { IRelationEntity } from '@/shared/models/relationModel'
+import { IRelationEntity } from '@/shared/models/relationms/relationModel'
 
 @Component({
   components: {

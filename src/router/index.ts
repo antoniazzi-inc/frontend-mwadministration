@@ -43,6 +43,9 @@ import NewPromotionComponent from "@/entities/productms/promotion/newPromotion/n
 import EditPromotionComponent from "@/entities/productms/promotion/editPromotion/editPromotion.vue";
 import CourseComponent from "@/entities/productms/course/course.vue";
 import NewCourseComponent from "@/entities/productms/course/newCourse/newCourse.vue";
+import OrderComponent from "@/entities/orderms/order/order.vue";
+import EditOrderComponent from "@/entities/orderms/order/editOrder/editOrder.vue";
+import NewOrderComponent from "@/entities/orderms/order/newOrder/newOrder.vue";
 
 Vue.use(VueRouter)
 
@@ -237,7 +240,17 @@ const routes = [
   }, {
     path: '/orders',
     name: 'Orders',
-    component: HomeDashboard
+    component: OrderComponent
+  },{
+    path: '/orders/edit/:id',
+    name: 'EditOrder',
+    component: EditOrderComponent,
+    params: { id: null }
+  },{
+    path: '/orders/new',
+    name: 'NewOrder',
+    component: NewOrderComponent,
+    params: { id: null }
   }, {
     path: '/orders-dashboard',
     name: 'OrdersDashboard',

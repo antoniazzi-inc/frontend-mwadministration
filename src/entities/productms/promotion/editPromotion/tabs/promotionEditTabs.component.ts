@@ -1,7 +1,7 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue } from 'vue-property-decorator'
-import { IProduct } from '@/shared/models/ProductModel'
+import { IProduct } from '@/shared/models/productms/ProductModel'
 import GeneralTabComponent from "@/entities/productms/promotion/editPromotion/tabs/general/generalTab.vue";
 
 import PriceBasedTabComponent

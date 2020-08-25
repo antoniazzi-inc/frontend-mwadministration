@@ -1,7 +1,7 @@
-import { ICompanyPhone } from './company-phone.model'
-import { ICompanyAddress } from './company-address.model'
-import { IBusiness } from './business.model'
-import { IRelationEntity } from './relationModel'
+import { ICompanyPhone } from './relationms/company-phone.model'
+import { ICompanyAddress } from './relationms/company-address.model'
+import { IBusiness } from './administrationms/business.model'
+import { IRelationEntity } from './relationms/relationModel'
 import { IBaseEntity } from '@/shared/models/baseModel'
 import { Moment } from 'moment'
 export interface IExternalSystem extends IBaseEntity{

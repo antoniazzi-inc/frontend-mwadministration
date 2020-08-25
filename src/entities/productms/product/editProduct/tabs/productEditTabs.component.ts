@@ -1,7 +1,7 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue } from 'vue-property-decorator'
-import { IProduct } from '@/shared/models/ProductModel'
+import { IProduct } from '@/shared/models/productms/ProductModel'
 import AffiliateTabComponent from '@/entities/productms/product/editProduct/tabs/affiliateTab/affiliateTab.vue'
 import BrandingTabComponent from '@/entities/productms/product/editProduct/tabs/brandingTab/brandingTab.vue'
 import CheckoutTabComponent from '@/entities/productms/product/editProduct/tabs/checkoutTab/checkoutTab.vue'

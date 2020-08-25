@@ -10,7 +10,7 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import {promotionType} from "@/shared/models/PromotionModel";
+import {promotionType} from "@/shared/models/productms/PromotionModel";
 import {IMoneyConfig, MoneyConfig} from "@/shared/models/moneyConfig";
 import moment from "moment";
 

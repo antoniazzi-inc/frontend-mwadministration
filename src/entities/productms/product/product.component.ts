@@ -9,7 +9,7 @@ import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import complexSearchComponent from '@/entities/relationms/relation/complexSearch/complexSearch.vue'
 import ProductService from '@/shared/services/productService'
-import {productType} from "@/shared/models/ProductModel";
+import {productType} from "@/shared/models/productms/ProductModel";
 
 @Component({
   components: {

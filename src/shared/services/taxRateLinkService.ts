@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { ITaxRateLink } from '@/shared/models/tax-rate-link.model'
+import { ITaxRateLink } from '@/shared/models/administrationms/tax-rate-link.model'
 
 export default class TaxRateLinkService extends BaseEntityService<ITaxRateLink> {
   private static instance: TaxRateLinkService;

@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { ITaxRate } from '@/shared/models/tax-rate.model'
+import { ITaxRate } from '@/shared/models/administrationms/tax-rate.model'
 
 export default class TaxRateService extends BaseEntityService<ITaxRate> {
   private static instance: TaxRateService;

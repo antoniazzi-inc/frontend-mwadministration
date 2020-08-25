@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IRelationEntity } from '@/shared/models/relationModel'
+import { IRelationEntity } from '@/shared/models/relationms/relationModel'
 
 export default class RelationService extends BaseEntityService<IRelationEntity> {
   private static instance: RelationService;

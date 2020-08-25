@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IHelpTag } from '@/shared/models/help-tag.model'
+import { IHelpTag } from '@/shared/models/administrationms/help-tag.model'
 
 export default class HelpTagService extends BaseEntityService<IHelpTag> {
   private static instance: HelpTagService;

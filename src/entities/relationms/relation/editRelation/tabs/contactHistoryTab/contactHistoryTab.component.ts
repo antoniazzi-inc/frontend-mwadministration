@@ -1,9 +1,9 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationms/relationModel'
 import ContactWidget from '@/entities/relationms/relation/editRelation/tabs/contactHistoryTab/contactWidget.vue'
-import { ContactHistory, IContactHistory } from '@/shared/models/contact-history.model'
+import { ContactHistory, IContactHistory } from '@/shared/models/relationms/contact-history.model'
 
 @Component({
   components: {

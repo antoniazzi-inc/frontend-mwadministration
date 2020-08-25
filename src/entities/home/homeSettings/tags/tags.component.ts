@@ -1,9 +1,9 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { ITagEntity, TagEntity } from '@/shared/models/tagModel'
+import { ITagEntity, TagEntity } from '@/shared/models/administrationms/tagModel'
 import TagService from '@/shared/services/tagService'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
-import { CategoryEntity } from '@/shared/models/categoryModel'
+import { CategoryEntity } from '@/shared/models/administrationms/categoryModel'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 

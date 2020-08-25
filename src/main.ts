@@ -21,7 +21,9 @@ import VueFormWizard from 'vue-form-wizard'
 // @ts-ignore
 window.$ = require('jquery')
 
-Vue.use(VeeValidate)
+Vue.use(VeeValidate, {
+
+})
 Vue.use(VueFormWizard)
 Vue.config.productionTip = false
 Vue.use(VueI18n)

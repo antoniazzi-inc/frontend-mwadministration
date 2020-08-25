@@ -1,7 +1,7 @@
-import { IRelationEntity } from './relationModel'
+import { IRelationEntity } from './relationms/relationModel'
 import { Moment } from 'moment'
 import { IBaseEntity } from '@/shared/models/baseModel'
-import { ICompany } from '@/shared/models/company.model'
+import { ICompany } from '@/shared/models/relationms/company.model'
 export interface ICustomer extends IBaseEntity{
     customerNumber?: string;
     vatNumber?: string;

@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IPaymentScheduleOption} from "@/shared/models/PaymentScheduleOptionModel";
+import {IPaymentScheduleOption} from "@/shared/models/productms/PaymentScheduleOptionModel";
 
 export default class  paymentscheduleoptionsService extends BaseEntityService <IPaymentScheduleOption>{
     private static instance: paymentscheduleoptionsService;

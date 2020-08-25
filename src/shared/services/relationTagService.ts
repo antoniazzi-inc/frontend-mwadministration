@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { ITagEntity } from '@/shared/models/tagModel'
+import { ITagEntity } from '@/shared/models/administrationms/tagModel'
 
 export default class RelationTagService extends BaseEntityService<ITagEntity> {
   private static instance: RelationTagService;

@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IProductSubscription} from "@/shared/models/ProductSubscriptionModel";
+import {IProductSubscription} from "@/shared/models/productms/ProductSubscriptionModel";
 
 export default class  productsubscriptionsService extends BaseEntityService<IProductSubscription> {
     private static instance: productsubscriptionsService;

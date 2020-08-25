@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 import { IEventLanguage } from './event-language.model';
-import { ICourse } from './CourseModel';
+import { ICourse } from './productms/CourseModel';
 import {IBaseEntity} from "@/shared/models/baseModel";
 import {IEvent} from "@/shared/models/event.model";
 export const enum ReservationStatus {

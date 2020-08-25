@@ -12,18 +12,18 @@ import {ISearchableSelectConfig, SearchableSelectConfig} from '@/shared/models/S
 import UploadWidget from '@/components/uploadWidget/uploadWidget.vue'
 import moment from 'moment'
 import Store from '@/store/index'
-import {IPromotion, Promotion, promotionType} from "@/shared/models/PromotionModel";
-import {TypeTimeBased} from "@/shared/models/TypeTimeBasedModel";
+import {IPromotion, Promotion, promotionType} from "@/shared/models/productms/PromotionModel";
+import {TypeTimeBased} from "@/shared/models/productms/TypeTimeBasedModel";
 import promotionsService from "@/shared/services/promotionsService";
-import {Discount} from "@/shared/models/DiscountModel";
-import {TypeAffiliateBased} from "@/shared/models/TypeAffiliateBasedModel";
-import {TypeBundleBased} from "@/shared/models/TypeBundleBasedModel";
-import {TypeCouponBased} from "@/shared/models/TypeCouponBasedModel";
-import {Coupon} from "@/shared/models/CouponModel";
-import {TypeLoyaltyBased} from "@/shared/models/TypeLoyaltyBasedModel";
-import {TypePersonalCouponBased} from "@/shared/models/TypePersonalCouponBasedModel";
-import {TypePriceBased} from "@/shared/models/TypePriceBasedModel";
-import {TypeQuantityBased} from "@/shared/models/TypeQuantityBasedModel";
+import {Discount} from "@/shared/models/productms/DiscountModel";
+import {TypeAffiliateBased} from "@/shared/models/productms/TypeAffiliateBasedModel";
+import {TypeBundleBased} from "@/shared/models/productms/TypeBundleBasedModel";
+import {TypeCouponBased} from "@/shared/models/productms/TypeCouponBasedModel";
+import {Coupon} from "@/shared/models/productms/CouponModel";
+import {TypeLoyaltyBased} from "@/shared/models/productms/TypeLoyaltyBasedModel";
+import {TypePersonalCouponBased} from "@/shared/models/productms/TypePersonalCouponBasedModel";
+import {TypePriceBased} from "@/shared/models/productms/TypePriceBasedModel";
+import {TypeQuantityBased} from "@/shared/models/productms/TypeQuantityBasedModel";
 import {AxiosResponse} from "axios";
 
 @Component({

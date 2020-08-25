@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IPromotion} from "@/shared/models/PromotionModel";
+import {IPromotion} from "@/shared/models/productms/PromotionModel";
 import axios, {AxiosResponse} from 'axios'
 
 export default class promotionsService extends BaseEntityService<IPromotion> {

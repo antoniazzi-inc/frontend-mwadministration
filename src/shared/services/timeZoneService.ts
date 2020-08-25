@@ -1,6 +1,6 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { ITagEntity } from '@/shared/models/tagModel'
-import { ITimeZone } from '@/shared/models/time-zone.model'
+import { ITagEntity } from '@/shared/models/administrationms/tagModel'
+import { ITimeZone } from '@/shared/models/administrationms/time-zone.model'
 
 export default class TimeZoneService extends BaseEntityService<ITimeZone> {
   private static instance: TimeZoneService;

@@ -5,10 +5,10 @@ import * as Tables from '@/shared/tabelsDefinitions'
 import Chrome from 'vue-color/src/components/Chrome'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationComponent from '@/components/paginationTable/pagination.vue'
-import { CustomField, CustomFieldType } from '@/shared/models/custom-field.model'
+import { CustomField, CustomFieldType } from '@/shared/models/relationms/custom-field.model'
 import { Language } from '@/shared/models/language.model'
 import moment from 'moment'
-import { CustomFieldOption } from '@/shared/models/custom-field-option.model'
+import { CustomFieldOption } from '@/shared/models/relationms/custom-field-option.model'
 
 @Component({
   components: {

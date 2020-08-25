@@ -1,4 +1,4 @@
-import { IRelationEntity } from './relationModel'
+import { IRelationEntity } from './relationms/relationModel'
 import { IBaseEntity } from '@/shared/models/baseModel'
 import { Moment } from 'moment'
 export interface IBeneficiary extends IBaseEntity{

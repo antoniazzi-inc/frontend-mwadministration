@@ -9,7 +9,7 @@ import coursesService from "@/shared/services/coursesService";
 import moment from "moment";
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
-import {Course} from "@/shared/models/CourseModel";
+import {Course} from "@/shared/models/productms/CourseModel";
 import {Language} from "@/shared/models/language.model";
 import {Event} from "@/shared/models/event.model";
 

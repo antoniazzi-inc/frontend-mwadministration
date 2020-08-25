@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {ITypeTimeBased} from "@/shared/models/TypeTimeBasedModel";
+import {ITypeTimeBased} from "@/shared/models/productms/TypeTimeBasedModel";
 
 export default class  typetimebasedsService extends BaseEntityService<ITypeTimeBased> {
     private static instance: typetimebasedsService;

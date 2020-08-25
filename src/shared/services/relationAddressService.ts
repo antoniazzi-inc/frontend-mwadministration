@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IRelationAddress } from '@/shared/models/relation-address.model'
+import { IRelationAddress } from '@/shared/models/relationms/relation-address.model'
 
 export default class RelationAddressService extends BaseEntityService<IRelationAddress> {
   private static instance: RelationAddressService;

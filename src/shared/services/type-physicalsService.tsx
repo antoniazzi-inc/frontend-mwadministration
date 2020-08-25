@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {ITypePhysical} from "@/shared/models/TypePhysicalModel";
+import {ITypePhysical} from "@/shared/models/productms/TypePhysicalModel";
 
 export default class  typephysicalsService extends BaseEntityService<ITypePhysical> {
     private static instance: typephysicalsService;

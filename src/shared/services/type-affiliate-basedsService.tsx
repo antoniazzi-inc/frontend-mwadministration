@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {ITypeAffiliateBased} from "@/shared/models/TypeAffiliateBasedModel";
+import {ITypeAffiliateBased} from "@/shared/models/productms/TypeAffiliateBasedModel";
 
 export default class  typeaffiliatebasedsService extends BaseEntityService<ITypeAffiliateBased> {
     private static instance: typeaffiliatebasedsService;

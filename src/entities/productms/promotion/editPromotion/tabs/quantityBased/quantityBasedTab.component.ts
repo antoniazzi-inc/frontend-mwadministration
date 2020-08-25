@@ -1,10 +1,10 @@
 import {Component, Vue, Watch} from "vue-property-decorator";
-import {IPromotion} from "@/shared/models/PromotionModel";
+import {IPromotion} from "@/shared/models/productms/PromotionModel";
 import {AxiosResponse} from "axios";
 import typequantitybasedsService from "@/shared/services/type-quantity-basedsService";
 import CommonHelpers from "@/shared/commonHelpers";
 import {mixins} from "vue-class-component";
-import {Discount} from "@/shared/models/DiscountModel";
+import {Discount} from "@/shared/models/productms/DiscountModel";
 @Component({
     props: {
         promotion: Object

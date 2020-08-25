@@ -6,6 +6,7 @@ import { mixins } from 'vue-class-component'
 import DeliveryMethodsComponent from '@/entities/home/homeSettings/deliveryMethods/deliveryMethods.vue'
 import PaymentMethodsComponent from '@/entities/home/homeSettings/paymentMethods/paymentMethods.vue'
 import IntegrationsComponent from '@/entities/home/homeSettings/integrations/integrations.vue'
+import InvoiceTemplate from "@/entities/home/homeSettings/invoiceTemplate/invoiceTemplate.vue";
 
 @Component({
   props: {
@@ -19,7 +20,8 @@ import IntegrationsComponent from '@/entities/home/homeSettings/integrations/int
     DefaultTextsComponent,
     DeliveryMethodsComponent,
     PaymentMethodsComponent,
-    IntegrationsComponent
+    IntegrationsComponent,
+    InvoiceTemplate
   }
 })
 export default class HomeSettingsComponent extends mixins(Vue) {

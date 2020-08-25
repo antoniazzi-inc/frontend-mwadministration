@@ -1,7 +1,7 @@
 import {Vue, Component} from 'vue-property-decorator'
 import {ILanguage, Language} from '@/shared/models/language.model'
 import {columnsVisibility} from '@/shared/tabelsDefinitions'
-import {Country} from '@/shared/models/country.model'
+import {Country} from '@/shared/models/administrationms/country.model'
 import axios from 'axios'
 import Store from "@/store";
 
@@ -408,6 +408,36 @@ export default class CommonHelpers extends Vue {
       text += possible.charAt(Math.floor(Math.random() * possible.length))
     }
     return text
+  }
+
+  /*
+   * Name: validateAddress
+   * arg: address
+   * description: Address validation
+   * Author: Nick Dam
+   */
+  public validateAddress(address:any) {
+    let result:any = {
+      status: true,
+      msg: ''
+    }
+   if(!address.street) {
+     result.msg = this.$t('labels.enterValidStreet')
+     result.status = false
+   } else if(!address.houseNumber) {
+     result.msg = this.$t('labels.enterValidHouseNumber')
+     result.status = false
+   } else if(!address.postalCode) {
+     result.msg = this.$t('labels.enterValidPostalCode')
+     result.status = false
+   } else if(!address.city) {
+     result.msg = this.$t('labels.enterValidCity')
+     result.status = false
+   } else if(!address.countryId) {
+     result.msg = this.$t('labels.enterValidCountry')
+     result.status = false
+   }
+   return result
   }
 
   /*

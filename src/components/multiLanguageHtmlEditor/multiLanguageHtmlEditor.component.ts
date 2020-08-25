@@ -13,7 +13,8 @@ import 'trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.css'
       type: [Object, String]
     },
     availableLangs: {
-      type: Array
+      type: Array,
+      required: false
     }
   }
 

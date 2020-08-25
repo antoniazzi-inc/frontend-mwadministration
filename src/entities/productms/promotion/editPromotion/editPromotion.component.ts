@@ -3,7 +3,7 @@ import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue } from 'vue-property-decorator'
 import { AxiosResponse } from 'axios'
 import PromotionEditTabsComponent from './tabs/promotionEditTabs.vue'
-import {IPromotion, Promotion} from "@/shared/models/PromotionModel";
+import {IPromotion, Promotion} from "@/shared/models/productms/PromotionModel";
 import promotionsService from "@/shared/services/promotionsService";
 
 @Component({

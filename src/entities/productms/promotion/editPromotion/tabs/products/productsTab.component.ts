@@ -1,5 +1,5 @@
 import {Component, Vue, Watch} from "vue-property-decorator";
-import {IPromotion, Promotion} from "@/shared/models/PromotionModel";
+import {IPromotion, Promotion} from "@/shared/models/productms/PromotionModel";
 import {mixins} from "vue-class-component";
 import CommonHelpers from "@/shared/commonHelpers";
 import {AxiosResponse} from "axios";

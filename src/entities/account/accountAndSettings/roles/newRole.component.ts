@@ -1,6 +1,6 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { IRole, Role } from '@/shared/models/role.model'
-import { IPermission } from '@/shared/models/permission.model'
+import { IRole, Role } from '@/shared/models/administrationms/role.model'
+import { IPermission } from '@/shared/models/administrationms/permission.model'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import RoleService from '@/shared/services/roleService'
 import { AxiosResponse } from 'axios'

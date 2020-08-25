@@ -1,7 +1,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
 import RoleService from '@/shared/services/roleService'
-import { IRole, Role } from '@/shared/models/role.model'
+import { IRole, Role } from '@/shared/models/administrationms/role.model'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'

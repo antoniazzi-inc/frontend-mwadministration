@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IMedia} from "@/shared/models/MediaModel";
+import {IMedia} from "@/shared/models/productms/MediaModel";
 
 export default class  mediasService extends BaseEntityService<IMedia> {
     private static instance: mediasService;

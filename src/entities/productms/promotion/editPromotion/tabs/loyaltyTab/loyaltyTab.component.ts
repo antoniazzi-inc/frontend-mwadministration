@@ -1,7 +1,7 @@
 import {Component, Vue, Watch} from "vue-property-decorator";
 import {Money} from "v-money";
 import Store from "@/store";
-import {IPromotion, Promotion} from "@/shared/models/PromotionModel";
+import {IPromotion, Promotion} from "@/shared/models/productms/PromotionModel";
 import {AxiosResponse} from "axios";
 import typeloyaltybasedsService from "@/shared/services/type-loyalty-basedsService";
 import CommonHelpers from "@/shared/commonHelpers";

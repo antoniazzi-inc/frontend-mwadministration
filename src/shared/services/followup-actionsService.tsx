@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {IFollowupAction} from "@/shared/models/FollowupActionModel";
+import {IFollowupAction} from "@/shared/models/productms/FollowupActionModel";
 
 export default class  followupactionsService extends BaseEntityService<IFollowupAction> {
     private static instance: followupactionsService;

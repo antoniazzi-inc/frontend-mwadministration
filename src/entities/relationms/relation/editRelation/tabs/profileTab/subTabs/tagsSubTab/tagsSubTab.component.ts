@@ -1,11 +1,11 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { ITagEntity } from '@/shared/models/tagModel'
+import { ITagEntity } from '@/shared/models/administrationms/tagModel'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import { AxiosResponse } from 'axios'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationms/relationModel'
 import RelationService from '@/shared/services/relationService'
 import RelationTagService from '@/shared/services/relationTagService'
 

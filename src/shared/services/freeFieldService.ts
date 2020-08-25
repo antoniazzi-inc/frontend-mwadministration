@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { ICustomField } from '@/shared/models/custom-field.model'
+import { ICustomField } from '@/shared/models/relationms/custom-field.model'
 
 export default class FreeFieldService extends BaseEntityService<ICustomField> {
   private static instance: FreeFieldService;

@@ -1,16 +1,16 @@
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { Company, ICompany } from '@/shared/models/company.model'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { Company, ICompany } from '@/shared/models/relationms/company.model'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationms/relationModel'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
-import validateVat, { CountryCodes, ViesValidationResponse } from 'validate-vat-ts'
-import { PhoneType } from '@/shared/models/company-phone.model'
-import { Country, ICountry } from '@/shared/models/country.model'
+import { PhoneType } from '@/shared/models/relationms/company-phone.model'
+import { Country, ICountry } from '@/shared/models/administrationms/country.model'
 import CompanyService from '@/shared/services/companyService'
 import { AxiosResponse } from 'axios'
 import RelationService from '@/shared/services/relationService'
+import * as validateVatNumber from "@/shared/vatValidator";
 
 @Component({
   components: {
@@ -171,10 +171,8 @@ export default class CompanySubTabComponent extends mixins(Vue, CommonHelpers) {
   public async validateVat () {
     try {
       if (this.companyToEdit.vatNumber != null) {
-        // @ts-ignore
-        const country: CountryCodes = this.selectedCountry.enName ? CountryCodes[this.selectedCountry.enName] : CountryCodes.Netherlands
-        const validationInfo: ViesValidationResponse = await validateVat(country, this.companyToEdit.vatNumber)
-        if (validationInfo.valid) {
+        let result = validateVatNumber.checkVATNumber(this.companyToEdit.vatNumber)
+        if (result) {
           this.vatError = ''
         } else {
           this.vatError = this.$t('labels.vatNumberNotValid')

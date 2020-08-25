@@ -1,6 +1,6 @@
 import { IBaseEntity } from '@/shared/models/baseModel'
-import { IHelpCategory } from '@/shared/models/help-category.model'
-import { ICompany } from '@/shared/models/company.model'
+import { IHelpCategory } from '@/shared/models/administrationms/help-category.model'
+import { ICompany } from '@/shared/models/relationms/company.model'
 import { Moment } from 'moment'
 
 export interface ILanguage extends IBaseEntity{

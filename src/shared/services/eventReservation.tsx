@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {ICourse} from "@/shared/models/CourseModel";
+import {ICourse} from "@/shared/models/productms/CourseModel";
 import axios from 'axios'
 
 export default class  eventReservationService extends BaseEntityService<ICourse> {

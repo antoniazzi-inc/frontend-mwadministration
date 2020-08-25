@@ -2,14 +2,14 @@ import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
 
 import relationFreeFieldService from '@/shared/services/relationFreeFieldService'
 import relationFreeFieldOptionService from '@/shared/services/relationFreeFieldOptionService'
-import { IRelationEntity, RelationEntity } from '@/shared/models/relationModel'
+import { IRelationEntity, RelationEntity } from '@/shared/models/relationms/relationModel'
 import { AxiosResponse } from 'axios'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
-import { CustomField, ICustomField } from '@/shared/models/custom-field.model'
+import { CustomField, ICustomField } from '@/shared/models/relationms/custom-field.model'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
-import { RelationCustomField } from '@/shared/models/relation-custom-field.model'
+import { RelationCustomField } from '@/shared/models/relationms/relation-custom-field.model'
 import { Language } from '@/shared/models/language.model'
 
 @Component({

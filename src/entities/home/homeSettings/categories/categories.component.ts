@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import PaginationTableComponent from '@/components/paginationTable/paginationTable.vue'
 import Chrome from 'vue-color/src/components/Chrome'
-import { CategoryEntity, ICategoryEntity } from '@/shared/models/categoryModel'
+import { CategoryEntity, ICategoryEntity } from '@/shared/models/administrationms/categoryModel'
 import CategoryService from '@/shared/services/categoryService'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import { mixins } from 'vue-class-component'

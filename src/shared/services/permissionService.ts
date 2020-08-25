@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IRole } from '@/shared/models/role.model'
+import { IRole } from '@/shared/models/administrationms/role.model'
 
 export default class PermissionsService extends BaseEntityService<IRole> {
   private static instance: PermissionsService;

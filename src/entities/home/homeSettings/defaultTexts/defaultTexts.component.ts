@@ -3,7 +3,7 @@ import { DefaultTextsConfig, HtmlPageTemplates, EmailTemplates, EmailTextConfig,
 import AdministrationSettingsService from '@/shared/services/administrationSettingsService'
 import { AxiosResponse } from 'axios'
 import MultiLanguageHtmlEditorComponent from '../../../../components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue'
-import { AdministrationSettings } from '@/shared/models/administrationSettingsModel'
+import { AdministrationSettings } from '@/shared/models/administrationms/administrationSettingsModel'
 import { MultiLanguageConfig } from '@/shared/models/MultiLanguageConfig'
 import MultiLanguageComponent from '../../../../components/multiLanguage/MultiLanguage.vue'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'

@@ -4,7 +4,7 @@ import { Money } from 'v-money'
 import moment from 'moment'
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
-import { IProduct, Product } from '@/shared/models/ProductModel'
+import { IProduct, Product } from '@/shared/models/productms/ProductModel'
 import { AxiosResponse } from 'axios'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
@@ -16,9 +16,9 @@ import { IMultiLanguageConfig, MultiLanguageConfig } from '@/shared/models/Multi
 import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
-import { ProductLanguage } from '@/shared/models/ProductLanguageModel'
+import { ProductLanguage } from '@/shared/models/productms/ProductLanguageModel'
 import Store from '@/store/index'
-import {ProductCategory} from "@/shared/models/ProductCategoryModel";
+import {ProductCategory} from "@/shared/models/productms/ProductCategoryModel";
 @Component({
   props: {
     product: Object

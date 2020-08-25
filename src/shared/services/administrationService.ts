@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IAdministration } from '@/shared/models/administrationModel'
+import { IAdministration } from '@/shared/models/administrationms/administrationModel'
 
 export default class AdministrationService extends BaseEntityService<IAdministration> {
   private static instance: AdministrationService;

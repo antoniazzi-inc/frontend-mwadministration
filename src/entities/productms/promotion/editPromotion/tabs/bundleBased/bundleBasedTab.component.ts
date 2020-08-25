@@ -1,11 +1,11 @@
 import {Component, Vue, Watch} from "vue-property-decorator";
-import {IPromotion, Promotion} from "@/shared/models/PromotionModel";
+import {IPromotion, Promotion} from "@/shared/models/productms/PromotionModel";
 import {AxiosResponse} from "axios";
 import attributevaluesService from "@/shared/services/attribute-valuesService";
 import {mixins} from "vue-class-component";
 import CommonHelpers from "@/shared/commonHelpers";
-import {TypeBundleBased} from "@/shared/models/TypeBundleBasedModel";
-import {Discount} from "@/shared/models/DiscountModel";
+import {TypeBundleBased} from "@/shared/models/productms/TypeBundleBasedModel";
+import {Discount} from "@/shared/models/productms/DiscountModel";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
 import attributesService from "@/shared/services/attributesService";
 import typebundlebasedsService from "@/shared/services/type-bundle-basedsService";

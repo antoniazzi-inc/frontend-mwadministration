@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {ITypeBundleBased} from "@/shared/models/TypeBundleBasedModel";
+import {ITypeBundleBased} from "@/shared/models/productms/TypeBundleBasedModel";
 
 export default class  typebundlebasedsService extends BaseEntityService<ITypeBundleBased> {
     private static instance: typebundlebasedsService;

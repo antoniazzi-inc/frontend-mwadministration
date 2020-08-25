@@ -1,5 +1,5 @@
 import BaseEntityService from '@/shared/services/baseEntityService'
-import { IRelationPhone } from '@/shared/models/relation-phone.model'
+import { IRelationPhone } from '@/shared/models/relationms/relation-phone.model'
 
 export default class RelationPhoneService extends BaseEntityService<IRelationPhone> {
   private static instance: RelationPhoneService;

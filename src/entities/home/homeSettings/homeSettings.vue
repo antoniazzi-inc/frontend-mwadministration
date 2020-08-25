@@ -26,6 +26,10 @@
         <a :class="{'nav-link': true, 'active': currentTab === 'paymentMethods'}" id="payment-tab" data-toggle="tab"
            href="#paymentMethods" role="tab" aria-controls="paymentMethods" aria-selected="false">{{$t('labels.paymentMethods')}}</a>
       </li>
+      <li class="nav-item" @click="currentTab = 'invoiceTemplates'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'invoiceTemplates'}" id="invoiceTemplates-tab" data-toggle="tab"
+           href="#invoiceTemplates" role="tab" aria-controls="invoiceTemplates" aria-selected="false">{{$t('labels.invoiceTemplates')}}</a>
+      </li>
 
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -46,6 +50,9 @@
       </div>
       <div  :class="{'tab-pane': true, active: currentTab === 'paymentMethods'}" id="paymentMethods" role="tabpanel" aria-labelledby="payment-tab">
         <PaymentMethodsComponent :active="currentTab==='paymentMethods'"/>
+      </div>
+      <div  :class="{'tab-pane': true, active: currentTab === 'invoiceTemplates'}" id="invoiceTemplates" role="tabpanel" aria-labelledby="invoiceTemplates-tab">
+        <invoice-template-component :active="currentTab==='invoiceTemplates'"/>
       </div>
     </div>
   </div>

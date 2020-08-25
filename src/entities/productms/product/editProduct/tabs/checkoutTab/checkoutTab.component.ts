@@ -2,7 +2,7 @@ import { Component, Inject, Vue, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import ProductService from '@/shared/services/productService'
-import { IProduct, Product } from '@/shared/models/ProductModel'
+import { IProduct, Product } from '@/shared/models/productms/ProductModel'
 import { AxiosResponse } from 'axios'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 @Component({

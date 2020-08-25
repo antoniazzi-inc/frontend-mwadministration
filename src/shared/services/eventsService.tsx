@@ -1,5 +1,5 @@
 import BaseEntityService from './baseEntityService';
-import {ICourse} from "@/shared/models/CourseModel";
+import {ICourse} from "@/shared/models/productms/CourseModel";
 
 export default class  eventsService extends BaseEntityService<ICourse> {
     private static instance: eventsService;

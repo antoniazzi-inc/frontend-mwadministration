@@ -4,7 +4,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { AxiosResponse } from 'axios'
 import ProductEditTabsComponent from '@/entities/productms/product/editProduct/tabs/productEditTabs.vue'
 import ProductService from '@/shared/services/productService'
-import { IProduct, Product } from '@/shared/models/ProductModel'
+import { IProduct, Product } from '@/shared/models/productms/ProductModel'
 
 @Component({
   components: {

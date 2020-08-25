@@ -68,7 +68,7 @@
                                        :value="selectedCountry"
                                        @onChange="countryChanged"
                                        @onSelected="countryChanged"
-          ></searchable-select-component>
+          />
         </div>
         <div class="form-group addressType">
           <label class="control-label text-left">{{$t('labels.addressType')}}</label>
