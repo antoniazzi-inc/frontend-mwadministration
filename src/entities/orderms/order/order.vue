@@ -24,7 +24,7 @@
             <searchable-select-component :config="searchableProductsConfig"
                                          :options="$store.state.lookups.products"
                                          :value="selectedProducts"
-                                         @onSelected="productSearchChanged"
+                                         @onChange="productSearchChanged"
                                          @onDelete="productSearchRemoved"/>
           </div>
           <div class="form-group mt-3">
@@ -60,10 +60,10 @@
           </div>
           <div class="form-group mt-3">
             <label class="form-control-label">{{$t('labels.searchByPromotion')}}</label>
-            <searchable-select-component :config="searchableCatsConfig"
+            <searchable-select-component :config="searchablePromotionsConfig"
                                          :options="$store.state.lookups.promotions"
                                          :value="selectedPromotion"
-                                         @onSelected="promotionSearchChanged"
+                                         @onChange="promotionSearchChanged"
                                          @onDelete="promotionSearchRemoved"/>
           </div>
           <div class="form-group mt-3">
@@ -87,7 +87,27 @@
           :noDataLabel="'labels.noOrders'"
           @onEdit="editOrder"
           @onDelete="deleteOrder"
+          @onInfo="orderInfo"
           :service="orderService"/>
+      </div>
+      <div class="modal" data-backdrop="static" data-keyboard="false" id="orderInfoModal" tabindex="-1" role="dialog"
+           ref="orderInfoModal">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5>{{ $t('labels.orderInfo') }}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <order-info-component :order="selectedOrder"/>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ $t('buttons.close') }}</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

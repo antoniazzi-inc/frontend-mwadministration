@@ -50,8 +50,8 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.invoiceDate = null
     this.invoiceDeliveryDate = moment(new Date()).format('D-M-YYYY')
     this.invoiceScheduledOn = moment(new Date()).format('D-M-YYYY')
-    this.singleSelectConfigInvoiceTemplate = new SearchableSelectConfig('label',
-      'labels.choosePaymentMethod', '', false,
+    this.singleSelectConfigInvoiceTemplate = new SearchableSelectConfig('name',
+      'labels.chooseInvoiceTemplate', '', false,
       false, true, false, false)
     this.singleSelectConfigAffiliate = new SearchableSelectConfig('label',
       'labels.chooseAffilaite', '', false,

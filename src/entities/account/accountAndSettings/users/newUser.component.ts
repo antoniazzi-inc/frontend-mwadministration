@@ -63,7 +63,7 @@ export default class NewUserComponent extends mixins(CommonHelpers, Vue) {
     const pagination = {
       page: 0,
       size: 20,
-      sort: ['id,asc']
+      sort: 'id,asc'
     }
     const query = 'email=in=(' + this.userAccount.email + ')'
     this.relationService.getAll(pagination, query).then((resp: AxiosResponse) => {

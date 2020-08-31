@@ -66,5 +66,6 @@ constructor(
     public invoiceTemplate?: IInvoiceTemplate,
     public orderSubscription?: IOrderSubscription,
   ){
+  this.paid = this.paid ? this.paid : false
   }
 };

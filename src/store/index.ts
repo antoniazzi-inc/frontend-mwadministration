@@ -111,6 +111,9 @@ export default new Vuex.Store({
     deliveryMethods (state, newState) {
       state.lookups.deliveryMethods = newState
     },
+    invoiceTemplates (state, newState) {
+      state.lookups.invoiceTemplates = newState
+    },
     administrationBusiness (state, newState) {
       state.lookups.administrationBusiness = newState
     },

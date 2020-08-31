@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
+    <ul class="nav nav-tabs mt-5 not-for-print" id="myTab" role="tablist">
       <li class="nav-item" @click="currentTab = 'cat'">
         <a :class="{'nav-link': true, 'active': currentTab === 'cat'}" id="category-tab" data-toggle="tab"
            href="#categories" role="tab" aria-controls="categories" aria-selected="true">{{$t('labels.categories')}}</a>
@@ -33,26 +33,26 @@
 
     </ul>
     <div class="tab-content" id="myTabContent">
-      <div :class="{'tab-pane': true, active: currentTab === 'cat'}" id="categories" role="tabpanel" aria-labelledby="category-tab">
+      <div :class="{'tab-pane not-for-print': true, active: currentTab === 'cat'}" id="categories" role="tabpanel" aria-labelledby="category-tab">
         <CategoriesComponent :active="currentTab==='cat'"/>
       </div>
-      <div  :class="{'tab-pane': true, active: currentTab === 'tag'}" id="tags" role="tabpanel" aria-labelledby="tag-tab">
+      <div  :class="{'tab-pane not-for-print': true, active: currentTab === 'tag'}" id="tags" role="tabpanel" aria-labelledby="tag-tab">
         <TagsComponent :active="currentTab==='tag'"/>
       </div>
-      <div  :class="{'tab-pane': true, active: currentTab === 'default'}" id="defaultTexts" role="tabpanel" aria-labelledby="default-tab">
+      <div  :class="{'tab-pane not-for-print': true, active: currentTab === 'default'}" id="defaultTexts" role="tabpanel" aria-labelledby="default-tab">
         <DefaultTextsComponent :active="currentTab==='default'"/>
       </div>
-      <div :class="{'tab-pane': true, active: currentTab === 'integrations'}" id="integrations" role="tabpanel" aria-labelledby="integrations-tab">
+      <div :class="{'tab-pane not-for-print': true, active: currentTab === 'integrations'}" id="integrations" role="tabpanel" aria-labelledby="integrations-tab">
         <integrations-component :active="currentTab === 'integrations'"></integrations-component>
       </div>
-      <div  :class="{'tab-pane': true, active: currentTab === 'deliveryMethods'}" id="deliveryMethods" role="tabpanel" aria-labelledby="delivery-tab">
+      <div  :class="{'tab-pane not-for-print': true, active: currentTab === 'deliveryMethods'}" id="deliveryMethods" role="tabpanel" aria-labelledby="delivery-tab">
         <DeliveryMethodsComponent :active="currentTab==='deliveryMethods'"/>
       </div>
-      <div  :class="{'tab-pane': true, active: currentTab === 'paymentMethods'}" id="paymentMethods" role="tabpanel" aria-labelledby="payment-tab">
+      <div  :class="{'tab-pane not-for-print': true, active: currentTab === 'paymentMethods'}" id="paymentMethods" role="tabpanel" aria-labelledby="payment-tab">
         <PaymentMethodsComponent :active="currentTab==='paymentMethods'"/>
       </div>
       <div  :class="{'tab-pane': true, active: currentTab === 'invoiceTemplates'}" id="invoiceTemplates" role="tabpanel" aria-labelledby="invoiceTemplates-tab">
-        <invoice-template-component :active="currentTab==='invoiceTemplates'"/>
+        <invoice-template :active="currentTab==='invoiceTemplates'"/>
       </div>
     </div>
   </div>

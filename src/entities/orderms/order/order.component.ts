@@ -10,19 +10,26 @@ import SearchableSelectComponent from '@/components/searchableSelect/searchableS
 import complexSearchComponent from '@/entities/relationms/relation/complexSearch/complexSearch.vue'
 import {productType} from "@/shared/models/productms/ProductModel";
 import CartOrdersService from "@/shared/services/orderms/CartOrdersService";
+import OrderInfoComponent from "@/entities/orderms/order/orderInfo/orderInfo.vue";
+import CartOrder, {ICartOrder} from "@/shared/models/orderms/CartOrderModel";
 
 @Component({
   components: {
     complexSearch: complexSearchComponent,
     PaginationTableComponent,
     'simple-search': SimpleSearchComponent,
-    SearchableSelectComponent
+    SearchableSelectComponent,
+    OrderInfoComponent
   }
 })
 export default class OrderComponent extends mixins(CommonHelpers, Vue) {
+  $refs!:{
+    orderInfoModal: HTMLElement
+  }
   public orderService: any
   public searchableAffiliatesConfig: ISearchableSelectConfig
   public searchableCatsConfig: ISearchableSelectConfig
+  public searchablePromotionsConfig: ISearchableSelectConfig
   public searchableGroupsConfig: ISearchableSelectConfig
   public searchableProductsConfig: ISearchableSelectConfig
   public currentSearchName: string
@@ -33,7 +40,7 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
   public currentSearchTags: any[]
   public selectedCategories: any[]
   public selectedProductTypes: any
-  public selectedPromotion: any
+  public selectedPromotion: any[]
   public selectedGroups: any[]
   public allProductTypes: any[]
   public selectedProducts: any[]
@@ -44,6 +51,7 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
   public active: boolean
   public showQueryPopupForSimpleQueries: boolean
   public showSearchQueries: boolean
+  public selectedOrder: ICartOrder
   public complexFilter = {
     operator: 'and',
     children: []
@@ -54,11 +62,15 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
 
   constructor() {
     super()
+    this.selectedOrder = new CartOrder()
     this.searchableAffiliatesConfig = new SearchableSelectConfig('label',
       'labels.selectProductType', '', false,
       false, true, false, false)
     this.searchableCatsConfig = new SearchableSelectConfig('code',
       'labels.selectCategories', '', false,
+      false, true, true, false)
+    this.searchablePromotionsConfig = new SearchableSelectConfig('label',
+      'labels.selectPromotions', '', false,
       false, true, true, false)
     this.searchableGroupsConfig = new SearchableSelectConfig('code',
       'labels.selectCategories', '', false,
@@ -81,7 +93,7 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
     this.selectedGroups = []
     this.selectedAffiliates = []
     this.selectedProducts = []
-    this.selectedPromotion = null
+    this.selectedPromotion = []
     this.active = true
     this.showQueryPopupForSimpleQueries = false
     this.showSearchQueries = false
@@ -114,62 +126,72 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
       queryArray.push({
         mainOperator: 'and',
         children: [{
-          key: 'sku',
+          key: 'orderCustomer.fullName',
           value: this.currentSearchName,
           inBetweenOperator: '==',
           afterOperator: 'or',
           exactSearch: false
         }, {
-          key: 'productLanguages.name',
+          key: 'orderCustomer.email',
           value: this.currentSearchName,
           inBetweenOperator: '==',
-          afterOperator: 'or',
+          afterOperator: '',
           exactSearch: false,
-        }, {
-          key: 'productLanguages.description',
-          value: this.currentSearchName,
+        }]
+      })
+    }
+    if(this.currentSearchOrderId !== ''){
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: 'id',
+          value: this.currentSearchOrderId,
           inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: true,
+        }]
+      })
+    }
+    if(this.selectedProducts && this.selectedProducts.length) {
+      let productIds = this.selectedProducts.map(e=>{
+        return e.value.id
+      })
+      let newProductIds = productIds.join()
+      newProductIds = newProductIds.replace(/,/g, '","')
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: 'orderLines.orderProduct.productId',
+          value: newProductIds,
+          inBetweenOperator: '=in=',
+          afterOperator: '',
+          exactSearch: true,
+        }]
+      })
+    }
+    if (this.selectedPromotion && this.selectedPromotion.length) {
+      let promotionIds = this.selectedPromotion.map(e => {
+        return e.value.id
+      })
+      let newPromotionIds = promotionIds.join()
+      newPromotionIds = newPromotionIds.replace(/,/g, '","')
+      queryArray.push({
+        mainOperator: 'and',
+        children: [{
+          key: 'orderDiscountLines.orderPromotion.promotionId',
+          value: newPromotionIds,
+          inBetweenOperator: '=in=',
           afterOperator: '',
           exactSearch: false
         }]
       })
     }
-    if (this.selectedProductTypes !== null) {
-      queryArray.push({
-        mainOperator: 'and',
-        children: [{
-          key: 'productType',
-          value: this.selectedProductTypes.value.toString(),
-          inBetweenOperator: '==',
-          afterOperator: '',
-          exactSearch: true
-        }]
-      })
-    }
-    /*if (this.selectedCategories !== null) {
-      queryArray.push({
-        mainOperator: 'and',
-        children: [{
-          key: 'productCategories.categoryId',
-          value: this.selectedCategories.id.toString(),
-          inBetweenOperator: '==',
-          afterOperator: '',
-          exactSearch: true
-        }]
-      })
-    }*/
-    if (this.selectedPromotion !== null) {
-      queryArray.push({
-        mainOperator: 'and',
-        children: [{
-          key: 'promotions.id',
-          value: this.selectedPromotion.id,
-          inBetweenOperator: '==',
-          afterOperator: '',
-          exactSearch: false
-        }]
-      })
-    }
+    //TODO handle additional searches
+   if(this.selectedCategories){}
+   if(this.invoiceNumberSearch){}
+   if(this.selectedAffiliates){}
+   if(this.RecentlyAddedSearch){}
+   if(this.paymentStatusSearch){}
     const finalQ = this.queryBuilder(queryArray)
     // @ts-ignore
     this.$refs.paginationTable.retrieveData('api/orderms/api/cart-orders', undefined, finalQ)
@@ -179,7 +201,7 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
     this.currentSearchName = ''
     this.selectedProductTypes = null
     this.selectedCategories = []
-    this.selectedPromotion = null
+    this.selectedPromotion = []
     // @ts-ignore
     this.$refs.paginationTable.retrieveData('api/orderms/api/cart-orders', undefined, undefined)
   }
@@ -200,6 +222,19 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
         }
       })
     }
+  }
+
+  public orderInfo(item:any) {
+    this.orderService.get(item.id).then((resp:AxiosResponse)=>{
+      if(resp && resp.data) {
+        this.selectedOrder = resp.data
+        //@ts-ignore
+        $(this.$refs.orderInfoModal).modal('show')
+      } else {
+        this.setAlert('fetchError', 'error')
+      }
+    })
+
   }
 
   public affiliateSearchChanged(aff: any) {
@@ -237,10 +272,13 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public promotionSearchChanged(promo: any) {
-    this.selectedCategories = promo
+    this.selectedPromotion = promo
   }
 
-  public promotionSearchRemoved() {
-    this.selectedPromotion = null
+  public promotionSearchRemoved(promo:any) {
+    let index = this.selectedPromotion.findIndex((e:any)=> e.value.id === promo.value.id)
+    if(index > -1){
+      this.selectedPromotion.splice(index, 1)
+    }
   }
 }

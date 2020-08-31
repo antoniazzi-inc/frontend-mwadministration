@@ -28,6 +28,7 @@ import RegionService from '@/shared/services/regionService'
 import promotionsService from "@/shared/services/promotionsService";
 import productService from "@/shared/services/productService";
 import coursesService from "@/shared/services/coursesService";
+import InvoiceTemplatesService from "@/shared/services/orderms/InvoiceTemplatesService";
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -49,6 +50,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     customFieldService = FreeFieldService.getInstance();
     taxRateService = TaxRateService.getInstance();
     companyService = CompanyService.getInstance();
+    invoiceTemplateService = InvoiceTemplatesService.getInstance();
     businessService = BusinessService.getInstance();
     productService = productService.getInstance();
     promotionService = promotionsService.getInstance();
@@ -184,6 +186,11 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.counter++
         this.$store.commit('companies', resp.data.content)
       })
+
+      this.invoiceTemplateService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        this.$store.commit('invoiceTemplates', resp.data.content)
+      })
       this.relationGroupService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
         this.$store.commit('groups', resp.data.content)
@@ -239,7 +246,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
 
     @Watch('counter', { immediate: true, deep: true })
     public changeReady (newVal: any) {
-      if (newVal > 19) {
+      if (newVal > 20) {
         this.isReady = true
       }
     }

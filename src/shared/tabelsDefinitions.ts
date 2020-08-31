@@ -1,15 +1,6 @@
 import { ILanguage, Language } from '@/shared/models/language.model'
 import Store from '../store'
 import moment from 'moment'
-import {TypeAffiliateBased} from "@/shared/models/productms/TypeAffiliateBasedModel";
-import {Discount, IDiscount} from "@/shared/models/productms/DiscountModel";
-import {TypeBundleBased} from "@/shared/models/productms/TypeBundleBasedModel";
-import {TypeCouponBased} from "@/shared/models/productms/TypeCouponBasedModel";
-import {Coupon} from "@/shared/models/productms/CouponModel";
-import {TypeLoyaltyBased} from "@/shared/models/productms/TypeLoyaltyBasedModel";
-import {TypePersonalCouponBased} from "@/shared/models/productms/TypePersonalCouponBasedModel";
-import {TypePriceBased} from "@/shared/models/productms/TypePriceBasedModel";
-import {TypeQuantityBased} from "@/shared/models/productms/TypeQuantityBasedModel";
 const local = localStorage.getItem('tableColumns') ? localStorage.getItem('tableColumns') : ''
 const currentSettings = local ? JSON.parse(local) : {}
 
@@ -333,13 +324,67 @@ export const product = {
     }
   ]
 }
+export const invoiceTemplate = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 10,
+  cols: [
+    {
+      name: 'labels.administrationId',
+      field: 'administrationId',
+      subField: null,
+      type: '',
+      authorities: ['ROLE_SUPER_ADMIN'],
+      sort: false
+    },
+    {
+      name: 'labels.id',
+      field: 'id',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.name',
+      field: 'name',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }, {
+      name: 'labels.description',
+      field: 'description',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.createdOn',
+      field: 'createdOn',
+      subField: null,
+      type: 'date',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }
+  ]
+}
 
 export const order = {
   actions: {
     copy: false,
     edit: true,
-    delete: true,
-    info: true
+    info: true,
+    delete: true
   },
   itemsPerPage: 10,
   cols: [
@@ -376,7 +421,7 @@ export const order = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        //TODO handle customer display into table
+        return `${item.orderCustomer && item.orderCustomer.title ? item.orderCustomer.title : ''} ${item.orderCustomer ? item.orderCustomer.fullName : ''}`
       }
     }, {
       name: 'labels.description',
@@ -404,17 +449,21 @@ export const order = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        //TODO handle invoiceNumber display into table
+        return item.invoice && item.invoice.invoiceNumber ? item.invoice.invoiceNumber : ''
       }
     },{
       name: 'labels.paymentStatus',
       field: 'paymentStatus',
       subField: null,
-      type: '',
+      type: 'boolean',
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        //TODO handle paymentStatus display into table
+        if(item.invoice) {
+          return item.invoice.paid
+        } else {
+          return false
+        }
       }
     },
   ]
@@ -2070,6 +2119,13 @@ export const columnsVisibility = {
     trial: true,
     useShop: true,
     useAutomation: true,
+    itemsPerPage: 20
+  },
+  invoiceTemplate: {
+    id: true,
+    name: true,
+    description: true,
+    createdOn: true,
     itemsPerPage: 20
   }
 }

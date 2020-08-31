@@ -196,7 +196,7 @@ export default class IntegrationsComponent extends mixins(CommonHelpers, Vue) {
     const pagination = {
       page: 0,
       size: 100000,
-      sort: ['id,asc']
+      sort: 'id,asc'
     }
     this.externalSystemsService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
       if (resp) {

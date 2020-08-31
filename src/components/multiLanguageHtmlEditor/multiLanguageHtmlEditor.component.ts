@@ -89,7 +89,7 @@ export default class MultiLanguageHtmlEditorComponent extends Vue {
 
   @Watch('availableLangs', { immediate: true, deep: true })
   public availableLanguages (newVal: any) {
-    if (newVal.length) {
+    if (newVal && newVal.length) {
       let allAvailableLanguages:any = []
       for (const key in this.$store.state.languages) {
         if (this.$store.state.languages.hasOwnProperty(key)) {
