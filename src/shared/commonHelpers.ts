@@ -712,7 +712,7 @@ export default class CommonHelpers extends Vue {
    * Author: Nick Dam
    */
   public getDiscountType(promotion: any) {
-    let result = null
+    let result:any = {}
     let type = ''
     switch (promotion.promotionType) {
       case 'TIME':

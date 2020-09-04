@@ -31,11 +31,11 @@
       </li>
       <li class="nav-item" @click="currentTab = 'invoices'">
         <a :class="{'nav-link': true, 'active': currentTab === 'invoices'}" id="invoices-tab" data-toggle="tab"
-           href="#invoices" role="tab" aria-controls="invoices" aria-selected="true">{{ $t('labels.invoices') }}</a>
+           href="#invoices" role="tab" aria-controls="invoices" aria-selected="true">{{ $t('labels.invoiceSettings') }}</a>
       </li>
       <li class="nav-item" @click="currentTab = 'payment'">
         <a :class="{'nav-link': true, 'active': currentTab === 'payment'}" id="payment-tab" data-toggle="tab"
-           href="#payment" role="tab" aria-controls="payment" aria-selected="true">{{ $t('labels.payment') }}</a>
+           href="#payment" role="tab" aria-controls="payment" aria-selected="true">{{ $t('labels.invoiceList') }}</a>
       </li>
       <li class="nav-item" @click="currentTab = 'affiliate'">
         <a :class="{'nav-link': true, 'active': currentTab === 'affiliate'}" id="affiliate-tab" data-toggle="tab"

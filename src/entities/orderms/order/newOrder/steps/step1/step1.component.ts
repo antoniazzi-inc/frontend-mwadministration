@@ -119,7 +119,6 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   public updateCartOrder(newVal: any) {
     if (newVal) {
       this.cartOrderCopy = newVal
-      this.populateRelations()
     }
   }
 
@@ -248,6 +247,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   }
 
   public mounted() {
+    this.populateRelations()
     this.selectedRelation.relationProfile = new RelationProfile()
     if (!this.cartOrderCopy.customerBillingAddress)
       this.cartOrderCopy.customerBillingAddress = new CustomerBillingAddress()
@@ -292,9 +292,6 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   }
 
   public doSearch(rel: any) {
-    if (!rel) {
-      return
-    }
     const queryArray: any = []
     queryArray.push({
         mainOperator: 'or',
@@ -324,7 +321,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     const self = this
     const pagination = {
       page: 0,
-      size: 100000,
+      size: 100,
       sort: 'id,asc'
     }
     this.relationService.getAll(pagination, query ? query : undefined).then((resp: AxiosResponse) => {

@@ -11,6 +11,8 @@ import RelationService from "@/shared/services/relationService";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
 import {AxiosResponse} from "axios";
 import OrderLineBeneficiary from "@/shared/models/orderms/OrderLineBeneficiaryModel";
+import OrderLinesService from "@/shared/services/orderms/OrderLinesService";
+import {order} from "@/shared/tabelsDefinitions";
 
 @Component({
     components:{
@@ -42,11 +44,13 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
     public selectedOrderLineIndex: any;
     public singleSelectConfig: ISearchableSelectConfig;
     public orderLineToRemove: any;
+    public orderLineService: any;
     constructor(){
         super();
         this.orderCopy = new CartOrder()
         this.selectedBeneficiary = new Beneficiary()
         this.relationService = RelationService.getInstance()
+        this.orderLineService = OrderLinesService.getInstance()
         this.selectedCopyBeneficiary = null
         this.selectedOrderLine = new OrderLine()
         this.selectedBeneficiaryAddress = new BeneficiaryDeliveryAddress()
@@ -61,7 +65,7 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
           false, true, false, false)
         this.singleSelectConfig = new SearchableSelectConfig('email',
           'labels.relation', '', false,
-          false, true, true, false)
+          false, true, false, false)
     }
 
     @Watch('order', {immediate: true, deep:true})
@@ -109,48 +113,71 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
         this.orderLineToCopy = JSON.parse(JSON.stringify(item));
     }
     public copyBenef(){
-        let profile = this.selectedCopyBeneficiary.relationProfile;
-        let firstName =  profile.firstName ? profile.firstName : '';
-        let middleName =  profile.middleName ? profile.middleName : '';
-        let lastName =  profile.lastName ? profile.lastName : '';
-        let fullname = firstName + ' ' + middleName + ' ' + lastName;
-        if(this.orderLineToCopy.orderLineBeneficiary === null){
-            this.orderLineToCopy.orderLineBeneficiary = new OrderLineBeneficiary();
+        let firstName =  this.selectedCopyBeneficiary.relationProfile.firstName ? this.selectedCopyBeneficiary.relationProfile.firstName : '';
+        let middleName =  this.selectedCopyBeneficiary.relationProfile.middleName ? this.selectedCopyBeneficiary.relationProfile.middleName : '';
+        let lastName =  this.selectedCopyBeneficiary.relationProfile.lastName ? this.selectedCopyBeneficiary.relationProfile.lastName : '';
+        let fullName = firstName + ' ' + middleName + ' ' + lastName;
+        let orderLineBenef = new OrderLineBeneficiary(undefined, undefined, undefined, undefined, undefined, this.orderCopy.orderCustomer?.relationId, this.selectedCopyBeneficiary.id, this.selectedCopyBeneficiary.email, fullName, this.selectedCopyBeneficiary.relationProfile.title)
+        let dto = {...this.orderLineToCopy, id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
+        dto.orderLineBeneficiary = orderLineBenef
+      dto.beneficiaryDeliveryAddress = {...dto.beneficiaryDeliveryAddress,
+        id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
+      dto.orderProduct = {...dto.orderProduct,
+        id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
+        dto.cartOrder = {
+          id: this.orderCopy.id,
+          version: this.orderCopy.version,
         }
-        this.orderLineToCopy.orderLineBeneficiary.email = this.selectedCopyBeneficiary.email;
-        this.orderLineToCopy.orderLineBeneficiary.fullName = fullname;
-        this.orderLineToCopy.orderLineBeneficiary.beneficiaryRelationId = this.selectedCopyBeneficiary.id;
-        this.orderLineToCopy.orderLineBeneficiary.title = this.selectedCopyBeneficiary.relationProfile.title;
-        this.orderLineToCopy.beneficiaryDeliveryAddress = this.selectedCopyBeneficiary.relationAddresses[0];
-        if(this.orderCopy.orderLines)
-        this.orderCopy.orderLines.push(JSON.parse(JSON.stringify(this.orderLineToCopy)));
-        else this.orderCopy.orderLines = [(JSON.parse(JSON.stringify(this.orderLineToCopy)))]
-        this.selectedCopyBeneficiary = new Beneficiary();
-        this.selectedBeneficiaryAddress = new BeneficiaryDeliveryAddress();
-        this.orderLineToCopy = new CartOrder();
-        this.setAlert('newBeneficiaryAdded','success')
-        this.$emit('updateCart', this.orderCopy)
-        this.closeCopyModal();
+        this.orderLineService.post(dto).then((resp:AxiosResponse) => {
+          if(resp && resp.data) {
+            this.orderCopy.orderLines?.push(resp.data)
+            this.selectedCopyBeneficiary = new Beneficiary();
+            this.selectedBeneficiaryAddress = new BeneficiaryDeliveryAddress();
+            this.orderLineToCopy = new CartOrder();
+            this.setAlert('newBeneficiaryAdded','success')
+            this.$emit('updateCart', this.orderCopy)
+            this.closeCopyModal();
+          } else {
+            this.setAlert('newBeneficiaryAddError','error')
+          }
+        })
+
     }
     public saveBeneficiary(){
         this.selectedOrderLine.beneficiaryDeliveryAddress = this.selectedBeneficiaryAddress;
-        if(this.orderCopy.orderLines)
-        this.orderCopy.orderLines[this.selectedOrderLineIndex] = this.selectedOrderLine;
-        this.$emit('updateCart', this.orderCopy);
-        this.closeEditModal();
+          this.orderLineService.put(this.selectedOrderLine).then((resp:AxiosResponse) => {
+            if(resp && resp.data) {
+              if(this.orderCopy.orderLines)
+              this.orderCopy.orderLines[this.selectedOrderLineIndex] = resp.data;
+              this.$emit('updateCart', this.orderCopy);
+              this.closeEditModal();
+              this.setAlert('beneficiaryUpdated', 'success')
+            } else {
+              this.setAlert('updateBeneficiaryError', 'error')
+            }
+          })
     }
 
     public removeBeneficiary(){
         let self = this;
       let orderLines:any = []
       if(this.orderCopy.orderLines){
-        orderLines = this.orderCopy.orderLines.filter(function (item, ind) {
-          return ind !== self.orderLineToRemove;
-        });
+      this.orderLineService.delete(this.orderCopy.orderLines[this.orderLineToRemove].id).then((resp:AxiosResponse) => {
+        if(resp) {
+          if(this.orderCopy.orderLines)
+          orderLines = this.orderCopy.orderLines.filter(function (item, ind) {
+            return ind !== self.orderLineToRemove;
+          });
+          this.orderCopy.orderLines = orderLines;
+          this.setAlert('beneficiaryRemoved', 'success')
+          this.$emit('updateCart', this.orderCopy);
+          this.closeRemoveModal();
+        } else {
+          this.setAlert('beneficiaryRemoveError', 'error')
+          this.closeRemoveModal();
+        }
+      })
       }
-        this.orderCopy.orderLines = orderLines;
-        this.$emit('updateCart', this.orderCopy);
-        this.closeRemoveModal();
     }
     public addCountry(country:any){
         this.selectedCountry = country;

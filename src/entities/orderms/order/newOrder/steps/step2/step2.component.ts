@@ -14,6 +14,7 @@ import {productType} from "@/shared/models/productms/ProductModel";
 import productService from "@/shared/services/productService";
 import InvoicePreviewComponent from "@/entities/orderms/order/newOrder/invoicePreview/invoicePreview.vue";
 import OrderPromotion from "@/shared/models/orderms/OrderPromotionModel";
+import OrderSubscription from "@/shared/models/orderms/OrderSubscriptionModel";
 
 @Component({
   props: {
@@ -244,6 +245,10 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       } else if(this.selectedProduct.value.stock < this.newOrderLine.quantity) {
         this.newOrderLineError = `${this.selectedProduct.label} ${this.$t('labels.stockValidationError')}`
         return false
+      }
+      if(this.useProductSubscription){
+        this.newOrderLine.orderSubscription = new OrderSubscription(undefined, undefined, undefined, undefined, undefined,
+          this.cartOrderCopy.orderCustomer ? this.cartOrderCopy.orderCustomer.relationId : undefined, this.selectedProduct.value.productSubscription.period, this.selectedProduct.value.productSubscription.period.validFrom, this.selectedProduct.value.productSubscription.validTo, true, undefined, undefined )
       }
       if (this.allOrderLines) {
         this.allOrderLines.push(this.newOrderLine)

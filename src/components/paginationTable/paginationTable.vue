@@ -64,7 +64,7 @@
                   <div v-if="tables[$props.table].actions.delete" class="text-danger ml-3 cursor-pointer" data-toggle="modal"
                        :data-target="'#deleteModal_'+$props.table"
                        @click.prevent="prepareRemove(item)">
-                    <i class="os-icon os-icon-ui-15"></i>
+                    <i class="fas fa-trash-alt"></i>
                   </div>
                 </div>
               </td>

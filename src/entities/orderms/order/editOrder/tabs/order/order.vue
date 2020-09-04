@@ -29,7 +29,7 @@
                 </div>
                 <div class="form-group" v-if="addProduct">
                     <label class="form-control-label">{{$t('labels.price')}}</label>
-                    <money v-model="selectedProduct.value.productPrice" :disabled="selectedProduct ? !selectedProduct.value.userDefinedPrice : true" class="form-control" name="loyaltyAmountEarlier"  v-bind="moneyFixed"></money>
+                    <money v-model="selectedProduct.value.price" :disabled="selectedProduct ? !selectedProduct.value.userDefinedPrice : true" class="form-control" name="loyaltyAmountEarlier"  v-bind="moneyFixed"></money>
                 </div>
                 <div class="form-group" v-if="addProduct">
                     <label class="form-control-label">{{$t('labels.quantity')}}</label>
@@ -96,11 +96,12 @@
                                                :options="beneficiaryList"
                                                :value="selectedBeneficiary"
                                                @onChange="addBeneficiary"
+                                               @onSearch="searchBeneficiary"
                                                @onDelete="removeBeneficiary"/>
                 </div>
                 <div class="form-group text-right" v-if="addProduct">
                     <button class="btn btn-outline-danger" @click="closeEditMode">{{$t('buttons.cancel')}}</button>
-                    <button class="btn btn-primary ml-2" @click="addOrderLine">{{!isEditingOrderLine ? $t('buttons.add') : $t('buttons.save')}}</button>
+                    <button class="btn btn-primary ml-2" @click.prevent.stop="addOrderLine">{{!isEditingOrderLine ? $t('buttons.add') : $t('buttons.save')}}</button>
                 </div>
             </div>
             <div v-else-if="addNewPromotion && !addProduct">
@@ -113,8 +114,8 @@
                                                @onDelete="removeSelectedPromotion"/>
                 </div>
                 <div class="form-group text-right">
-                    <button class="btn btn-outline-danger" @click="closeAddPromotion">{{$t('labels.cancel')}}</button>
-                    <button class="btn btn-primary" @click="addNewOrderPromotion">{{$t('labels.add')}}</button>
+                    <button class="btn btn-outline-danger" @click="closeAddPromotion">{{$t('buttons.cancel')}}</button>
+                    <button class="btn btn-primary ml-2" @click.prevent.stop="addNewOrderPromotion">{{$t('buttons.add')}}</button>
                 </div>
             </div>
             <div v-else>
@@ -126,8 +127,8 @@
                                     <div class="st-body">
                                         <div class="avatar"><i style="font-size: 2.5rem;" class="fas fa-cash-register"></i></div>
                                         <div class="st-meta">
-                                            <i class="os-icon os-icon-edit" @click="editOrderLine(item, index)"></i>
-                                            <div class="os-icon os-icon-trash"  data-target="#removeOrderLine" data-toggle="modal" @click="removeOrderLine(item, index)"></div>
+                                            <i class="fas fa-edit text-warning m-2 cursor-pointer" @click="editOrderLine(item, index)"></i>
+                                            <div class="fas fa-trash-alt text-danger  cursor-pointer m-2"  data-target="#removeOrderLine" data-toggle="modal" @click="removeOrderLine(item, index)"></div>
                                         </div>
                                         <div class="ticket-content">
                                             <h6 class="ticket-title">
@@ -136,7 +137,7 @@
                                                 <br/>
                                                 <span class="small">{{item.orderProduct.productDescription}}</span>
                                                 <br/>
-                                                <span class="small">{{item.orderProduct.productPrice}}€</span>
+                                                <span class="small">{{item.orderProduct.productPrice}} {{$store.state.currency}}</span>
                                                 <br/>
                                                 <span class="small">{{getProductAttributes(item)}}</span>
                                                 <br/>
@@ -161,7 +162,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" v-for="(item, index) in selectedPromotions" :key="'promo_'+index">
+                <div class="row" v-for="(item, index) in orderCopy.orderDiscountLines" :key="'promo_'+index">
                     <div class="col-md-12">
                         <div class="support-index show-ticket-content">
                             <div class="support-tickets m-0 pl-2 pt-2">
@@ -169,16 +170,16 @@
                                     <div class="st-body">
                                         <div class="avatar"><i style="font-size: 2.5rem;" class="fa fa-tag"></i></div>
                                         <div class="st-meta">
-                                            <div class="os-icon os-icon-trash" data-target="#removePromotion" data-toggle="modal" @click="deletePromotion(item, index)"></div>
+                                            <div class="fas fa-trash-alt text-danger cursor-pointer m-2" data-target="#removePromotion" data-toggle="modal" @click="deletePromotion(item, index)"></div>
                                         </div>
                                         <div class="ticket-content">
                                             <h6 class="ticket-title">
                                                 <span class="label">{{item.id}}</span>
-                                                <span class="label">{{item.name}}</span>
+                                                <span class="label">{{getPromoName(item).name}}</span>
                                                 <br/>
-                                                <span class="small">{{item.description}}</span>
+                                                <span class="small">{{getPromoName(item).description}}</span>
                                                 <br/>
-                                                <span class="small">{{getDiscount(item)}}</span>
+                                                <span class="small">{{getDiscountName(item)}}</span>
                                             </h6>
                                         </div>
                                     </div>

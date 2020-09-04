@@ -11,10 +11,9 @@ import CartOrdersService from "@/shared/services/orderms/CartOrdersService";
 import RelationService from "@/shared/services/relationService";
 import Invoice, {invoiceType} from "@/shared/models/orderms/InvoiceModel";
 import Axios, {AxiosResponse} from "axios";
-import moment from "moment";
 import CustomerBillingAddress from "@/shared/models/orderms/CustomerBillingAddressModel";
 import CustomerDeliveryAddress from "@/shared/models/orderms/CustomerDeliveryAddressModel";
-import {IRelationAddress, RelationAddress} from "@/shared/models/relationms/relation-address.model";
+import {IRelationAddress} from "@/shared/models/relationms/relation-address.model";
 import RelationAddressService from "@/shared/services/relationAddressService";
 
 @Component({
@@ -75,9 +74,7 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
           this.cartOrder.orderCustomer = {
             relationId: step1.selectedRelation.id,
             email: step1.selectedRelation.email,
-            fullName: `${step1.selectedRelation.relationProfile.firstName ? step1.selectedRelation.relationProfile.firstName : ''}
-            ${step1.selectedRelation.relationProfile.middleName ? step1.selectedRelation.relationProfile.middleName : ''}
-            ${step1.selectedRelation.relationProfile.lastName ? step1.selectedRelation.relationProfile.lastName : ''}`,
+            fullName: `${step1.selectedRelation.relationProfile.firstName ? step1.selectedRelation.relationProfile.firstName : ''} ${step1.selectedRelation.relationProfile.middleName ? step1.selectedRelation.relationProfile.middleName : ''} ${step1.selectedRelation.relationProfile.lastName ? step1.selectedRelation.relationProfile.lastName : ''}`,
             title: step1.selectedRelation.relationProfile.title
           }
           this.cartOrder.customerBillingAddress = step1.cartOrderCopy.customerBillingAddress
@@ -118,7 +115,7 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
           this.cartOrder.orderCustomer = {
             relationId: resp.data.id,
             email: resp.data.email,
-            fullName: `${resp.data.relationProfile.firstName} ${resp.data.relationProfile.middleName} ${resp.data.relationProfile.lastName}`,
+            fullName: resp.data.relationProfile.firstName + ' ' + resp.data.relationProfile.middleName + ' ' + resp.data.relationProfile.lastName,
             title: resp.data.relationProfile.title
           }
           let billAddrIndex = resp.data.relationAddresses.findIndex((e: any) => e.usedForBilling === true)
@@ -163,7 +160,10 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
       this.createCart()
     } else if (!this.cartOrder.customerBillingAddress.relationAddressId) {
       let dto: IRelationAddress = {
-        ...this.cartOrder.customerBillingAddress
+        ...this.cartOrder.customerBillingAddress,
+        primary: true,
+        usedForBilling: true,
+        usedForDelivery: true
       }
       this.relationAddressService.post(dto).then((resp: AxiosResponse) => {
         if (resp && resp.data) {
@@ -186,11 +186,11 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
         this.createCart()
       })
     } else {
-     this.createCart()
+      this.createCart()
     }
   }
 
-  public createCart(){
+  public createCart() {
     this.cartOrderService.post(this.cartOrder).then((resp: AxiosResponse) => {
       if (resp) {
         this.setAlert('orderCreated', 'success')
@@ -200,6 +200,7 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
       }
     })
   }
+
   public changeTab(e: any, z: any) {
     this.step = z
   }

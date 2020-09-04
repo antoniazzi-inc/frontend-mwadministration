@@ -434,11 +434,7 @@
 </template>
 <script src="./newCourse.component.ts" lang="ts"></script>
 <style scoped>
-  .selectedEvent {
-    -webkit-box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
-    box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
-  }
+
   .halfHeight{
     max-height: 30vh;
     overflow-y: auto;

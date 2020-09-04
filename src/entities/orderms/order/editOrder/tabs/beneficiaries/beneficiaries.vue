@@ -16,7 +16,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, index) in orderCopy.orderLines" :key="index">
-                                        <td>{{item.orderLineBeneficiary ? item.orderLineBeneficiary.fullName : orderCopy.orderCustomer.fullName}}</td>
+                                        <td>{{item.orderLineBeneficiary ? item.orderLineBeneficiary.title ? item.orderLineBeneficiary.title + ' ' : '' + item.orderLineBeneficiary.fullName :  orderCopy.orderCustomer.title ? orderCopy.orderCustomer.title + ' ' : '' + orderCopy.orderCustomer.fullName}}</td>
                                         <td>{{item.orderLineBeneficiary ? item.orderLineBeneficiary.email : orderCopy.orderCustomer.email}}</td>
                                         <td>{{item.orderProduct.productName}}</td>
                                         <td>{{item.quantity}}</td>
@@ -28,8 +28,8 @@
                                                 <div class="text-danger ml-3 cursor-pointer" data-target="#removeBeneficiary" data-toggle="modal" @click.prevent="prepareRemove(item, index)">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </div>
-                                                <div class="ml-3 cursor-pointer" data-target="#copyBeneficiary" data-toggle="modal" @click.prevent="copyBeneficiary(item, index)">
-                                                    <i class="fas fa-copy"></i>
+                                                <div class="ml-3 cursor-pointer text-warning" data-target="#copyBeneficiary" data-toggle="modal" @click.prevent="copyBeneficiary(item, index)">
+                                                    <i class="os-icon os-icon-grid-10"></i>
                                                 </div>
                                             </div>
                                         </td>
@@ -96,7 +96,7 @@
         </div>
       </div>
       <div class="modal" data-backdrop="static" data-keyboard="false" id="editBeneficiary" tabindex="-1" role="dialog" ref="editBeneficiary">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5>{{$t('labels.edit')}}</h5>

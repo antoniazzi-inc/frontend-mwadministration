@@ -155,7 +155,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
       case 'promotion':
         obj.content = {
           label: this.getMultiLangName(obj.content.promotionLanguages).name,
-          value: obj
+          value: obj.content
         }
         lookupData = this.store.state.lookups.promotions
         lookupName = 'promotions'
@@ -163,7 +163,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
       case 'product':
         obj.content = {
           label: this.getMultiLangName(obj.content.productLanguages).name,
-          value: obj
+          value: obj.content
         }
         lookupData = this.store.state.lookups.products
         lookupName = 'products'
@@ -171,7 +171,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
       case 'course':
         obj.content = {
           label: this.getMultiLangName(obj.content.courseLanguages).name,
-          value: obj
+          value: obj.content
         }
         lookupData = this.store.state.lookups.courses
         lookupName = 'courses'
@@ -179,7 +179,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
       case 'paymentmethod':
         obj.content = {
           label: this.getMultiLangName(obj.content.paymentMethodLanguages).name,
-          value: obj
+          value: obj.content
         }
         lookupData = this.store.state.lookups.paymentMethods
         lookupName = 'paymentMethods'
@@ -195,7 +195,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
       case 'invoicetemplate':
         obj.content = {
           label: obj.content.name,
-          value: obj
+          value: obj.content
         }
         lookupData = this.store.state.lookups.invoiceTemplates
         lookupName = 'invoiceTemplates'

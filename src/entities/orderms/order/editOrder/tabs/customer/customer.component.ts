@@ -14,6 +14,8 @@ import OrderCustomer from "@/shared/models/orderms/OrderCustomerModel";
 import {AxiosResponse} from "axios";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import OrderCustomersService from "@/shared/services/orderms/OrderCustomersService";
+import CustomerBillingAddressesService from "@/shared/services/orderms/CustomerBillingAddressesService";
 
 @Component({
   props: {
@@ -46,6 +48,8 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
   public relationService: any;
   public companyService: any;
   public selectedCompany: any;
+  public orderCustomerService: any;
+  public customerBillingAddressService: any;
 
   constructor() {
     super();
@@ -54,6 +58,8 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     this.companyService = companyService.getInstance();
     this.relationService = relationService.getInstance();
     this.cartOrderService = CartOrdersService.getInstance();
+    this.orderCustomerService = OrderCustomersService.getInstance();
+    this.customerBillingAddressService = CustomerBillingAddressesService.getInstance()
     this.vatSettings = null;
     this.selectedCountry = null;
     this.selectedCompany = null;
@@ -89,14 +95,14 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
         this.invoiceEmailContent = invoiceTemplateData.invoiceEmailContent;
         this.invoiceEmailSubject = invoiceTemplateData.invoiceEmailSubject;
       }
-      if (newVal.orderCustomer && newVal.orderCustomer.id)
+      if (newVal.orderCustomer && newVal.orderCustomer.id){
         this.retrrieveCompanies(newVal.orderCustomer.relationId);
       if (newVal.customerBillingAddress && newVal.customerBillingAddress.id) {
         let self = this
         Vue.nextTick(function () {
           self.selectedCountry = self.getCountryById(newVal.customerBillingAddress.countryId)
         })
-
+      }
       }
     }
   }
@@ -113,7 +119,6 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     }, `relations.id=in=${id}`).then((resp: AxiosResponse) => {
       if (resp && resp.data) {
         this.allCompanies = resp.data.content;
-        this.selectedCompany = resp.data.content[0];
       }
     });
   }
@@ -137,14 +142,13 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
 
   public save() {
     this.saveCustomer();
-    this.saveCartOrder();
-    this.saveCustomerBillingAddress();
   }
 
   public saveCustomer() {
     let customerDto = this.orderCopy.orderCustomer;
-    this.cartOrderService().updateCustomer(customerDto).then((resp1: AxiosResponse) => {
-      this.orderCopy.orderCustomer = resp1;
+    this.orderCustomerService.put(customerDto).then((resp1: AxiosResponse) => {
+      this.orderCopy.orderCustomer = resp1.data;
+      this.saveCartOrder();
     }).catch((err: any) => {
       this.setAlert('error', 'error')
     });
@@ -167,7 +171,8 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     cartOrderDto.shippingCostAmount = this.orderCopy.shippingCostAmount;
     cartOrderDto.taxAmount = this.orderCopy.taxAmount;
     cartOrderDto.totalAmount = this.orderCopy.totalAmount;
-    this.cartOrderService().update(cartOrderDto).then((resp2: AxiosResponse) => {
+    this.cartOrderService.put(cartOrderDto).then((resp2: AxiosResponse) => {
+      this.saveCustomerBillingAddress();
     }).catch((err: any) => {
       this.setAlert(err, 'error')
     });
@@ -176,13 +181,12 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
   public saveCustomerBillingAddress() {
     let billingAddressDto = new CustomerBillingAddress();
     billingAddressDto = this.orderCopy.customerBillingAddress;
-    this.cartOrderService().updateCustomerBillingAddress(billingAddressDto).then((resp3: AxiosResponse) => {
-      this.orderCopy.customerBillingAddress = resp3;
+    this.customerBillingAddressService.put(billingAddressDto).then((resp3: AxiosResponse) => {
+      this.orderCopy.customerBillingAddress = resp3.data;
       this.setAlert('customerUpdated', 'success')
     }).catch((err: any) => {
       this.setAlert(err, 'error')
     });
-    ;
   }
 
   public sendMail() {

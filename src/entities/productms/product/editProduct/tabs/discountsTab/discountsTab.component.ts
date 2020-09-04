@@ -105,6 +105,7 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
       }
       discountsToSave.push(promo)
     })
+    this.productCopy.attributes = undefined
     this.productCopy.promotions = discountsToSave
     this.productService.put(this.productCopy).then((resp: AxiosResponse) => {
       this.setAlert('productUpdated', 'success')

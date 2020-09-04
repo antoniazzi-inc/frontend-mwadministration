@@ -11,7 +11,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="cursor-pointer" v-if="orderCopy.invoice" @click="showPaymentHistory(orderCopy.invoice)">
+            <tr :class="{selectedEvent: true,  'cursor-pointer':true}" v-if="orderCopy.invoice" @click="showPaymentHistory(orderCopy.invoice)">
                <td>{{orderCopy.invoice.sentOn | formatOnlyDate }}</td>
                <td>{{orderCopy.invoice.invoiceNumber}}</td>
                <td>{{orderCopy.invoice.totalAmount}}</td>
