@@ -7,7 +7,7 @@ import CommonHelpers from "@/shared/commonHelpers";
 import CartOrder, {ICartOrder} from "@/shared/models/orderms/CartOrderModel";
 import {IInvoiceTemplate} from "@/shared/models/orderms/InvoiceTemplateModel";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
-import {Watch} from "vue-property-decorator";
+import {Vue, Watch} from "vue-property-decorator";
 @Component({
     props:{
         order:{
@@ -29,7 +29,7 @@ export default class InvoiceComponent extends (CommonHelpers){
     public configuration: any;
     public selectedInvoiceTemplate: any;
     public invoiceTemplates: IInvoiceTemplate[];
-    public singleSelectConfig:ISearchableSelectConfig = new SearchableSelectConfig(name, 'labels.selectInvoiceTemplate', '', false, false, true, false, true, false )
+    public singleSelectConfig:ISearchableSelectConfig = new SearchableSelectConfig('name', 'labels.selectInvoiceTemplate', '', false, false, true, false, true, false )
     constructor(){
         super();
         this.orderCopy = new CartOrder();
@@ -49,6 +49,7 @@ export default class InvoiceComponent extends (CommonHelpers){
     }
     @Watch('order', {immediate: true, deep: true})
     public updateOrder(newVal:any){
+      let self = this
       if(newVal){
         this.orderCopy = newVal
         if(newVal.invoice){

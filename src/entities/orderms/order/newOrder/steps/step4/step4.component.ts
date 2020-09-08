@@ -24,16 +24,13 @@ import InvoicePreviewComponent from "@/entities/orderms/order/newOrder/invoicePr
 })
 export default class Step4Component extends mixins(CommonHelpers, Vue) {
   public singleSelectConfigInvoiceTemplate: ISearchableSelectConfig
-  public singleSelectConfigAffiliate: ISearchableSelectConfig
   public selectedInvoiceTemplate: any
   public invoiceAdditionalDetails: any
   public cartOrderCopy: any
-  public selectedAffiliate: any
   public dateConfig: any
   public invoiceDate: any
   public invoiceScheduledOn: any
   public invoiceLanguage: any
-  public isScheduled: boolean
   public invoiceDeliveryDate: any
   public invoicePreviewData: any
   public invoiceEmailContent: any
@@ -53,12 +50,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.singleSelectConfigInvoiceTemplate = new SearchableSelectConfig('name',
       'labels.chooseInvoiceTemplate', '', false,
       false, true, false, false)
-    this.singleSelectConfigAffiliate = new SearchableSelectConfig('label',
-      'labels.chooseAffilaite', '', false,
-      false, true, false, false)
     this.selectedInvoiceTemplate = null
-    this.selectedAffiliate = null
-    this.isScheduled = false
     this.invoiceAdditionalDetails = ''
     this.invoiceLanguage = ''
     this.invoiceEmailSubject = ''
@@ -81,12 +73,6 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
   }
   public removeInvoiceTemplate () {
     this.selectedInvoiceTemplate = null
-  }
-  public changeAffiliate (aff:any) {
-    this.selectedAffiliate = aff
-  }
-  public removeAffiliate () {
-    this.selectedAffiliate = null
   }
   public changeLangauge (event:any) {
     let lang = event.target.value;

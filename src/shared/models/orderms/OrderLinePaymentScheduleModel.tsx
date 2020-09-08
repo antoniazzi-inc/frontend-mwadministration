@@ -7,8 +7,8 @@ export interface IOrderLinePaymentSchedule extends BaseEntity {
     version?: number;
     administrationId?: number;
     relationId?: number;
-    reminderDate?: string;
-    paymentDate?: string;
+    reminderDate?: Moment;
+    paymentDate?: Moment;
     quantity?: number;
     nettoAmount?: number;
     discountAmount?: number;
@@ -26,8 +26,8 @@ constructor(
     public version?: number,
     public administrationId?: number,
     public relationId?: number,
-    public reminderDate?: string,
-    public paymentDate?: string,
+    public reminderDate?: Moment,
+    public paymentDate?: Moment,
     public quantity?: number,
     public nettoAmount?: number,
     public discountAmount?: number,

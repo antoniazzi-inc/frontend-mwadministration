@@ -15,6 +15,7 @@ import CustomerBillingAddress from "@/shared/models/orderms/CustomerBillingAddre
 import CustomerDeliveryAddress from "@/shared/models/orderms/CustomerDeliveryAddressModel";
 import {IRelationAddress} from "@/shared/models/relationms/relation-address.model";
 import RelationAddressService from "@/shared/services/relationAddressService";
+import moment from "moment/moment";
 
 @Component({
   components: {
@@ -84,8 +85,19 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
           this.cartOrder.invoice = new Invoice(undefined, undefined, undefined, undefined, undefined, this.cartOrder.orderCustomer?.relationId,
             invoiceType.ORDER, this.cartOrder.orderCustomer.fullName, this.cartOrder.orderCustomer.email, undefined, undefined, undefined,
             undefined, undefined, undefined, undefined, undefined, undefined, undefined, JSON.stringify(step4.invoiceAdditionalDetails),
-            undefined, undefined, undefined, undefined, undefined, step4.selectedInvoiceTemplate ? step4.selectedInvoiceTemplate.value : undefined, undefined)
-          //this.cartOrder.invoice.scheduledOn = moment(step4.invoiceScheduledOn).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+            undefined, undefined, undefined, undefined, undefined, undefined, undefined)
+          this.cartOrder.invoice.scheduledOn = moment(step4.invoiceScheduledOn).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+          this.cartOrder.invoice.invoiceTemplate = {
+            id: step4.selectedInvoiceTemplate.id,
+            version: step4.selectedInvoiceTemplate.version
+          }
+          let additionalDetalis = {
+            emailSubject: step4.invoiceEmailSubject,
+            emailContent: step4.invoiceEmailContent,
+            deliveryDate: step4.invoiceDeliveryDate,
+            details: step4.invoiceAdditionalDetails.split('\n')
+          }
+          this.cartOrder.invoice.additionalDetailsJson = JSON.stringify(additionalDetalis)
         }
         resolve(validation.status)
       })
@@ -159,11 +171,16 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
       }
       this.createCart()
     } else if (!this.cartOrder.customerBillingAddress.relationAddressId) {
+      let step1: any = this.$refs.step1
       let dto: IRelationAddress = {
         ...this.cartOrder.customerBillingAddress,
         primary: true,
         usedForBilling: true,
-        usedForDelivery: true
+        usedForDelivery: true,
+        relation: {
+          id: step1.selectedRelation.id,
+          version: step1.selectedRelation.version
+        }
       }
       this.relationAddressService.post(dto).then((resp: AxiosResponse) => {
         if (resp && resp.data) {

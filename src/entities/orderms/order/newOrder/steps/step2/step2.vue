@@ -40,6 +40,14 @@
             <label class="form-control-label">{{$t('labels.additionalInfo')}}</label>
             <textarea cols="3" class="form-control" maxlength="256" v-model="newOrderLine.additionalInfo"/>
           </div>
+          <div class="form-group">
+            <label class="form-control-label">{{$t('labels.affiliate')}}</label>
+            <searchable-select-component :config="singleSelectConfigAffiliate"
+                                         :options="$store.state.lookups.affiliates"
+                                         :value="selectedAffiliate"
+                                         @onSelected="changeAffiliate"
+                                         @onDelete="removeAffiliate"/>
+          </div>
           <div class="form-group" v-show="selectedProduct && selectedProduct.value.productType === 'PHYSICAL'">
             <label class="form-control-label">{{$t('labels.shippingTitle')}}</label>
             <searchable-select-component :config="singleSelectConfigDeliveryMethod"
@@ -57,7 +65,7 @@
           </div>
           <div class="form-group" v-if="selectedProduct && selectedProduct.value.paymentSchedules && selectedProduct.value.paymentSchedules.length && usePaymentSchedule">
             <label class="form-control-label">{{$t('labels.paymentSchedules')}}</label>
-            <select class="form-control" v-model="selectedPaymentSchedule" @change="paymentScheduleChanged">
+            <select class="form-control" v-model="selectedPaymentSchedule">
               <option v-for="(item, index) in selectedProduct.value.paymentSchedules" :key="index" :value="index">{{item.name}}</option>
             </select>
           </div>

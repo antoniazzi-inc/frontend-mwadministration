@@ -152,6 +152,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public updateUseProductSubscription(newVal: any) {
     if (newVal) {
       this.orderHasSubscription = true;
+      if(this.selectedProduct && this.selectedProduct.value)
       this.selectedProductSubscription = this.selectedProduct.value.productSubscription;
     } else {
       this.orderHasSubscription = false;
@@ -368,6 +369,7 @@ public getPromoName(item:any){
   }
 
   public removeProduct(prod: any) {
+    if(prod)
     this.selectedProduct = null;
   }
 
@@ -501,7 +503,7 @@ public getPromoName(item:any){
   public addOrderLine(e: any) {
     e.preventDefault();
     let self = this;
-    if (this.orderHasSubscription && this.orderLines.length >= 1) {
+    if (this.orderHasSubscription && this.orderLines.length <= 0) {
       this.deliveryMethodError = this.$t('labels.subscriptionError');
       return false;
     } else {
@@ -577,6 +579,9 @@ public getPromoName(item:any){
     let schedule = this.usePaymentSchedule ? this.selectedProduct.value.paymentSchedules[this.selectedPaymentSchedule] : null;
     this.selectedOrderLine.quantity = parseInt(this.productQuantity);
     this.selectedOrderLine.additionalInfo = this.productAdditionalInfo;
+    if(this.useProductSubscription){
+      this.selectedProductSubscription.invoicePeriod = this.selectedProduct.value.productSubscription.period
+    }
     this.selectedOrderLine.orderSubscription = this.useProductSubscription ? this.selectedProductSubscription : undefined;
     this.selectedOrderLine.orderLinePaymentSchedules = schedule;
     this.selectedOrderLine.orderProduct.orderProductAttributeValues = allFeatures
@@ -695,18 +700,18 @@ public getPromoName(item:any){
     this.productQuantity = parseInt(orderLine.quantity);
     this.productAdditionalInfo = orderLine.additionalInfo;
     if (orderLine.orderSubscription) {
-      this.useProductSubscription = true;
+      this.useProductSubscription = true
       Vue.nextTick(function () {
-        self.selectedProductSubscription = orderLine.orderLineSubscription;
+        self.selectedProductSubscription = orderLine.orderSubscription;
       });
     } else {
       this.useProductSubscription = false;
       self.selectedProductSubscription = undefined;
     }
     Vue.nextTick(function () {
-      self.selectedProduct = {
-        name: orderLine.orderProduct.productName,
-        value: orderLine.orderProduct
+      let prod = self.$store.state.lookups.products.findIndex((e:any) => e.value.id === orderLine.orderProduct.productId)
+      if(prod > -1){
+        self.selectedProduct = self.$store.state.lookups.products[prod]
       }
     });
     if (orderLine.orderLineDeliveryMethod) {

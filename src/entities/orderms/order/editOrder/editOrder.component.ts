@@ -36,6 +36,7 @@ import OrderPreviewComponent from "@/entities/orderms/order/editOrder/tabs/order
 })
 export default class EditOrderComponent extends mixins(CommonHelpers, Vue) {
   public currentTab:string
+  public currentTabLeft:string
   public cartOrder:ICartOrder
   public cartOrderService:any
   public id:any
@@ -43,6 +44,7 @@ export default class EditOrderComponent extends mixins(CommonHelpers, Vue) {
   constructor () {
     super()
     this.currentTab = 'customers'
+    this.currentTabLeft = 'summary'
     this.id = null
     this.cartOrder = new CartOrder()
     this.cartOrderService = CartOrdersService.getInstance()

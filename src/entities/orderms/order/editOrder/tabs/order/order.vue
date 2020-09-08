@@ -46,7 +46,6 @@
                                                :value="selectedShippingMethods"
                                                @onChange="addNewShippingMethod"
                                                @onDelete="removeShippingMethod"/>
-                    <small class="text-danger">{{deliveryMethodError}}</small>
                 </div>
                 <div class="form-group" v-if="addProduct && selectedProduct.value.paymentSchedules && selectedProduct.value.paymentSchedules.length">
                     <label class="form-control-label">{{$t('labels.paymentSchedules')}}</label>
@@ -68,7 +67,7 @@
                                    :off-text="$t('labels.no')"
                                    :value.sync="useProductSubscription"></toggle-switch>
                 </div>
-                <div v-if="useProductSubscription">
+                <div v-if="useProductSubscription && selectedProduct && selectedProduct.value && selectedProduct.value.productSubscription">
                     <label class="form-control-label">{{$t('labels.periodStartDate')}}</label>
                     <form name="searchForm" class="form-inline">
                         <div class="input-group w-100 mt-3">
@@ -100,6 +99,7 @@
                                                @onDelete="removeBeneficiary"/>
                 </div>
                 <div class="form-group text-right" v-if="addProduct">
+                  <small class="text-danger">{{deliveryMethodError}}</small>
                     <button class="btn btn-outline-danger" @click="closeEditMode">{{$t('buttons.cancel')}}</button>
                     <button class="btn btn-primary ml-2" @click.prevent.stop="addOrderLine">{{!isEditingOrderLine ? $t('buttons.add') : $t('buttons.save')}}</button>
                 </div>

@@ -10,6 +10,7 @@ export interface IOrderSubscription extends BaseEntity {
     validFrom?: string;
     validTo?: string;
     active?: boolean;
+    maxTerms?: number;
     additionalDetailsJson?: string;
     invoices?: IInvoice[];
 }
@@ -22,6 +23,7 @@ constructor(
     public version?: number,
     public administrationId?: number,
     public relationId?: number,
+    public maxTerms?: number,
     public invoicePeriod?: string,
     public validFrom?: string,
     public validTo?: string,

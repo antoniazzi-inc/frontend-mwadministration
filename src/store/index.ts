@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     logon: false,
     userIdentity: null,
+    administration: null,
     authorities: [],
     authenticated: false,
     currentLanguage: 'en',
@@ -119,6 +120,9 @@ export default new Vuex.Store({
     },
     authorities (state, authorities) {
       state.authorities = authorities
+    },
+    updateAdministration (state, newState) {
+      state.administration = newState
     }
   },
   getters: {

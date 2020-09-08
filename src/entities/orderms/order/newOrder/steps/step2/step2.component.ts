@@ -15,6 +15,9 @@ import productService from "@/shared/services/productService";
 import InvoicePreviewComponent from "@/entities/orderms/order/newOrder/invoicePreview/invoicePreview.vue";
 import OrderPromotion from "@/shared/models/orderms/OrderPromotionModel";
 import OrderSubscription from "@/shared/models/orderms/OrderSubscriptionModel";
+import OrderLinePaymentSchedule from "@/shared/models/orderms/OrderLinePaymentScheduleModel";
+import moment, {Moment} from "moment";
+import AffiliateCommision from "@/shared/models/orderms/AffiliateCommisionModel";
 
 @Component({
   props: {
@@ -44,13 +47,16 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public singleSelectConfigPromotion: ISearchableSelectConfig
   public cartOrderCopy: ICartOrder
   public selectedProduct: any
+  public selectedPaymentSchedule: any
   public selectedPromotion: any
   public orderLineToDelete: any
   public newOrderLineError: any
   public promotionToDelete: any
   public promotionsService: any
+  public singleSelectConfigAffiliate: ISearchableSelectConfig
   public productService: any
   public selectedOrderLineDeliveryMethod: any
+  public selectedAffiliate: any
   public selectedProductAttributes: any[]
   public productAttributes: any[]
   public availablePrmotions: any[]
@@ -78,8 +84,13 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.selectedProduct = null
     this.promotionToDelete = null
     this.orderLineToDelete = null
+    this.selectedPaymentSchedule = null
+    this.selectedAffiliate = null
     this.selectedPromotion = null
     this.newOrderLineError = ''
+    this.singleSelectConfigAffiliate = new SearchableSelectConfig('label',
+      'labels.chooseAffilaite', '', false,
+      false, true, false, false)
     this.selectedProductAttributes = []
     this.selectedOrderLineDeliveryMethod = null
     this.promotionsService = promotionsService.getInstance()
@@ -200,9 +211,6 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.newOrderLine.orderLineDeliveryMethod = undefined
   }
 
-  public paymentScheduleChanged(e: any) {
-  }
-
   public addOrderLine() {
     let self = this
     this.$validator.validateAll({quantityProd: this.newOrderLine.quantity}).then(resp => {
@@ -247,8 +255,55 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
         return false
       }
       if(this.useProductSubscription){
+        let startDate:any = null
+        switch (this.selectedProduct.value.productSubscription.startDate) {
+          case 'firstOfCurrentMonth':
+            startDate = moment().startOf('month')
+            break
+          case 'firstOfNextMonth':
+            startDate = moment().add(1, 'month').startOf('month')
+            break
+          case 'now':
+            startDate = moment()
+            break
+          case 'paymentDone':
+            startDate = null
+            break
+        }
         this.newOrderLine.orderSubscription = new OrderSubscription(undefined, undefined, undefined, undefined, undefined,
-          this.cartOrderCopy.orderCustomer ? this.cartOrderCopy.orderCustomer.relationId : undefined, this.selectedProduct.value.productSubscription.period, this.selectedProduct.value.productSubscription.period.validFrom, this.selectedProduct.value.productSubscription.validTo, true, undefined, undefined )
+          this.cartOrderCopy.orderCustomer ? this.cartOrderCopy.orderCustomer.relationId : undefined,
+          this.selectedProduct.value.productSubscription.period, startDate !== null ? moment(startDate).format('YYYY-MM-DDTHH:mm:ss') + 'Z' : undefined,
+          undefined, undefined, true, undefined, undefined)
+      }
+      if(this.selectedAffiliate && this.selectedAffiliate !== null) {
+        this.newOrderLine.affiliateCommisions = [new AffiliateCommision(undefined, undefined, undefined, undefined, undefined, this.cartOrderCopy.orderCustomer?.relationId,
+          this.selectedAffiliate.id, undefined, undefined, undefined, undefined)] //TODO check if all values are correct
+      }
+      if(this.usePaymentSchedule){
+        const reminderDateIndex = this.$store.state.administration.administrationSettings.findIndex((e:any)=> e.settingKey === 'reminderDate')
+        let reminderDate:any = null
+        if(reminderDateIndex > -1){
+          reminderDate = this.$store.state.administration.administrationSettings[reminderDateIndex].settingValueJson
+        }
+        let paymentSchedules = self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].paymentScheduleOptions.map((e:any, i:number)=>{
+          let paymentDate:any = moment().format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+          if(i > 0) {
+            switch (self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].period){
+              case 'month':
+                paymentDate = moment().add(i, "month").format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+                break;
+              case 'week':
+                paymentDate = moment().add(i, "week").format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+                break;
+              case 'day':
+                paymentDate = moment().add(i, "day").format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+                break;
+            }
+          }
+          return new OrderLinePaymentSchedule(undefined, undefined, undefined, undefined, undefined,
+            this.cartOrderCopy.orderCustomer?.relationId, moment(paymentDate).add(reminderDate, 'days'), paymentDate, self.newOrderLine.quantity, e.price)
+        })
+        this.newOrderLine.orderLinePaymentSchedules = paymentSchedules
       }
       if (this.allOrderLines) {
         this.allOrderLines.push(this.newOrderLine)
@@ -284,7 +339,12 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public addBeneficiary(beneficiary: any) {
     this.selectedBeneficiaries = beneficiary
   }
-
+  public changeAffiliate (aff:any) {
+    this.selectedAffiliate = aff
+  }
+  public removeAffiliate () {
+    this.selectedAffiliate = null
+  }
   public removeBeneficiary(beneficiary: any) {
     let index = this.selectedBeneficiaries.findIndex((e) => e.id === beneficiary.id)
     if (index > -1) {

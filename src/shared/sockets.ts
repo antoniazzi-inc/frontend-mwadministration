@@ -7,6 +7,7 @@ import { AxiosResponse } from 'axios'
 import { EventBus } from './eventBus'
 import CommonHelpers from "@/shared/commonHelpers";
 import {mixins} from "vue-class-component";
+import {Store} from "vuex";
 @Component
 export default class Sockets extends mixins(CommonHelpers, Vue) {
   public administrationService: any
@@ -44,6 +45,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
     this.socket = new SockJS('/administrationms/socket')
     return new Promise(resolve => {
       this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
+        this.store.commit('updateAdministration', result.data)
         this.stompClient = Stomp.over(this.socket)
         this.stompClient.connect({}, (frame: any) => {
             this.connected = true

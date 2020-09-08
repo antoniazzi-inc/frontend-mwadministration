@@ -92,8 +92,12 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
       this.orderCopy = newVal
       if (newVal.invoice && newVal.invoice.invoiceTemplate) {
         const invoiceTemplateData = JSON.parse(newVal.invoice.invoiceTemplate.templateDataJson);
-        this.invoiceEmailContent = invoiceTemplateData.invoiceEmailContent;
-        this.invoiceEmailSubject = invoiceTemplateData.invoiceEmailSubject;
+        let detailsJson = null
+        if(JSON.parse(newVal.invoice.additionalDetailsJson)){
+          detailsJson = JSON.parse(newVal.invoice.additionalDetailsJson)
+        }
+        this.invoiceEmailContent = detailsJson.emailContent;
+        this.invoiceEmailSubject = detailsJson.emailSubject;
       }
       if (newVal.orderCustomer && newVal.orderCustomer.id){
         this.retrrieveCompanies(newVal.orderCustomer.relationId);
@@ -171,7 +175,9 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     cartOrderDto.shippingCostAmount = this.orderCopy.shippingCostAmount;
     cartOrderDto.taxAmount = this.orderCopy.taxAmount;
     cartOrderDto.totalAmount = this.orderCopy.totalAmount;
+    cartOrderDto.invoice = this.orderCopy.invoice
     this.cartOrderService.put(cartOrderDto).then((resp2: AxiosResponse) => {
+      this.$emit('update', resp2.data)
       this.saveCustomerBillingAddress();
     }).catch((err: any) => {
       this.setAlert(err, 'error')
@@ -190,11 +196,24 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public sendMail() {
-    this.closeDialog();
+    let detailsJSON = null
+    if(this.orderCopy.invoice.additionalDetailsJson){
+      detailsJSON = JSON.parse(this.orderCopy.invoice.additionalDetailsJson)
+      detailsJSON.emailContent = this.invoiceEmailContent
+      detailsJSON.emailSubject = this.invoiceEmailSubject
+    }else {
+      detailsJSON = {
+        emailContent: this.invoiceEmailContent,
+        emailSubject: this.invoiceEmailSubject
+      }
+    }
+    if(detailsJSON === null) return
+    this.orderCopy.invoice.additionalDetailsJson = JSON.stringify(detailsJSON)
+    this.saveCartOrder()
   }
 
   public closeDialog() {
-    (<any>this.$refs.sendMail).hide();
+
   }
 
   public updateInvoiceEmailContent(content: any) {
