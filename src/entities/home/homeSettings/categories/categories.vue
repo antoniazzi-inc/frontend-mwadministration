@@ -1,7 +1,9 @@
 <template>
   <div class="container-fluid">
     <h2 id="page-heading" class="text-left mt-3">
+      <!--
       <span id="tag-heading">{{$t('labels.categories')}}</span>
+      -->
       <button tag="button" data-toggle="modal" data-target="#categoryModal" class="btn btn-primary float-right" @click="resetCategory">
        <i class="fas fa-plus"/>  <span>{{$t('labels.newCategory')}}</span>
       </button>

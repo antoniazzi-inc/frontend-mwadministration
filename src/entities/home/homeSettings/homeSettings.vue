@@ -1,6 +1,9 @@
 <template>
   <div class="container-fluid">
-    <ul class="nav nav-tabs mt-5 not-for-print" id="myTab" role="tablist">
+    <h2 id="page-heading" class="text-left mt-3">
+      <span>{{$t('labels.settings')}}</span>
+    </h2>
+    <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
       <li class="nav-item" @click="currentTab = 'cat'">
         <a :class="{'nav-link': true, 'active': currentTab === 'cat'}" id="category-tab" data-toggle="tab"
            href="#categories" role="tab" aria-controls="categories" aria-selected="true">{{$t('labels.categories')}}</a>

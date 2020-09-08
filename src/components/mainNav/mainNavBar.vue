@@ -15,6 +15,10 @@
             <div class="ml-2"> {{$t('labels.dashboard')}}</div>
           </router-link>
           <hr/>
+          <router-link to="/account/settings" class="dropdown-item">
+            <div class="ml-2"> {{$t('labels.accountAndSettings')}}</div>
+          </router-link>
+          <hr/>
           <router-link to="/home/settings" class="dropdown-item">
             <div class="ml-2"> {{$t('labels.settings')}}</div>
           </router-link>
@@ -60,7 +64,7 @@
           </li>
         </template>
       </ul>
-      <form class="form-inline my-2 my-lg-0" @submit.prevent="doSearch()">
+      <form class="form-inline my-2 my-lg-0" @submit.prevent="doSearch()" v-if="showSearch">
         <div class="input-group">
           <div class="input-group-btn">
             <div class="input-group-prepend">
@@ -86,9 +90,12 @@
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
-          <router-link class="nav-link dropdown-toggle" id="languages" to="" role="button"
+          <router-link class="nav-link" id="languages" to="" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="main-menu-icon fas fa-flag"></i>
+            <!--
             <img class="img-fluid" :src="`./assets/images/flags/${$store.state.currentLanguage}.png`"/>
+            -->
           </router-link>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notifications">
             <h3 class="menu-title">{{$t('labels.languages')}}</h3>
@@ -96,7 +103,7 @@
               <router-link :key="ind" to="" class="dropdown-item child-link" @click.native="changeLanguage(item, ind)">
                 <div class="row">
                   <div class="col-md-2 ml-3">
-                      <img class="img-fluid" :src="`./assets/images/flags/${ind}.png`"/>
+                      <img class="img-fluid" :src="`./assets/images/flags/${ind}.png`" />
                   </div>
                   <div class="col-md-8">
                     {{item.name}}
@@ -110,18 +117,16 @@
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
-          <router-link class="nav-link dropdown-toggle" id="user" to="" role="button"
+          <router-link class="nav-link" id="user" to="" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="main-menu-icon fas fa-user-circle"></i>
+            <!--
             <v-gravatar class="avatar-sm" :email="$store.state.userIdentity && $store.state.userIdentity.email ?
             $store.state.userIdentity.email : ''" :size="100"></v-gravatar>
+            -->
           </router-link>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user">
-              <div class="row menu-title-dropdown">
-                <v-gravatar class="avatar-sm" :email="$store.state.userIdentity && $store.state.userIdentity.email ?
-            $store.state.userIdentity.email : ''" :size="100"></v-gravatar>
-                <div class="font-weight-bold ml-2">{{getUserName()}}</div>
-                <div class="small">{{getUserRole()}}</div>
-              </div>
+            <h3 class="menu-title">{{getUserName()}}</h3>
             <router-link to=""  @click.native="loadUser" data-toggle="modal" data-target="#userProfileModal" class="dropdown-item child-link">
               <div class="row">
                 <div class="col-md-2 ml-2">
@@ -140,17 +145,6 @@
                 </div>
                 <div class="col-md-8">
                   {{$t('labels.notifications')}}
-                </div>
-              </div>
-            </router-link>
-            <hr/>
-            <router-link to="/account/settings" class="dropdown-item child-link">
-              <div class="row">
-                <div class="col-md-2 ml-2">
-                  <i class="fas fa-gear"/>
-                </div>
-                <div class="col-md-9">
-                  {{$t('labels.accountAndSettings')}}
                 </div>
               </div>
             </router-link>
@@ -177,6 +171,14 @@
               </div>
             </router-link>
           </div>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+            <i class="main-menu-icon fas fa-question"></i>
+          <!--
+          TO DO: open popup right hand side of screen with page help
+          -->
         </li>
       </ul>
     </div>

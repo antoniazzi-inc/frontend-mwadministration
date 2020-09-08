@@ -1,7 +1,9 @@
 <template>
   <div class="container-fluid">
     <h2 id="page-heading" class="text-left mt-3">
+      <!--
       <span id="tag-heading">{{$t('labels.tags')}}</span>
+      -->
       <button tag="button" data-toggle="modal" data-target="#tagModal" class="btn btn-primary float-right create-tag" @click="resetTag">
         <i class="fas fa-plus"/>  <span>{{$t('labels.newTag')}}</span>
       </button>

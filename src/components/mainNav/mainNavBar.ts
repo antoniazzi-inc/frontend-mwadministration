@@ -33,6 +33,7 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
   public changePassword: any;
   public birthDate: any;
   public searchableConfig: ISearchableSelectConfig;
+  public showSearch: boolean;
   public searchString: string;
   public changePasswordChecked: boolean;
   public authService = AuthService.getInstance();
@@ -43,6 +44,7 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
       false, false, false, false)
     this.searchString = ''
     this.changePasswordChecked = false
+    this.showSearch = false
     this.selectedTimeZone = null
     this.birthDate = null
     this.relationService = RelationService.getInstance()

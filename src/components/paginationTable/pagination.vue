@@ -26,7 +26,7 @@
     </div>
     <div class="col-md-3 d-inline-flex align-items-baseline">
         <label for="itemsPerPage" class="mr-2">{{$t('labels.itemsPerPage')}}</label>
-        <select v-model="itemsPerPage" id="itemsPerPage" @change="changeItemsPerPage">
+        <select v-model="itemsPerPage" id="itemsPerPage" class="form-control" style="width:80px;" @change="changeItemsPerPage">
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
