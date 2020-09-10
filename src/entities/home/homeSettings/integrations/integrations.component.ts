@@ -6,6 +6,7 @@ import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
+import SimpleSearchComponent from "@/components/simpleSearch/simpleSearch.vue";
 const allExternalSettings = {
   externalSystemType: '',
   className: '',
@@ -53,7 +54,8 @@ const allExternalSettings = {
 }
 @Component({
   components: {
-    SearchableSelectComponent
+    SearchableSelectComponent,
+    'simple-search': SimpleSearchComponent
   },
   props: {
     active: Boolean
@@ -251,6 +253,10 @@ export default class IntegrationsComponent extends mixins(CommonHelpers, Vue) {
         self.setAlert(self.$t('fillRequiredFields'), 'error')
       }
     })
+  }
+
+  public searchIntegrations (query: string) {
+    // TODO implement me
   }
 
   public cancel () {

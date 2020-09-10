@@ -5,32 +5,32 @@
     </h2>
     <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
       <li class="nav-item" @click="currentTab = 'cat'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'cat'}" id="category-tab" data-toggle="tab"
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'cat'}" id="category-tab" data-toggle="tab"
            href="#categories" role="tab" aria-controls="categories" aria-selected="true">{{$t('labels.categories')}}</a>
       </li>
       <li class="nav-item" @click="currentTab = 'tag'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'tag'}" id="tag-tab" data-toggle="tab"
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'tag'}" id="tag-tab" data-toggle="tab"
            href="#tags" role="tab" aria-controls="tags" aria-selected="false">{{$t('labels.tags')}}</a>
       </li>
       <li class="nav-item" @click="currentTab = 'default'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'default'}" id="default-tab" data-toggle="tab"
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'default'}" id="default-tab" data-toggle="tab"
            href="#defaultTexts" role="tab" aria-controls="defaultTexts" aria-selected="false">{{$t('labels.defaultTexts')}}</a>
       </li>
       <li class="nav-item" @click="currentTab = 'integrations'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'integrations'}" id="integrations-tab" data-toggle="tab"
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'integrations'}" id="integrations-tab" data-toggle="tab"
            href="#integrations" role="tab" aria-controls="integrations" aria-selected="true">{{$t('labels.integrations')}}</a>
       </li>
       <li class="nav-item" @click="currentTab = 'deliveryMethods'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'deliveryMethods'}" id="delivery-tab"
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'deliveryMethods'}" id="delivery-tab"
            data-toggle="tab" href="#deliveryMethods" role="tab" aria-controls="deliveryMethods" aria-selected="false">
           {{$t('labels.deliveryMethods')}}</a>
       </li>
       <li class="nav-item" @click="currentTab = 'paymentMethods'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'paymentMethods'}" id="payment-tab" data-toggle="tab"
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'paymentMethods'}" id="payment-tab" data-toggle="tab"
            href="#paymentMethods" role="tab" aria-controls="paymentMethods" aria-selected="false">{{$t('labels.paymentMethods')}}</a>
       </li>
       <li class="nav-item" @click="currentTab = 'invoiceTemplates'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'invoiceTemplates'}" id="invoiceTemplates-tab" data-toggle="tab"
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'invoiceTemplates'}" id="invoiceTemplates-tab" data-toggle="tab"
            href="#invoiceTemplates" role="tab" aria-controls="invoiceTemplates" aria-selected="false">{{$t('labels.invoiceTemplates')}}</a>
       </li>
 
@@ -60,4 +60,9 @@
     </div>
   </div>
 </template>
+
 <script src="./homeSettings.component.ts" lang="ts"></script>
+
+<style scoped>
+
+</style>

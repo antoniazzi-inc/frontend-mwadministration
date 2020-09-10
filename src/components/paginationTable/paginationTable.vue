@@ -1,12 +1,14 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid table-spacing" style="">
+
     <div class="row m-3 mt-4 pagination-v">
       <div class="col-md-12" v-if="!isLoading && allData.length > 0">
         <pagination @update="rerenderPage" :totalPages="totalPages" :table="$props.table" :page="currentPage"
                     @changePage="onChangePage" :total="totalItems"  :key="'pagination'" :perPage="itemsPerPage"
-                    :tableFields="tableFields"></pagination>
+                    location="top" :tableFields="tableFields"></pagination>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-12">
         <div class="loader" v-if="isLoading">
@@ -23,7 +25,7 @@
                 <span>{{$t(item.name)}}</span>
               </th>
             </template>
-            <th>
+            <th class="text-right">
               <span>{{$t('labels.actions')}}</span>
             </th>
           </tr>
@@ -32,7 +34,7 @@
             <tr v-for="(item, ind) in allData" :key="ind">
               <template v-for="(col, index) in tables[$props.table].cols">
                 <td :key="index" v-if="hasAuthority(col.authorities)" v-show="checkVisibility(col)">
-                  <span class="colorField" v-if="col.type === 'color'" :style="{'background': item[col.field]}">&nbsp;</span>
+                  <span class="colorField" v-if="col.type === 'color'" :style="{'width':'50px', 'border-radius': '50%', 'background': item[col.field]}">&nbsp;</span>
                   <span v-else-if="col.method != null"> {{col.method(item)}}</span>
                   <span v-else-if="col.type === 'date'">{{item[col.field] | formatDate}}</span>
                   <span v-else-if="col.type === 'boolean'">
@@ -49,13 +51,13 @@
                   </span>
                 </td>
               </template>
-              <td>
+              <td class="text-right">
                 <div class="btn-group flex-btn-group-container text-center justify-content-center">
                   <div v-if="tables[$props.table].actions.edit"
                     @click.prevent="itemAction('onEdit', item)" class="ml-3 text-primary cursor-pointer">
                     <i class="os-icon os-icon-ui-49"></i>
                   </div>
-                  <div v-if="tables[$props.table].actions.copy" @click.prevent="itemAction('onCopy', item)" class="ml-3 text-warning cursor-pointer">
+                  <div v-if="tables[$props.table].actions.copy" @click.prevent="itemAction('onCopy', item)" class="ml-3 text-success cursor-pointer">
                     <i class="os-icon os-icon-grid-10"></i>
                   </div>
                   <div v-if="tables[$props.table].actions.info" class="ml-3 cursor-pointer"  @click.prevent="itemAction('onInfo', item)">
@@ -77,7 +79,7 @@
       <div class="col-md-12" v-if="!isLoading && allData.length > 0">
         <pagination @update="rerenderPage" :totalPages="totalPages" :table="$props.table" :page="currentPage"
                     @changePage="onChangePage" :total="totalItems" :key="'pagination'" :perPage="itemsPerPage"
-        :tableFields="tableFields"></pagination>
+                    location="bottom" :tableFields="tableFields"></pagination>
       </div>
     </div>
     <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteModal_'+$props.table" tabindex="-1" role="dialog" ref="deleteModal">
@@ -115,6 +117,7 @@
   .pagination-v{
     display: flex;
     align-items: center;
+    padding:0!important;
   }
   .loader{
     width: 100%;
@@ -125,12 +128,24 @@
     align-items: center;
     background: rgba(255, 255, 255, 0.9);
   }
+  .m-3 {
+    margin:0px!important;
+  }
   thead th {
-    font-size: .9em!important;
+    font-size: 0.9em!important;
+    font-weight: 600;
     text-align: left;
   }
   .table td {
-    font-size: 0.9em;
+    font-size: 1em;
     text-align: left;
+  }
+  .table-spacing {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    background-color: #fafafa;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    border-radius: 5px;
   }
 </style>

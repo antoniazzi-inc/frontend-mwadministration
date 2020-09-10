@@ -1,13 +1,17 @@
 <template>
   <div class="container-fluid">
-    <h2 id="page-heading" class="text-left mt-3">
-      <span id="tag-heading">{{$t('labels.paymentMethods')}}</span>
-      <button tag="button" data-toggle="modal" data-target="#PaymentMethodModal" class="btn btn-primary float-right"
-              @click="resetPaymentMethod">
-        <i class="fas fa-plus"/> <span>{{$t('labels.newPaymentMethod')}}</span>
-      </button>
-    </h2>
-    <simple-search @onSearch="searchPaymentMethod"></simple-search>
+
+    <div class="d-flex justify-content-between mb-3">
+      <div class="p-2" style="width:70%">
+        <simple-search @onSearch="searchPaymentMethod"></simple-search>
+      </div>
+      <div class="p-4">
+        <button tag="button" data-toggle="modal" data-target="#PaymentMethodModal" class="btn btn-primary float-right create-button" @click="resetPaymentMethod">
+          <i class="fas fa-plus"/> <span>{{$t('labels.newPaymentMethod')}}</span>
+        </button>
+      </div>
+    </div>
+
     <PaginationTableComponent
       :ref="'paginationTable'"
       :active="$props.active"

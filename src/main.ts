@@ -3,6 +3,7 @@ import 'bootstrap'
 import VeeValidate from 'vee-validate'
 import VueI18n from 'vue-i18n'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '@/assets/css/main.css' // added PJE 8 sep from /opt/dev/templates/light-admin
 import '@/assets/css/icons.scss'
 import '@/assets/css/app.css'
 import App from './App.vue'

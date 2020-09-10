@@ -1,14 +1,18 @@
 <template>
   <div class="wrap">
     <div class="container-fluid not-for-print">
-      <h2 id="page-heading" class="text-left mt-3">
-        <span v-text="$t('labels.invoiceTemplates')" id="invoice-template-heading"></span>
-        <button type="button" @click="createNewInvoiceTemplate"
-                class="btn btn-primary float-right jh-create-entity create-invoice-template">
-          <span v-text="$t('buttons.newInvoiceTemplate')"></span>
-        </button>
-      </h2>
-      <simple-search @onSearch="search"></simple-search>
+
+      <div class="d-flex justify-content-between mb-3">
+        <div class="p-2" style="width:70%">
+          <simple-search @onSearch="search"></simple-search>
+        </div>
+        <div class="p-4">
+          <button type="button" @click="createNewInvoiceTemplate" class="btn btn-primary float-right jh-create-entity create-invoice-template create-button">
+            <i class="fas fa-plus"/> <span v-text="$t('buttons.newInvoiceTemplate')"></span>
+          </button>
+        </div>
+      </div>
+
       <div class="col-md-12">
         <div class="row p-0 m-0">
           <div class="col-md-12 p-0 m-0">

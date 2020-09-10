@@ -97,7 +97,7 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
 
   public created () {
     this.tableFields = this.getTableVisibilityFields(this.$props.table)
-    this.itemsPerPage = this.tableFields.itemsPerPage
+    this.itemsPerPage = (this.tableFields) ? this.tableFields.itemsPerPage : 10
   }
 
   public itemAction (action: string, item: any) {
@@ -139,6 +139,6 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
 
   public checkVisibility (col: any) {
     const tableFields = this.getTableVisibilityFields(this.$props.table)
-    return tableFields[col.field]
+    return (tableFields) ? tableFields[col.field] : false
   }
 }

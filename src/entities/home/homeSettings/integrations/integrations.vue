@@ -1,13 +1,76 @@
 <template>
   <div class="container-fluid">
-    <h2 id="page-heading" class="text-left mt-3">
-      <span id="tag-heading">{{$t('labels.integrations')}}</span>
-      <button tag="button" class="btn btn-primary float-right" @click="newExternalSystem">
-        <i class="fas fa-plus"/> <span>{{$t('labels.newIntegration')}}</span>
-      </button>
-    </h2>
+
+    <div class="d-flex justify-content-between mb-3">
+      <div class="p-2" style="width:70%">
+        <simple-search @onSearch="searchIntegrations"></simple-search>
+      </div>
+      <div class="p-4">
+        <button tag="button" data-toggle="modal" class="btn btn-primary float-right create-button" @click="newExternalSystem">
+          <i class="fas fa-plus"/>  <span>{{$t('labels.newIntegration')}}</span>
+        </button>
+      </div>
+    </div>
+
     <div class="row text-left">
-      <div class="col-md-3">
+      <div class="col-md-6">
+
+
+
+
+
+
+        <div class="table-responsive">
+          <table class="table table-lightborder">
+            <thead>
+            <tr>
+              <th>
+                Name
+              </th>
+              <th class="text-center">
+                Status
+              </th>
+              <th class="text-right">
+                &nbsp;
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <template v-for="(item, ind) in allExternalSystems">
+            <tr>
+              <td>
+                {{item.settingKey}}<br/>{{item.settingValueJson.externalSystemType}}
+              </td>
+              <td class="text-center">
+                <div class="status-pill green" data-title="Available" data-toggle="tooltip" data-original-title="" title="" v-if="item.status == 'ACTIVE'"></div>
+                <div class="status-pill red" data-title="Inactive" data-toggle="tooltip" data-original-title="" title="" v-if="item.status == 'INACTIVE'"></div>
+                <div class="status-pill orange" data-title="Inactive" data-toggle="tooltip" data-original-title="" title="" v-if="item.status == 'TEST'"></div>
+              </td>
+              <td class="text-right">
+                <div class="buttonsHolder text-right">
+                  <div @click.prevent="editExternalSystem(item)" class="ml-3 text-primary cursor-pointer">
+                    <i class="os-icon os-icon-ui-49"></i>
+                  </div>
+                  <div @click.prevent="setRemoveExternalSystem(item)" data-toggle="modal"
+                       data-target="#deleteModal"
+                       class="ml-3 text-primary cursor-pointer text-danger">
+                    <i class="os-icon os-icon-ui-15"></i>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            </template>
+            </tbody>
+          </table>
+        </div>
+
+
+
+
+
+
+
+<!--
         <div id="accordion" v-if="allExternalSystems.length > 0">
           <template v-for="(item, ind) in allExternalSystems">
             <div class="card" :key="`${ind}_card`">
@@ -30,7 +93,10 @@
           </template>
         </div>
         <h4 class="mt-5 pt-5" v-else>{{$t('labels.noIntegrations')}}</h4>
+-->
+
       </div>
+
       <div class="modal" data-backdrop="static" data-keyboard="false" id="deleteModal" tabindex="-1" role="dialog" ref="deleteModal">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -54,7 +120,9 @@
           </div>
         </div>
       </div>
-      <div class="col-md-9" v-if="editMode">
+
+
+      <div class="col-md-6" v-if="editMode">
         <form @submit.prevent.stop="save()">
           <div class="row mt-3">
             <div class="col-md-6">

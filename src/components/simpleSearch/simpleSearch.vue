@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" style="margin:0; padding:0;">
     <div class="row">
       <div class="col-sm-12">
         <form name="searchForm" class="form-inline" v-on:submit.prevent="search()">
@@ -10,7 +10,7 @@
             <button type="button" class="btn btn-primary" v-on:click="search()">
               <i class="fa fa-search"></i>
             </button>
-            <button type="button" id="clear-search" class="btn btn-secondary" v-on:click="clear()"
+            <button type="button" id="clear-search" class="btn" v-on:click="clear()"
                     v-if="simpleSearch">
               <i class="fa fa-trash-alt"></i>
             </button>

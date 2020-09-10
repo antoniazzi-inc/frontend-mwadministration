@@ -1,7 +1,83 @@
 <template>
   <div class="container-fluid">
     <div class="row text-left">
-      <div class="col-md-3">
+      <div class="col-md-4" style="padding-right:5em;">
+
+
+<!--
+correctly working example:
+
+        <div class="panel-group" id="accordion" style="margin-top:1em;">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h5 class="panel-title" data-toggle="collapse" data-target="#collapseOne">
+                Orders
+              </h5>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse">
+              <div class="panel-body">
+                <ul class="sub-menu">
+                  <li>
+                    <a >Email sent after paid order</a>
+                  </li>
+                  <li>
+                    <a >Email sent after unpaid order</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h5 class="panel-title" data-toggle="collapse" data-target="#collapseTwo">
+                Notifications
+              </h5>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+              <div class="panel-body">
+                <ul class="sub-menu">
+                  <li>
+                    <a >Email sent after paid order</a>
+                  </li>
+                  <li>
+                    <a >Email sent after unpaid order</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+-->
+
+        <div class="panel-group" id="accordion" style="margin-top:1em;">
+          <template v-for="(item, ind) in defaultTexts">
+            <div class="panel panel-default" :key="`${ind}_card`">
+              <div class="panel-heading" @click="clickedTab = clickedTab === item.categoryId ? clickedTab = '' : clickedTab=item.categoryId">
+                <h5 class="panel-title" data-toggle="collapse" :data-target="`#collapse_${ind}`">
+                  {{$t(item.categoryName)}}
+                </h5>
+              </div>
+              <div :id="`#collapse_${ind}_heading`" :class="{'panel-collapse': true, 'collapse': clickedTab === item.categoryId}">
+                <div class="panel-body">
+                  <ul class="sub-menu">
+                    <template v-for="(text, index) in item.texts">
+                      <li>
+                        <a class="text-entry" @click="chooseText(text)" :key="index">{{$t(text.name)}}</a>
+                      </li>
+                    </template>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
+<!--
+original version:
+
         <div id="accordion">
           <template v-for="(item, ind) in defaultTexts">
             <div class="card" :key="`${ind}_card`">
@@ -28,8 +104,11 @@
             </div>
           </template>
         </div>
+-->
+
+
       </div>
-      <div class="col-md-9" v-if="selectedText && selectedText.type">
+      <div class="col-md-8" v-if="selectedText && selectedText.type" style="margin-top:1em;">
         <div v-if="selectedText.type === 'email' || selectedText.type === 'htmlPage'">
           <h4>{{$t(selectedText.name)}}</h4>
           <ul class="nav nav-tabs mt-2" id="myTab" role="tablist">
@@ -151,3 +230,29 @@
   </div>
 </template>
 <script type="ts" src="./defaultTexts.component.ts"></script>
+
+<style scoped>
+
+.panel-title {
+  position: relative;
+}
+
+.panel-title::after {
+  content: "\f107";
+  color: #333;
+  top: -2px;
+  right: 0px;
+  position: absolute;
+  font-family: "FontAwesome"
+}
+
+.panel-title[aria-expanded="true"]::after {
+  content: "\f106";
+}
+.text-entry {
+  cursor: pointer;
+}
+.text-entry:hover {
+  color:#1a88fb;
+}
+</style>

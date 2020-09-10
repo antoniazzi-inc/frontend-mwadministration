@@ -1,5 +1,5 @@
 :root, body {
-    font-family: Avenir, arial, sans-serif;
+    font-family: "Nunito", arial, sans-serif;
 }
 .avatar-sm {
     vertical-align: middle;
@@ -22,7 +22,6 @@
 }
 .date-input:before{
     content: '\E972';
-    font-family: 'osfont' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -211,6 +210,14 @@
     padding: 0px;
 }
 
+.tab-nav {
+    font-size: 1.2em;
+    font-weight: 800;
+}
+.create-button {
+    height: 40px;
+    font-weight: 600;
+}
 .inline-profile-tiles .profile-tile .pt-avatar-w img {
     width: 40px;
     height: auto;

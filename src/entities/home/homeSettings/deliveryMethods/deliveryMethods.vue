@@ -1,12 +1,17 @@
 <template>
   <div class="container-fluid">
-    <h2 id="page-heading" class="text-left mt-3">
-      <span id="tag-heading">{{$t('labels.deliveryMethods')}}</span>
-      <button tag="button" data-toggle="modal" data-target="#deliveryMethodsModal" class="btn btn-primary float-right" @click="resetDeliveryMethod">
-        <i class="fas fa-plus"/>  <span>{{$t('labels.newDeliveryMethod')}}</span>
-      </button>
-    </h2>
-    <simple-search @onSearch="searchDeliveryMethod"></simple-search>
+
+    <div class="d-flex justify-content-between mb-3">
+      <div class="p-2" style="width:70%">
+        <simple-search @onSearch="searchDeliveryMethod"></simple-search>
+      </div>
+      <div class="p-4">
+        <button tag="button" data-toggle="modal" data-target="#deliveryMethodsModal" class="btn btn-primary float-right create-button" @click="resetDeliveryMethod">
+          <i class="fas fa-plus"/>  <span>{{$t('labels.newDeliveryMethod')}}</span>
+        </button>
+      </div>
+    </div>
+
     <PaginationTableComponent
       :ref="'paginationTable'"
       :active="$props.active"

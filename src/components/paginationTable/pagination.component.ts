@@ -10,7 +10,8 @@ import CommonHelpers from '@/shared/commonHelpers'
     totalPages: Number,
     table: String,
     perPage: Number,
-    tableFields: Object
+    tableFields: Object,
+    location: String
   }
 })
 export default class PaginationComponent extends mixins(CommonHelpers, Vue) {

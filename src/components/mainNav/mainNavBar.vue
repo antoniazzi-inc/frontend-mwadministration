@@ -11,15 +11,15 @@
         </router-link>
         <div class="dropdown-menu" aria-labelledby="home">
           <h3 class="menu-title">{{$t('labels.home')}}</h3>
-          <router-link to="/home/dashboard" class="dropdown-item">
+          <router-link to="/home/dashboard" class="dropdown-item child-link">
             <div class="ml-2"> {{$t('labels.dashboard')}}</div>
           </router-link>
           <hr/>
-          <router-link to="/account/settings" class="dropdown-item">
+          <router-link to="/account/settings" class="dropdown-item child-link">
             <div class="ml-2"> {{$t('labels.accountAndSettings')}}</div>
           </router-link>
           <hr/>
-          <router-link to="/home/settings" class="dropdown-item">
+          <router-link to="/home/settings" class="dropdown-item child-link">
             <div class="ml-2"> {{$t('labels.settings')}}</div>
           </router-link>
         </div>
@@ -83,7 +83,7 @@
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="main-menu-icon os-icon os-icon-mail-14"></i>
           </router-link>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notifications">
+          <div class="dropdown-menu" style="left:-8em;" aria-labelledby="notifications">
             <h3 class="menu-title">{{$t('labels.notifications')}}</h3>
           </div>
         </li>
@@ -97,7 +97,7 @@
             <img class="img-fluid" :src="`./assets/images/flags/${$store.state.currentLanguage}.png`"/>
             -->
           </router-link>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notifications">
+          <div class="dropdown-menu" style="left:-9em;" aria-labelledby="languages">
             <h3 class="menu-title">{{$t('labels.languages')}}</h3>
             <template v-for="(item, ind) in $store.state.languages">
               <router-link :key="ind" to="" class="dropdown-item child-link" @click.native="changeLanguage(item, ind)">
@@ -125,62 +125,33 @@
             $store.state.userIdentity.email : ''" :size="100"></v-gravatar>
             -->
           </router-link>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user">
+          <div class="dropdown-menu" style="left:-20em; min-width:27em;" aria-labelledby="user">
             <h3 class="menu-title">{{getUserName()}}</h3>
             <router-link to=""  @click.native="loadUser" data-toggle="modal" data-target="#userProfileModal" class="dropdown-item child-link">
-              <div class="row">
-                <div class="col-md-2 ml-2">
-                  <i class="fas fa-user-tie"/>
-                </div>
-                <div class="col-md-8">
-                 {{$t('labels.userProfile')}}
-                </div>
-              </div>
+              <div class="ml-2"> {{$t('labels.userProfile')}}</div>
             </router-link>
             <hr/>
             <router-link to="/account/notifications" class="dropdown-item child-link">
-              <div class="row">
-                <div class="col-md-2 ml-2">
-                  <i class="fas fa-flag"/>
-                </div>
-                <div class="col-md-8">
-                  {{$t('labels.notifications')}}
-                </div>
-              </div>
+              <div class="ml-2"> {{$t('labels.notifications')}}</div>
             </router-link>
             <hr/>
             <router-link to="/account/tasks" class="dropdown-item child-link">
-              <div class="row">
-                <div class="col-md-2 ml-2">
-                  <i class="fas fa-sticky-note"/>
-                </div>
-                <div class="col-md-9">
-                  {{$t('labels.myTasks')}}
-                </div>
-              </div>
+              <div class="ml-2"> {{$t('labels.myTasks')}}</div>
             </router-link>
             <hr/>
             <router-link to="" @click.native="logout()" class="dropdown-item child-link">
-              <div class="row">
-                <div class="col-md-2 ml-2">
-                  <i class="fas fa-sign-out-alt"/>
-                </div>
-                <div class="col-md-8">
-                  {{$t('labels.logout')}}
-                </div>
-              </div>
+              <div class="ml-2"> {{$t('labels.logout')}}</div>
             </router-link>
           </div>
         </li>
       </ul>
+      <!--
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
             <i class="main-menu-icon fas fa-question"></i>
-          <!--
-          TO DO: open popup right hand side of screen with page help
-          -->
         </li>
       </ul>
+      -->
     </div>
     <div class="modal" data-backdrop="static" data-keyboard="false" id="userProfileModal" tabindex="-1" role="dialog" ref="userProfileModal">
       <div class="modal-dialog modal-lg" role="document">
@@ -318,7 +289,6 @@
   .dropdown-icon {
     margin-right: 10px;
   }
-
   .menu-title {
     font-size: 2.4rem;
     color: rgba(255, 255, 255, 0.2);
@@ -329,31 +299,10 @@
     white-space: nowrap;
     overflow: hidden;
     font-family: 'Avenir Next W01', 'Proxima Nova W01', 'Rubik', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 500;
-  }
-  .menu-title-small {
-    color: rgba(255, 255, 255, 0.2);
-    margin: 15px 35px 15px 35px;
-    font-size: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    font-family: 'Avenir Next W01', 'Proxima Nova W01', 'Rubik', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 500;
+    font-weight: 600;
   }
   .menu-title-dropdown .small{
     font-size: 0.9em;
-  }
-  .menu-title-dropdown{
-    color: rgba(255, 255, 255, 0.2);
-    padding: 5px 45px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 15px;
-    letter-spacing: -0.5px;
-    white-space: nowrap;
-    overflow: hidden;
-    font-family: 'Avenir Next W01', 'Proxima Nova W01', 'Rubik', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 500;
-    font-size: 1.6em;
-    align-items: center;
   }
   .dropdown-menu{
     z-index: 9999;
@@ -369,10 +318,10 @@
     -webkit-box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.2);
     box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.2);
   }
-  . child-link {
+  .child-link {
     color: #fff;
     display: block;
-    padding: 12px 50px;
+    padding: 2px 50px;
     font-size: 0.99rem;
     position: relative;
     white-space: nowrap;
@@ -381,9 +330,12 @@
     color: white;
     font-weight: bold;
   }
+  hr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
   .dropdown-item:focus, .dropdown-item:hover {
     color: #ffffff;
-    text-decoration: underline;
+    text-decoration: none;
     background-color: transparent;
   }
   .dropdown-item:hover:before {
