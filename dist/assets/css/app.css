@@ -1,3 +1,6 @@
+:root, body {
+    font-family: Avenir, arial, sans-serif;
+}
 .avatar-sm {
     vertical-align: middle;
     width: 35px;
@@ -8,7 +11,7 @@
     cursor: pointer;
 }
 .container-fluid{
-    margin-top: 3%;
+    margin-top: 1%;
 }
 .invalid {
     border-bottom: 1px solid red;
