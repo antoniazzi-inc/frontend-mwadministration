@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="container-fluid not-for-print">
 
-      <div class="d-flex justify-content-between mb-3">
+      <div class="d-flex justify-content-between mb-3 search-banner">
         <div class="p-2" style="width:70%">
           <simple-search @onSearch="search"></simple-search>
         </div>
@@ -27,9 +27,10 @@
           </div>
         </div>
       </div>
+
       <div class="modal" data-backdrop="static" data-keyboard="false" id="editInvoiceModal" tabindex="-1" role="dialog"
            ref="editInvoiceModal">
-        <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-dialog modal-xl" role="document" style="max-width:900px">
           <div class="modal-content">
             <div class="modal-header">
               <h5 v-if="invoiceToEdit && invoiceToEdit.id">{{ $t('labels.editInvoice') }}</h5>

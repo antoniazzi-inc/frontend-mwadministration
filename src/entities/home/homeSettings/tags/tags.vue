@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
 
-    <div class="d-flex justify-content-between mb-3">
+    <div class="d-flex justify-content-between mb-3 search-banner">
       <div class="p-2" style="width:70%">
         <simple-search @onSearch="searchTag"></simple-search>
       </div>
@@ -55,7 +55,7 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-lg btn-white"  @click="closeModal">{{$t('buttons.close')}}</button>
+                  <button type="button" class="btn btn-lg btn-secondary"  @click="closeModal">{{$t('buttons.close')}}</button>
                   <button type="submit" class="btn btn-lg btn-primary">{{$t('buttons.save')}}</button>
                 </div>
               </form>

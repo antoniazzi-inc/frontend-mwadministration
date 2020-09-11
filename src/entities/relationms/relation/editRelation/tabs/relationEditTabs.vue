@@ -2,30 +2,30 @@
   <div>
     <div>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" @click="currentTab = 'profile'">
+      <li class="nav-item tab-nav" @click="currentTab = 'profile'">
         <a :class="{'nav-link': true, 'active': currentTab === 'profile'}" id="profile-tab" data-toggle="tab"
            href="#profile" role="tab" aria-controls="profile" aria-selected="true">{{$t('labels.profile')}}</a>
       </li>
-      <li class="nav-item" @click="currentTab = 'events'">
+      <li class="nav-item tab-nav" @click="currentTab = 'events'">
         <a :class="{'nav-link': true, 'active': currentTab === 'events'}" id="events-tab" data-toggle="tab"
            href="#events" role="tab" aria-controls="events" aria-selected="false">{{$t('labels.events')}}</a>
       </li>
-      <li class="nav-item" @click="currentTab = 'tasks'">
+      <li class="nav-item tab-nav" @click="currentTab = 'tasks'">
         <a :class="{'nav-link': true, 'active': currentTab === 'tasks'}" id="tasks-tab" data-toggle="tab"
            href="#tasks" role="tab" aria-controls="tasks" aria-selected="false">{{$t('labels.tasks')}}</a>
       </li>
-      <li class="nav-item" @click="currentTab = 'contactHistory'">
+      <li class="nav-item tab-nav" @click="currentTab = 'contactHistory'">
         <a :class="{'nav-link': true, 'active': currentTab === 'contactHistory'}" id="contactHistory-tab"
            data-toggle="tab" href="#contactHistory" role="tab" aria-controls="contactHistory" aria-selected="false">
           {{$t('labels.contactHistory')}}</a>
       </li>
-      <li class="nav-item" @click="currentTab = 'orders'">
+      <li class="nav-item tab-nav" @click="currentTab = 'orders'">
         <a :class="{'nav-link': true, 'active': currentTab === 'orders'}" id="orders-tab" data-toggle="tab"
            href="#orders" role="tab" aria-controls="orders" aria-selected="false">{{$t('labels.orders')}}</a>
       </li>
     </ul>
-      <button type="button" class="btn btn-link backToListBtn" @click="goBack">{{$t('buttons.backToList')}}</button>
     </div>
+
     <div class="tab-content">
       <div :class="{'tab-pane': true, 'active': currentTab === 'profile'}" id="profile" role="tabpanel"
            aria-labelledby="profile-tab">

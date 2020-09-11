@@ -4,11 +4,16 @@
       <div class="page-container">
         <div class="page-content-wrapper">
           <div class="page-head">
-            <div class="container-fluid fluid-small-margins">
-              <div class="page-title">
-                <h1 v-html="$t('labels.importRelations')"></h1>
-                <p v-html="$t('labels.importFileTypeMessage')"></p>
-              </div>
+            <div class="container-fluid">
+              <h2 id="page-heading" class="text-left mt-3">
+                <span id="tag-heading">{{$t('labels.importRelations')}}</span>
+                <router-link to="/relations" class="text-decoration-none text-white">
+                  <button tag="button" class="btn btn-secondary float-right create-tag">
+                    <span>{{$t('labels.backToRelations')}}</span>
+                  </button>
+                </router-link>
+              </h2>
+              <p v-html="$t('labels.importFileTypeMessage')"></p>
             </div>
           </div>
           <div class="page-content">
@@ -24,61 +29,68 @@
                 </div>
                 <div class="row justify-content-center">
                   <div class="col-md-10">
-                    <div class="row justify-content-center mt-3" v-if="isImporting">
-                      <div class="col-md-6">
-                        <h2 class="text-center">
-                          {{$t('labels.importBusy')}}
-                        </h2>
+                    <div class="wizard-panel" style="margin-left:0">
+                      <div class="row justify-content-center mt-3" v-if="isImporting">
+                        <div class="col-md-6">
+                          <h2 class="text-center">
+                            {{$t('labels.importBusy')}}
+                          </h2>
+                        </div>
                       </div>
+                      <form-wizard v-else @on-complete="onComplete"
+                                   title=""
+                                   subtitle=""
+                                   shape="circle"
+                                   color="#0a7cf8"
+                                   @on-change="changeTab"
+                                   :start-index="step"
+                                   error-color="#ff4949">
+                        <tab-content @click="step = 0" :title="$t('labels.uploadFile')" icon="fas fa-upload"
+                                     :before-change="validateStep">
+                          <step1 @onUpload="fileUploaded" @onRemove="fileRemoved" @updateConfig="updateStep1Config"/>
+                        </tab-content>
+                        <tab-content @click="step = 1" :title="$t('labels.mapFields')" icon="fas fa-map-signs"
+                                     :before-change="validateStep">
+                          <step2 :importFields="importFields"
+                                 @changeInsertEmptyValues="changeInsertEmptyValues"
+                                 @changeOverwrite="changeOverwrite"
+                                 @onUpdateMappings="updateMappings"
+                                 @groupChanged="groupChanged"
+                                 @changeNewGroup="changeNewGroup"
+                                 :headerRow="headerRow"
+                                 :data="rows"/>
+                          <span class="text-danger small"
+                                v-if="hasEmailField === false">{{$t('labels.noEmailSelected')}}</span>
+                        </tab-content>
+                        <tab-content @click="step = 2" :title="$t('labels.startImport')" icon="fas fa-file-import"
+                                     :before-change="validateStep">
+                          <step3
+                            :emailIndex="emailIndex"
+                            :exampleCards="exampleCards"
+                            :totalRows="rows.length"
+                            :duplicateEmailsFound="duplicateEmailsFound"
+                            :invalidEmails="invalidEmails"
+                            :numberOfExisingEmails="numberOfExisingEmails"
+                            :newGroup="newGroup"
+                            :duplicateEmailsList="duplicateEmailsList"
+                            :existingEmailsList="existingEmailsList"
+                            :overwrite="overwrite"/>
+                        </tab-content>
+                        <button @click="stepBack" slot="prev" class="btn btn-primary btn-lg" :disabled="isSaving">
+                          {{$t('buttons.back')}}
+                        </button>
+                        <button slot="next" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.next')}}
+                        </button>
+                        <button slot="finish" class="btn btn-primary btn-lg" :disabled="isSaving">
+                          {{$t('buttons.finish')}}
+                        </button>
+                      </form-wizard>
                     </div>
-                    <form-wizard v-else @on-complete="onComplete"
-                                 title=""
-                                 subtitle=""
-                                 shape="tab"
-                                 @on-change="changeTab"
-                                 :start-index="step"
-                                 color="#1c4cc3"
-                                 error-color="#ff4949">
-                      <tab-content @click="step = 0" :title="$t('labels.uploadFile')" icon="fas fa-upload"
-                                   :before-change="validateStep">
-                        <step1 @onUpload="fileUploaded" @onRemove="fileRemoved" @updateConfig="updateStep1Config"/>
-                      </tab-content>
-                      <tab-content @click="step = 1" :title="$t('labels.mapFields')" icon="fas fa-map-signs"
-                                   :before-change="validateStep">
-                        <step2 :importFields="importFields"
-                               @changeInsertEmptyValues="changeInsertEmptyValues"
-                               @changeOverwrite="changeOverwrite"
-                               @onUpdateMappings="updateMappings"
-                               @groupChanged="groupChanged"
-                               @changeNewGroup="changeNewGroup"
-                               :headerRow="headerRow"
-                               :data="rows"/>
-                        <span class="text-danger small"
-                              v-if="hasEmailField === false">{{$t('labels.noEmailSelected')}}</span>
-                      </tab-content>
-                      <tab-content @click="step = 2" :title="$t('labels.startImport')" icon="fas fa-file-import"
-                                   :before-change="validateStep">
-                        <step3
-                          :emailIndex="emailIndex"
-                          :exampleCards="exampleCards"
-                          :totalRows="rows.length"
-                          :duplicateEmailsFound="duplicateEmailsFound"
-                          :invalidEmails="invalidEmails"
-                          :numberOfExisingEmails="numberOfExisingEmails"
-                          :newGroup="newGroup"
-                          :duplicateEmailsList="duplicateEmailsList"
-                          :existingEmailsList="existingEmailsList"
-                          :overwrite="overwrite"/>
-                      </tab-content>
-                      <button @click="stepBack" slot="prev" class="btn btn-primary btn-lg" :disabled="isSaving">
-                        {{$t('buttons.back')}}
-                      </button>
-                      <button slot="next" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.next')}}
-                      </button>
-                      <button slot="finish" class="btn btn-primary btn-lg" :disabled="isSaving">
-                        {{$t('buttons.finish')}}
-                      </button>
-                    </form-wizard>
+
+
+
+
+
                   </div>
                   <div class="col-md-2">
                     <div class="portlet light">

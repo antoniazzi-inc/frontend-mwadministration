@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row justify-content-center">
-      <div class="col-8 text-left">
+      <div class="col-10 text-left">
         <form name="editForm" role="form" novalidate v-on:submit.prevent="save()" >
           <h2 v-if="toCopy" id="labels.copyLabel" v-text="$t('labels.copyRole')">copy a Role</h2>
           <h2 v-if="!role.id && !toCopy" id="labels.create" v-text="$t('labels.createRole')">Create a Role</h2>
@@ -21,11 +21,12 @@
             </div>
             <div :key="index" class="form-row" v-for="(item, index) in permissionsControl">
               <div :key="index" class="input-group">
-                <div class="form-group full-width">
-                  <label class="col-md-12 control-label">
-                    <h6> {{$t(`labels.${item.title}`)}} </h6>
-                  </label>
-                  <div class="col-md-12 lead">
+                  <div class="row" style="min-width:100%;">
+                    <div class="col-4" style="border-bottom:1px solid #d0d0d8; padding: 1em;">
+                  <label>{{$t(`labels.${item.title}`)}}</label>
+                    </div>
+                    <div class="col-8" style="min-width:500px; border-bottom:1px solid #d0d0d8; padding: 1em;">
+
                     <template v-for="(permiss, k) in item.data">
                       <label :for="'per'+k" :key="k" class="roles pull-left">
                         <toggle-switch :id="'per'+k"
@@ -33,19 +34,19 @@
                                        :off-text="$t('labels.no')"
                                        :value.sync="permissionsControl[index].data[k].selected">
                         </toggle-switch>
-                        <span>{{permiss.title }}</span>
+                        <span style="padding-left:1em;">{{permiss.title | lower }}</span>
                       </label>
                     </template>
+                    </div>
                   </div>
-                </div>
               </div>
             </div>
           </div>
-          <div>
-            <button type="button" id="cancel-save" class="btn btn-secondary" @click="previousState()">
+          <div class="text-right" style="margin-top:2em; margin-bottom:1em;">
+            <button type="button" id="cancel-save" class="btn btn-lg btn-secondary" @click="previousState()">
               <span v-text="$t('buttons.cancel')">Cancel</span>
             </button>
-            <button type="submit" id="save-entity" class="btn btn-primary ml-2">
+            <button type="submit" id="save-entity" class="btn btn-lg btn-primary ml-2">
               <span v-text="$t('buttons.save')">Save</span>
             </button>
           </div>

@@ -119,7 +119,8 @@ body {
   line-height: 1.5;
   color: #3E4B5B;
   text-align: left;
-  background-color: #fff;
+  /* PJE */
+  background-color: #f2f4f8;
 }
 
 [tabindex="-1"]:focus {

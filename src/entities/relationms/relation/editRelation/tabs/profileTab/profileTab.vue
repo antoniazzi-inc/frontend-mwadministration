@@ -27,20 +27,24 @@
            href="#freeFields" role="tab" aria-controls="freeFields"
            aria-selected="false">{{$t('labels.freeFieldsMenu')}}</a>
       </li>
+      <!--
+      customer data is shown in orders tab
       <li class="nav-item" @click="currentSubTab = 'customer'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'customer'}" id="customer-tab" data-toggle="tab"
            href="#customer" role="tab" aria-controls="customer" aria-selected="false">{{$t('labels.customer')}}</a>
       </li>
+      -->
       <li class="nav-item" @click="currentSubTab = 'affiliates'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'affiliates'}" id="affiliates-tab" data-toggle="tab"
            href="#affiliates" role="tab" aria-controls="affiliates"
            aria-selected="false">{{$t('labels.affiliates')}}</a>
       </li>
     </ul>
+
     <div class="tab-content text-left">
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'general'}" id="general" role="tabpanel"
            aria-labelledby="general-tab">
-        <p class="m-3">{{$t('labels.changeBasicRelationFields')}}</p>
+        <!-- <p class="m-3">{{$t('labels.changeBasicRelationFields')}}</p> -->
         <general-sub-tab-component :rel="$props.relation" @updateRel="update"
                                    :active="currentSubTab==='general'"></general-sub-tab-component>
       </div>
@@ -69,11 +73,13 @@
         <free-fields-sub-tab-component :rel="$props.relation"  @updateRel="update"
                                        :active="currentSubTab==='freeFields'"></free-fields-sub-tab-component>
       </div>
+      <!--
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'customer'}" id="customer" role="tabpanel"
            aria-labelledby="customer-tab">
         <customer-sub-tab-component :rel="$props.relation" @updateRel="update"
                                     :active="currentSubTab==='customer'"></customer-sub-tab-component>
       </div>
+      -->
       <div :class="{'tab-pane': true, 'active': currentSubTab === 'affiliates'}" id="affiliates" role="tabpanel"
            aria-labelledby="affiliates-tab">
         <affiliates-sub-tab-component :rel="$props.relation" @updateRel="update"

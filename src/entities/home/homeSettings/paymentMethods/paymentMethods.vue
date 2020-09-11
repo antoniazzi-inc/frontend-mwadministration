@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
 
-    <div class="d-flex justify-content-between mb-3">
+    <div class="d-flex justify-content-between mb-3 search-banner">
       <div class="p-2" style="width:70%">
         <simple-search @onSearch="searchPaymentMethod"></simple-search>
       </div>

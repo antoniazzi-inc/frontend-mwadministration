@@ -1,5 +1,5 @@
 <template>
-  <div class="row p-3 m-0">
+  <div class="tab-form-panel">
     <div class="col-md-6">
       <div class="pipeline white">
         <div class="pipeline-header">

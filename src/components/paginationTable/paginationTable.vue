@@ -17,7 +17,7 @@
           </div>
         </div>
         <h4 class="text-center mt-3" v-if="allData.length === 0">{{$t($props.noDataLabel)}}</h4>
-        <table v-else class="table table-striped">
+        <table v-else class="table table-striped" style="margin-top:1em;">
           <thead>
           <tr>
             <template v-for="(item, index) in tables[$props.table].cols">
@@ -139,13 +139,5 @@
   .table td {
     font-size: 1em;
     text-align: left;
-  }
-  .table-spacing {
-    margin-top: 2em;
-    margin-bottom: 2em;
-    background-color: #fafafa;
-    padding-top: 5px;
-    padding-bottom: 10px;
-    border-radius: 5px;
   }
 </style>

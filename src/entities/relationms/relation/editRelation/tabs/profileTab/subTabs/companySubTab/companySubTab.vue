@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3">
+  <div class="tab-form-panel">
     <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteModalCompany'" tabindex="-1" role="dialog" ref="deleteModalCompany">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
