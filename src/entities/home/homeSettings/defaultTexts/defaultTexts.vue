@@ -55,12 +55,12 @@ correctly working example:
         <div class="panel-group" id="accordion" style="margin-top:1em;">
           <template v-for="(item, ind) in defaultTexts">
             <div class="panel panel-default" :key="`${ind}_card`">
-              <div class="panel-heading" @click="clickedTab = clickedTab === item.categoryId ? clickedTab = '' : clickedTab=item.categoryId">
+              <div class="panel-heading" @click="clickedTab === item.categoryId ? clickedTab = '' : clickedTab=item.categoryId">
                 <h5 class="panel-title" data-toggle="collapse" :data-target="`#collapse_${ind}`">
                   {{$t(item.categoryName)}}
                 </h5>
               </div>
-              <div :id="`#collapse_${ind}_heading`" :class="{'panel-collapse': true, 'collapse': clickedTab === item.categoryId}">
+              <div :id="`#collapse_${ind}_heading`" :class="{'panel-collapse': true, 'collapse': clickedTab === item.categoryId ? false : true}">
                 <div class="panel-body">
                   <ul class="sub-menu">
                     <template v-for="(text, index) in item.texts">
