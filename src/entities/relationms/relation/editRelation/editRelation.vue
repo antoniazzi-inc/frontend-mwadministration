@@ -1,5 +1,15 @@
 <template>
   <div class="container-fluid">
+
+    <h2 id="page-heading" class="text-left mt-3">
+      <span id="tag-heading">{{getFullName()}}</span>
+      <router-link to="/relations" class="text-decoration-none text-white">
+        <button tag="button" class="btn btn-secondary float-right create-tag">
+          <span>{{$t('buttons.backToList')}}</span>
+        </button>
+      </router-link>
+    </h2>
+
     <div class="row">
       <div class="col-md-3 pr-0 m-0">
         <div class="user-profile compact">

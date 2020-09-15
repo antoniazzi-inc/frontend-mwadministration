@@ -1,60 +1,12 @@
 <template>
   <div class="container-fluid">
     <div class="row text-left">
-      <div class="col-md-4" style="padding-right:5em;">
 
-
-<!--
-correctly working example:
-
-        <div class="panel-group" id="accordion" style="margin-top:1em;">
-
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h5 class="panel-title" data-toggle="collapse" data-target="#collapseOne">
-                Orders
-              </h5>
-            </div>
-            <div id="collapseOne" class="panel-collapse collapse">
-              <div class="panel-body">
-                <ul class="sub-menu">
-                  <li>
-                    <a >Email sent after paid order</a>
-                  </li>
-                  <li>
-                    <a >Email sent after unpaid order</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h5 class="panel-title" data-toggle="collapse" data-target="#collapseTwo">
-                Notifications
-              </h5>
-            </div>
-            <div id="collapseTwo" class="panel-collapse collapse">
-              <div class="panel-body">
-                <ul class="sub-menu">
-                  <li>
-                    <a >Email sent after paid order</a>
-                  </li>
-                  <li>
-                    <a >Email sent after unpaid order</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-        </div>
--->
-
-        <div class="panel-group" id="accordion" style="margin-top:1em;">
+      <div class="col-md-4" style="padding-right:2em;">
+        <p style="margin-top:1em; margin-bottom:0.4em;" class="text-center">Select a text (category) below</p>
+        <div class="panel-group search-banner" id="accordion">
           <template v-for="(item, ind) in defaultTexts">
-            <div class="panel panel-default" :key="`${ind}_card`">
+            <div class="panel panel-default text-accordean" :key="`${ind}_card`">
               <div class="panel-heading" @click="clickedTab === item.categoryId ? clickedTab = '' : clickedTab=item.categoryId">
                 <h5 class="panel-title" data-toggle="collapse" :data-target="`#collapse_${ind}`">
                   {{$t(item.categoryName)}}
@@ -65,7 +17,7 @@ correctly working example:
                   <ul class="sub-menu">
                     <template v-for="(text, index) in item.texts">
                       <li>
-                        <a class="text-entry" @click="chooseText(text)" :key="index">{{$t(text.name)}}</a>
+                        <a class="text-entry-link" @click="chooseText(text)" :key="index"><span>{{$t(text.name)}}</span></a>
                       </li>
                     </template>
                   </ul>
@@ -74,41 +26,9 @@ correctly working example:
             </div>
           </template>
         </div>
-
-<!--
-original version:
-
-        <div id="accordion">
-          <template v-for="(item, ind) in defaultTexts">
-            <div class="card" :key="`${ind}_card`">
-              <button class="btn btn-link" @click="clickedTab = clickedTab === item.categoryId ?
-              clickedTab = '' : clickedTab=item.categoryId" data-toggle="collapse" :data-target="`#collapse_${ind}`"
-                      aria-expanded="true" :aria-controls="`#collapse_${ind}`">
-                <div class="card-header" :id="`#collapse_${ind}_heading`">
-                  <h5 class="mb-0">
-                    {{$t(item.categoryName)}}
-                  </h5>
-                </div>
-              </button>
-            </div>
-            <div :id="`#collapse_${ind}`" :class="{collapse: true, show: clickedTab === item.categoryId}"
-                 :aria-labelledby="`#collapse_${ind}_heading`"
-                 :key="`${ind}_collapse`" data-parent="#accordion">
-              <div class="card-body">
-                <template v-for="(text, index) in item.texts">
-                  <button type="button" class="btn btn-link" @click="chooseText(text)" :key="index">{{$t(text.name)}}
-                  </button>
-                  <hr :key="`${index}_hor`"/>
-                </template>
-              </div>
-            </div>
-          </template>
-        </div>
--->
-
-
       </div>
-      <div class="col-md-8" v-if="selectedText && selectedText.type" style="margin-top:1em;">
+
+      <div class="col-md-8 search-banner" v-if="selectedText && selectedText.type" style="margin-top:46px; padding:1em;">
         <div v-if="selectedText.type === 'email' || selectedText.type === 'htmlPage'">
           <h4>{{$t(selectedText.name)}}</h4>
           <ul class="nav nav-tabs mt-2" id="myTab" role="tablist">
@@ -236,7 +156,14 @@ original version:
 .panel-title {
   position: relative;
 }
-
+#accordion {
+  padding:1em;
+}
+.text-accordean {
+  border-bottom: solid 1px #e0e0e7;
+  margin-bottom: 1em;
+  padding-top: 0.2em;
+}
 .panel-title::after {
   content: "\f107";
   color: #333;
@@ -245,14 +172,18 @@ original version:
   position: absolute;
   font-family: "FontAwesome"
 }
-
 .panel-title[aria-expanded="true"]::after {
   content: "\f106";
 }
-.text-entry {
+.text-entry-link span {
   cursor: pointer;
+  color: #0d509a;
 }
-.text-entry:hover {
-  color:#1a88fb;
+.text-entry-link span:hover {
+  color:#047bf8;
+}
+ul.sub-menu li {
+  padding-top:0.2em;
+  padding-bottom:0.3em;
 }
 </style>

@@ -1,12 +1,20 @@
 <template>
   <div class="container-fluid">
+
     <h2 id="page-heading" class="text-left mt-3">
-      <span id="tag-heading">{{$t('labels.groups')}}</span>
-      <button tag="button" data-toggle="modal" data-target="#groupModal" class="btn btn-primary float-right" @click="resetGroup">
-        <i class="fas fa-plus"/>  <span>{{$t('labels.newGroup')}}</span>
-      </button>
+      <span>{{$t('labels.groups')}}</span>
     </h2>
-    <simple-search @onSearch="searchGroups"></simple-search>
+    <div class="d-flex justify-content-between mb-3 search-banner">
+      <div class="p-2" style="width:70%">
+        <simple-search @onSearch="searchGroups"></simple-search>
+      </div>
+      <div class="p-4">
+        <button tag="button" data-toggle="modal" data-target="#groupModal" class="btn btn-primary float-right create-button" @click="resetGroup">
+          <i class="fas fa-plus"/>  <span>{{$t('labels.newGroup')}}</span>
+        </button>
+      </div>
+    </div>
+
     <PaginationTableComponent
       :ref="'paginationTable'"
       :active="true"

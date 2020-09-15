@@ -1,8 +1,9 @@
 <template>
   <div class="container-fluid">
     <div class="row text-left justify-content-center">
-      <div class="col-8">
-        <form name="editForm" role="form" @submit.prevent.stop="save()" v-if="userAccount">
+
+      <div class="col-6">
+        <form name="editForm" class="search-banner" style="padding:1em;" role="form" @submit.prevent.stop="save()" v-if="userAccount">
           <h2 v-if="userAccount.id" v-text="$t('labels.editUser')"></h2>
           <h2 v-else v-text="$t('labels.createNewUser')"></h2>
           <div class="row">
@@ -41,7 +42,7 @@
                      v-model="userAccount.relationProfile.lastName" v-validate="'max:50'">
               <span class="text-danger small">{{errors.first('lastName')}}</span>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-12">
               <label class="control-label">{{$t('labels.roles')}}</label>
               <searchable-select-component :config="searchableConfig"
                                            :options="$store.state.lookups.roles"
@@ -50,7 +51,7 @@
                                            @onDelete="roleRemoved"
               ></searchable-select-component>
             </div>
-            <div class="form-group  col-md-6">
+            <div class="form-group col-md-12">
               <label class="form-control-label" v-text="$t('labels.activated')">Activated</label>
               <toggle-switch :offText="$t('labels.no')" :onText="$t('labels.yes')" :value.sync="userAccount.enabled"></toggle-switch>
             </div>
@@ -73,16 +74,22 @@
           </div>
           <div class="row">
             <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-secondary" v-on:click="previousState()">
+            <button type="button" class="btn btn-lg btn-secondary" v-on:click="previousState()">
               <span v-text="$t('buttons.cancel')">Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary ml-2">
+            <button type="submit" class="btn btn-lg btn-primary ml-2">
               <span v-text="$t('buttons.save')">Save</span>
             </button>
             </div>
           </div>
         </form>
       </div>
+
+
+    <div class="col-6">
+      <p>hier komt de inlog history</p>
+    </div>
+
     </div>
   </div>
 </template>

@@ -47,4 +47,9 @@ export function initFilters () {
   Vue.filter('formatSize', function (value: any) {
     return `${value / 1000} kb`
   })
+  Vue.filter('lower', function (value: any) {
+    if (!value) return ''
+    value = value.toString()
+    return value.toLowerCase()
+  })
 }

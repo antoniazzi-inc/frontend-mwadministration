@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tab-form-panel">
     <form @submit.prevent.stop="saveRelation" v-if="relationProfile">
       <div class="form-row mt-3">
         <div class="col-sm-2">
@@ -8,19 +8,19 @@
                 name="title" v-validate="'alpha|max:225'" :placeholder="$t('labels.title')">
           <span class="text-danger small">{{errors.first('title')}}</span>
         </div>
-        <div class="col">
+        <div class="col-sm-4">
           <label>{{$t('labels.firstName')}}</label>
           <input type="text" :class="{'form-control': true, invalid: errors.has('firstName')}" v-model="relationProfile.firstName"
                  name="firstName" v-validate="'alpha|max:100'" :placeholder="$t('labels.firstName')">
           <span class="text-danger small">{{errors.first('firstName')}}</span>
         </div>
-        <div class="col">
+        <div class="col-sm-2">
           <label>{{$t('labels.middleName')}}</label>
           <input type="text" :class="{'form-control': true, invalid: errors.has('middleName')}" v-model="relationProfile.middleName"
                  name="middleName" v-validate="'alpha_spaces|max:20'" :placeholder="$t('labels.middleName')">
           <span class="text-danger small">{{errors.first('middleName')}}</span>
         </div>
-        <div class="col">
+        <div class="col-sm-4">
           <label>{{$t('labels.lastName')}}</label>
           <input type="text" :class="{'form-control': true, invalid: errors.has('lastName')}" v-model="relationProfile.lastName"
                  name="lastName" v-validate="'alpha|max:100'" :placeholder="$t('labels.lastName')">
@@ -65,10 +65,11 @@
           ></searchable-select-component>
         </div>
         <div class="col">
-          <label>{{$t('labels.points')}}</label>
-          <input type="number" :class="{'form-control': true, invalid: errors.has('points')}" v-model="relationProfile.points"
-                 name="points" v-validate="'numeric|min_value:0'" :placeholder="$t('labels.points')">
-          <span class="text-danger small">{{errors.first('points')}}</span>
+          <label>{{$t('labels.preferredLanguage')}}</label>
+          <select class="form-control" v-model="relation.languageKey">
+            <option></option>
+            <option v-for="(lang, ind) in allLanguages" :key="ind" :value="lang.value">{{lang.label}}</option>
+          </select>
         </div>
       </div>
       <div class="form-row mt-3">
@@ -90,14 +91,11 @@
             <option value="-">{{$t('labels.unspecified')}}</option>
           </select>
         </div>
-      </div>
-      <div class="form-row mt-3">
         <div class="col">
-          <label>{{$t('labels.preferredLanguage')}}</label>
-          <select class="form-control" v-model="relation.languageKey">
-            <option></option>
-            <option v-for="(lang, ind) in allLanguages" :key="ind" :value="lang.value">{{lang.label}}</option>
-          </select>
+          <label>{{$t('labels.points')}}</label>
+          <input type="number" :class="{'form-control': true, invalid: errors.has('points')}" v-model="relationProfile.points"
+                 name="points" v-validate="'numeric|min_value:0'" :placeholder="$t('labels.points')">
+          <span class="text-danger small">{{errors.first('points')}}</span>
         </div>
         <div class="col">
           <label>{{$t('labels.blacklisted')}}</label>

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3">
+  <div class="tab-form-panel">
     <div class="row">
       <div class="col-md-6">
           <div class="row text-left">

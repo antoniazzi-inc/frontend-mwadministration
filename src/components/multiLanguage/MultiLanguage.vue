@@ -22,7 +22,7 @@
       </div>
       <div class="btn-group" v-if="!$props.config.showLangs && availableLangs">
                 <span :key="index" to="" v-for="(lang, index) in availableLangs" @click="changeLanguage(index)"
-                      :class="{btn: true, 'btn-outline-primary ml-0 btn-small btn-rounded': true,
+                      :class="{btn: true, 'btn-outline-primary btn-outline-languages ml-0 btn-small btn-rounded': true,
                       'active': selectedLanguage === index}">
                     <span style="font-size:0.8em">
                  <img class="img-fluid" :src="`./assets/images/flags/${index}.png`"/>
@@ -39,3 +39,9 @@
   </form>
 </template>
 <script type="ts" src="./multiLanguage.component.ts"></script>
+
+<style scoped>
+ .btn-outline-languages {
+   border-color: red!important;
+ }
+</style>

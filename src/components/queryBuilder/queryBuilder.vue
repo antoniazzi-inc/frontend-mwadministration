@@ -18,7 +18,7 @@
     .vue-query-builder-styled .vqb-rule {
         margin-top: 15px;
         /* background-color: #f5f5f5; */
-        background-color: #5C9BD1;
+        /* background-color: #5C9BD1; */
         color: white;
         border-color: #ddd;
         padding: 15px;

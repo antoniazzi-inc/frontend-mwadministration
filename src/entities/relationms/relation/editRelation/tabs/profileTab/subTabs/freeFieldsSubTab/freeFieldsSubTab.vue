@@ -1,5 +1,5 @@
 <template>
-  <div class="row mt-3">
+  <div class="tab-form-panel">
     <div v-if="!editMode">
       <div class="menu-w menu-position-top menu-layout-mini sub-menu-style-over searchBarWrapper col-md-12 pb-4"
            v-if="relationCopy.relationCustomFields && relationCopy.relationCustomFields.length>0">

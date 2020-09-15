@@ -12,11 +12,11 @@
       <div class="col-md-3">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" id="simpleSearch-tab" data-toggle="tab" href="#simpleSearch" role="tab"
+            <a class="tab-nav nav-link active" id="simpleSearch-tab" data-toggle="tab" href="#simpleSearch" role="tab"
                aria-controls="simpleSearch" aria-selected="true">{{$t('labels.simpleSearch')}}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="complexSearch-tab" data-toggle="tab" href="#complexSearch" role="tab"
+            <a class="tab-nav nav-link" id="complexSearch-tab" data-toggle="tab" href="#complexSearch" role="tab"
                aria-controls="complexSearch" aria-selected="false">{{$t('labels.complexSearch')}}</a>
           </li>
         </ul>
@@ -84,4 +84,22 @@
     </div>
   </div>
 </template>
+
 <script src="./relation.component.ts" lang="ts"></script>
+
+<style scoped>
+
+#simpleSearch {
+  border: 1px solid #e0e0e8;
+  padding: 1em;
+  background-color: #FFF;
+  margin:0em;
+}
+
+#complexSearch {
+  border: 1px solid #e0e0e8;
+  background-color: #FFF;
+  padding:1em;
+  margin:0em;
+}
+</style>

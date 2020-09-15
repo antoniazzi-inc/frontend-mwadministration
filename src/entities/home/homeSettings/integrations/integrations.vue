@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
 
-    <div class="d-flex justify-content-between mb-3">
+    <div class="d-flex justify-content-between mb-3 search-banner">
       <div class="p-2" style="width:70%">
         <simple-search @onSearch="searchIntegrations"></simple-search>
       </div>
@@ -16,11 +16,7 @@
       <div class="col-md-6">
 
 
-
-
-
-
-        <div class="table-responsive">
+        <div class="table-responsive integration-table">
           <table class="table table-lightborder">
             <thead>
             <tr>
@@ -47,7 +43,7 @@
                 <div class="status-pill orange" data-title="Inactive" data-toggle="tooltip" data-original-title="" title="" v-if="item.status == 'TEST'"></div>
               </td>
               <td class="text-right">
-                <div class="buttonsHolder text-right">
+                <div class="btn-group flex-btn-group-container text-center justify-content-center">
                   <div @click.prevent="editExternalSystem(item)" class="ml-3 text-primary cursor-pointer">
                     <i class="os-icon os-icon-ui-49"></i>
                   </div>
@@ -540,13 +536,17 @@
     </div>
   </div>
 </template>
+
 <script lang="ts" src="./integrations.component.ts"></script>
+
 <style scoped>
-  .card-header{
-    display: flex;
-    justify-content: space-between;
-  }
-  .buttonsHolder{
-    display: flex;
+
+  .integration-table {
+    margin-top: 1em;
+    margin-right: 2em;
+    background-color: #fff;
+    padding: 1em;
+    border-radius: 6px;
+    border: 1px solid #e0e0e9;
   }
 </style>

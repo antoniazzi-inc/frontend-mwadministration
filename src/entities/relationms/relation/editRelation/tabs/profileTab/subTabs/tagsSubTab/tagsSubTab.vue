@@ -1,6 +1,6 @@
 <template>
-  <div class="p-3">
-    <label>{{$t('labels.chooseTags')}}</label>
+  <div class="tab-form-panel" style="padding:5em; padding-left:1em;">
+    <!-- <label>{{$t('labels.chooseTags')}}</label> -->
     <searchable-select-component :config="searchableConfig"
                                  :options="$store.state.lookups.tags"
                                  :value="selectedTags"

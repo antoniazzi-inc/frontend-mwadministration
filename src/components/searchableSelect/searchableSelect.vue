@@ -1,6 +1,7 @@
 <template>
   <div class="input-group">
-    <div class="pull-left" style="flex: 1; min-width: 250px">
+    <div class="pull-left my-multiselect">
+
       <multiselect v-if="config.hasGroups"
                    v-model="val"
                    :options="options"
@@ -21,7 +22,9 @@
           <span v-if="props.option.$isLabel">{{ props.option.$groupLabel }}</span>
           <span v-else>{{ props.option.label }}</span>
         </template>
+
       </multiselect>
+
       <multiselect v-else
         :multiple="$props.config.multiple"
         v-model="val"
@@ -41,10 +44,39 @@
         @remove="valueRemoved"
         @search-change="search">
       </multiselect>
+
     </div>
+
     <div v-if="$props.config.enableAdd" class="input-group-append pl-2" style="cursor: pointer" @click="createNew">
       <span class="input-group-text">{{$t($props.config.addCaption)}}</span>
     </div>
+
   </div>
 </template>
 <script type="ts" src="./searchableSelect.component.ts"></script>
+
+<style scoped>
+.my-multiselect {
+  flex: 1;
+  min-width: 250px;
+}
+.multiselect >>> .multiselect__tags {
+  font-size:16px!important;
+
+}
+.multiselect >>> .multiselect__tag {
+  padding: 5px 26px 5px 10px!important;
+  background-color: #5c9bd1!important;
+  font-size:16px!important;
+}
+.multiselect >>> .multiselect__tag-icon:hover{
+  background-color: #5c9bd1!important;
+}
+.multiselect >>> .multiselect__tag-icon:after{
+  content:"\D7";
+  color:#fff!important;
+  background-color: #5c9bd1!important;
+  font-size:22px!important;
+}
+
+</style>

@@ -210,14 +210,6 @@
     padding: 0px;
 }
 
-.tab-nav {
-    font-size: 1.2em;
-    font-weight: 800;
-}
-.create-button {
-    height: 40px;
-    font-weight: 600;
-}
 .inline-profile-tiles .profile-tile .pt-avatar-w img {
     width: 40px;
     height: auto;
@@ -356,4 +348,66 @@
 .os-progress-bar.floated {
     float: right;
     width: 220px;
+}
+
+/* PJE */
+.tab-nav {
+    font-size: 1.2em;
+    font-weight: 800;
+}
+.create-button {
+    height: 40px;
+    font-weight: 600;
+}
+.btn-secondary {
+    color: #404040;
+    background-color: #a2acb1;
+    border-color: #a2acb1;
+}
+.btn-secondary:hover {
+    color: #404040;
+    background-color: #929ca1;
+    border-color: #929ca1;
+}
+#page-heading {
+    padding-top:0.5em;
+    font-size:1.6em;
+    font-weight:600;
+}
+.container-fluid {
+    padding-left: 20px;
+}
+.tab-pane div.container-fluid {
+    padding-left: 0px;
+}s
+.tab-pane div.container-fluid div.container-fluid {
+    padding-left:1em;
+}
+.search-banner {
+    background-color: #fff;
+    border-radius: 6px;
+    border: 1px solid #e0e0e9;
+}
+.tab-form-panel {
+    background-color: #fff;
+    border-radius: 6px;
+    border: 1px solid #e0e0e9;
+    padding: 1em;
+}
+.table-spacing {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e9;
+}
+.wizard-panel {
+    margin:2em;
+    margin-left:5%;
+    margin-right:5%;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e9;
+    box-shadow: 5px 20px 28px #aaa;
 }
