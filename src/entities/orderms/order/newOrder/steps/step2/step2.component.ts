@@ -108,16 +108,16 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       false, true, true, false)
     this.singleSelectConfigProduct = new SearchableSelectConfig('label',
       'labels.chooseProduct', '', false,
-      false, true, false, false)
+      false, true, false, false, false, true)
     this.singleSelectConfigPromotion = new SearchableSelectConfig('label',
       'labels.choosePromotion', '', false,
-      false, true, false, false)
+      false, true, false, false, false, true)
     this.singleSelectConfigAttribute = new SearchableSelectConfig('label',
       'labels.chooseProductAttribute', '', false,
-      false, true, true, false)
+      false, true, true, false, false, true)
     this.singleSelectConfigDeliveryMethod = new SearchableSelectConfig('label',
       'labels.chooseDeliveryMethod', '', false,
-      false, true, false, false)
+      false, true, false, false, false, true)
   }
 
   @Watch('cartOrder', {immediate: true, deep: true})
@@ -171,6 +171,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
           productName: this.getMultiLangName(resp.data.productLanguages).name,
           relationId: this.cartOrderCopy.orderCustomer?.relationId,
           productPrice: resp.data.price,
+          taxPercentage: resp.data.tax,
           orderProductAttributeValues: []
         }
       }
@@ -374,7 +375,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
         discountId: this.selectedPromotion.value[discountType].discount.id,
         percentage: this.selectedPromotion.value[discountType].discount.percentage,
         fixed: this.selectedPromotion.value[discountType].discount.fixed,
-        noShipping: this.selectedPromotion.value[discountType].discount.noShipping,
+        noShipping: this.selectedPromotion.value[discountType].discount.noShipping ? this.selectedPromotion.value[discountType].discount.noShipping : false,
         freeItemsJson: this.selectedPromotion.value[discountType].discount.freeItemsJson,
         entireOrder: this.selectedPromotion.value.entireOrder,
         orderPromotion: new OrderPromotion(undefined, undefined, undefined, undefined, undefined, this.cartOrderCopy.orderCustomer?.relationId,
@@ -388,7 +389,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
         discountId: this.selectedPromotion.value[discountType].discount.id,
         percentage: this.selectedPromotion.value[discountType].discount.percentage,
         fixed: this.selectedPromotion.value[discountType].discount.fixed,
-        noShipping: this.selectedPromotion.value[discountType].discount.noShipping,
+        noShipping: this.selectedPromotion.value[discountType].discount.noShipping ? this.selectedPromotion.value[discountType].discount.noShipping : false,
         freeItemsJson: this.selectedPromotion.value[discountType].discount.freeItemsJson,
         entireOrder: this.selectedPromotion.value.entireOrder,
         orderPromotion: new OrderPromotion(undefined, undefined, undefined, undefined, undefined, this.cartOrderCopy.orderCustomer?.relationId,

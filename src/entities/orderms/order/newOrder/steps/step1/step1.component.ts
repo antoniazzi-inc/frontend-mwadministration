@@ -74,10 +74,10 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     this.newCompany = new Company()
     this.singleSelectConfig = new SearchableSelectConfig('email',
       'labels.chooseCustomer', '', false,
-      false, true, false, false)
+      false, true, false, false, false, true)
     this.singleSelectConfigCompany = new SearchableSelectConfig('name',
       'labels.chooseCompany', 'buttons.addNew', false,
-      true, true, false, false)
+      true, true, false, false, false, true)
     this.searchableConfig = new SearchableSelectConfig('enName',
       'labels.chooseCountry', '', false,
       false, true, false, false)

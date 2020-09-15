@@ -42,14 +42,14 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.dateConfig = {
       wrap: false,
       altInput: false,
-      dateFormat: 'd-m-Y'
+      dateFormat: 'm-d-Y'
     }
     this.invoiceDate = null
-    this.invoiceDeliveryDate = moment(new Date()).format('D-M-YYYY')
-    this.invoiceScheduledOn = moment(new Date()).format('D-M-YYYY')
+    this.invoiceDeliveryDate = moment().format('MM-DD-YYYY')
+    this.invoiceScheduledOn = moment().format('MM-DD-YYYY')
     this.singleSelectConfigInvoiceTemplate = new SearchableSelectConfig('name',
       'labels.chooseInvoiceTemplate', '', false,
-      false, true, false, false)
+      false, true, false, false, false, true)
     this.selectedInvoiceTemplate = null
     this.invoiceAdditionalDetails = ''
     this.invoiceLanguage = ''
@@ -57,7 +57,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.invoiceEmailContent = ''
     this.cartOrderCopy = new CartOrder()
     this.invoicePreviewData = {
-      invoiceSendDate: moment().format('D-M-YYYY')
+      invoiceSendDate: moment().format('MM-DD-YYYY')
     }
   }
   @Watch('cartOrder', {immediate: true, deep: true})
@@ -66,7 +66,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.cartOrderCopy = newVal
   }
   public mounted () {
-    this.invoiceDate = moment().format('D-M-YYYY')
+    this.invoiceDate = moment().format('MM-DD-YYYY')
   }
   public changeInvoiceTemplate (template:any) {
     this.selectedInvoiceTemplate = template

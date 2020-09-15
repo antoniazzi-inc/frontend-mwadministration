@@ -29,7 +29,7 @@ export default class InvoiceComponent extends (CommonHelpers){
     public configuration: any;
     public selectedInvoiceTemplate: any;
     public invoiceTemplates: IInvoiceTemplate[];
-    public singleSelectConfig:ISearchableSelectConfig = new SearchableSelectConfig('name', 'labels.selectInvoiceTemplate', '', false, false, true, false, true, false )
+    public singleSelectConfig:ISearchableSelectConfig = new SearchableSelectConfig('name', 'labels.selectInvoiceTemplate', '', false, false, true, false, true, false, true )
     constructor(){
         super();
         this.orderCopy = new CartOrder();

@@ -55,18 +55,13 @@
         <div class="row p-0 m-0" v-for="(item, index) in cartOrderCopy.orderLines" :key="index">
           <div class="col-md-9 small">
             <p>
-              <span>[{{ item.orderProduct.productId }}] {{ item.orderProduct.productName }} (x{{
-                  item.quantity
-                }})</span><br/>
+              <span>[{{ item.orderProduct.productId }}] {{ item.orderProduct.productName }} (x{{item.quantity}})</span><br/>
               <span v-if="item.orderProduct.productDescription">{{ item.orderProduct.productDescription }}</span>
               <span>
-                                <br/>
-                                <span class="font-weight-bold">{{ $t('labels.basePrice') }}:</span>
-                                <span
-                                  class="text-right">{{ item.orderProduct.productPrice }} {{
-                                    cartOrderCopy.currency
-                                  }}</span>
-                            </span>
+                <br/>
+                <span class="font-weight-bold">{{ $t('labels.basePrice') }}:</span>
+                <span class="text-right">{{ item.orderProduct.productPrice }} {{cartOrderCopy.currency }}</span>
+              </span>
               <br/>
               <span>{{ getAttributesNames(item) }}</span>
               <span
@@ -110,7 +105,7 @@
           {{ $t('labels.totalProducts') }}
         </div>
         <div class="col-md-6 text-right">
-          {{ cartOrderCopy.orderLines ? cartOrderCopy.orderLines.length : 0 }}
+          {{ invoicePreview.totalProducts ? invoicePreview.totalProducts : 0 }}
         </div>
       </div>
       <div class="row p-0 m-0">
@@ -118,7 +113,7 @@
           {{ $t('labels.totalDiscount') }}
         </div>
         <div class="col-md-6 text-right">
-          {{ cartOrderCopy.discountAmount ? cartOrderCopy.discountAmount + ' ' + cartOrderCopy.currency : 0 }}
+          {{ invoicePreview.totalDiscounts ? invoicePreview.totalDiscounts + ' ' + cartOrderCopy.currency : 0 }}
         </div>
       </div>
       <div class="row p-0 m-0">
@@ -127,7 +122,7 @@
         </div>
         <div class="col-md-6 text-right">
           {{
-            cartOrderCopy.nettoAmount ? cartOrderCopy.nettoAmount + ' ' + cartOrderCopy.currency : 0
+            invoicePreview.totalProductsNetto ? invoicePreview.totalProductsNetto + ' ' + cartOrderCopy.currency : 0
           }}
         </div>
       </div>
@@ -148,7 +143,7 @@
           {{ $t('labels.shippingMethodTotalCost') }}
         </div>
         <div class="col-md-6 text-right">
-        {{cartOrderCopy.shippingCostAmount}} {{cartOrderCopy.currency}}
+        {{invoicePreview.shippingCostAmount ? invoicePreview.shippingCostAmount : 0}} {{cartOrderCopy.currency}}
         </div>
       </div>
       <div class="row p-0 m-0" v-for="(item, index) in allTaxes" :key="index + '_tax'">
@@ -164,7 +159,7 @@
           {{ $t('labels.grandTotal') }}
         </div>
         <div class="col-md-6 text-right">
-          {{ cartOrderCopy.totalAmount ? cartOrderCopy.totalAmount + ' ' + cartOrderCopy.currency : 0 }}
+          {{ invoicePreview.grandTotal ? invoicePreview.grandTotal + ' ' + cartOrderCopy.currency : 0 }}
         </div>
       </div>
     </div>

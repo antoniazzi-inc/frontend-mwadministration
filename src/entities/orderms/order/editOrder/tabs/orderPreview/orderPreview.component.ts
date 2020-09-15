@@ -1,9 +1,10 @@
-import {Component} from 'vue-property-decorator';
+import {Component, Watch} from 'vue-property-decorator';
 import {mixins} from "vue-class-component";
 import {Money} from 'v-money'
 import MultiLanguageComponent from "@/components/multiLanguage/MultiLanguage.vue";
 import CommonHelpers from "@/shared/commonHelpers";
 import CartOrdersService from "@/shared/services/orderms/CartOrdersService";
+import {AxiosResponse} from "axios";
 
 const beforeRouteEnter = (to:any, from:any, next:any) => {
     next((vm:any) => {});
@@ -27,7 +28,6 @@ const beforeRouteEnter = (to:any, from:any, next:any) => {
     }
 })
 export default class OrderPreviewComponent extends mixins(CommonHelpers) {
-
     public cartOrderService:any;
     public wholeOrder:any;
     public invoicePreview:any;
@@ -51,6 +51,10 @@ export default class OrderPreviewComponent extends mixins(CommonHelpers) {
             selectedPaymentMethod: {}
         };
     }
+    @Watch('order', {immediate: true, deep: true})
+    public changeCartOrder(newVal:any) {
+      if(newVal) this.updateCart()
+    }
     public getCustomerRelationAddress(){
         let addr = this.$props.order.customerBillingAddress;
         if(addr){
@@ -66,5 +70,12 @@ export default class OrderPreviewComponent extends mixins(CommonHelpers) {
         if(orderLine.orderLineBeneficiary && orderLine.orderLineBeneficiary.email){
             return orderLine.orderLineBeneficiary.email
         }
+    }
+
+    public updateCart(){
+      this.cartOrderService.updateCart(this.$props.order).then((resp:AxiosResponse)=>{
+        if(resp && resp.data)
+        this.invoicePreview = resp.data
+      })
     }
 }

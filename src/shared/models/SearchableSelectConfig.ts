@@ -20,7 +20,8 @@ export class SearchableSelectConfig implements ISearchableSelectConfig {
     public allowEmpty?: boolean,
     public multiple?: boolean,
     public internalSearch?: boolean,
-    public hasGroups?: boolean
+    public hasGroups?: boolean,
+    public preselectFirst?: boolean
   ) {
     this.trackBy = this.trackBy ? this.trackBy : 'label'
     this.placeholder = this.placeholder ? this.placeholder : 'selectValue'
@@ -30,5 +31,6 @@ export class SearchableSelectConfig implements ISearchableSelectConfig {
     this.multiple = this.multiple ? this.multiple : false
     this.internalSearch = this.internalSearch ? this.internalSearch : false
     this.hasGroups = this.hasGroups ? this.hasGroups : false
+    this.preselectFirst = this.preselectFirst ? this.preselectFirst : false
   }
 }

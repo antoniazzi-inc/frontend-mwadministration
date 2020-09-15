@@ -39,6 +39,7 @@ module.exports = {
           proxyReq.setHeader('origin', 'https://localhost:8080')
           proxyReq.setHeader('sec-fetch-mode', 'no-cors')
           proxyReq.setHeader('Sec-Fetch-Site', 'none')
+          console.log(proxyReq)
         },
         changeOrigin: true
       },

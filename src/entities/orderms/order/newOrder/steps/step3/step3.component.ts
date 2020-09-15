@@ -24,7 +24,7 @@ export default class Step3Component extends mixins(CommonHelpers, Vue) {
     super()
     this.singleSelectConfigDeliveryMethod = new SearchableSelectConfig('label',
       'labels.choosePaymentMethod', '', false,
-      false, true, false, false)
+      false, true, false, false, false, true)
     this.selectedPaymentMethod = null
     this.cartOrderCopy = new CartOrder()
   }

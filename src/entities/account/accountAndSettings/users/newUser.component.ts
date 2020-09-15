@@ -39,7 +39,7 @@ export default class NewUserComponent extends mixins(CommonHelpers, Vue) {
     this.repeatPassword = ''
     this.searchableConfig = new SearchableSelectConfig('name',
       'labels.roles', '', true,
-      false, false, true, false)
+      false, false, true, false, false, false)
   }
 
   public retrieveItem (id: number) {

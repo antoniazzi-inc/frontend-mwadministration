@@ -15,7 +15,7 @@ import CustomerBillingAddress from "@/shared/models/orderms/CustomerBillingAddre
 import CustomerDeliveryAddress from "@/shared/models/orderms/CustomerDeliveryAddressModel";
 import {IRelationAddress} from "@/shared/models/relationms/relation-address.model";
 import RelationAddressService from "@/shared/services/relationAddressService";
-import moment from "moment/moment";
+import moment from "moment";
 
 @Component({
   components: {
@@ -70,7 +70,7 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
         }
         if (self.step === 0) {
           let step1: any = this.$refs.step1
-          this.cartOrder.currency = this.$store.state.currency
+          this.cartOrder.currency = this.$store.state.currencyName
           this.cartOrder.languageCode = this.$store.state.currentLanguage
           this.cartOrder.orderCustomer = {
             relationId: step1.selectedRelation.id,
@@ -87,6 +87,7 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
             undefined, undefined, undefined, undefined, undefined, undefined, undefined, JSON.stringify(step4.invoiceAdditionalDetails),
             undefined, undefined, undefined, undefined, undefined, undefined, undefined)
           this.cartOrder.invoice.scheduledOn = moment(step4.invoiceScheduledOn).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+          if(step4.selectedInvoiceTemplate && step4.selectedInvoiceTemplate.id)
           this.cartOrder.invoice.invoiceTemplate = {
             id: step4.selectedInvoiceTemplate.id,
             version: step4.selectedInvoiceTemplate.version

@@ -41,7 +41,7 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
     super()
     this.searchableConfig = new SearchableSelectConfig('code',
       'labels.timezone', '', false,
-      false, false, false, false)
+      false, false, false, false, false, true)
     this.searchString = ''
     this.changePasswordChecked = false
     this.showSearch = false

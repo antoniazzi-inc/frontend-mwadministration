@@ -83,7 +83,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public orderLineService: any;
   public orderDiscountLineService: any;
   public singleSelectConfig: ISearchableSelectConfig =
-    new SearchableSelectConfig('label', 'labels.shippingMethods', '', false, false, true, false, true)
+    new SearchableSelectConfig('label', 'labels.shippingMethods', '', false, false, true, false, true, false, true)
 
   constructor() {
     super();
@@ -111,7 +111,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     };
     this.multiSelectConfig = new SearchableSelectConfig('email',
       'labels.chooseBeneficiary', '', false,
-      false, true, true, false)
+      false, true, true, false, false, true)
     this.isProductSelected = false;
     this.usePaymentSchedule = false;
     this.addNewPromotion = false;
@@ -145,7 +145,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.allProductFeatures = [];
     this.searchProductInit = function () {
     };
-    this.singSelectConfigProduct = new SearchableSelectConfig('name', 'labels.product', '', false, false, true, false, false)
+    this.singSelectConfigProduct = new SearchableSelectConfig('name', 'labels.product', '', false, false, true, false, false, false, true)
   }
 
   @Watch('useProductSubscription', {immediate: true, deep: true})

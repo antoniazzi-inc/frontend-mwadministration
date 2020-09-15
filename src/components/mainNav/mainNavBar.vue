@@ -92,10 +92,10 @@
         <li class="nav-item dropdown">
           <router-link class="nav-link" id="languages" to="" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="main-menu-icon fas fa-flag"></i>
-            <!--
-            <img class="img-fluid" :src="`./assets/images/flags/${$store.state.currentLanguage}.png`"/>
-            -->
+            <!--<i class="main-menu-icon fas fa-flag"></i>-->
+
+            <img width="25" class="main-menu-icon mx-auto d-block" :src="`./assets/images/flags/${$store.state.currentLanguage}.png`"/>
+
           </router-link>
           <div class="dropdown-menu" style="left:-9em;" aria-labelledby="languages">
             <h3 class="menu-title">{{$t('labels.languages')}}</h3>

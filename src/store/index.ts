@@ -12,6 +12,7 @@ export default new Vuex.Store({
     authenticated: false,
     currentLanguage: 'en',
     currency: '€',
+    currencyName: 'eur',
     maxUploadSize: 50000, //KB
     maxRelUpload: 50000,
     lookups: {
