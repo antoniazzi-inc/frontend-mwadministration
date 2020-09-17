@@ -129,6 +129,7 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
 
     public mounted () {
       this.retrieve()
+      this.registrationSettingsJson.freeFields = this.$store.state.lookups.freeFields
     }
 
     public retrieve () {

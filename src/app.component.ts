@@ -132,7 +132,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
         const methods: any = []
         resp.data.content?.forEach((payment: any) => {
           methods.push({
-            label: this.getMultiLangName(payment.paymentMethodLanguages).name,
+            label: `${this.getMultiLangName(payment.paymentMethodLanguages).name} (+${payment.administrativeCostsFixed ? payment.administrativeCostsFixed + this.$store.state.currency : payment.administrativeCostsPercentage + '%'})`,
             value: payment
           })
         })

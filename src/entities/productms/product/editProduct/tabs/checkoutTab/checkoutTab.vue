@@ -123,24 +123,24 @@
           </thead>
           <tbody>
           <tr v-for="(item, index) in registrationSettingsJson.freeFields" :key="index">
-            <td>{{getName(item.field.customFieldLanguages)}}</td>
+            <td>{{getName(item.value.field.customFieldLanguages)}}</td>
             <td>
               <toggle-switch
                 :on-text="$t('labels.yes')"
                 :off-text="$t('labels.no')"
-                :value.sync="item.visible"/>
+                :value.sync="item.value.visible"/>
             </td>
             <td>
               <toggle-switch
                 :on-text="$t('labels.yes')"
                 :off-text="$t('labels.no')"
-                :value.sync="item.required"/>
+                :value.sync="item.value.required"/>
             </td>
             <td>
               <toggle-switch
                 :on-text="$t('labels.yes')"
                 :off-text="$t('labels.no')"
-                :value.sync="item.useInInvoice"/>
+                :value.sync="item.value.useInInvoice"/>
             </td>
           </tr>
           </tbody>

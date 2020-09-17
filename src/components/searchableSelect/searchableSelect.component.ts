@@ -8,8 +8,8 @@ import 'vue-multiselect/dist/vue-multiselect.min.css'
   },
   props: {
     config: SearchableSelectConfig,
-    options: Array,
-    value: [Object, Array]
+    options: [Array, Set],
+    value: [Object, Array, Set]
   }
 })
 export default class SearchableSelectComponent extends Vue {

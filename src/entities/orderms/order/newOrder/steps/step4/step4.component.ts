@@ -67,12 +67,17 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
   }
   public mounted () {
     this.invoiceDate = moment().format('MM-DD-YYYY')
+    this.invoiceLanguage = this.$store.state.currentLanguage
   }
   public changeInvoiceTemplate (template:any) {
+    if(template && template.templateDataJson) {
+      this.invoiceEmailContent = JSON.parse(template.templateDataJson).invoiceEmailContent
+    }
     this.selectedInvoiceTemplate = template
   }
   public removeInvoiceTemplate () {
     this.selectedInvoiceTemplate = null
+    this.invoiceEmailContent = ''
   }
   public changeLangauge (event:any) {
     let lang = event.target.value;

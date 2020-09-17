@@ -53,10 +53,7 @@ export default class InvoiceComponent extends (CommonHelpers){
       if(newVal){
         this.orderCopy = newVal
         if(newVal.invoice){
-        this.sendDate = newVal.invoice.sentOn;
-        this.scheduledDate = newVal.invoice.scheduledOn;
-        this.invoiceNumber = newVal.invoice.invoiceNumber;
-        this.selectedInvoiceTemplate = newVal.invoice.invoiceTemplate;
+          this.selectedInvoiceTemplate = newVal.invoice.invoiceTemplate;
         }
         if(newVal.orderCustomer)
         this.customerName = newVal.orderCustomer.fullName;

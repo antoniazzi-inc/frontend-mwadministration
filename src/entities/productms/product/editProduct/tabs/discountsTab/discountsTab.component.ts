@@ -57,7 +57,7 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
         selPromotions.push({
           id: v.id,
           label: self.getMultiLangName(v.promotionLanguages).name,
-          promotion: v
+          value: v
         })
       })
     }

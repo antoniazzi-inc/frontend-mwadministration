@@ -10,105 +10,106 @@
                 </div>
             </div>
             <div v-if="addProduct && !addNewPromotion">
-                <div class="form-group" v-if="addProduct">
-                    <label class="form-control-label">{{$t('labels.selectProduct')}}</label>
+              <form>
+                <div class="form-group">
+                  <label>{{$t('labels.selectProduct')}}</label>
                   <searchable-select-component :config="singSelectConfigProduct"
-                                               :options="allProducts"
+                                               :options="$store.state.lookups.products"
                                                :value="selectedProduct"
                                                @onChange="addProductSelect"
-                                               @onDelete="removeProduct"
-                                               @onSearch="searchProductInit"/>
+                                               @onDelete="removeProduct"/>
                 </div>
-                <div class="form-group" v-if="addProduct">
-                    <label class="form-control-label">{{$t('labels.selectProductFeature')}}</label>
-                  <searchable-select-component :config="singSelectConfigProduct"
+                <div class="form-group" v-if="selectedProductFeature && selectedProductFeature.length">
+                  <label>{{$t('labels.selectProductAttribute')}}</label>
+                  <searchable-select-component :config="singleSelectConfigAttribute"
                                                :options="allProductFeatures"
                                                :value="selectedProductFeature"
                                                @onChange="addProductFeatureSelect"
                                                @onDelete="removeProductFeature"/>
                 </div>
-                <div class="form-group" v-if="addProduct">
-                    <label class="form-control-label">{{$t('labels.price')}}</label>
-                    <money v-model="selectedProduct.value.price" :disabled="selectedProduct ? !selectedProduct.value.userDefinedPrice : true" class="form-control" name="loyaltyAmountEarlier"  v-bind="moneyFixed"></money>
+                <div class="form-group" v-if="selectedProduct">
+                  <label class="form-control-label">{{$t('labels.price')}}</label>
+                  <money v-model="selectedProduct.value.price" :disabled="selectedProduct ? !selectedProduct.value.userDefinedPrice : true" class="form-control" name="loyaltyAmountEarlier"  v-bind="moneyFixed"></money>
                 </div>
-                <div class="form-group" v-if="addProduct">
-                    <label class="form-control-label">{{$t('labels.quantity')}}</label>
-                    <input type="number" min="1" class="form-control" v-model="productQuantity"/>
+                <div class="form-group">
+                  <label class="form-control-label">{{$t('labels.quantity')}}</label>
+                  <input type="number" v-validate="'required|min_value:1|decimal:0'" name="quantityProd" min="1" :class="{'form-control': true, invalid: errors.has('quantityProd')}" v-model="productQuantity"/>
+                  <span class="small text-danger">{{errors.first('quantityProd')}}</span>
                 </div>
-                <div class="form-group" v-if="addProduct">
-                    <label class="form-control-label">{{$t('labels.additionalInfo')}}</label>
-                    <textarea cols="3" class="form-control" maxlength="256" v-model="productAdditionalInfo"/>
+                <div class="form-group">
+                  <label class="form-control-label">{{$t('labels.additionalInfo')}}</label>
+                  <textarea cols="3" class="form-control" maxlength="256" v-model="productAdditionalInfo"/>
                 </div>
-                <div class="form-group" v-show="selectedProduct.value.productType === 'PHYSICAL'">
-                    <label class="form-control-label">{{$t('labels.shippingMethod')}}</label>
-                  <searchable-select-component :config="singleSelectConfig"
-                                               :options="allShippingMethods"
+                <div class="form-group">
+                  <label class="form-control-label">{{$t('labels.affiliate')}}</label>
+                  <searchable-select-component :config="singleSelectConfigAffiliate"
+                                               :options="$store.state.lookups.affiliates"
+                                               :value="selectedAffiliate"
+                                               @onSelected="changeAffiliate"
+                                               @onDelete="removeAffiliate"/>
+                </div>
+                <div class="form-group" v-show="selectedProduct && selectedProduct.value.productType === 'PHYSICAL'">
+                  <label class="form-control-label">{{$t('labels.shippingTitle')}}</label>
+                  <searchable-select-component :config="singleSelectConfigDeliveryMethod"
+                                               :options="$store.state.lookups.deliveryMethods"
                                                :value="selectedShippingMethods"
                                                @onChange="addNewShippingMethod"
                                                @onDelete="removeShippingMethod"/>
                 </div>
-                <div class="form-group" v-if="addProduct && selectedProduct.value.paymentSchedules && selectedProduct.value.paymentSchedules.length">
-                    <label class="form-control-label">{{$t('labels.paymentSchedules')}}</label>
-                    <toggle-switch id="repeatSubscription"
-                                   :on-text="$t('labels.yes')"
-                                   :off-text="$t('labels.no')"
-                                   :value.sync="usePaymentSchedule"></toggle-switch>
+                <div class="form-group" v-if="selectedProduct && selectedProduct.value.paymentSchedules && selectedProduct.value.paymentSchedules.length">
+                  <label class="form-control-label">{{$t('labels.paymentSchedules')}}</label>
+                  <toggle-switch
+                    :on-text="$t('labels.yes')"
+                    :off-text="$t('labels.no')"
+                    :value.sync="usePaymentSchedule"/>
                 </div>
-                <div class="form-group" v-if="addProduct && selectedProduct.value.paymentSchedules && selectedProduct.value.paymentSchedules.length && usePaymentSchedule">
-                    <label class="form-control-label">{{$t('labels.paymentSchedules')}}</label>
-                    <select class="form-control" v-model="selectedPaymentSchedule" @change="paymentScheduleChanged">
-                        <option v-for="(item, index) in selectedProduct.value.paymentSchedules" :value="index" :key="index">{{item.name}}</option>
-                    </select>
+                <div class="form-group" v-if="selectedProduct && selectedProduct.value.paymentSchedules && selectedProduct.value.paymentSchedules.length && usePaymentSchedule">
+                  <label class="form-control-label">{{$t('labels.paymentSchedules')}}</label>
+                  <select class="form-control" v-model="selectedPaymentSchedule">
+                    <option v-for="(item, index) in selectedProduct.value.paymentSchedules" :key="index" :value="index">{{item.name}}</option>
+                  </select>
                 </div>
-                <div class="form-group" v-if="addProduct && selectedProduct.value.productSubscription">
-                    <label class="form-control-label">{{$t('labels.orderSubscription')}}</label>
-                    <toggle-switch
-                                   :on-text="$t('labels.yes')"
-                                   :off-text="$t('labels.no')"
-                                   :value.sync="useProductSubscription"></toggle-switch>
+                <div class="form-group" v-if="selectedProduct && selectedProduct.value.productSubscription">
+                  <label class="form-control-label">{{$t('labels.orderSubscription')}}</label>
+                  <toggle-switch id="repeatSubscription"
+                                 :on-text="$t('labels.yes')"
+                                 :off-text="$t('labels.no')"
+                                 :value.sync="useProductSubscription"></toggle-switch>
                 </div>
-                <div v-if="useProductSubscription && selectedProduct && selectedProduct.value && selectedProduct.value.productSubscription">
-                    <label class="form-control-label">{{$t('labels.periodStartDate')}}</label>
-                    <form name="searchForm" class="form-inline">
-                        <div class="input-group w-100 mt-3">
-                            <select class="form-control" v-model="selectedProduct.value.productSubscription.period">
-                                <option value="weekly">{{$t('labels.weekly')}}</option>
-                                <option value="bi-weekly">{{$t('labels.bi-weekly')}}</option>
-                                <option value="month">{{$t('labels.month')}}</option>
-                                <option value="quarter">{{$t('labels.quarter')}}</option>
-                                <option value="half-Year">{{$t('labels.halfYear')}}</option>
-                                <option value="year">{{$t('labels.year')}}</option>
-                            </select>
-                            <select class="form-control" v-model="selectedProduct.value.productSubscription.startDate">
-                                <option value="firstOfCurrentMonth">{{$t('labels.startAtBeginningOfCurrentMonth')}}</option>
-                                <option value="firstOfNextMonth">{{$t('labels.beginningOfNextMonth')}}</option>
-                                <option value="now">{{$t('labels.atThisMoment')}}</option>
-                                <option value="paymentDone">{{$t('labels.startAfterPaymentIsDone')}}</option>
-                            </select>
-                            <input type="number" class="form-control" v-model="selectedProduct.value.productSubscription.maxTimes"/>
-                        </div>
-                    </form>
-                </div>
-                <div class="form-group" v-if="addProduct && !isEditingOrderLine">
-                    <label class="form-control-label">{{$t('labels.beneficiary')}}</label>
-                  <searchable-select-component :config="multiSelectConfig"
-                                               :options="beneficiaryList"
-                                               :value="selectedBeneficiary"
-                                               @onChange="addBeneficiary"
-                                               @onSearch="searchBeneficiary"
-                                               @onDelete="removeBeneficiary"/>
+                <div v-if="useProductSubscription">
+                  <label class="form-control-label">{{$t('labels.periodStartDate')}}</label>
+                  <form name="searchForm" class="form-inline">
+                    <div class="input-group w-100 mt-3">
+                      <select class="form-control" v-model="selectedProduct.value.productSubscription.period">
+                        <option value="weekly">{{$t('labels.weekly')}}</option>
+                        <option value="bi-weekly">{{$t('labels.bi-weekly')}}</option>
+                        <option value="month">{{$t('labels.month')}}</option>
+                        <option value="quarter">{{$t('labels.quarter')}}</option>
+                        <option value="half-Year">{{$t('labels.halfYear')}}</option>
+                        <option value="year">{{$t('labels.year')}}</option>
+                      </select>
+                      <select class="form-control" v-model="selectedProduct.value.productSubscription.startDate">
+                        <option value="firstOfCurrentMonth">{{$t('labels.startAtBeginningOfCurrentMonth')}}</option>
+                        <option value="firstOfNextMonth">{{$t('labels.beginningOfNextMonth')}}</option>
+                        <option value="now">{{$t('labels.atThisMoment')}}</option>
+                        <option value="paymentDone">{{$t('labels.startAfterPaymentIsDone')}}</option>
+                      </select>
+                      <input type="number" class="form-control" v-model="selectedProduct.value.productSubscription.maxTimes"/>
+                    </div>
+                  </form>
                 </div>
                 <div class="form-group text-right" v-if="addProduct">
-                  <small class="text-danger">{{deliveryMethodError}}</small>
-                    <button class="btn btn-outline-danger" @click="closeEditMode">{{$t('buttons.cancel')}}</button>
-                    <button class="btn btn-primary ml-2" @click.prevent.stop="addOrderLine">{{!isEditingOrderLine ? $t('buttons.add') : $t('buttons.save')}}</button>
+                  <span class="small text-danger m-4">{{deliveryMethodError}}</span><br/>
+                  <button class="btn btn-outline-danger mt-4" @click.prevent.stop="closeEditMode">{{$t('buttons.cancel')}}</button>
+                  <button class="btn btn-primary ml-2 mt-4" @click.prevent.stop="addOrderLine()">{{!isEditingOrderLine ? $t('buttons.add') : $t('buttons.save')}}</button>
                 </div>
+              </form>
             </div>
             <div v-else-if="addNewPromotion && !addProduct">
                 <div class="form-group">
                     <label class="form-control-label">{{$t('labels.selectPromotion')}}</label>
-                  <searchable-select-component :config="singSelectConfigProduct"
-                                               :options="allPromotions"
+                  <searchable-select-component :config="singleSelectConfig"
+                                               :options="availablePrmotions"
                                                :value="selectedPromotion"
                                                @onChange="addSelectedPromotion"
                                                @onDelete="removeSelectedPromotion"/>
@@ -132,7 +133,7 @@
                                         </div>
                                         <div class="ticket-content">
                                             <h6 class="ticket-title">
-                                                <span class="label">{{item.orderProduct.id}}</span>
+                                                <span class="label">{{`${item.orderProduct.productId} `}}</span>
                                                 <span class="label">{{item.orderProduct.productName}}</span>
                                                 <br/>
                                                 <span class="small">{{item.orderProduct.productDescription}}</span>
@@ -143,7 +144,7 @@
                                                 <br/>
                                                 <span class="small"></span>
                                                 <br/>
-                                                <span class="small"> {{getDeliveryMethodName(item)}}<i class="ml-3 fas fa-truck-loading"></i></span>
+                                                <span class="small"> {{item.orderLineDeliveryMethod ? item.orderLineDeliveryMethod.name : ''}}<i class="ml-3 fas fa-truck-loading"></i></span>
                                             </h6>
                                         </div>
                                     </div>
@@ -174,7 +175,7 @@
                                         </div>
                                         <div class="ticket-content">
                                             <h6 class="ticket-title">
-                                                <span class="label">{{item.id}}</span>
+                                                <span class="label">{{`${item.id} `}}</span>
                                                 <span class="label">{{getPromoName(item).name}}</span>
                                                 <br/>
                                                 <span class="small">{{getPromoName(item).description}}</span>

@@ -72,18 +72,23 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public selectedBeneficiary: any[];
   public allPromotions: any[];
   public selectedPromotions: any[];
+  public availablePrmotions: any[];
   public selectedPromotion: any;
   public multiSelectConfig: ISearchableSelectConfig;
+  public singleSelectConfigAttribute: ISearchableSelectConfig;
+  public singleSelectConfigAffiliate: ISearchableSelectConfig;
+  public singleSelectConfigDeliveryMethod: ISearchableSelectConfig;
   public productService: any;
   public cartOrderService: any;
   public attributeService: any;
   public promotionService: any;
   public deliveryMethodService: any;
+  public selectedAffiliate: any;
   public relationService: any;
   public orderLineService: any;
   public orderDiscountLineService: any;
   public singleSelectConfig: ISearchableSelectConfig =
-    new SearchableSelectConfig('label', 'labels.shippingMethods', '', false, false, true, false, true, false, true)
+    new SearchableSelectConfig('label', 'labels.selectPromotion', '', false, false, true, false, true, false, false)
 
   constructor() {
     super();
@@ -100,6 +105,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.allShippingMethodsBackup = [];
     this.selectedShippingMethods = null;
     this.timer = null;
+    this.selectedAffiliate = null;
     this.orderCopy = null;
     this.moneyFixed = {
       decimal: ',',
@@ -109,6 +115,10 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
       precision: 2,
       masked: false
     };
+
+    this.singleSelectConfigAffiliate = new SearchableSelectConfig('email',
+      'labels.chooseAffilaite', '', false,
+      false, true, false, false)
     this.multiSelectConfig = new SearchableSelectConfig('email',
       'labels.chooseBeneficiary', '', false,
       false, true, true, false, false, true)
@@ -142,10 +152,26 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.selectedProductSubscription = null;
     this.selectedBeneficiary = [];
     this.beneficiaryList = [];
+    this.availablePrmotions = [];
     this.allProductFeatures = [];
     this.searchProductInit = function () {
     };
-    this.singSelectConfigProduct = new SearchableSelectConfig('name', 'labels.product', '', false, false, true, false, false, false, true)
+    this.singleSelectConfigAttribute = new SearchableSelectConfig('label',
+      'labels.chooseProductAttribute', '', false,
+      false, true, true, false, false, false)
+    this.singleSelectConfigDeliveryMethod = new SearchableSelectConfig('label',
+      'labels.chooseDeliveryMethod', '', false,
+      false, true, false, false, false, false)
+    this.singSelectConfigProduct = new SearchableSelectConfig('label',
+      'labels.product',
+      '',
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false)
   }
 
   @Watch('useProductSubscription', {immediate: true, deep: true})
@@ -170,6 +196,8 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     if (newVal) {
       this.orderCopy = newVal;
       this.orderLines = newVal.orderLines;
+      if(newVal.orderLines)
+      this.populatePromotions()
     }
   }
 
@@ -196,7 +224,9 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public selectProduct() {
     let self = this;
     this.isProductSelected = true;
+    this.addNewPromotion = false
     this.addProduct = true;
+
     this.selectedProduct = {
       name: null,
       value: {
@@ -216,26 +246,10 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public retrieve() {
     let self = this;
     let allProd: any = [];
-    $.each(this.$store.state.lookups.products, function (k, v) {
-      let prod = v.value;
-      prod.productPrice = v.price;
-      allProd.push({
-        name: v.label,
-        value: prod
-      });
-    });
-    this.allProducts = allProd;
+
+    this.allProducts = this.$store.state.lookups.products;
     this.$set(this, 'allShippingMethods', this.$store.state.lookups.deliveryMethods);
     this.$set(this, 'allShippingMethodsBackup', this.$store.state.lookups.deliveryMethods);
-    let allPromo: any = []
-    $.each(this.$store.state.lookups.promotions, function (k, v) {
-      allPromo.push({
-        name: v.label,
-        description: self.getMultiLangName(v.value.promotionLanguages && v.value.promotionLanguages.length ? v.value.promotionLanguages : new ProductLanguage()).description,
-        value: v.value
-      });
-    });
-    this.allPromotions = allPromo;
   }
 
   public searchProduct(search: any) {
@@ -253,7 +267,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
             let prod = v;
             prod.productPrice = v.price;
             allProd.push({
-              name: self.getMultiLangName(v.productLanguages && v.productLanguages.length ? v.productLanguages : new ProductLanguage()).name,
+              label: self.getMultiLangName(v.productLanguages && v.productLanguages.length ? v.productLanguages : new ProductLanguage()).name,
               value: prod
             });
           });
@@ -265,6 +279,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   };
 
   public addNewShippingMethod(method: any) {
+    if(!method) return
     this.selectedShippingMethods = method;
     this.$emit('update');
   }
@@ -293,7 +308,7 @@ public getPromoName(item:any){
       name: '',
       description: ''
     }
-  this.allPromotions.forEach((promo:any)=>{
+  this.$store.state.lookups.promotions.forEach((promo:any)=>{
     let discount = this.getDiscountType(promo.value)
     if(discount.discount.id === item.discountId){
       promoName = this.getMultiLangName(promo.value.promotionLanguages)
@@ -303,7 +318,7 @@ public getPromoName(item:any){
 }
   public getDiscountName(item:any){
     let promoName:any = ''
-    this.allPromotions.forEach((promo:any)=>{
+    this.$store.state.lookups.promotions.forEach((promo:any)=>{
       let discount = this.getDiscountType(promo.value)
       if(discount.discount.id === item.discountId){
         promoName = this.getDiscount(promo.value)
@@ -330,24 +345,7 @@ public getPromoName(item:any){
       let product = resp.data;
       //@ts-ignore
       product.productPrice = resp.price;
-      this.selectedProduct = {
-        name: prod.name,
-        value: product
-      };
-      if (prod.value.productType === 'PHYSICAL' && resp.data.productDeliveryMethods.length) {
-        let productDeliveryMethods: any = [];
-        this.allShippingMethods.forEach(method => {
-          resp.data.productDeliveryMethods.forEach((deliveryMethod: any) => {
-            if (method.value.id === deliveryMethod.deliveryMethodId) {
-              method.value.basePrice = deliveryMethod.basePrice;
-              method.value.itemPrice = deliveryMethod.itemPrice;
-              productDeliveryMethods.push(method);
-            }
-          });
-        });
-        this.$set(this, 'allShippingMethods', productDeliveryMethods);
-        this.$set(this, 'selectedShippingMethods', productDeliveryMethods[0]);
-      }
+      this.selectedProduct = prod
       if (resp.data.attributes && resp.data.attributes.length) {
         $.each(resp.data.attributes, function (k, v) {
           let attributeName: any = '';
@@ -356,7 +354,7 @@ public getPromoName(item:any){
             let attributeValueName: any = '';
             if (j.attributeValueLanguages.length) attributeValueName = self.getMultiLangName(j.attributeValueLanguages).name;
             features.push({
-              name: attributeName + ' -> ' + attributeValueName + '(+' + j.price + '€)',
+              label: attributeName + ' -> ' + attributeValueName + '(+' + j.price + '€)',
               value: j,
               attributeId: v.id,
               attribute: v
@@ -365,9 +363,36 @@ public getPromoName(item:any){
         });
         self.allProductFeatures = features;
       }
+      this.allPromotions = []
+      this.populatePromotions()
     });
   }
-
+  public populatePromotions() {
+    let self = this
+    let allPromotions: any = []
+    let allProducts: any = []
+    this.orderCopy.orderLines.forEach((line:any) => {
+      let index = self.$store.state.lookups.products.findIndex((e:any)=> e.value.id === line.orderProduct.productId)
+      if(index > -1) {
+        allProducts.push(self.$store.state.lookups.products[index])
+      }
+    })
+    allProducts.forEach((item:any, index:number) => {
+      if (item.value.promotions)
+        item.value.promotions.forEach((e: any) => {
+          allPromotions.push(e)
+        })
+    })
+    let result = allPromotions.map((item: any) => {
+      return {
+        label: this.getMultiLangName(item.promotionLanguages).name,
+        value: item
+      }
+    })
+    Vue.nextTick(function () {
+      self.availablePrmotions = result
+    })
+  }
   public removeProduct(prod: any) {
     if(prod)
     this.selectedProduct = null;
@@ -463,7 +488,6 @@ public getPromoName(item:any){
   public addNewOrderPromotion() {
     let discountType:any = this.getDiscountType(this.selectedPromotion.value)
     let discount:any = this.selectedPromotion.value[discountType.type]
-    debugger
     let dto = new OrderDiscountLine(undefined, undefined, undefined, undefined, undefined, this.orderCopy.orderCustomer.relationId,
       discount.id, discount.discount.percentage, discount.discount.fixed, discount.discount.noShipping, discount.discount.freeItemsJson, discount.entireOrder, undefined,
       {id: this.orderCopy.id, version: this.orderCopy.version})
@@ -491,17 +515,8 @@ public getPromoName(item:any){
     this.useProductSubscription = false;
   }
 
-  public getDeliveryMethodName(item: any) {
-    let result: any = '';
-    if (item && item.orderLineDeliveryMethod && item.orderLineDeliveryMethod.deliveryMethodLanguages &&
-      item.orderLineDeliveryMethod.deliveryMethodLanguages.length > 0) {
-      result = this.getMultiLangName(item.orderLineDeliveryMethod.deliveryMethodLanguages).name;
-    }
-    return result;
-  }
 
   public addOrderLine(e: any) {
-    e.preventDefault();
     let self = this;
     if (this.orderHasSubscription && this.orderLines.length <= 0) {
       this.deliveryMethodError = this.$t('labels.subscriptionError');
@@ -539,6 +554,7 @@ public getPromoName(item:any){
         this.createOrderLine(resp)
       });
     }
+    this.populatePromotions()
   }
 
   public createOrderLine(line: any) {
@@ -557,7 +573,8 @@ public getPromoName(item:any){
       }
     })
   }
-
+  public changeAffiliate(aff:any){}
+  public removeAffiliate(aff:any){}
   public saveEditedOrderLine() {
     let self = this;
     let allFeatures: any = [];
@@ -585,12 +602,16 @@ public getPromoName(item:any){
     this.selectedOrderLine.orderSubscription = this.useProductSubscription ? this.selectedProductSubscription : undefined;
     this.selectedOrderLine.orderLinePaymentSchedules = schedule;
     this.selectedOrderLine.orderProduct.orderProductAttributeValues = allFeatures
+    this.selectedOrderLine.orderLineDeliveryMethod = this.selectedProduct.value.productType === 'PHYSICAL' ? {
+      ...this.selectedOrderLine.orderLineDeliveryMethod,
+      deliveryMethodId: this.selectedShippingMethods.value.id,
+      name: this.selectedShippingMethods.label,
+    } : undefined;
     this.orderLineService.put(this.selectedOrderLine).then((resp: AxiosResponse) => {
       if (!resp || !resp.data) {
         return this.setAlert('errorUpdateOrderLine', 'error')
       }
       this.orderLines[this.indexToEdit] = JSON.parse(JSON.stringify(this.selectedOrderLine));
-      this.selectedOrderLine.orderLineDeliveryMethod = this.selectedProduct.value.productType === 'PHYSICAL' ? this.selectedShippingMethods.value : undefined;
       this.closeEditMode();
       this.orderCopy.orderLines = this.orderLines;
       this.selectedOrderLine = null;
@@ -690,6 +711,7 @@ public getPromoName(item:any){
   }
 
   public editOrderLine(orderLine: any, index: any) {
+    this.selectedProduct = null
     let self = this;
     let attributeValue: any = [];
     this.isEditingOrderLine = true;
@@ -708,21 +730,21 @@ public getPromoName(item:any){
       this.useProductSubscription = false;
       self.selectedProductSubscription = undefined;
     }
-    Vue.nextTick(function () {
-      let prod = self.$store.state.lookups.products.findIndex((e:any) => e.value.id === orderLine.orderProduct.productId)
-      if(prod > -1){
-        self.selectedProduct = self.$store.state.lookups.products[prod]
+    let prod = self.$store.state.lookups.products.findIndex((e:any) => e.value.id === orderLine.orderProduct.productId)
+    if(prod > -1){
+      let selectedProd = self.$store.state.lookups.products[prod]
+      this.addProductSelect(selectedProd)
+    }
+    if(orderLine.orderLineDeliveryMethod) {
+      let ind = this.$store.state.lookups.deliveryMethods.findIndex((e:any) => e.value.id === orderLine.orderLineDeliveryMethod.deliveryMethodId)
+      if(ind > -1) {
+        this.$set(this, 'selectedShippingMethods', this.$store.state.lookups.deliveryMethods[ind])
       }
-    });
-    if (orderLine.orderLineDeliveryMethod) {
-      Vue.nextTick(function () {
-        self.selectedShippingMethods = [orderLine.orderLineDeliveryMethod];
-      });
     }
     if (orderLine.orderProduct.orderProductAttributeValues && orderLine.orderProduct.orderProductAttributeValues.length) {
       $.each(orderLine.orderProduct.orderProductAttributeValues, function (k, v) {
         $.each(self.allProductFeatures, function (i, j) {
-          if (v.attributeId === j.attributeId && j.value.id === v.attributeValue.id) {
+          if (v.attributeId === j.attribute.id && j.value.id === v.attributeValueId) {
             attributeValue.push(j);
           }
         });
@@ -731,6 +753,7 @@ public getPromoName(item:any){
         self.selectedProductFeature = attributeValue;
       });
     }
+
   }
 
   public removeOrderLine(orderLine: any, index: any) {
