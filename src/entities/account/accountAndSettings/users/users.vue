@@ -21,7 +21,8 @@
       @onEdit="editUser"
       @onCopy="copyUser"
       @onDelete="deleteUser"
-      :service="relationService"/>
+      :service="relationService"
+      :searchQuery="'roles.code=in=(ROLE_ADMIN)'"/>
   </div>
 </template>
 <script lang="ts" src="./users.component.ts"></script>

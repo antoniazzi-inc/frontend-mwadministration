@@ -197,7 +197,14 @@ export default class App extends mixins(Vue, CommonHelpers) {
       })
       this.customFieldService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
-        this.$store.commit('freeFields', resp.data.content)
+        const freeFields: any = []
+        resp.data.content?.forEach((field: any) => {
+          freeFields.push({
+            label: this.getMultiLangName(field.customFieldLanguages).name,
+            value: field
+          })
+        })
+        this.$store.commit('freeFields', freeFields)
       })
       if (!this.hasAuthority('ROLE_SUPER_ADMIN')) {
         const roles = 'ROLE_SUPER_ADMIN,ROLE_ADMIN,ROLE_RELATION,ROLE_USER,ROLE_CUSTOMER,ROLE_BENEFICIARY,ROLE_AFFILIATE,ROLE_NEWSLETTER,ROLE_SUPPORT'

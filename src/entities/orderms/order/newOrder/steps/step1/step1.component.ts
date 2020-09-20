@@ -73,7 +73,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     this.cartOrderCopy = new CartOrder()
     this.newCompany = new Company()
     this.singleSelectConfig = new SearchableSelectConfig('email',
-      'labels.chooseCustomer', '', false,
+      'labels.typeInToSearch', '', false,
       false, true, false, false, false, true)
     this.singleSelectConfigCompany = new SearchableSelectConfig('name',
       'labels.chooseCompany', 'buttons.addNew', false,
@@ -247,7 +247,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   }
 
   public mounted() {
-    this.populateRelations()
+    //this.populateRelations()
     this.selectedRelation.relationProfile = new RelationProfile()
     if (!this.cartOrderCopy.customerBillingAddress)
       this.cartOrderCopy.customerBillingAddress = new CustomerBillingAddress()
@@ -292,6 +292,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   }
 
   public doSearch(rel: any) {
+    if(!rel && rel.length > 2) return
     const queryArray: any = []
     queryArray.push({
         mainOperator: 'or',
@@ -335,6 +336,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
 
   public searchRelation(rel: any) {
     if(rel.id) return
+    if(rel.length < 3) return;
     const self = this
     if (this.timer) clearTimeout(this.timer);
     this.timer = setTimeout(() => {

@@ -129,20 +129,22 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
 
     public mounted () {
       this.retrieve()
-      this.registrationSettingsJson.freeFields = this.$store.state.lookups.freeFields
     }
 
     public retrieve () {
       const self = this
       self.registrationSettingsJson.freeFields = []
-
+      let fields:any = []
       $.each(this.$store.state.lookups.freeFields, function (k, v) {
-        self.registrationSettingsJson.freeFields.push({
-          field: v,
+        fields.push({
+          value: v,
+          name: v.label,
+          visible: false,
           required: false,
-          visible: false
+          useInInvoice: false
         })
       })
+      self.registrationSettingsJson.freeFields = fields
       self.totalItems = this.$store.state.lookups.freeFields.length
       self.queryCount = this.totalItems
     }

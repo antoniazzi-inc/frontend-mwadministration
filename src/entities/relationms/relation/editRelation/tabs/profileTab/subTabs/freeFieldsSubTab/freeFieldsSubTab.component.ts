@@ -176,17 +176,6 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
     this.$emit('retrieveRelation', this.relationCopy)
   }
 
-  public getClassName (type: any) {
-    switch (type) {
-      case 'OPTION_LIST':
-        return 'fa fa-filter'
-      case 'BOOLEAN':
-        return 'fa fa-toggle-on'
-      case 'TEXT':
-        return 'fa fa-font'
-    }
-  }
-
   public getName (langs: any) {
     if (!langs) return ''
     let lang = ''

@@ -76,7 +76,7 @@ export default class NewUserComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public roleChanged (role: any) {
-    this.selectedRoles.push(role)
+    this.selectedRoles = role
   }
 
   public roleRemoved (role: any) {

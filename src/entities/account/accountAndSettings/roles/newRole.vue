@@ -19,6 +19,14 @@
                      :class="{'invalid': errors.has('description') }" v-model="role.description" />
               <span class="text-danger small">{{errors.first('labels.description')}}</span>
             </div>
+            <div class="form-group">
+              <label class="roles pull-left">{{$t('labels.selectAll')}}</label>
+                <toggle-switch
+                               :on-text="$t('labels.yes')"
+                               :off-text="$t('labels.no')"
+                               :value.sync="addAll">
+                </toggle-switch>
+            </div>
             <div :key="index" class="form-row" v-for="(item, index) in permissionsControl">
               <div :key="index" class="input-group">
                   <div class="row" style="min-width:100%;">

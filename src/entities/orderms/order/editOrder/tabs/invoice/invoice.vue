@@ -44,7 +44,34 @@
           <div class="form-group">
             <label class="form-control-label">{{ $t('labels.invoiceFields') }}</label>
             <br/>
-            <span class="text-danger"> Needs design and explanation here ask P</span>
+            <div class="support-index show-ticket-content">
+              <div class="support-tickets">
+                <template v-for="(item, index) in allCustomFields">
+                  <div v-if="item.useInInvoice" :key="index">
+                    <div class="support-ticket mt-3">
+                      <div class="st-body">
+                        <div class="avatar"><i style="font-size: 3rem;" class="dashicons dashicons-text"></i></div>
+                        <div class="st-meta m-2">
+                          <i class="fas fa-edit text-warning" @click="editCustomField(item)"></i>
+                          <div class="fas ml-2 fa-trash-alt text-danger" @click="deleteCustomField(item)"></div>
+                        </div>
+                        <div class="ticket-content">
+                          <h6 class="ticket-title">
+                            {{item.name}} : {{item.result}}
+                          </h6>
+                          <div class="ticket-description">
+                            <span class="label">{{$t('labels.fieldType')}}: </span> <i
+                            :class="getClassName(item.value.value.customFieldType)"></i> &nbsp; &nbsp;
+                            <span
+                              class="label">{{$t('labels.createdOn')}} {{item.value.value.createdOn | formatDate}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -31,11 +31,13 @@ export default class NewRoleComponent extends mixins(CommonHelpers, Vue) {
   public permissions: IPermission[]
   public permissionsControl: any
   public toCopy: boolean
+  public addAll: boolean
   constructor () {
     super()
     this.role = new Role()
     this.roleService = RoleService.getInstance()
     this.toCopy = false
+    this.addAll = false
     this.permissions = []
     this.permissionsControl = {
       orders: { title: 'ordersAndInvoicing', data: [] },
@@ -59,6 +61,26 @@ export default class NewRoleComponent extends mixins(CommonHelpers, Vue) {
     })
   }
 
+  @Watch('addAll', { immediate: true, deep: true })
+  public updateAddAll (newVal:any) {
+    if(newVal === true) {
+      for (var key in this.permissionsControl) {
+        if (this.permissionsControl.hasOwnProperty(key)) {
+          this.permissionsControl[key].data.forEach((item:any, index:any)=>{
+            this.permissionsControl[key].data[index].selected = true
+          })
+        }
+      }
+    } else if(newVal === false) {
+      for (var key in this.permissionsControl) {
+        if (this.permissionsControl.hasOwnProperty(key)) {
+          this.permissionsControl[key].data.forEach((item:any, index:any)=>{
+            this.permissionsControl[key].data[index].selected = false
+          })
+        }
+      }
+    }
+  }
   @Watch('active', { immediate: true, deep: true })
   public updateF () {
     this.permissions = this.$store.state.lookups.permissions

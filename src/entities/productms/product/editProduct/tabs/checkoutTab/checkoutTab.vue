@@ -122,25 +122,26 @@
           <th>{{$t('labels.usseInInvoice')}}</th>
           </thead>
           <tbody>
+
           <tr v-for="(item, index) in registrationSettingsJson.freeFields" :key="index">
-            <td>{{getName(item.value.field.customFieldLanguages)}}</td>
+            <td>{{item.value.label}}</td>
             <td>
               <toggle-switch
                 :on-text="$t('labels.yes')"
                 :off-text="$t('labels.no')"
-                :value.sync="item.value.visible"/>
+                :value.sync="item.visible"/>
             </td>
             <td>
               <toggle-switch
                 :on-text="$t('labels.yes')"
                 :off-text="$t('labels.no')"
-                :value.sync="item.value.required"/>
+                :value.sync="item.required"/>
             </td>
             <td>
               <toggle-switch
                 :on-text="$t('labels.yes')"
                 :off-text="$t('labels.no')"
-                :value.sync="item.value.useInInvoice"/>
+                :value.sync="item.useInInvoice"/>
             </td>
           </tr>
           </tbody>

@@ -58,5 +58,6 @@ constructor(
     public affiliateCommisions?: IAffiliateCommision[],
     public cartOrder?: ICartOrder,
   ){
+  this.quantity = this.quantity ? this.quantity : 1
   }
 };

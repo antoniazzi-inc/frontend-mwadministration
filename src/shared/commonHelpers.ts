@@ -86,6 +86,22 @@ export default class CommonHelpers extends Vue {
   }
 
   /*
+     * Name: getClassName
+     * arg: type -> string
+     * description: Return a proper icon class name for custom fields depending on their type
+     * Author: Nick Dam
+     */
+  public getClassName (type: any) {
+    switch (type) {
+      case 'OPTION_LIST':
+        return 'fa fa-filter'
+      case 'BOOLEAN':
+        return 'fa fa-toggle-on'
+      case 'TEXT':
+        return 'fa fa-font'
+    }
+  }
+  /*
    * Name: makeSimpleSearchQuery
    * arg: fields -> array (searchBy), query -> search string, operator -> OR/AND
    * description: Creates simple search query
