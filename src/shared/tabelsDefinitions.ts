@@ -1,6 +1,7 @@
 import { ILanguage, Language } from '@/shared/models/language.model'
 import Store from '../store'
 import moment from 'moment'
+import {DATE_FORMAT} from "@/shared/filters";
 const local = localStorage.getItem('tableColumns') ? localStorage.getItem('tableColumns') : ''
 const currentSettings = local ? JSON.parse(local) : {}
 
@@ -504,8 +505,8 @@ export const promotion = {
       sort: false,
       method: function (item: any) {
         console.log(item.availableTo)
-        const from = moment(item.availableFrom).format('MM/DD/YYYY')
-        const to = item.availableTo ? moment(item.availableTo).format('MM/DD/YYYY') : null
+        const from = moment(item.availableFrom).format(DATE_FORMAT)
+        const to = item.availableTo ? moment(item.availableTo).format(DATE_FORMAT) : null
         if(to){
           return `${from} - ${to}`
         }
@@ -1733,6 +1734,61 @@ export const customField = {
     }
   ]
 }
+export const relationOrders = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: false,
+    info: false
+  },
+  itemsPerPage: 20,
+  cols: [
+    {
+      name: 'labels.date',
+      field: 'createdOn',
+      authorities: ['*'],
+      type: 'date',
+      subField: null,
+      sort: false,
+      method: null
+    }, {
+      name: 'labels.invoiceNumber',
+      field: 'invoice',
+      authorities: ['*'],
+      type: 'subField',
+      subField: 'invoiceNumber',
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.amount',
+      field: 'nettoAmount',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.productName',
+      field: '',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: function (item:any) {
+        debugger
+        let productNames:any = []
+        item.orderLines.forEach((item:any)=>{
+          if(item.orderProduct && item.orderProduct.productName)
+            productNames.push(item.orderProduct.productName)
+        })
+        return productNames.join()
+      }
+    }
+  ]
+}
 export const relation = {
   actions: {
     copy: false,
@@ -2127,5 +2183,8 @@ export const columnsVisibility = {
     description: true,
     createdOn: true,
     itemsPerPage: 20
+  },
+  relationOrders: {
+    itemsPerPage: 10
   }
 }

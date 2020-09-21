@@ -12,7 +12,7 @@ import { AxiosResponse } from 'axios'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import moment from 'moment'
-import { DATE_TIME_LONG_FORMAT } from '@/shared/filters'
+import {DATE_FORMAT, DATE_TIME_LONG_FORMAT} from '@/shared/filters'
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import Trumbowyg from 'vue-trumbowyg'
@@ -54,7 +54,7 @@ export default class ContactWidget extends mixins(CommonHelpers, Vue) {
     }
     this.relationCopy = new RelationEntity()
     this.editMode = false
-    this.contactDate = moment().format('Y-m-d')
+    this.contactDate = moment().format(DATE_FORMAT)
     this.itemToDelete = new ContactHistory()
     this.valueToEdit = new ContactHistory()
     this.contactHistoryService = ContactHistoryService.getInstance()
@@ -83,7 +83,7 @@ export default class ContactWidget extends mixins(CommonHelpers, Vue) {
       this.editContact(new ContactHistory(undefined, undefined, '', '', moment(),
         ContactHistoryType.EMAIL, undefined, undefined, undefined, undefined,
         undefined, { id: this.relationCopy.id, version: this.relationCopy.version }))
-      this.contactDate = moment().format('Y-M-D')
+      this.contactDate = moment().format(DATE_FORMAT)
     }
   }
 
@@ -118,7 +118,7 @@ export default class ContactWidget extends mixins(CommonHelpers, Vue) {
     if (!item.id) {
       this.valueToEdit.info = ''
     }
-    this.contactDate = moment(item.contactTime).format('Y-M-D')
+    this.contactDate = moment(item.contactTime).format(DATE_FORMAT)
     this.editMode = true
   }
 

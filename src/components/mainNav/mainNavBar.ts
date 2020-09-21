@@ -13,6 +13,7 @@ import { AxiosResponse } from 'axios'
 import { MenuDefinitions } from '@/shared/menuDefinitions'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
+import {DATE_FORMAT} from "@/shared/filters";
 @Component({
   components: {
     'v-gravatar': gravatarImg,
@@ -60,7 +61,7 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
       wrap: false,
       altInput: false,
       dateFormat: 'd-m-Y',
-      maxDate: moment().subtract(18, 'year').format('d-m-YYYY')
+      maxDate: moment().subtract(18, 'year').format(DATE_FORMAT)
     }
   }
 
@@ -98,7 +99,7 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
       this.$forceUpdate()
       Vue.nextTick(function () {
         resp.data.relationProfile && resp.data.relationProfile.birthDate
-          ? self.birthDate = moment(resp.data.relationProfile.birthDate).format('DD-MM-YYYY') : self.birthDate = null
+          ? self.birthDate = moment(resp.data.relationProfile.birthDate).format(DATE_FORMAT) : self.birthDate = null
       })
     })
   }

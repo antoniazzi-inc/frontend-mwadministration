@@ -48,7 +48,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
       false, true, true, false)
     this.searchableCatsConfig = new SearchableSelectConfig('code',
       'labels.selectCategory', '', false,
-      false, true, true, false)
+      false, true, false, false)
     this.searchableGroupsConfig = new SearchableSelectConfig('name',
       'labels.selectGroups', '', false,
       false, true, false, false)
@@ -237,7 +237,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public categorySearchRemoved () {
-    this.selectedCategories = {}
+    this.selectedCategories = null
     this.currentSearchCategory = ''
   }
 

@@ -24,6 +24,7 @@ import mediasService from '@/shared/services/mediasService'
 import BaseImage from '@/shared/baseImage'
 import Store from '@/store/index'
 import {FollowupAction} from '@/shared/models/productms/FollowupActionModel'
+import {DATE_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -99,13 +100,13 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
       wrap: true,
       altInput: false,
       dateFormat: 'm-d-Y',
-      minDate: moment().format('MM-DD-YYYY')
+      minDate: moment().format(DATE_FORMAT)
     }
     this.validToConfig = {
       wrap: true,
       altInput: false,
       dateFormat: 'm-d-Y',
-      minDate: moment().format('MM-DD-YYYY')
+      minDate: moment().format(DATE_FORMAT)
     }
     this.moneyConfig = new MoneyConfig(undefined, undefined, '', Store.state.currency, 0, false)
   }
@@ -143,7 +144,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
 
   @Watch('availableFrom', {immediate: true, deep: true})
   public changeAvailableToMin(newVal: any) {
-    this.validToConfig.minDate = moment(newVal).format('MM-DD-YYYY')
+    this.validToConfig.minDate = moment(newVal).format(DATE_FORMAT)
   }
 
   public changeProductType(type: string) {

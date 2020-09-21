@@ -46,6 +46,9 @@
                   <span v-else-if="col.type === 'percentage'">
                     {{item[col.field]}}%
                   </span>
+                  <span v-else-if="col.type === 'subField'">
+                    {{item[col.field][col.subField]}}
+                  </span>
                   <span v-else>
                     {{!item[col.field] ? '-' : item[col.field]}}
                   </span>

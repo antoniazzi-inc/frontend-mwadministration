@@ -10,6 +10,7 @@ import 'flatpickr/dist/flatpickr.css'
 import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 import MultiLanguageHtmlEditorComponent from "@/components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue";
 import InvoicePreviewComponent from "@/entities/orderms/order/newOrder/invoicePreview/invoicePreview.vue";
+import {DATE_FORMAT} from "@/shared/filters";
 @Component({
   components: {
     SearchableSelectComponent,
@@ -45,8 +46,8 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
       dateFormat: 'm-d-Y'
     }
     this.invoiceDate = null
-    this.invoiceDeliveryDate = moment().format('MM-DD-YYYY')
-    this.invoiceScheduledOn = moment().format('MM-DD-YYYY')
+    this.invoiceDeliveryDate = moment().format(DATE_FORMAT)
+    this.invoiceScheduledOn = moment().format(DATE_FORMAT)
     this.singleSelectConfigInvoiceTemplate = new SearchableSelectConfig('name',
       'labels.chooseInvoiceTemplate', '', false,
       false, true, false, false, false, true)
@@ -57,7 +58,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.invoiceEmailContent = ''
     this.cartOrderCopy = new CartOrder()
     this.invoicePreviewData = {
-      invoiceSendDate: moment().format('MM-DD-YYYY')
+      invoiceSendDate: moment().format(DATE_FORMAT)
     }
   }
   @Watch('cartOrder', {immediate: true, deep: true})
@@ -66,7 +67,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.cartOrderCopy = newVal
   }
   public mounted () {
-    this.invoiceDate = moment().format('MM-DD-YYYY')
+    this.invoiceDate = moment().format(DATE_FORMAT)
     this.invoiceLanguage = this.$store.state.currentLanguage
   }
   public changeInvoiceTemplate (template:any) {

@@ -10,6 +10,7 @@ import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import TaxRateService from '@/shared/services/taxRateService'
 import { AxiosResponse } from 'axios'
 import { IMoneyConfig, MoneyConfig } from '@/shared/models/moneyConfig'
+import {DATE_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -54,7 +55,7 @@ export default class NewTaxRateComponent extends mixins(CommonHelpers, Vue) {
       'labels.country', '', true,
       false, true, false, false)
     this.validFromDate = new Date()
-    this.validToDate = new Date(moment(new Date()).add(1, 'day').format('YYYY-MM-DD'))
+    this.validToDate = new Date(moment(new Date()).add(1, 'day').format(DATE_FORMAT))
   }
 
   public mounted () {

@@ -191,7 +191,7 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
         mainOperator: 'and',
         children: [{
           key: 'availableFrom',
-          value: moment(this.availableFrom).format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          value: moment(this.availableFrom).format('DD-MM-YYYYTHH:mm:ss') + 'Z',
           inBetweenOperator: '>=',
           afterOperator: '',
           exactSearch: true

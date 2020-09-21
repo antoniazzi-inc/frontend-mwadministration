@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import moment from 'moment'
 
-export const DATE_FORMAT = 'YYYY-MM-DD'
-export const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm'
+export const DATE_FORMAT = 'DD-MM-YYYY'
+export const DATE_TIME_FORMAT = 'DD-MM-YYYY HH:mm'
 
 export const DISPLAY_DATE_TIME_FORMAT = 'D MMM YYYY, HH:mm'
 
-export const DATE_TIME_LONG_FORMAT = "YYYY-MM-DD'T'HH:mm"
-export const INSTANT_FORMAT = "YYYY-MM-DD'T'HH:mm:ssZ"
-export const ZONED_DATE_TIME_FORMAT = "YYYY-MM-DD'T'HH:mm:ssXXXXX"
+export const DATE_TIME_LONG_FORMAT = "DD-MM-YYYY'T'HH:mm"
+export const INSTANT_FORMAT = "DD-MM-YYYY'T'HH:mm:ssZ"
+export const ZONED_DATE_TIME_FORMAT = "DD-MM-YYYY'T'HH:mm:ssXXXXX"
 
 export function initFilters () {
   Vue.filter('formatDate', function (value: string) {

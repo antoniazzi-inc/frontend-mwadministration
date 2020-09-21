@@ -15,6 +15,7 @@ import {mixins} from "vue-class-component";
 import {AxiosResponse} from "axios";
 import promotionsService from "@/shared/services/promotionsService";
 import discountsService from "@/shared/services/discountsService";
+import {DATE_FORMAT} from "@/shared/filters";
 
 @Component({
   props: {
@@ -122,8 +123,8 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     this.promotionCopy = newVal
     const self = this
     Vue.nextTick(function () {
-      self.availableFrom = newVal && newVal.availableFrom ? moment(newVal.availableFrom).format('MM-DD-YYYY') : moment().format('MM-DD-YYYY')
-      self.availableTo = newVal && newVal.availableTo ? moment(newVal.availableTo).format('MM-DD-YYYY') : null
+      self.availableFrom = newVal && newVal.availableFrom ? moment(newVal.availableFrom).format(DATE_FORMAT) : moment().format(DATE_FORMAT)
+      self.availableTo = newVal && newVal.availableTo ? moment(newVal.availableTo).format(DATE_FORMAT) : null
       self.validFromConfig.minDate = self.availableFrom
       self.validToConfig.minDate = self.availableFrom
     })
@@ -184,7 +185,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
   @Watch('availableFrom', {immediate: true, deep: true})
   public changeAvailableToMin(newVal: any) {
-    this.validToConfig.minDate = moment(newVal).format('MM-DD-YYYY')
+    this.validToConfig.minDate = moment(newVal).format(DATE_FORMAT)
   }
 
   public getSelectedProductFromDiscount(freeItems: any) {

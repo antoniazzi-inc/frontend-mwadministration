@@ -139,6 +139,7 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
 
   public checkVisibility (col: any) {
     const tableFields = this.getTableVisibilityFields(this.$props.table)
-    return (tableFields) ? tableFields[col.field] : false
+
+    return (tableFields) ? tableFields[col.field] ? tableFields[col.field] : true  : false
   }
 }

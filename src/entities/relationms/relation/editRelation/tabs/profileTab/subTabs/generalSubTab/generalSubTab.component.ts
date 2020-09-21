@@ -12,6 +12,7 @@ import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import { AxiosResponse } from 'axios'
+import {DATE_FORMAT} from "@/shared/filters";
 @Component({
   components: {
     SearchableSelectComponent,
@@ -50,7 +51,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
       altInput: false,
       dateFormat: 'Y-m-d',
       altFormat: 'Y-M-d',
-      maxDate: moment().subtract(18, 'years').format('YYYY-M-D')
+      maxDate: moment().subtract(18, 'years').format(DATE_FORMAT)
     }
   }
 
@@ -117,7 +118,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
       if (result) {
         const dto = this.relation
         if (dto && dto.relationProfile && this.birthDate) {
-          dto.relationProfile.birthDate = moment(this.birthDate).add(1, 'days').format('YYYY-MM-DD')
+          dto.relationProfile.birthDate = moment(this.birthDate).add(1, 'days').format(DATE_FORMAT)
         }
         if (self.relationCategory && self.relationCategory.id) {
           if (dto && dto.relationProfile) dto.relationProfile.categoryId = self.relationCategory.id

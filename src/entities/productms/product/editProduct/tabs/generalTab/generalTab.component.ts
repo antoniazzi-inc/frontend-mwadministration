@@ -19,6 +19,7 @@ import SearchableSelectComponent from '@/components/searchableSelect/searchableS
 import { ProductLanguage } from '@/shared/models/productms/ProductLanguageModel'
 import Store from '@/store/index'
 import {ProductCategory} from "@/shared/models/productms/ProductCategoryModel";
+import {DATE_FORMAT} from "@/shared/filters";
 @Component({
   props: {
     product: Object
@@ -40,14 +41,14 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       wrap: true,
       altInput: false,
       dateFormat: 'm-d-Y',
-      minDate: moment().format('MM-DD-YYYY')
+      minDate: moment().format(DATE_FORMAT)
     }
 
     public validToConfig: any = {
       wrap: true,
       altInput: false,
       dateFormat: 'm-d-Y',
-      minDate: moment().format('MM-DD-YYYY')
+      minDate: moment().format(DATE_FORMAT)
     }
 
     public availableFrom: any = null;
@@ -110,8 +111,8 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       this.availableProductLanguages = {}
       this.selectedCategories = []
       this.productCopy = newVal
-      this.availableFrom = this.$props.product.availableFrom ? moment(this.$props.product.availableFrom).format('MM-DD-YYYY') : null
-      this.availableTo = this.$props.product.availableTo ? moment(this.$props.product.availableTo).format('MM-DD-YYYY') : null
+      this.availableFrom = this.$props.product.availableFrom ? moment(this.$props.product.availableFrom).format(DATE_FORMAT) : null
+      this.availableTo = this.$props.product.availableTo ? moment(this.$props.product.availableTo).format(DATE_FORMAT) : null
       if (moment(this.$props.product.availableFrom).isBefore(moment())) {
         this.validFromConfig.minDate = this.availableFrom
         this.validToConfig.minDate = this.availableFrom

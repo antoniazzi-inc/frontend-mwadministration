@@ -9,6 +9,7 @@ import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import { AxiosResponse } from 'axios'
 import { ITaxRateLink, TaxRateLink } from '@/shared/models/administrationms/tax-rate-link.model'
 import TaxRateLinkService from '@/shared/services/taxRateLinkService'
+import {DATE_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -55,7 +56,7 @@ export default class NewTaxRateLinkComponent extends mixins(CommonHelpers, Vue) 
       'labels.fromTaxRate', '', true,
       false, true, false, false)
     this.validFromDate = new Date()
-    this.validToDate = new Date(moment(new Date()).add(1, 'day').format('YYYY-MM-DD'))
+    this.validToDate = new Date(moment(new Date()).add(1, 'day').format(DATE_FORMAT))
   }
 
   public mounted () {

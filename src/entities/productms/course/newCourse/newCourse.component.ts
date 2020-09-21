@@ -122,8 +122,8 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
         ['fullscreen']
       ]
     }
-    this.eventStart = moment().format('MM-DD-YYYY HH:mm')
-    this.eventEnd = moment().format('MM-DD-YYYY HH:mm')
+    this.eventStart = moment().format('DD-MM-YYYY HH:mm')
+    this.eventEnd = moment().format('DD-MM-YYYY HH:mm')
 
     this.multiSelectConfig = new SearchableSelectConfig('email',
       'labels.selectRelations', '', true,
@@ -387,11 +387,11 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public editCurrentEvent(item: any, index: any) {
-    this.eventStart = moment(item.eventStart).format('MM-DD-YYYY HH:mm')
+    this.eventStart = moment(item.eventStart).format('DD-MM-YYYY HH:mm')
     this.selectedEvent = item
     this.totalReservedSeats = item.seats
     this.editEvent = true
-    this.eventEnd = moment(item.eventEnd).format('MM-DD-YYYY HH:mm')
+    this.eventEnd = moment(item.eventEnd).format('DD-MM-YYYY HH:mm')
   }
 
   public getReservedSeats(reservations: any) {
@@ -551,7 +551,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public getEventDate(item: any) {
     let result = ''
     if (item.eventStart) {
-      result = moment(item.eventStart).format('MM/DD/YYYY HH:mm')
+      result = moment(item.eventStart).format('DD-MM-YYYY HH:mm')
     }
     if (item.eventEnd) {
       result += ` - ${moment(item.eventEnd).format('HH:mm')}`
