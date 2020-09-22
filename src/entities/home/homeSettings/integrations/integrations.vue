@@ -45,12 +45,12 @@
               <td class="text-right">
                 <div class="btn-group flex-btn-group-container text-center justify-content-center">
                   <div @click.prevent="editExternalSystem(item)" class="ml-3 text-primary cursor-pointer">
-                    <i class="os-icon os-icon-ui-49"></i>
+                    <i class="os-icon os-icon-ui-49" style="font-size:1.3em;"></i>
                   </div>
                   <div @click.prevent="setRemoveExternalSystem(item)" data-toggle="modal"
                        data-target="#deleteModal"
                        class="ml-3 text-primary cursor-pointer text-danger">
-                    <i class="os-icon os-icon-ui-15"></i>
+                    <i class="os-icon os-icon-ui-15" style="font-size:1.3em;"></i>
                   </div>
                 </div>
               </td>
@@ -548,5 +548,9 @@
     padding: 1em;
     border-radius: 6px;
     border: 1px solid #e0e0e9;
+    font-size:1.1em;
+  }
+  .integration-table td {
+    color:#444;
   }
 </style>

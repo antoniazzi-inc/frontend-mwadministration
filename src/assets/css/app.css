@@ -21,7 +21,7 @@
     cursor: pointer;
 }
 .date-input:before{
-    content: '\E972';
+    content: '';
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -30,7 +30,7 @@
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 20px;
+    font-size: 30px;
     color: #047bf8;
     position: absolute;
     margin-left: 1%;

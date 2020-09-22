@@ -71,26 +71,6 @@
             <option v-for="(lang, ind) in allLanguages" :key="ind" :value="lang.value">{{lang.label}}</option>
           </select>
         </div>
-      </div>
-      <div class="form-row mt-3">
-        <div class="col">
-          <label v-html="$t('labels.birthDate')"></label>
-          <div class="dateHolder date-input">
-            <flat-pickr :config="dateConfig" v-model="birthDate" class="single-daterange form-control"/>
-            <i class="fa fa-times clearDate cursor-pointer" @click="birthDate=null">
-              <span aria-hidden="true" class="sr-only">X</span>
-            </i>
-          </div>
-        </div>
-        <div class="col">
-          <label v-html="$t('labels.gender')"></label>
-          <select class="form-control" v-model="relationProfile.gender">
-            <option></option>
-            <option value="M">{{$t('labels.male')}}</option>
-            <option value="F">{{$t('labels.female')}}</option>
-            <option value="-">{{$t('labels.unspecified')}}</option>
-          </select>
-        </div>
         <div class="col">
           <label>{{$t('labels.points')}}</label>
           <input type="number" :class="{'form-control': true, invalid: errors.has('points')}" v-model="relationProfile.points"
@@ -102,6 +82,31 @@
           <toggle-switch :on-text="$t('labels.yes')"
                          :off-text="$t('labels.no')"
                          :value.sync="relationProfile.blackListed"></toggle-switch>
+        </div>
+      </div>
+      <div class="form-row mt-3">
+        <div class="col-sm-3">
+          <label v-html="$t('labels.birthDate')"></label>
+          <div class="dateHolder date-input">
+            <flat-pickr :config="dateConfig" v-model="birthDate" class="single-daterange form-control"/>
+            <i class="fa fa-times clearDate cursor-pointer" @click="birthDate=null">
+              <span aria-hidden="true" class="sr-only">X</span>
+            </i>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <label v-html="$t('labels.gender')"></label>
+          <select class="form-control" v-model="relationProfile.gender">
+            <option></option>
+            <option value="M">{{$t('labels.male')}}</option>
+            <option value="F">{{$t('labels.female')}}</option>
+            <option value="-">{{$t('labels.unspecified')}}</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>{{$t('labels.company')}}</label>
+          <input type="text" :class="{'form-control': true, invalid: errors.has('middleName')}" name="companyName"/>
+          <span class="text-danger small">{{errors.first('middleName')}}</span>
         </div>
       </div>
       <div class="form-row mt-3">

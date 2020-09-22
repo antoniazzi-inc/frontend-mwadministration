@@ -879,6 +879,7 @@
   "userVisible": "User Visible",
   "boolean": "Yes/No Field",
   "fieldOptions": "Field Options",
+  "addNewOption": "Add a new option",
   "freeFieldType": "Free Field Type",
   "freeFieldName": "Free Field Name",
   "optionList": "List With options",

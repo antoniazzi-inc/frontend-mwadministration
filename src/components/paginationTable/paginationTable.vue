@@ -57,10 +57,10 @@
               <td class="text-right">
                 <div class="btn-group flex-btn-group-container text-center justify-content-center">
                   <div v-if="tables[$props.table].actions.edit"
-                    @click.prevent="itemAction('onEdit', item)" class="ml-3 text-primary cursor-pointer">
+                    @click.prevent="itemAction('onEdit', item)" class="ml-3 text-primary cursor-pointer" style="font-size:1.2em;">
                     <i class="os-icon os-icon-ui-49"></i>
                   </div>
-                  <div v-if="tables[$props.table].actions.copy" @click.prevent="itemAction('onCopy', item)" class="ml-3 text-success cursor-pointer">
+                  <div v-if="tables[$props.table].actions.copy" @click.prevent="itemAction('onCopy', item)" class="ml-3 text-success cursor-pointer" style="font-size:1.2em;">
                     <i class="os-icon os-icon-grid-10"></i>
                   </div>
                   <div v-if="tables[$props.table].actions.info" class="ml-3 cursor-pointer"  @click.prevent="itemAction('onInfo', item)">
@@ -140,7 +140,7 @@
     text-align: left;
   }
   .table td {
-    font-size: 1em;
+    font-size: 1.1em;
     text-align: left;
   }
 </style>

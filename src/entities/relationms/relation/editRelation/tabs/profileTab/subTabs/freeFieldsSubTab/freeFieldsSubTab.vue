@@ -1,44 +1,73 @@
 <template>
   <div class="tab-form-panel">
+
     <div v-if="!editMode">
-      <div class="menu-w menu-position-top menu-layout-mini sub-menu-style-over searchBarWrapper col-md-12 pb-4"
-           v-if="relationCopy.relationCustomFields && relationCopy.relationCustomFields.length>0">
-        <div class="element-search autosuggest-search-activator">
-          <input class="searchBar" :placeholder="$t('labels.search')" @input="searchFreeFields()" type="text" v-model="searchString">
+      <div class="d-flex justify-content-between mb-3">
+        <div class="p-2" style="width:50%">
+          <input class="form-control" :placeholder="$t('labels.search')" @input="searchFreeFields()" type="text" v-model="searchString">
+        </div>
+        <div class="p-2">
+          <button tag="button" data-toggle="modal" class="btn btn-primary float-right create-button" @click="newField">
+            <i class="fas fa-plus"/>  <span>{{$t('buttons.add')}}</span>
+          </button>
         </div>
       </div>
-      <div  class="support-index show-ticket-content" v-if="relationCopy.relationCustomFields && relationCopy.relationCustomFields.length > 0">
-        <div class="support-tickets">
-          <div class="support-ticket mt-3" v-for="(item, index) in relationCopy.relationCustomFields" :key="index">
-            <div class="st-body">
-              <div class="avatar"><i style="font-size: 3rem;" class="dashicons dashicons-text"></i></div>
-              <div class="st-meta m-2">
-                <i class="fas fa-edit text-warning" @click="editRelationField(item)"></i>
-                <div class="fas ml-2 fa-trash-alt text-danger" @click="deleteRelationField(item)"></div>
-              </div>
-              <div class="ticket-content">
-                <h6 class="ticket-title">
-                  {{getName(item.customField.customFieldLanguages)}} : {{item.value === 'true' ? $t('labels.yes') : item.value === 'false' ? $t('labels.no') : item.value}}
-                </h6>
-                <div class="ticket-description">
-                  <span class="label">{{$t('labels.fieldType')}}: </span> <i :class="getClassName(item.customField.customFieldType)"></i> &nbsp; &nbsp;
-                  <span class="label">{{$t('labels.createdOn')}} {{item.customField.createdOn | formatDate}}</span>
+      <div class="table-responsive ff-table" v-if="relationCopy.relationCustomFields && relationCopy.relationCustomFields.length > 0">
+        <table class="table table-lightborder">
+          <thead>
+          <tr>
+            <th>
+              Name
+            </th>
+            <th>
+              Value
+            </th>
+            <th class="text-center">
+              {{$t('labels.fieldType')}}
+            </th>
+            <th>
+              {{$t('labels.createdOn')}}
+            </th>
+            <th class="text-right">
+              &nbsp;
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <template v-for="(item, index) in relationCopy.relationCustomFields">
+            <tr>
+              <td>
+                {{getName(item.customField.customFieldLanguages)}}
+              </td>
+              <td>
+                {{item.value === 'true' ? $t('labels.yes') : item.value === 'false' ? $t('labels.no') : item.value}}
+              </td>
+              <td class="text-center">
+                <i :class="getClassName(item.customField.customFieldType)"></i>
+              </td>
+              <td>
+                {{item.customField.createdOn | formatDate}}
+              </td>
+              <td class="text-right">
+                <div class="btn-group flex-btn-group-container text-center justify-content-center">
+                  <div @click.prevent="editRelationField(item)" class="ml-3 text-primary cursor-pointer">
+                    <i class="os-icon os-icon-ui-49" style="font-size:1.3em;"></i>
+                  </div>
+                  <div @click.prevent="deleteRelationField(item)" class="ml-3 text-primary cursor-pointer text-danger">
+                    <i class="os-icon os-icon-ui-15" style="font-size:1.3em;"></i>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="btn btn-outline-primary" style="vertical-align: top" @click.prevent="newField">
-          {{$t('buttons.add')}}
-        </div>
+              </td>
+            </tr>
+          </template>
+          </tbody>
+        </table>
       </div>
       <div v-else style="margin-left:1em; margin-top:2em;">
         <p>{{$t('labels.notfound')}}</p>
-        <div class="btn btn-outline-primary" @click.prevent="newField">
-          {{$t('buttons.add')}}
-        </div>
       </div>
     </div>
+
     <div v-if="editMode" class="col-md-7">
       <form novalidate @submit.stop.prevent="saveFreeField">
         <div class="form-group" v-if="addNewField">
@@ -52,8 +81,7 @@
           ></searchable-select-component>
         </div>
         <div v-else class="form-group">
-          <label>{{$t('labels.name')}}</label>
-          <h5 v-if="fieldToEdit.customField" class="title">{{getName(fieldToEdit.customField.customFieldLanguages)}}</h5>
+          <h4 v-if="fieldToEdit.customField" class="title">{{getName(fieldToEdit.customField.customFieldLanguages)}}</h4>
         </div>
         <div class="form-group" v-if="fieldToEdit.customField && fieldToEdit.customField.customFieldType === 'OPTION_LIST'">
           <label class="control-label">{{$t('labels.selectValue')}}</label>
@@ -83,6 +111,7 @@
         </div>
       </form>
     </div>
+
     <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteModal'" tabindex="-1" role="dialog" ref="deleteModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -106,29 +135,24 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 <script type="ts" src="./freeFieldsSubTab.component.ts"></script>
 <style scoped>
-  .createdDate{
-    color: grey;
-    font-size: 0.7em;
+
+  .ff-table {
+    margin-top: 1em;
+    margin-right: 2em;
+    background-color: #fff;
+    padding: 1em;
+    border-radius: 6px;
+    border: 1px solid #e0e0e9;
+    font-size:1.1em;
   }
-  .element-search{
-    width: 100%!important;
-    margin-left: 0px!important;
+
+  .ff-table td {
+    color:#444;
   }
-  .searchBar{
-    width: 100%!important;
-    background: rgba(0, 0, 0, 0.2)!important;
-    color: #fff;
-    padding-left: 5%;
-  }
-  .searchBarWrapper{
-    background: transparent;
-    box-shadow: 0px 0px 0px 0px!important;
-  }
-  .support-index {
-    margin-left:1em;
-  }
+
 </style>
