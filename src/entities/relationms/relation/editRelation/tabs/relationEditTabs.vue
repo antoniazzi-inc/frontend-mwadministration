@@ -12,7 +12,9 @@
       </li>
       <li class="nav-item tab-nav" @click="currentTab = 'tasks'">
         <a :class="{'nav-link': true, 'active': currentTab === 'tasks'}" id="tasks-tab" data-toggle="tab"
-           href="#tasks" role="tab" aria-controls="tasks" aria-selected="false">{{$t('labels.tasks')}}</a>
+           href="#tasks" role="tab" aria-controls="tasks" aria-selected="false">
+          {{$t('labels.tasks')}}
+        </a>
       </li>
       <li class="nav-item tab-nav" @click="currentTab = 'contactHistory'">
         <a :class="{'nav-link': true, 'active': currentTab === 'contactHistory'}" id="contactHistory-tab"
@@ -65,5 +67,10 @@
     position: absolute;
     right: 0;
     top: 0;
+  }
+  .tasks-need-attention::after {
+    content: " !!";
+    background-color: red;
+    color: white;
   }
 </style>

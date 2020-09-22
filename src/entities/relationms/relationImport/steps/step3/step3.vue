@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-12">
       <p v-html="$t('labels.importInfo')"></p>
-      <div class="row" style="margin-top:2em;">
+      <div class="row" style="margin-top:0em;">
         <div class="col-md-4 pre-scrollable">
           <div class="well" v-for="(cardinfo, ind) in $props.exampleCards" :key="ind">
             <template v-for="(card, index) in cardinfo">
@@ -16,31 +16,70 @@
             </template>
           </div>
         </div>
+
         <div class="col-md-8">
-          <div class="row list-separated justify-content-center">
-            <div class="col-md-3 col-sm-3 col-xs-3 text-center">
-              <div class="font-grey-mint font-sm" v-html="$t('labels.rowsInFile')">rijen in bestand</div>
-              <div class="uppercase font-hg text-success impsumm">{{$props.totalRows}}</div>
+          <div class="tablos">
+            <div class="row">
+              <div class="col-sm-4">
+                <a class="element-box el-tablo centered trend-in-corner padded bold-label" href="apps_support_index.html">
+                  <div class="value">
+                    {{$props.totalRows}}
+                  </div>
+                  <div class="label">
+                    {{$t('labels.rowsInFile')}}
+                  </div>
+                </a>
+              </div>
+              <div class="col-sm-4">
+                <a class="element-box el-tablo centered trend-in-corner padded bold-label" href="apps_support_index.html">
+                  <div class="value">
+                    {{$props.duplicateEmailsFound}}
+                  </div>
+                  <div class="label">
+                    {{$t('labels.duplicates')}}
+                  </div>
+                </a>
+              </div>
+              <div class="col-sm-4">
+                <a class="element-box el-tablo centered trend-in-corner padded bold-label" href="apps_support_index.html">
+                  <div class="value">
+                    {{$props.invalidEmails.length}}
+                  </div>
+                  <div class="label">
+                    {{$t('labels.invalidEmails')}}
+                  </div>
+                </a>
+              </div>
             </div>
-            <div class="col-md-3 col-sm-3 col-xs-3 text-center">
-              <div class="font-grey-mint font-sm" v-html="$t('labels.duplicates')"></div>
-              <div v-if="$props.duplicateEmailsFound == 0" class="uppercase font-hg text-success impsumm">0</div>
-              <div v-else class="uppercase font-hg text-danger impsumm">{{$props.duplicateEmailsFound}}</div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-3 text-center">
-              <div class="font-grey-mint font-sm" v-html="$t('labels.invalidEmails')"></div>
-              <div v-if="$props.invalidEmails.length === 0" class="uppercase font-hg text-success impsumm">0</div>
-              <div v-else class="uppercase font-hg text-danger impsumm">{{$props.invalidEmails.length}}</div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-3 text-center">
-              <div class="font-grey-mint font-sm" v-html="$t('labels.existing')"></div>
-              <div class="uppercase font-hg text-success impsumm">{{$props.numberOfExisingEmails}}</div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-3 text-center">
-              <div class="font-grey-mint font-sm" v-html="$t('labels.toBeImported')"></div>
-              <div class="uppercase font-hg text-success impsumm">{{calculateImport()}}</div>
+            <div class="row">
+              <div class="col-sm-4">
+                <a class="element-box el-tablo centered trend-in-corner padded bold-label" href="apps_support_index.html">
+                  <div class="value">
+                    {{$props.numberOfExisingEmails}}
+                  </div>
+                  <div class="label">
+                    {{$t('labels.existing')}}
+                  </div>
+                </a>
+              </div>
+              <div class="col-sm-4">
+                <a class="element-box el-tablo centered trend-in-corner padded bold-label" href="apps_support_index.html">
+                  <div class="value">
+                    {{calculateImport()}}
+                  </div>
+                  <div class="label">
+                    {{$t('labels.toBeImported')}}
+                  </div>
+                </a>
+              </div>
+              <div class="col-sm-4">
+
+              </div>
             </div>
           </div>
+        </div>
+
+        <div class="col-md-8">
           <p style="margin: 1em;" v-if="$props.newGroup!==''">{{$t("labels.newGroupInfo")}} {{newGroup}}.</p>
           <br>
           <div v-if="$props.duplicateEmailsList && $props.duplicateEmailsList.length > 0">

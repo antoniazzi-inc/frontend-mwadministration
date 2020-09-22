@@ -6,7 +6,7 @@
         <p v-html="$t('labels.handleRowColumnQuestInfo')"></p>
       </div>
     </div>
-    <div class="col-md-12 overflowX mt-5 text-center">
+    <div class="col-md-12 overflowX mt-1 text-center">
       <div class="fieldsHolder">
         <div class="importTableCell m-2 align-content-between" v-for="(row,index) in headerRow" :key="index + 'title'">
           <span>{{ row }}</span>
@@ -20,14 +20,14 @@
     </div>
       <div class="col-md-12 mt-5">
         <h3 v-html="$t('labels.whatShouldWeDoWithEachImportedRel')"></h3>
-        <div class="row justify-content-center">
+        <div class="row">
           <div class="col-md-8">
             <form class="form-horizontal" role="form" style="margin-top:2em">
               <div class="form-body">
                 <div class="form-group row">
                   <label class="col-md-4 control-label" v-html="$t('labels.addToGroup')"></label>
                   <div class="col-md-8">
-                    <label>{{$t('labels.defaultGroup')}}</label>
+                    <!-- <label>{{$t('labels.defaultGroup')}}</label> -->
                     <searchable-select-component :config="searchableConfigGroups"
                                                  :value="selectedGroup"
                                                  :options="[...$store.state.lookups.groups, {

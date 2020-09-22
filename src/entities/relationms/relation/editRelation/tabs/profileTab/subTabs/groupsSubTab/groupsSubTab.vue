@@ -14,13 +14,13 @@
           :group="{ name: 'groups', pull: pullFunction }"
           @start="start"
         >
-          <div class="list-group-item  mt-2 mb-2 cursor-pointer" v-for="element in relationCopy.relationGroups" :key="element.id">
+          <div class="list-group-item mt-2 mb-2 mr-2 cursor-pointer" v-for="element in relationCopy.relationGroups" :key="element.id">
             <button type="button" class="ml-2 mb-1 close" @click="removeGroup(element)" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
             <i class="fas fa-users"></i>
             <span class="text-left col-md-8">{{element.label}}</span>
-            <span class="text-right col-md-3">{{element.id}} - {{element.categoryId}}</span>
+            <!-- <span class="text-right col-md-3">{{element.id}} - {{element.categoryId}}</span> -->
           </div>
         </draggable>
       </div>
@@ -37,7 +37,7 @@
           <div class="list-group-item mt-2 mb-2 cursor-pointer" v-for="element in allGroups" :key="element.id">
             <i class="fas fa-users"></i>
             <span class="text-left col-md-8">{{element.label}}</span>
-            <span class="text-right col-md-3">{{element.id}} - {{element.categoryId}}</span>
+            <!-- <span class="text-right col-md-3">{{element.id}} - {{element.categoryId}}</span> -->
           </div>
         </draggable>
       </div>

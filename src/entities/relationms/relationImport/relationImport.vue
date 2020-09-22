@@ -8,7 +8,7 @@
               <h2 id="page-heading" class="text-left mt-3">
                 <span id="tag-heading">{{$t('labels.importRelations')}}</span>
                 <router-link to="/relations" class="text-decoration-none text-white">
-                  <button tag="button" class="btn btn-secondary float-right create-tag">
+                  <button tag="button" class="btn btn-primary float-right create-tag">
                     <span>{{$t('labels.backToRelations')}}</span>
                   </button>
                 </router-link>
@@ -95,25 +95,20 @@
                   <div class="col-md-2">
                     <div class="portlet light">
                       <div class="portlet-title">
-                        <div class="caption">
-                          <i class="caption-subject bold fa fa-tachometer font-blue-madison"> </i>
-                          <span class="caption-subject bold font-blue-madison uppercase"
-                                v-html="$t('labels.overviewInfo')"></span>
-                        </div>
-                      </div>
-                      <div class="portlet-body">
-                        <div id="importStatus">
-                          <h4 class="first-status" v-html="$t('labels.file')">File</h4>
-                          <p>{{filename()}}</p>
-                          <h4 v-html="$t('labels.addToGroup')"></h4>
-                          <p>{{selectedGroup ? selectedGroup.label : newGroup}}</p>
-                          <h4 v-html="$t('labels.overwrite')"></h4>
-                          <p>{{overwrite ? $t('labels.yes') : $t('labels.no')}}</p>
-                          <h4 v-html="$t('labels.rows')"></h4>
-                          <p>{{foundRows()}} {{$t('labels.rowsFound')}}</p>
-                          <h4 v-if="duplicateEmailsFound > 0" v-html="$t('labels.importrels_remarks')"></h4>
-                          <p class="font-red-flamingo" v-if="duplicateEmailsFound > 0">{{duplicateEmailsFound}}
-                            {{$t('labels.importrels_duplicate_emails_found')}}</p>
+                        <div class="portlet-body">
+                          <div id="importStatus">
+                            <h4 class="first-status" v-html="$t('labels.file')">File</h4>
+                            <p>{{filename()}}</p>
+                            <h4 v-html="$t('labels.addToGroup')"></h4>
+                            <p>{{selectedGroup ? selectedGroup.label : newGroup}}</p>
+                            <h4 v-html="$t('labels.overwrite')"></h4>
+                            <p>{{overwrite ? $t('labels.yes') : $t('labels.no')}}</p>
+                            <h4 v-html="$t('labels.rows')"></h4>
+                            <p>{{foundRows()}}</p>
+                            <h4 v-if="duplicateEmailsFound > 0" v-html="$t('labels.importrels_remarks')"></h4>
+                            <p class="font-red-flamingo" v-if="duplicateEmailsFound > 0">{{duplicateEmailsFound}}
+                              {{$t('labels.importrels_duplicate_emails_found')}}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -125,7 +120,6 @@
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 <script type="tsx" lang="ts" src="./relationImport.component.ts"/>
@@ -187,12 +181,20 @@
   #importStatus h4 {
     border-top: 1px dashed #D0D0D0;
     width: 90%;
+    text-transform: uppercase;
     padding-top: 1em;
+    font-size: 1.0em;
+    color: #909090;
+  }
+
+  #importStatus p {
+    font-size: 1.2em;
+    color: #202020;
   }
 
   #importStatus h4.first-status {
     border: 0px;
-    padding-top: 0em;
+    padding-top: 2.4em;
   }
 
   .table-bordered td {

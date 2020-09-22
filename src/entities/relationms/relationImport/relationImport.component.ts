@@ -87,6 +87,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
 
   public mounted() {
     this.importFields = this.relationFields()
+    //localStorage.removeItem('isImporting')
   }
 
   /*Call when user is populating the fields*/
@@ -358,7 +359,7 @@ export default class RelationImportComponent extends mixins(CommonHelpers, Vue) 
       setTimeout(function () {
         let ind = 0
         self.uniqueRows.forEach((row, index) => {
-          if(index < 6){
+          if(index < 5){
             let example:any = []
             self.mappings.forEach((map:any, ind:any)=>{
               example.push({label: map.fieldName, value: row[map.rowIndex]})
