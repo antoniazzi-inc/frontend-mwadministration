@@ -9,11 +9,10 @@
       <div v-else class="loader">
         <div class="row align-items-center justify-content-center fullHeight">
           <div class="col-md-12">
-            <div class="spinner-grow text-primary" role="status">
-              <span class="sr-only">Loading...</span>
+            <div class="spinner-grow text-primary" style="margin-left:49%; margin-bottom:2em;" role="status">
             </div>
             <div class="row">
-              <div class=" col-md-12 text-center blink">
+              <div class=" col-md-12 text-center blink" style="font-size:2em; color:#909090">
                 {{$t('labels.loading')}}<span class="animate-flicker">...</span>
               </div>
             </div>

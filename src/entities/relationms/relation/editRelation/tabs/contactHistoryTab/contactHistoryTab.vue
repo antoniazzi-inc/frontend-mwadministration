@@ -1,32 +1,34 @@
 <template>
-  <div class="row m-3">
+  <div class="row m-1 tab-form-panel">
     <div class="col-md-12">
-      <div class="pipeline-header row">
-        <h5 class="pipeline-name col-md-2 p-0 ml-3" style="line-height: 2">{{$t('labels.contacts')}}</h5>
+
+      <!--
         <div class="menu-w menu-position-top menu-layout-mini sub-menu-style-over searchBarWrapper col-md-6 mt-1 pb-4"
              v-if="relationCopy.relationCustomFields && relationCopy.relationCustomFields.length>0">
           <div class="element-search autosuggest-search-activator">
             <input class="searchBar" :placeholder="$t('labels.searchForContacts')" @input="searchContacts" type="text" v-model="searchString">
           </div>
         </div>
-        <div class="col-md-3 text-right">
-          <span @click="addNewContact" v-if="!editMode" class="btn btn-outline-primary" style="cursor: pointer">
-            <i class="fa fa-plus"/>
-          </span>
+      -->
+
+      <div class="d-flex justify-content-between mb-3">
+        <div class="p-2" style="width:50%">
+          <input class="form-control" :placeholder="$t('labels.searchForContacts')" @input="searchContacts()" type="text" v-model="searchString">
+        </div>
+        <div class="p-2">
+          <button tag="button" v-if="!editMode" data-toggle="modal" class="btn btn-primary float-right create-button" @click="addNewContact">
+            <i class="fas fa-plus"/>  <span>{{$t('buttons.add')}}</span>
+          </button>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          <hr/>
-        </div>
-      </div>
-      <div class="pipeline white">
+
+      <div>
         <div class="pipeline-body text-left">
-          <contact-widget :relation="relationCopy" @update="retrieveRelation" v-model="relationCopy.contactHistories"
-                          v-if="relationCopy && relationCopy.contactHistories && relationCopy.contactHistories.length > 0"/>
+          <contact-widget :relation="relationCopy" @update="retrieveRelation" v-model="relationCopy.contactHistories" v-if="relationCopy && relationCopy.contactHistories && relationCopy.contactHistories.length > 0"/>
           <span v-else>{{$t('labels.noContactHistories')}}</span>
         </div>
       </div>
+
     </div>
   </div>
 </template>

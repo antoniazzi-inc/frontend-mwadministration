@@ -1,28 +1,30 @@
 <template>
   <div>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" @click="currentSubTab = 'general'">
+      <li class="nav-item subtab" @click="currentSubTab = 'general'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'general'}" id="general-tab" data-toggle="tab"
            href="#general" role="tab" aria-controls="general" aria-selected="true">{{$t('labels.general')}}</a>
       </li>
+      <!--
       <li class="nav-item" @click="currentSubTab = 'company'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'company'}" id="company-tab" data-toggle="tab"
            href="#company" role="tab" aria-controls="company" aria-selected="false">{{$t('labels.company')}}</a>
       </li>
-      <li class="nav-item" @click="currentSubTab = 'tags'">
+      -->
+      <li class="nav-item subtab" @click="currentSubTab = 'tags'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'tags'}" id="tags-tab" data-toggle="tab"
            href="#tags" role="tab" aria-controls="tags" aria-selected="false">{{$t('labels.tags')}}</a>
       </li>
-      <li class="nav-item" @click="currentSubTab = 'contacts'">
+      <li class="nav-item subtab" @click="currentSubTab = 'contacts'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'contacts'}" id="contacts-tab"
            data-toggle="tab" href="#contacts" role="tab" aria-controls="contacts" aria-selected="false">
           {{$t('labels.contacts')}}</a>
       </li>
-      <li class="nav-item" @click="currentSubTab = 'groups'">
+      <li class="nav-item subtab" @click="currentSubTab = 'groups'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'groups'}" id="groups-tab" data-toggle="tab"
            href="#groups" role="tab" aria-controls="groups" aria-selected="false">{{$t('labels.groups')}}</a>
       </li>
-      <li class="nav-item" @click="currentSubTab = 'freeFields'">
+      <li class="nav-item subtab" @click="currentSubTab = 'freeFields'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'freeFields'}" id="freeFields-tab" data-toggle="tab"
            href="#freeFields" role="tab" aria-controls="freeFields"
            aria-selected="false">{{$t('labels.freeFieldsMenu')}}</a>
@@ -34,7 +36,7 @@
            href="#customer" role="tab" aria-controls="customer" aria-selected="false">{{$t('labels.customer')}}</a>
       </li>
       -->
-      <li class="nav-item" @click="currentSubTab = 'affiliates'">
+      <li class="nav-item subtab" @click="currentSubTab = 'affiliates'">
         <a :class="{'nav-link': true, 'active': currentSubTab === 'affiliates'}" id="affiliates-tab" data-toggle="tab"
            href="#affiliates" role="tab" aria-controls="affiliates"
            aria-selected="false">{{$t('labels.affiliates')}}</a>
@@ -89,3 +91,9 @@
   </div>
 </template>
 <script type="ts" src="./profileTab.component.ts"></script>
+
+<style scoped>
+  .subtab a {
+    font-weight: 800;
+  }
+</style>

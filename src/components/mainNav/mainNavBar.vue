@@ -78,13 +78,24 @@
         </div>
       </form>
       <ul class="navbar-nav">
+
         <li class="nav-item dropdown">
-          <router-link class="nav-link" id="notifications" to="" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="main-menu-icon os-icon os-icon-mail-14"></i>
+          <router-link class="nav-link" id="notifications" to="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="new-messages-count">6</div>
+            <i class="main-menu-icon os-icon os-icon-zap"></i>
           </router-link>
           <div class="dropdown-menu" style="left:-8em;" aria-labelledby="notifications">
             <h3 class="menu-title">{{$t('labels.notifications')}}</h3>
+          </div>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <router-link class="nav-link" id="recentedits" to="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="main-menu-icon os-icon os-icon-mail-14"></i>
+          </router-link>
+          <div class="dropdown-menu" style="left:-8em;" aria-labelledby="recentedits">
+            <h3 class="menu-title">Recent Items</h3>
           </div>
         </li>
       </ul>
@@ -377,5 +388,21 @@
   }
   .nav-link {
     color: white!important;
+  }
+
+  .new-messages-count {
+    background-color: #e65252;
+    color: #fff;
+    min-width: 20px;
+    text-align: center;
+    border-radius: 6px;
+    font-weight: 800;
+    position: absolute;
+    top: -2px;
+    right: 5px;
+    padding: 4px 4px;
+    vertical-align: middle;
+    font-size: 0.72rem;
+    line-height: 1;
   }
 </style>
