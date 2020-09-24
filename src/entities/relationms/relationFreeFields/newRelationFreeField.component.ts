@@ -278,7 +278,7 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
             if (resp) {
               this.setAlert('freeFieldCreated', 'success')
               if (this.goBackTo !== null) {
-                this.$router.push('/relations/edit' + this.goBackTo + '?tab=freeFields')
+                this.$router.push(`/relations/edit/${this.goBackTo}?tab=freeFields`)
               } else {
                 this.cancel()
               }

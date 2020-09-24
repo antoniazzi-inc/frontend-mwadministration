@@ -29,6 +29,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
   public relationService: any
   public dateConfig: any
   public birthDate: any
+  public validationRegEx: any
   public allLanguages: any[]
   public relationProfile: IRelationProfile
   public relation: IRelationEntity
@@ -38,6 +39,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     super()
     this.birthDate = null
     this.currentTab = 'profile'
+    this.validationRegEx = '^([\x00-\x7F]+)$'
     this.relationProfile = new RelationProfile()
     this.relation = new RelationEntity()
     this.relationCategory = null
@@ -49,8 +51,8 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     this.dateConfig = {
       wrap: false,
       altInput: false,
-      dateFormat: 'Y-m-d',
-      altFormat: 'Y-M-d',
+      dateFormat: 'd-m-Y',
+      altFormat: 'd-m-Y',
       maxDate: moment().subtract(18, 'years').format(DATE_FORMAT)
     }
   }
@@ -74,7 +76,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     if (newVal.relationProfile && newVal.relationProfile.birthDate) {
       const self = this
       Vue.nextTick(function () {
-        self.birthDate = self.relationProfile.birthDate
+        self.birthDate = moment(self.relationProfile.birthDate).format(DATE_FORMAT)
       })
     }
   }
@@ -118,11 +120,13 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
       if (result) {
         const dto = this.relation
         if (dto && dto.relationProfile && this.birthDate) {
-          dto.relationProfile.birthDate = moment(this.birthDate).add(1, 'days').format(DATE_FORMAT)
+          dto.relationProfile.birthDate = moment(this.birthDate).add(1, 'days').format('YYYY-MM-DD')
         }
         if (self.relationCategory && self.relationCategory.id) {
           if (dto && dto.relationProfile) dto.relationProfile.categoryId = self.relationCategory.id
         }
+        dto.relationAddresses = undefined
+        dto.relationPhones = undefined
         this.relationService.put(dto).then((resp: AxiosResponse) => {
           if (resp) {
             this.$emit('updateRel', resp.data)
@@ -130,6 +134,7 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
           } else {
             this.setAlert('relationUpdateError', 'error')
           }
+        }).catch((e:any)=>{
         })
       }
     })

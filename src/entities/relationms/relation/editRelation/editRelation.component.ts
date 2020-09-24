@@ -17,6 +17,9 @@ import RelationEditTabsComponent from '@/entities/relationms/relation/editRelati
       if (to.params.id) {
         vm.retrieveItem(to.params.id)
       }
+      if (to.query.tab && to.query.tab === 'freeFields') {
+        vm.activeSubTab = 'freeFields'
+      }
     })
   },
   props: {
@@ -26,11 +29,15 @@ import RelationEditTabsComponent from '@/entities/relationms/relation/editRelati
 export default class EditRelationComponent extends mixins(Vue, CommonHelpers) {
   public relation: any;
   public relationService: any;
+  public activeSubTab: any;
+  public activeTab: any;
 
   constructor () {
     super()
     this.relation = new RelationEntity()
     this.relationService = RelationService.getInstance()
+    this.activeSubTab = 'general'
+    this.activeTab = 'profile'
   }
 
   public retrieveItem (id: number) {

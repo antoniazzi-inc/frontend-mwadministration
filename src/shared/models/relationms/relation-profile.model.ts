@@ -9,6 +9,7 @@ export interface IRelationProfile extends IBaseEntity{
     description?: string;
     title?: string;
     website?: string;
+    companyName?: string;
     points?: number;
     birthDate?: Moment|Date|string;
     gender?: string;
@@ -29,6 +30,7 @@ export class RelationProfile implements IRelationProfile {
         public description?: string,
         public title?: string,
         public website?: string,
+        public companyName?: string,
         public points?: number,
         public birthDate?: Moment|Date|string,
         public gender?: string,

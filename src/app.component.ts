@@ -198,7 +198,8 @@ export default class App extends mixins(Vue, CommonHelpers) {
       this.customFieldService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
         const freeFields: any = []
-        resp.data.content?.forEach((field: any) => {
+        if(resp.data && resp.data.content)
+        resp.data.content.forEach((field: any) => {
           freeFields.push({
             label: this.getMultiLangName(field.customFieldLanguages).name,
             value: field
@@ -246,14 +247,14 @@ export default class App extends mixins(Vue, CommonHelpers) {
     public async getLookups (newVal: any) {
       if (newVal) {
         this.isReady = false
-        await this.connectSockets()
         this.populateLookups()
+        this.connectSockets().then(resp=>{})
       }
     }
 
     @Watch('counter', { immediate: true, deep: true })
     public changeReady (newVal: any) {
-      if (newVal > 20) {
+      if (newVal > 17) {
         this.isReady = true
       }
     }
@@ -285,26 +286,19 @@ export default class App extends mixins(Vue, CommonHelpers) {
     connectSockets () {
       return new Promise(resolve => {
         this.sockets.connect().then(()=>{
-          this.counter++
           this.relationSocket.connectRelation().then(()=>{
-            this.counter++
             this.productSocket.connectProduct().then(()=>{
               resolve()
-              this.counter++
             }).catch(e=>{
-              this.counter++
-              resolve()
+              resolve(e)
             })
           }).catch(e=>{
-            this.counter++
-            resolve()
+            resolve(e)
           })
         }).catch(e=>{
-          this.counter++
-          resolve()
+          resolve(e)
         })
       })
-
     }
     retrieveAccount () {
       this.accountService.retrieveAccount().then(async account => {

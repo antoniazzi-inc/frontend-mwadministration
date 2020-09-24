@@ -13,7 +13,8 @@ const setupAxiosInterceptors = (onUnauthenticated: any) => {
     return response
   }
   const onResponseError = async (err: any) => {
-    onUnauthenticated(err.response)
+    onUnauthenticated(err.error)
+    return err
   }
   axios.defaults.withCredentials = true
   axios.defaults.headers.common = {

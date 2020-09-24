@@ -76,6 +76,7 @@ export default class InvoiceComponent extends (CommonHelpers) {
       }
     }
   }
+
   public getAllCustomFields(orderLines:any){
     let allCustomFields:any = []
     orderLines.forEach((orderLine: any) => {

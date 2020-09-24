@@ -44,12 +44,7 @@ export default class ProfileTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public mounted () {
-    const url = window.location.href
-    if (url.match('tab=freeFields')) {
-      this.changeTab('freeFields')
-    } else {
-      this.changeTab(this.$props.activeTab)
-    }
+
   }
 
   @Watch('activeSubTab', { immediate: true, deep: true })

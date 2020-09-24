@@ -12,7 +12,8 @@ import { IRelationEntity } from '@/shared/models/relationms/relationModel'
 @Component({
   props: {
     activeTab: String,
-    relation: Object
+    relation: Object,
+    activeSubTab: String,
   },
   components: {
     ProfileTabComponent,
@@ -30,9 +31,20 @@ export default class RelationEditTabsComponent extends mixins(Vue, CommonHelpers
     this.currentTab = 'profile'
     this.currentSubTab = 'general'
   }
-
+  @Watch('activeTab', {immediate: true})
+  public updateActiveTab(newVal:any){
+    if(newVal){
+      this.currentTab = newVal
+    }
+  }
+  @Watch('activeSubTab', {immediate: true})
+  public updateSubActiveTab(newVal:any){
+    if(newVal){
+      this.currentSubTab = newVal
+    }
+  }
   public mounted () {
-    this.changeTabs('profile', this.$props.activeTab)
+   // this.changeTabs(this.$props.activeTab, this.$props.activeSubTab)
   }
 
   public changeTabs (tab: string, subTab: string) {

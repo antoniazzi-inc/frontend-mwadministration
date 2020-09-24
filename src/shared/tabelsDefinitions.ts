@@ -792,17 +792,17 @@ export const users = {
       authorities: ['*'],
       sort: false,
       method: function (newVal: any) {
-        let result = ''
+        let result:any = []
         if (newVal && newVal.roles) {
           newVal.roles.forEach((role: any, ind: number) => {
-            if (ind < newVal.roles?.length - 1) {
-              result += role.name + ', '
+            if (ind < newVal.roles?.length - 1 && role.code !== 'ROLE_USER'&& role.code !== 'ROLE_ADMIN') {
+              result.push(role.name)
             } else {
-              result += role.name
+              if(role.code !== 'ROLE_USER' && role.code !== 'ROLE_ADMIN') result.push(role.name)
             }
           })
         }
-        return result
+        return result.join()
       }
     }
   ]
@@ -1778,7 +1778,6 @@ export const relationOrders = {
       subField: null,
       sort: false,
       method: function (item:any) {
-        debugger
         let productNames:any = []
         item.orderLines.forEach((item:any)=>{
           if(item.orderProduct && item.orderProduct.productName)

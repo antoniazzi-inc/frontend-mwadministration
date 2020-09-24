@@ -5,25 +5,25 @@
         <div class="col-sm-2">
           <label>{{$t('labels.title')}}</label>
           <input type="text" :class="{'form-control': true, invalid: errors.has('title')}" v-model="relationProfile.title"
-                name="title" v-validate="'alpha|max:225'" :placeholder="$t('labels.title')">
+                name="title" v-validate="{max:225, regex:validationRegEx}" :placeholder="$t('labels.title')">
           <span class="text-danger small">{{errors.first('title')}}</span>
         </div>
         <div class="col-sm-4">
           <label>{{$t('labels.firstName')}}</label>
           <input type="text" :class="{'form-control': true, invalid: errors.has('firstName')}" v-model="relationProfile.firstName"
-                 name="firstName" v-validate="'alpha|max:100'" :placeholder="$t('labels.firstName')">
+                 name="firstName" v-validate="{max:100, regex:validationRegEx}" :placeholder="$t('labels.firstName')">
           <span class="text-danger small">{{errors.first('firstName')}}</span>
         </div>
         <div class="col-sm-2">
           <label>{{$t('labels.middleName')}}</label>
           <input type="text" :class="{'form-control': true, invalid: errors.has('middleName')}" v-model="relationProfile.middleName"
-                 name="middleName" v-validate="'alpha_spaces|max:20'" :placeholder="$t('labels.middleName')">
+                 name="middleName" v-validate="{max:20, regex:validationRegEx}" :placeholder="$t('labels.middleName')">
           <span class="text-danger small">{{errors.first('middleName')}}</span>
         </div>
         <div class="col-sm-4">
           <label>{{$t('labels.lastName')}}</label>
           <input type="text" :class="{'form-control': true, invalid: errors.has('lastName')}" v-model="relationProfile.lastName"
-                 name="lastName" v-validate="'alpha|max:100'" :placeholder="$t('labels.lastName')">
+                 name="lastName" v-validate="{max:225, regex:validationRegEx}" :placeholder="$t('labels.lastName')">
           <span class="text-danger small">{{errors.first('lastName')}}</span>
         </div>
       </div>
@@ -35,7 +35,7 @@
               <span class="input-group-text">@</span>
             </div>
             <input type="email" :class="{'form-control': true, invalid: errors.has('email')}" v-model="relation.email"
-                   name="email" v-validate="'email|max:225'" :placeholder="$t('labels.email')">
+                   name="email" v-validate="'email|max:225|required'" :placeholder="$t('labels.email')">
           </div>
             <span class="text-danger small">{{errors.first('email')}}</span>
         </div>
@@ -105,8 +105,8 @@
         </div>
         <div class="col">
           <label>{{$t('labels.company')}}</label>
-          <input type="text" :class="{'form-control': true, invalid: errors.has('middleName')}" name="companyName"/>
-          <span class="text-danger small">{{errors.first('middleName')}}</span>
+          <input v-model="relationProfile.companyName" type="text" :class="{'form-control': true, invalid: errors.has('companyName')}" name="companyName"/>
+          <span class="text-danger small">{{errors.first('companyName')}}</span>
         </div>
       </div>
       <div class="form-row mt-3">

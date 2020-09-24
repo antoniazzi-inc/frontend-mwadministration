@@ -102,7 +102,7 @@
         </div>
       </div>
       <div class="col-md-9">
-        <relation-edit-tabs-component :relation="relation" ref="editTabs"
+        <relation-edit-tabs-component :relation="relation" ref="editTabs" :activeTab="activeTab" :activeSubTab="activeSubTab"
                                       @updateRel="updateRelation"></relation-edit-tabs-component>
       </div>
     </div>

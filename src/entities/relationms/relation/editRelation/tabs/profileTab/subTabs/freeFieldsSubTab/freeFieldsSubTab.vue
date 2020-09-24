@@ -35,7 +35,7 @@
           </thead>
           <tbody>
           <template v-for="(item, index) in relationCopy.relationCustomFields">
-            <tr>
+            <tr :key="index">
               <td>
                 {{getName(item.customField.customFieldLanguages)}}
               </td>

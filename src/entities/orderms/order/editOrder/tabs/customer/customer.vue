@@ -12,6 +12,7 @@
                     {{ item['name'] }}
                   </option>
                 </select>
+
               </div>
               <div class="col-md-6 form-group" v-if="orderCopy.orderCustomer && orderCopy.orderCustomer.fullName">
                   <label class="form-control-label">{{ $t('labels.name') }}</label>

@@ -151,6 +151,10 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         lookupName = 'groups'
         break
       case 'customfield':
+        obj.content = {
+          label: this.getMultiLangName(obj.content.customFieldLanguages).name,
+          value: obj.content
+        }
         lookupData = this.store.state.lookups.freeFields
         lookupName = 'freeFields'
         break

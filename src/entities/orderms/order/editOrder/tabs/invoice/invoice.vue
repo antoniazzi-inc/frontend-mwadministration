@@ -57,7 +57,7 @@
                         </div>
                         <div class="ticket-content">
                           <h6 class="ticket-title">
-                            {{item.name}} : {{item.result}}
+                            {{item.name}} : {{item.result }}
                           </h6>
                           <div class="ticket-description">
                             <span class="label">{{$t('labels.fieldType')}}: </span> <i

@@ -49,6 +49,14 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
 
   public allFields: ICustomField[] = [];
 
+  @Watch('active', { immediate: true, deep: true })
+  public changeActive (newVal: any) {
+    let url = window.location.href
+    if(url.includes('tab=freeFields')) {
+      this.editMode = true
+      this.addNewField = true
+    }
+  }
   @Watch('rel', { immediate: true, deep: true })
   public fillRel (newVal: any) {
     this.relationCopy = JSON.parse(JSON.stringify(newVal))
@@ -123,26 +131,27 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
       let toSkip = false
       if (self.relationCopy) {
         $.each(self.relationCopy.relationCustomFields, function (key, val: any) {
-          if (val.customField.id === v.id) {
+          if (val.customField.id === v.value.id) {
             toSkip = true
           }
         })
       }
       if (!toSkip) {
         all.push({
-          code: v.code,
-          customFieldLanguages: v.customFieldLanguages,
-          customFieldOptions: v.customFieldOptions,
-          createdOn: v.createdOn,
-          updatedOn: v.updatedOn,
-          customFieldType: v.customFieldType,
-          id: v.id,
-          gdprSpecialField: v.gdprSpecialField,
-          version: v.version,
-          administrationId: v.administrationId,
-          userEditable: v.userEditable,
-          userVisible: v.userVisible,
-          name: v.customFieldLanguages && v.customFieldLanguages.length > 0 ? v.customFieldLanguages[0].name : ''
+          label: self.getMultiLangName(v.value.customFieldLanguages).name,
+          code: v.value.code,
+          customFieldLanguages: v.value.customFieldLanguages,
+          customFieldOptions: v.value.customFieldOptions,
+          createdOn: v.value.createdOn,
+          updatedOn: v.value.updatedOn,
+          customFieldType: v.value.customFieldType,
+          id: v.value.id,
+          gdprSpecialField: v.value.gdprSpecialField,
+          version: v.value.version,
+          administrationId: v.value.administrationId,
+          userEditable: v.value.userEditable,
+          userVisible: v.value.userVisible,
+          name: self.getMultiLangName(v.value.customFieldLanguages).name
         })
       }
     })
@@ -199,7 +208,7 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
   }
 
   public navigateToFieds () {
-    if (this.relationCopy) this.$router.push('/relations-free-fields/new?tab=' + this.relationCopy.id)
+    if (this.relationCopy) this.$router.push('/relations-free-fields/new?rel=' + this.relationCopy.id)
   }
 
   public addField (field: any) {

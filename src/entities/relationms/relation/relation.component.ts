@@ -140,7 +140,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
           value: this.currentSearchCategory,
           inBetweenOperator: '==',
           afterOperator: '',
-          exactSearch: false
+          exactSearch: true
         }]
       })
     }

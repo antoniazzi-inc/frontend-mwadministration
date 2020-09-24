@@ -24,18 +24,21 @@
                       <div :key="ind" class="row text-left">
                         <div class="form-group col-md-3">
                           <label v-if="ind === 0" for="firstName">{{$t('labels.firstName')}}</label>
-                          <input type="text" v-model="item.relationProfile.firstName"
+                          <input type="text" v-validate="{regex: validationRegEx}" v-model="item.relationProfile.firstName"
                                  class="form-control mb-2 mr-sm-2" id="firstName" placeholder="First Name">
+                          <span class="small text-danger">{{errors.first('First Name')}}</span>
                         </div>
                         <div class="form-group col-md-2">
                           <label v-if="ind === 0" for="middleName">{{$t('labels.middleName')}}</label>
-                          <input type="text" v-model="item.relationProfile.middleName"
+                          <input type="text" v-validate="{regex: validationRegEx}" v-model="item.relationProfile.middleName"
                                  class="form-control mb-2 mr-sm-2" id="middleName" placeholder="Middle Name">
+                          <span class="small text-danger">{{errors.first('Middle Name')}}</span>
                         </div>
                         <div class="form-group col-md-3">
                           <label v-if="ind === 0" for="lastName">{{$t('labels.lastName')}}</label>
-                          <input type="text" v-model="item.relationProfile.lastName"
+                          <input type="text" v-validate="{regex: validationRegEx}" v-model="item.relationProfile.lastName"
                                  class="form-control mb-2 mr-sm-2" id="lastName" placeholder="Last Name">
+                          <span class="small text-danger">{{errors.first('Last Name')}}</span>
                         </div>
                         <div class="form-group col-md-4">
                           <label v-if="ind === 0" for="email">{{$t('labels.email')}}</label>

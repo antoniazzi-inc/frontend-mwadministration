@@ -18,6 +18,7 @@ import { AxiosResponse } from 'axios'
 })
 export default class NewRelationComponent extends mixins(Vue, CommonHelpers) {
   public relationService: any;
+  public validationRegEx: any;
   public relations: RelationEntity[];
   public relationGroups: IRelationGroup[]
   public relationCategories: ICategoryEntity|any
@@ -31,6 +32,7 @@ export default class NewRelationComponent extends mixins(Vue, CommonHelpers) {
     this.relations[0].relationProfile = new RelationProfile()
     this.relationGroups = []
     this.relationCategories = null
+    this.validationRegEx = '^([\x00-\x7F]+)$'
     this.relationService = RelationService.getInstance()
     this.relationTags = []
     this.searchableConfigGroups = new SearchableSelectConfig('label',

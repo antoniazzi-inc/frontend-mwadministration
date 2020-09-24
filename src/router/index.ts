@@ -112,7 +112,7 @@ const routes = [
     path: '/relations/edit/:id',
     name: 'EditRelations',
     component: EditRelationComponent,
-    params: { id: null }
+    params: { id: null },
   }, {
     path: '/relations-dashboard',
     name: 'RelationsDashboard',
