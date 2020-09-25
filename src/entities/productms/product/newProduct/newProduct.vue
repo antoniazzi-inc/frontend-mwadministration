@@ -1,13 +1,22 @@
 <template>
   <div class="container-fluid text-left">
-    <form-wizard @on-complete="onComplete"
-                 :title="$t('labels.newProduct')"
-                 :subtitle="''"
-                 shape="tab"
-                 @on-change="changeTab"
-                 :start-index="step"
-                 color="#1c4cc3"
-                 error-color="#ff4949">
+    <h2 id="page-heading" class="text-left mt-3">
+      <span id="tag-heading">{{$t('labels.newProduct')}}</span>
+      <router-link to="/products" class="text-decoration-none text-white">
+        <button tag="button" class="btn btn-secondary float-right create-tag">
+          <span>{{$t('labels.backToProducts')}}</span>
+        </button>
+      </router-link>
+    </h2>
+    <div class="wizard-panel">
+      <form-wizard @on-complete="onComplete"
+         :title="''"
+         :subtitle="''"
+         shape="circle"
+         @on-change="changeTab"
+         :start-index="step"
+         color="#0a7cf8"
+         error-color="#ff4949">
       <tab-content @click="step = 0" :title="product.productType.toLowerCase() + ' ' + $t('labels.product')" icon="fas fa-user-tie">
         <div class="row justify-content-center">
           <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
@@ -235,10 +244,11 @@
           </div>
         </form>
       </tab-content>
-      <button @click="stepBack" slot="prev" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.back')}}</button>
-      <button @click="stepForward" slot="next" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.next')}}</button>
-      <button slot="finish" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.finish')}}</button>
+      <button @click="stepBack" slot="prev" class="btn btn-primary btn-lg" :disabled="isSaving" style="min-width:140px;">{{$t('buttons.back')}}</button>
+      <button @click="stepForward" slot="next" class="btn btn-primary" style="min-width:140px;" :disabled="isSaving">{{$t('buttons.next')}}</button>
+      <button slot="finish" class="btn btn-primary btn-lg" style="min-width:140px;" :disabled="isSaving">{{$t('buttons.finish')}}</button>
     </form-wizard>
+    </div>
   </div>
 </template>
 <script type="ts" src="./newProduct.component.ts"></script>
@@ -269,4 +279,5 @@
   .profile-tile{
     border-bottom: none;
   }
+
 </style>

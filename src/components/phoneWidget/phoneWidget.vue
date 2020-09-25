@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div class="pipeline-item" v-if="!editMode && !newPhone">
+    <div class="pipeline-item" v-if="!editMode && !newPhone" style="margin-bottom:12px;">
       <div class="pi-body">
         <div class="avatar">
           <i class="fa fa-home" v-if="phoneCopy.phoneType === phoneTypes.home"></i>

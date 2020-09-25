@@ -3,7 +3,7 @@
     <div class="row text-left justify-content-center">
 
       <div class="col-6">
-        <form name="editForm" class="search-banner" style="padding:1em;" role="form" @submit.prevent.stop="save()" v-if="userAccount">
+        <form name="editForm" class="search-banner" style="padding:2em;" role="form" @submit.prevent.stop="save()" v-if="userAccount">
           <h2 v-if="userAccount.id" v-text="$t('labels.editUser')"></h2>
           <h2 v-else v-text="$t('labels.createNewUser')"></h2>
           <div class="row">

@@ -1,9 +1,7 @@
 <template>
   <div>
 
-
-
-    <div class="pipeline-item" v-if="!editMode && !newAddress">
+    <div class="pipeline-item" v-if="!editMode && !newAddress" style="margin-bottom:12px;">
       <div class="pi-body">
         <div class="avatar">
           <i class="fa fa-home" v-if="addressCopy.addressType === addressTypes.home"></i>
@@ -28,7 +26,6 @@
         </div>
       </div>
     </div>
-
 
     <div v-else class="pipeline-item" >
       <div class="pi-body">
@@ -139,5 +136,5 @@
   </div>
 </template>
 <script lang="ts" src="./addressWidget.component.ts"></script>
-<style>
+<style scoped>
 </style>

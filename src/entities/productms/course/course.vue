@@ -9,7 +9,7 @@
       </router-link>
     </h2>
     <div class="row text-left">
-      <div class="col-md-3">
+      <div class="col-md-3" id="course-search">
         <form @submit.prevent.stop="search">
           <div class="form-group mt-3">
             <label>{{$t('labels.searchByName')}}</label>
@@ -54,3 +54,13 @@
   </div>
 </template>
 <script src="./course.component.ts" lang="ts"></script>
+
+<style scoped>
+#course-search {
+  border: 1px solid #e0e0e8;
+  padding: 1em;
+  background-color: #FFF;
+  margin:0em;
+  margin-top:2em;
+}
+</style>

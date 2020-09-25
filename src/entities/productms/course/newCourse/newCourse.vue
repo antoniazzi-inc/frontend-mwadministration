@@ -2,9 +2,11 @@
   <div class="container-fluid text-left">
     <div class="row">
       <div class="col-md-6">
-        <div name="editForm" novalidate v-on:submit.prevent="save()">
+        <div name="editForm" class="search-banner" style="padding:2em;" novalidate v-on:submit.prevent="save()">
           <div>
-            <h6 v-if="$props.courseId === null" class="element-header">{{$t('labels.createCourse')}}</h6>
+            <h2 v-if="$props.courseId === null" v-text="$t('labels.editCourse')"></h2>
+            <h2 v-else v-text="$t('labels.createCourse')"></h2>
+
             <div class="form-group">
               <multi-language-component
                 :config="multiLangConfigCourse"
@@ -28,11 +30,10 @@
               </div>
             </div>
             <div>
-              <div role="form" class="form" v-if="editEvent">
-                <h6 class="form-desc"
-                    v-if="selectedEvent && selectedEvent.id === null || selectedEvent && selectedEvent.id === undefined">
-                  {{$t('labels.createEvent')}}</h6>
-                <h6 class="form-desc" v-if="selectedEvent && selectedEvent.id > 0">{{$t('labels.editEvent')}}</h6>
+              <div id="newEvtForm" role="form" class="form" v-if="editEvent">
+                <h4 v-if="selectedEvent && selectedEvent.id === null || selectedEvent && selectedEvent.id === undefined">
+                  {{$t('labels.createEvent')}}</h4>
+                <h4 v-if="selectedEvent && selectedEvent.id > 0">{{$t('labels.editEvent')}}</h4>
 
                 <div class="form-group">
                   <multi-language-component
@@ -60,13 +61,13 @@
                   </div>
                 </div>
                 <div class="row" v-if="selectedEvent && selectedEvent.price !== undefined">
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div class="form-group">
                       <label>{{$t('labels.priceAddition')}}</label>
                       <money type="text" class="form-control" v-bind="moneyConfig" v-model="selectedEvent.price"/>
                     </div>
                   </div>
-                  <div class="col-md-6 text-left">
+                  <div class="col-md-8 text-left">
                     <div class="row p-0 m-0">
                       <div class="col-md-4 p-0 m-0">
                         <div class="form-group">
@@ -81,7 +82,7 @@
                         <div class="form-group">
                           <label class="form-control-label">{{$t('labels.numberOfSeats')}}</label>
                           <input class="form-control" type="number" v-model="selectedEvent.seats"
-                                 :class="{'form-control': true}"/>
+                                 :class="{'form-control': true}" style="max-width:125px;"/>
                         </div>
                       </div>
                     </div>
@@ -103,6 +104,18 @@
                     </div>
                   </div>
                 </div>
+                  <div class="col-md-12 text-center">
+                    <button type="button" id="cancel-save-event" class="btn btn-secondary"
+                            v-on:click="cancelNewEvent">
+                      <span
+                      v-text="$t('buttons.cancel')">Cancel</span>
+                    </button>
+                    <button type="button" id="save-entity-event" @click.prevent="saveNewEvent"
+                            class="btn btn-primary ml-2">
+                      <span v-text="$t('buttons.save')">Save</span>
+                    </button>
+                  </div>
+
               </div>
               <div class="row" v-if="course.events && course.events.length > 0 && !editEvent">
                 <div class="col-md-12 form-group">
@@ -153,31 +166,16 @@
                           class="btn btn-primary">
                     <i class="fa fa-calendar"></i>&nbsp;<span>{{$t('labels.addEvent')}}</span>
                   </button>
-                  <div class="row" v-if="editEvent">
-                    <div class="col-md-12">
-                      <button type="button" id="cancel-save-event" class="btn btn-secondary"
-                              v-on:click="cancelNewEvent">
-                        <i class="fas fa-ban"/>&nbsp;<span
-                        v-text="$t('buttons.cancel')">Cancel</span>
-                      </button>
-                      <button type="button" id="save-entity-event" @click.prevent="saveNewEvent"
-                              class="btn btn-primary ml-2">
-                        <span v-text="$t('buttons.save')">Save</span>
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row mt-3">
           <div class="col-md-12 text-right">
-            <button type="button" id="cancel-save" class="btn btn-secondary" v-on:click="previousState()">
+            <button type="button" id="cancel-save" class="btn btn-lg btn-secondary" v-on:click="previousState()">
               <span v-text="$t('buttons.cancel')">Cancel</span>
             </button>
             <button type="submit" id="save-entity" :disabled="editEvent || (course.events && course.events.length === 0) || course.courseLanguages.length === 0
-|| (course.courseLanguages.length && course.courseLanguages[0].name === '')" @click="save" class="btn btn-primary ml-2">
+|| (course.courseLanguages.length && course.courseLanguages[0].name === '')" @click="save" class="btn btn-lg btn-primary ml-2">
               <span v-text="$t('buttons.save')">Save</span>
             </button>
           </div>
@@ -186,15 +184,18 @@
       <div class="col-md-6">
         <div class="row" v-if="editReservations || editEvent">
           <div class="col-md-12">
+            <!--
             <div class="row text-right">
               <div class="col-md-6"></div>
               <div class="col-md-6">
                 <input type="search" class="form-control mb-2" :placeholder="$t('labels.search')" v-model="reservationsListSearch" @input="doSearchReservations()"/>
               </div>
             </div>
+            -->
             <form name="editForm" role="form" novalidate v-on:submit.prevent="save()">
               <div class="element-wrapper">
-                <h6 class="element-header" v-text="$t('labels.reservations')"></h6>
+                <h4 class="element-header" v-text="$t('labels.reservations') + ' ' + selectedEvent.eventLanguages[0].name"></h4>
+                <input type="search" class="form-control mb-2" :placeholder="$t('labels.search')" v-model="reservationsListSearch" @input="doSearchReservations()"/>
                 <div class="form-group halfHeight">
                   <table class="table table-striped">
                     <thead>
@@ -276,15 +277,18 @@
         </div>
         <div class="row mt-4" v-if="editEvent || editWaitingList">
           <div class="col-md-12">
+            <!--
             <div class="row text-right">
               <div class="col-md-6"></div>
               <div class="col-md-6">
                 <input type="search" class="form-control mb-2" :placeholder="$t('labels.search')" v-model="waitingListSearch" @input="doSearchLists()"/>
               </div>
             </div>
+            -->
             <form name="editForm" role="form" novalidate v-on:submit.prevent="save()">
               <div class="element-wrapper">
-                <h6 class="element-header" v-text="$t('labels.waitingList')"></h6>
+                <h4 class="element-header" v-text="$t('labels.waitingList') + ' ' + selectedEvent.eventLanguages[0].name"></h4>
+                <input type="search" class="form-control mb-2" :placeholder="$t('labels.search')" v-model="waitingListSearch" @input="doSearchLists()"/>
                 <div class="form-group halfHeight">
                   <table class="table table-striped">
                     <thead>
@@ -433,10 +437,26 @@
   </div>
 </template>
 <script src="./newCourse.component.ts" lang="ts"></script>
+
 <style scoped>
 
-  .halfHeight{
-    max-height: 30vh;
-    overflow-y: auto;
-  }
+#newEvtForm{
+  background-color: #f2f4f8;
+  border: solid 1px #d0d0d0;
+  margin:0.5em;
+  margin-bottom:2em;
+  border-radius: 10px;
+  padding: 1em;
+  box-shadow: 5px 20px 28px #aaa;
+}
+.halfHeight{
+  max-height: 30vh;
+  overflow-y: auto;
+}
+.bar-labels {
+  background-color: #c5d3ff;
+  border-radius: 3px;
+  padding-left:0.2em;
+  padding-right:0.2em;
+}
 </style>

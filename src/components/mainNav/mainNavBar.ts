@@ -27,6 +27,8 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
     userProfileModal: HTMLElement;
   }
 
+  public recentItems: any[];
+
   public dateConfig: any;
   public user: any;
   public selectedTimeZone: any;
@@ -51,6 +53,8 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
     this.relationService = RelationService.getInstance()
     this.user = new RelationEntity()
 
+    this.recentItems = []
+
     this.timeZones = []
     this.changePassword = {
       password: '',
@@ -71,6 +75,7 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
       this.user.relationProfile = new RelationProfile()
     }
     this.timeZones = this.$store.state.lookups.timeZones
+    // init this.recentItems from this.$store.state. ???
   }
 
   public mainMenu: object[] = MenuDefinitions

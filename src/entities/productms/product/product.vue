@@ -9,7 +9,7 @@
       </router-link>
     </h2>
     <div class="row">
-      <div class="col-md-3">
+      <div class="col-md-3" id="prd-search">
         <form name="searchForm" class="form text-left" @submit.prevent.stop="simpleSearch">
           <div class="form-group mt-3">
             <label class="form-control-label">{{$t('labels.searchByNameDescriptionOrCouponCode')}}</label>
@@ -59,3 +59,12 @@
   </div>
 </template>
 <script src="./product.component.ts" lang="ts"></script>
+<style scoped>
+  #prd-search {
+    border: 1px solid #e0e0e8;
+    padding: 1em;
+    background-color: #FFF;
+    margin:0em;
+    margin-top:2em;
+  }
+</style>

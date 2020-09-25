@@ -38,11 +38,13 @@
 }
 .dateHolder{
     position: relative;
+    max-width: 190px;
+    min-width: 170px;
 }
 .selectedEvent {
-    -webkit-box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
-    box-shadow: 0px 10px 5px -4px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .clearDate{
     position: absolute;
@@ -53,6 +55,8 @@
 }
 .date-input .form-control{
     padding-left: 35px;
+    max-width: 190px;
+    min-width: 170px;
 }
 .form-header {
     margin-bottom: 1rem;
@@ -410,4 +414,12 @@
     border-radius: 12px;
     border: 1px solid #e0e0e9;
     box-shadow: 5px 20px 28px #aaa;
+}
+.wizard-footer-right button,
+.wizard-footer-left button,
+.wizard-btn {
+    height:40px;
+    font-size: 1.25em!important;
+    border-radius: 8px!important;
+    font-weight: 400!important;
 }
