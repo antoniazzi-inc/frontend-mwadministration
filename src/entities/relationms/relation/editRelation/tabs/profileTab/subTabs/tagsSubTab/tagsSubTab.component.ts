@@ -78,8 +78,11 @@ export default class TagsSubTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public removeTag (tag: any) {
-    if (tag && tag.id) {
-      this.relationTagService.delete(tag.id).then((resp: AxiosResponse) => {
+
+    if (tag && tag.id && this.relationCopy.relationTags) {
+      let ind = this.relationCopy.relationTags.findIndex((e:any) => tag.id === e.tagId)
+      if(ind > -1)
+      this.relationTagService.delete(this.relationCopy.relationTags[ind].id).then((resp: AxiosResponse) => {
         if (resp) {
           this.$emit('updateRel')
           this.setAlert('relationTagsRemoved', 'success')

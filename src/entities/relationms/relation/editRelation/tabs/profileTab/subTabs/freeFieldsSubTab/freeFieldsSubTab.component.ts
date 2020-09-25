@@ -245,28 +245,23 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
       }
       if (this.fieldToEdit.id) {
         this.relationCustomFieldService.put(this.fieldToEdit).then((resp: AxiosResponse) => {
-          let index = null
-          if (self.relationCopy) {
-            $.each(self.relationCopy.relationCustomFields, function (k, v: any) {
-              if (v.id === resp.data.id) {
-                index = k
-              }
-            })
-          }
-          if (index !== null && self.relationCopy && self.relationCopy.relationCustomFields) {
-            self.relationCopy.relationCustomFields[index] = resp.data
+          if(!resp) {
+            this.setAlert(this.$t('toastMessages.relationCustomFieldUpdateError'), 'error')
+            return
           }
           this.setAlert(this.$t('toastMessages.relationCustomFieldUpdated'), 'success')
           this.cancelFreeField()
-          self.$emit('retrieveRelation', self.relationCopy)
+          self.$emit('updateRel', self.relationCopy)
         })
       } else {
         this.relationCustomFieldService.post(this.fieldToEdit).then((resp: AxiosResponse) => {
-          if (self.relationCopy && self.relationCopy.relationCustomFields) self.relationCopy.relationCustomFields.push(resp.data)
-          // @ts-ignore
+          if(!resp) {
+            this.setAlert(this.$t('toastMessages.relationCustomFieldCreateError'), 'error')
+            return
+          }
           this.setAlert(this.$t('toastMessages.relationCustomFieldCreated'), 'success')
           this.cancelFreeField()
-          self.$emit('retrieveRelation', self.relationCopy)
+          self.$emit('updateRel', self.relationCopy)
         })
       }
     }

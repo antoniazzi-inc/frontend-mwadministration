@@ -66,6 +66,8 @@ export default class GroupsSubTabComponent extends mixins(Vue, CommonHelpers) {
       dto.relationGroups = allGroups
       dto.relationPhones = undefined
       dto.relationAddresses = undefined
+      dto.relationCustomFields = undefined
+      dto.contactHistories = undefined
       this.relationService.put(dto).then((resp: AxiosResponse) => {
         if (resp) {
           this.$emit('updateRel', resp.data)

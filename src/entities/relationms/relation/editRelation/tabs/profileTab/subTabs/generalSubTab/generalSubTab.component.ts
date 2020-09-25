@@ -119,14 +119,19 @@ export default class GeneralSubTabComponent extends mixins(Vue, CommonHelpers) {
     this.$validator.validateAll().then(result => {
       if (result) {
         const dto = this.relation
-        if (dto && dto.relationProfile && this.birthDate) {
-          dto.relationProfile.birthDate = moment(this.birthDate).add(1, 'days').format('YYYY-MM-DD')
+        if (dto && dto.relationProfile && self.birthDate) {
+          dto.relationProfile.birthDate = moment(self.birthDate, DATE_FORMAT).add(1, 'days').format('YYYY-MM-DD')
+        }
+        if(dto.relationProfile && dto.relationProfile.birthDate === 'Invalid date'){
+          dto.relationProfile.birthDate = undefined
         }
         if (self.relationCategory && self.relationCategory.id) {
           if (dto && dto.relationProfile) dto.relationProfile.categoryId = self.relationCategory.id
         }
-        dto.relationAddresses = undefined
         dto.relationPhones = undefined
+        dto.relationAddresses = undefined
+        dto.relationCustomFields = undefined
+        dto.contactHistories = undefined
         this.relationService.put(dto).then((resp: AxiosResponse) => {
           if (resp) {
             this.$emit('updateRel', resp.data)
