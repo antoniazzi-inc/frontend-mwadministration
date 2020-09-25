@@ -8,17 +8,15 @@ export default abstract class BaseService {
   }
 
   public async getRequest (url: string): Promise<AxiosResponse> {
-    return new Promise<AxiosResponse>((resolve, reject) => {
+    return new Promise<AxiosResponse>(resolve => {
       axios.get(url).then(resp => {
         resolve(resp)
-      }).catch(e=>{
-        reject(e)
       })
     })
   }
 
   public async postRequest (url: string, obj: any, uploadProgress?: any, downloadProgress?: any): Promise<AxiosResponse> {
-    return new Promise<AxiosResponse>((resolve, reject) => {
+    return new Promise<AxiosResponse>(resolve => {
       axios.post(url, obj, {
         onUploadProgress: function(progressEvent) {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -35,40 +33,30 @@ export default abstract class BaseService {
         }
       }).then(resp => {
         resolve(resp)
-      }).catch(e=>{
-        reject(e)
       })
     })
   }
 
   public async patchRequest (url: string, obj: any): Promise<AxiosResponse> {
-    return new Promise<AxiosResponse>((resolve, reject) => {
+    return new Promise<AxiosResponse>(resolve => {
       axios.patch(url, obj).then(resp => {
         resolve(resp)
-      }).catch(e=>{
-        reject(e)
       })
     })
   }
 
   public async putRequest (url: string, obj: any): Promise<AxiosResponse> {
-    return new Promise<AxiosResponse>((resolve, reject) => {
+    return new Promise<AxiosResponse>(resolve => {
       axios.put(url, obj).then(resp => {
-
         resolve(resp)
-      }).catch(e=>{
-
-        reject(e)
       })
     })
   }
 
   public async deleteRequest (url: string, obj?: any): Promise<AxiosResponse> {
-    return new Promise<AxiosResponse>((resolve, reject) => {
+    return new Promise<AxiosResponse>(resolve => {
       axios.delete(url).then(resp => {
         resolve(resp)
-      }).catch(e=>{
-        reject(e)
       })
     })
   }
