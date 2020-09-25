@@ -8,7 +8,7 @@
       <div class="p-4">
         <button tag="button" class="btn btn-primary float-right create-button" @click="newUser">
           <i class="fas fa-plus"/>
-          <router-link class="text-white text-decoration-none" to="/account/user/new-user">{{$t('labels.newUser')}}</router-link>
+          <router-link class="text-white text-decoration-none" to="/account/user/new-user"> {{$t('labels.newUser')}}</router-link>
         </button>
       </div>
     </div>

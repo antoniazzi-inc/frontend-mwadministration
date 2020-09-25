@@ -41,7 +41,7 @@
                     {{item[col.field] === true ? $t('labels.yes') : $t('labels.no')}}
                   </span>
                   <span v-else-if="col.type === 'money'">
-                    {{item[col.field]}}{{$store.state.currency}}
+                    {{$store.state.currency}} {{item[col.field]}}
                   </span>
                   <span v-else-if="col.type === 'percentage'">
                     {{item[col.field]}}%
