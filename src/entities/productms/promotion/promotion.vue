@@ -9,7 +9,7 @@
       </router-link>
     </h2>
     <div class="row">
-      <div class="col-md-3">
+      <div class="col-md-3" id="promo-search">
         <form name="searchForm" class="form text-left" @submit.prevent.stop="simpleSearch">
           <div class="form-group mt-3">
             <label class="form-control-label">{{$t('labels.searchByNameDescriptionOrCouponCode')}}</label>
@@ -21,15 +21,17 @@
           </div>
           <div class="form-group mt-3">
             <label>{{$t('labels.validFrom')}}</label>
-            <div class="date-input">
-              <flat-pickr :config="validFromConfig" class="single-daterange form-control"
-                          id="validFromDate" v-model="availableFrom"/>
+            <div class="dateHolder date-input">
+              <flat-pickr :config="validFromConfig" class="single-daterange form-control" id="validFromDate" v-model="availableFrom"/>
+              <i class="fa fa-times clearDate cursor-pointer" @click="availableFrom=null">
+                <span aria-hidden="true" class="sr-only">X</span>
+              </i>
             </div>
           </div>
           <div class="form-group mt-3">
             <label>{{$t('labels.validTo')}}</label>
             <div class="dateHolder date-input">
-              <flat-pickr :config="validToConfig" v-model="availableTo" class="single-daterange form-control"/>
+              <flat-pickr :config="validToConfig" v-model="availableTo" id="validToDate" class="single-daterange form-control"/>
               <i class="fa fa-times clearDate cursor-pointer" @click="availableTo=null">
                 <span aria-hidden="true" class="sr-only">X</span>
               </i>
@@ -75,3 +77,12 @@
   </div>
 </template>
 <script src="./promotion.component.ts" lang="ts"></script>
+<style scoped>
+  #promo-search {
+    border: 1px solid #e0e0e8;
+    padding: 1em;
+    background-color: #FFF;
+    margin:0em;
+    margin-top:2em;
+  }
+</style>

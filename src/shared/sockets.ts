@@ -133,22 +133,27 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
     const self = this
     let lookupData = []
     let lookupName = ''
+    let itemName = ''
     switch (obj.type.toLowerCase()) {
       case 'category':
         lookupData = this.store.state.lookups.categories
         lookupName = 'categories'
+        itemName = obj.content.code
         break
       case 'tag':
         lookupData = this.store.state.lookups.tags
         lookupName = 'tags'
+        itemName = obj.content.code
         break
       case 'taxrate':
         lookupData = this.store.state.lookups.taxRates
         lookupName = 'taxRates'
+        itemName = '?'
         break
       case 'relationgroup':
         lookupData = this.store.state.lookups.groups
         lookupName = 'groups'
+        itemName = obj.content.label
         break
       case 'customfield':
         obj.content = {
@@ -157,6 +162,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         }
         lookupData = this.store.state.lookups.freeFields
         lookupName = 'freeFields'
+        itemName = obj.content.label
         break
       case 'promotion':
         obj.content = {
@@ -165,6 +171,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         }
         lookupData = this.store.state.lookups.promotions
         lookupName = 'promotions'
+        itemName = obj.content.label
         break
       case 'product':
         obj.content = {
@@ -173,6 +180,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         }
         lookupData = this.store.state.lookups.products
         lookupName = 'products'
+        itemName = obj.content.label
         break
       case 'course':
         obj.content = {
@@ -181,6 +189,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         }
         lookupData = this.store.state.lookups.courses
         lookupName = 'courses'
+        itemName = obj.content.label
         break
       case 'paymentmethod':
         obj.content = {
@@ -189,6 +198,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         }
         lookupData = this.store.state.lookups.paymentMethods
         lookupName = 'paymentMethods'
+        itemName = obj.content.label
         break
       case 'deliverymethod':
         obj.content = {
@@ -197,6 +207,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         }
         lookupData = this.store.state.lookups.deliveryMethods
         lookupName = 'deliveryMethods'
+        itemName = obj.content.label
         break
       case 'invoicetemplate':
         obj.content = {
@@ -205,6 +216,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         }
         lookupData = this.store.state.lookups.invoiceTemplates
         lookupName = 'invoiceTemplates'
+        itemName = obj.content.label
         break
     }
     if (lookupName === '') {
@@ -241,5 +253,35 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         }
         break
     }
+    this.updateRecentItems(obj.content.id, itemName, obj.type.toLowerCase(), obj.action)
   }
+
+  public updateRecentItems(an_id: number, a_label: string, a_type: string, an_action: string) {
+    let item = {
+      label: a_label,
+      id: an_id,
+      type: a_type,
+    }
+    let items = this.store.state.recentItems
+    if (an_action === 'DELETE') {
+      // remove from list (if applicable)this.store
+      let listUpdated = false
+      let i = items.length
+      while (i--) {
+        let it = items[i];
+        if (it.id === item.id && it.type === item.type) {
+          items.splice(i, 1);
+          listUpdated = true
+        }
+      }
+      if (listUpdated) this.store.commit('recentItems', items)
+    }
+    else {
+      // CREATE or UPDATE: add to list (if len < 3)
+      if (items.length > 3) items.shift()
+      items.push(item)
+      this.store.commit('recentItems', items)
+    }
+  }
+
 }

@@ -1,16 +1,26 @@
 <template>
   <div class="container-fluid text-left">
-    <form-wizard @on-complete="onComplete"
-                 :title="$t('labels.newPromotion')"
+
+    <h2 id="page-heading" class="text-left mt-3">
+      <span id="tag-heading">{{$t('labels.newPromotion')}}</span>
+      <router-link to="/promotions" class="text-decoration-none text-white">
+        <button tag="button" class="btn btn-secondary float-right create-tag">
+          <span>{{$t('labels.backToPromotions')}}</span>
+        </button>
+      </router-link>
+    </h2>
+    <div class="wizard-panel">
+      <form-wizard @on-complete="onComplete"
+                 :title="''"
                  :subtitle="''"
-                 shape="tab"
+                 shape="circle"
                  @on-change="changeTab"
                  :start-index="step"
-                 color="#1c4cc3"
+                 color="#0a7cf8"
                  error-color="#ff4949">
       <tab-content @click="step = 0" :title="promotion.promotionType.toLowerCase() + ' ' + $t('labels.promotion')" icon="fas fa-user-tie">
         <div class="row justify-content-center">
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('AFFILIATE')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'AFFILIATE'}">
               <div>
                 <i class="productIcon dashicons dashicons-networking"></i>
@@ -20,7 +30,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('BUNDLE')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'BUNDLE'}">
               <div>
                 <i class="productIcon fas fa-box-open"></i>
@@ -30,7 +40,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('COUPON')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'COUPON'}">
               <div>
                 <i class="productIcon dashicons dashicons-tag"></i>
@@ -40,7 +50,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('LOYALTY')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'LOYALTY'}">
               <div>
                 <i class="productIcon dashicons dashicons-awards"/>
@@ -50,7 +60,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('PERSONAL_COUPON')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'PERSONAL_COUPON'}">
               <div>
                 <i class="productIcon dashicons dashicons-universal-access-alt"/>
@@ -60,7 +70,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('PRICE')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'PRICE'}">
               <div>
                 <i class="productIcon fas fa-money"/>
@@ -70,7 +80,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('QUANTITY')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'QUANTITY'}">
               <div>
                 <i class="productIcon dashicons dashicons-admin-settings"/>
@@ -80,7 +90,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('TEMPORARY_COUPON')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'TEMPORARY_COUPON'}">
               <div>
                 <i class="productIcon fas fa-calendar"/>
@@ -90,7 +100,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
+          <div class="profile-tile profile-tile-inlined col-md-3 col-xs-4">
             <router-link @click.native.prevent="changeProductType('TIME')" to="" :class="{'profile-tile-box': true, active: promotion.promotionType === 'TIME'}">
               <div>
                 <i class="productIcon dashicons dashicons-clock"/>
@@ -272,6 +282,7 @@
       <button slot="next" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.next')}}</button>
       <button slot="finish" class="btn btn-primary btn-lg" :disabled="isSaving">{{$t('buttons.finish')}}</button>
     </form-wizard>
+    </div>
   </div>
 </template>
 <script type="ts" src="./newPromotion.component.ts"></script>

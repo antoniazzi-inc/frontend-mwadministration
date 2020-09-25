@@ -44,7 +44,7 @@
         </div>
       </div>
       <div v-show="editMode">
-        <form novalidate>
+        <form novalidate class="tab-form-panel editcontact">
           <div :class="{'form-group': true }">
             <label class="control-label">{{$t('labels.title')}}</label>
             <input type="text" class="form-control" v-model="valueToEdit.title" name="title"/>
@@ -83,5 +83,14 @@
   .pi-sub{
     max-height: 200px;
     overflow: hidden;
+  }
+  .editcontact {
+    background-color: #f2f4f8;
+    border: solid 1px #d0d0d0;
+    margin:0.5em;
+    margin-bottom:2em;
+    border-radius: 10px;
+    padding: 1em;
+    box-shadow: 5px 20px 28px #aaa;
   }
 </style>

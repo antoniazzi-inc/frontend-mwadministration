@@ -12,6 +12,7 @@ export default new Vuex.Store({
     authenticated: false,
     currentLanguage: 'en',
     currency: '€',
+    recentItems: [],
     currencyName: 'eur',
     maxUploadSize: 50000, //KB
     maxRelUpload: 50000,
@@ -48,6 +49,9 @@ export default new Vuex.Store({
   mutations: {
     authenticate (state) {
       state.logon = true
+    },
+    recentItems (state, items) {
+      state.recentItems = items
     },
     allCountries (state, countries) {
       state.allCountries = countries

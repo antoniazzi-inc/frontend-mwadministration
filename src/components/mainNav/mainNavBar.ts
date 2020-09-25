@@ -14,6 +14,7 @@ import { MenuDefinitions } from '@/shared/menuDefinitions'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import {DATE_FORMAT} from "@/shared/filters";
+
 @Component({
   components: {
     'v-gravatar': gravatarImg,
@@ -21,13 +22,12 @@ import {DATE_FORMAT} from "@/shared/filters";
     SearchableSelectComponent
   }
 })
+
 export default class MainNavBar extends mixins(commonHelpers, Vue) {
   public relationService = RelationService.getInstance()
   $refs!: {
     userProfileModal: HTMLElement;
   }
-
-  public recentItems: any[];
 
   public dateConfig: any;
   public user: any;
@@ -52,8 +52,6 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
     this.birthDate = null
     this.relationService = RelationService.getInstance()
     this.user = new RelationEntity()
-
-    this.recentItems = []
 
     this.timeZones = []
     this.changePassword = {
@@ -84,6 +82,37 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
     this.$store.commit('currentLanguage', ind)
     this.$set(this.$i18n, 'locale', ind)
     // TODO send request to server to change language if needed
+  }
+
+  public recentItemPath(item: any) {
+    // problem that some items (e.g. a group) do not have a dedicated url...
+    switch (item.type) {
+      case 'group':
+        return '/relations-groups'
+        break;
+      case 'relation':
+        return '/relations/edit/' + item.id
+        break;
+      case 'product':
+        return '/products/edit/' + item.id
+        break;
+      case 'promotion':
+        return '/promotions/edit/' + item.id
+        break;
+      case 'customfield':
+        return '/relations-free-fields/new/' + item.id
+        break;
+      case 'tag':
+        return '/home/settings'
+        break;
+      case 'category':
+        return '/home/settings'
+        break;
+      case 'order':
+        return '/orders'
+        break;
+    }
+    return '/'
   }
 
   public loadUser () {

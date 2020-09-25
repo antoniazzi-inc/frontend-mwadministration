@@ -3,9 +3,11 @@
     <div class="row p-0 m-0 justify-content-center">
       <div class="col-md-4">
         <div>
-          <img src="@/assets/images/logo-login.png"/>
+          <div class="col-sm-12 text-center">
+            <img src="@/assets/images/logo-login.png" alt="Autorespond logo"/>
+          </div>
           <div class="loginHolder text-left">
-            <h3 class="p-3" style="color: rgb(255, 255, 255);">{{$t('labels.loginToYourAccount')}}</h3>
+            <h3 style="width:100%; padding-bottom:1em;" class="text-center">{{$t('labels.loginToYourAccount')}}</h3>
             <form @submit.prevent.stop="doLogin()">
               <div class="form-group">
                 <label for="accessCode">{{$t('labels.accessCode')}}</label>
@@ -54,7 +56,7 @@
               <button type="submit" class="btn btn-primary float-right">{{$t('labels.login')}}</button>
                 <div class="form-check col-md-4">
                   <label for="rememberMe">
-                    <input type="checkbox" v-model="rememberMe" id="rememberMe" class="form-check-input">{{$t('labels.rememberMe')}}
+                    <input type="checkbox" v-model="rememberMe" style="margin-left: -20px;" id="rememberMe" class="form-check-input">{{$t('labels.rememberMe')}}
                   </label>
                 </div>
             </form>
@@ -64,19 +66,19 @@
               <br/>
               <router-link to="" class="text-white ml-3 pl-3" @click.native="resetPassword()">{{$t('labels.clickHereToReset')}}</router-link>
             </div>
-            <div class="row" v-if="showReset">
+            <div class="row pl-3 mt-3" v-if="showReset">
               <div class="col-md-12">
               <form>
                 <div class="form-group">
-                  <label for="resetEmail">{{$t('labels.resetEmail')}}</label>
-                  <input type="email" id="resetEmail" v-model="resetEmail" class="form-control">
+                  <input type="email" id="resetEmail" v-model="resetEmail" :placeholder="$t('labels.resetEmail')" class="form-control">
                   <label class="small">{{$t('labels.resetLinkInfo')}}</label>
                 </div>
-                <button class="btn btn-primary float-right" :disabled="!resetEmail">{{$t('buttons.resetPassword')}}</button>
+                <router-link to="" class="text-white" @click.native="resetPassword()">{{$t('buttons.cancel')}}</router-link>
+                <button class="btn btn-primary float-right" :disabled="!resetEmail" style="cursor: pointer">{{$t('buttons.resetPassword')}}</button>
               </form>
               </div>
             </div>
-            <div class="">
+            <div style="padding-bottom:1em; padding-top:1em;" class="">
               <template v-for="(item, ind) in $store.state.languages">
                     <div class="ml-2 float-right" :key="ind">
                       <router-link :key="ind" to="" @click.native="changeLanguage(ind)">
@@ -106,5 +108,12 @@
   .bringToFront{
     z-index: 99;
     position: relative;
+  }
+  input {
+    font-weight:600;
+    font-size:1.1em;
+  }
+  h3, label {
+    color:white;
   }
 </style>

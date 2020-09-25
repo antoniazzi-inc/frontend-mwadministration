@@ -9,7 +9,7 @@
       <label>{{$t($props.config.descriptionLabel)}}</label>
       <textarea cols="5" v-validate="$props.config.requiredDescription ? 'required' : ''" :class="{'form-control':true, invalid: errors.has('description')}" name="description" v-model="selectedValue.description"/>
     </div>
-    <div class="form-group flex-row">
+    <div class="form-group flex-row mlbtns">
       <div class="btn-group" v-show="$props.config.showLangs">
                 <span :key="index" to="" v-for="(lang, index) in $store.state.languages" @click="changeLanguage(index)"
                       :class="{btn: true, 'btn-outline-primary ml-0 btn-small btn-rounded': true,
@@ -41,7 +41,12 @@
 <script type="ts" src="./multiLanguage.component.ts"></script>
 
 <style scoped>
- .btn-outline-languages {
-   border-color: red!important;
+ .mlbtns .btn-group > .btn-outline-primary {
+   border: solid 1px #d0d0d0;
+   background-color: #f2f4f8;
+   border-left: 0px;
+ }
+ .mlbtns .btn-group > .btn-outline-primary.active {
+   background-color: #007bff;
  }
 </style>

@@ -56,7 +56,8 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
     this.validFromConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y'
+      dateFormat: 'm-d-Y',
+      minDate: ''
     }
     this.validToConfig = {
       wrap: true,

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item dropdown">
         <router-link class="nav-link" id="home" to="/" role="button"
@@ -78,7 +78,6 @@
         </div>
       </form>
       <ul class="navbar-nav">
-
         <li class="nav-item dropdown">
           <router-link class="nav-link" id="notifications" to="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="new-messages-count">6</div>
@@ -94,19 +93,27 @@
           <router-link class="nav-link" id="recentedits" to="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="main-menu-icon os-icon os-icon-mail-14"></i>
           </router-link>
-          <div class="dropdown-menu" style="left:-8em;" aria-labelledby="recentedits">
+          <div class="dropdown-menu" style="left:-18em;" aria-labelledby="recentedits">
             <h3 class="menu-title">Recent Items</h3>
+            <template v-for="(item, ind) in $store.state.recentItems">
+              <router-link :key="ind" :to="recentItemPath(item)" class="child-link recentlink">
+                <i class="os-icon os-icon-ui-54" v-if="item.type === 'tag' || item.type === 'category'"/>
+                <i class="os-icon os-icon-coins-4" v-if="item.type === 'product'"/>
+                <i class="os-icon os-icon-crown" v-if="item.type === 'promotion'"/>
+                <i class="os-icon os-icon-text-input" v-if="item.type === 'customfield'"/>
+                <i class="os-icon os-icon-hierarchy-structure-2" v-if="item.type === 'relationgroup'"/>
+                <i class="os-icon os-icon-user-male-circle2" v-if="item.type === 'relation'"/>
+                <i class="os-icon os-icon-delivery-box-2" v-if="item.type === 'order'"/>
+                <span style="padding-left:1em;">{{item.label}}</span>
+              </router-link>
+            </template>
           </div>
         </li>
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
-          <router-link class="nav-link" id="languages" to="" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <!--<i class="main-menu-icon fas fa-flag"></i>-->
-
+          <router-link class="nav-link" id="languages" to="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img width="25" class="main-menu-icon mx-auto d-block" :src="`./assets/images/flags/${$store.state.currentLanguage}.png`"/>
-
           </router-link>
           <div class="dropdown-menu" style="left:-9em;" aria-labelledby="languages">
             <h3 class="menu-title">{{$t('labels.languages')}}</h3>
@@ -405,4 +412,11 @@
     font-size: 0.72rem;
     line-height: 1;
   }
+.recentlink, .recentlink:hover {
+  text-decoration: none;
+}
+.recentlink i {
+  margin-left: 0px;
+}
+
 </style>

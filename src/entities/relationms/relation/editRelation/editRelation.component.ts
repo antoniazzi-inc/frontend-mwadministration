@@ -52,6 +52,7 @@ export default class EditRelationComponent extends mixins(Vue, CommonHelpers) {
     } else {
       this.retrieveItem(this.relation.id)
     }
+
   }
 
   public getFullName () {

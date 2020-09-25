@@ -68,13 +68,14 @@ export default class NewRelationComponent extends mixins(Vue, CommonHelpers) {
       item.relationProfile.categoryId = this.relationCategories?.id
       item.relationGrups = groups
       item.relationTags = tags
-      item.username = 'default_' + Math.random()
-      item.password = Math.random()
+      item.username = '' + Math.random()
+      item.password = '' + Math.random()
       item.tfaEnabled = false
     })
     this.relationService.createMultiple(this.relations).then((resp: AxiosResponse) => {
       if (resp) {
         this.setAlert('relationsCreated', 'success')
+        // TODO add to list of recent items...
         this.goBack()
       } else {
         this.setAlert('relationsError', 'error')

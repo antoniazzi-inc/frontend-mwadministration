@@ -71,7 +71,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-9">
+      <div class="col-md-9" style="padding-top:11px;">
         <PaginationTableComponent
           :ref="'paginationTable'"
           :active="active"

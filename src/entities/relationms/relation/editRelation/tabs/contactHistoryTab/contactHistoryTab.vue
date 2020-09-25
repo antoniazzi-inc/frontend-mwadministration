@@ -11,8 +11,8 @@
         </div>
       -->
 
-      <div class="d-flex justify-content-between mb-3">
-        <div class="p-2" style="width:50%">
+      <div class="d-flex justify-content-between mb-3" v-if="!editMode">
+        <div class="p-1" style="width:50%">
           <input class="form-control" :placeholder="$t('labels.searchForContacts')" @input="searchContacts()" type="text" v-model="searchString">
         </div>
         <div class="p-2">
