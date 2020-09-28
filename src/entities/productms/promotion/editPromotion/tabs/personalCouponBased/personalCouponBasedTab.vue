@@ -1,8 +1,9 @@
 <template>
-  <div class="row">
-    <div class="element-wrapper col-md-12">
-      <div class="element-box">
-        <form>
+  <div class="tab-form-panel">
+    <form>
+      <div class="form-group mt-3 row">
+        <div class="form-group col-6">
+
           <div class="form-group">
             <label class="form-control-label">{{$t('labels.macroName')}}</label>
             <input type="text" class="form-control" v-model="typePersonalCouponBased.macroName" disabled="disabled"/>
@@ -46,15 +47,18 @@
             </vueDropzone>
             <p v-if="typePersonalCouponBased.coupons && typePersonalCouponBased.coupons.length">{{$t('labels.totalCodesFound')}} : {{typePersonalCouponBased.coupons.length}}</p>
           </div>
-          <div class="form-buttons-w text-right mt-3">
-            <button type="button" id="cancel-save" class="btn btn-secondary" v-on:click="previousState()">
-              <span v-text="$t('buttons.back')">Back</span>
-            </button>
-            <button class="btn btn-primary ml-2" @click.prevent="save">{{$t('buttons.save')}}</button>
-          </div>
-        </form>
+
       </div>
+        <div class="form-group col-6">
+        </div>
     </div>
+    <div class="form-buttons-w text-right mt-3">
+      <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+      <button type="button" @click="previousState" class="btn btn-primary ml-3">{{$t('buttons.cancel')}}</button>
+      <button class="btn btn-primary ml-3" @click.prevent="save">{{$t('buttons.save')}}</button>
+    </div>
+
+    </form>
     <div class="modal" data-backdrop="static" data-keyboard="false" :id="'removeUnusedCoupons'" tabindex="-1" role="dialog" ref="removeUnusedCoupons">
       <div class="modal-dialog" role="document">
         <div class="modal-content">

@@ -47,11 +47,11 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     }
 
     public moneyPercentage = {
-      decimal: '',
-      thousands: '',
+      decimal: ',',
+      thousands: '.',
       prefix: '',
-      suffix: '%',
-      precision: 0,
+      suffix: ' %',
+      precision: 2,
       masked: false
     }
 

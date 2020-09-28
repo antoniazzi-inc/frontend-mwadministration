@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid text-left">
-    <h2 v-if="freeField.id">{{$t('labels.editFreeField')}}</h2>
-    <h2 v-if="!freeField.id">{{$t('labels.createNewFreeField')}}</h2>
+    <h2 v-if="freeField.id" id="page-heading">{{$t('labels.editFreeField')}}</h2>
+    <h2 v-else id="page-heading">{{$t('labels.createNewFreeField')}}</h2>
 
     <div class="row">
       <div class="col-md-6 tab-form-panel" style="border-right:0; border-bottom-right-radius: 0; border-top-right-radius: 0;">

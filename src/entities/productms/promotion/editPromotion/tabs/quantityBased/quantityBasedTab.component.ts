@@ -39,6 +39,9 @@ public typeQuantityBasedService:any
   public previousState(){
    this.promotionCopy = this.$props.promotion
   }
+  public goBack() {
+    this.$router.push('/promotions')
+  }
   public saveQuantityBased(){
     let dto:any = {}
    if(this.$props.promotion.typeQuantityBaseds && this.$props.promotion.typeQuantityBaseds.length){

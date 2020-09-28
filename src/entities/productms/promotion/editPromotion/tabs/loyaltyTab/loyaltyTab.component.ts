@@ -56,6 +56,9 @@ export default class LoyaltyTabComponent extends mixins(CommonHelpers, Vue) {
   public previousState(){
     this.promotionCopy = this.$props.promotion
   }
+  public goBack() {
+    this.$router.push('/promotions')
+  }
   public saveLoyaltyBased(){
     let dto = {
       id: this.promotionCopy.typeLoyaltyBased.id,

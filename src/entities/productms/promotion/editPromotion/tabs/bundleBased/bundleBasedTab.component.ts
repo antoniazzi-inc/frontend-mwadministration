@@ -253,7 +253,9 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
       return this.$t('labels.freeItems');
     }
   }
-
+  public goBack() {
+    this.$router.push('/promotions')
+  }
   public getBundleProductAttributesInfo(bundle:any, index:any){
     let self = this;
     let allProductAttributesTexts:any = [];

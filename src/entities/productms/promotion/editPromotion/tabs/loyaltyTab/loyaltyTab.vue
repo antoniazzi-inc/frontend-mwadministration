@@ -1,29 +1,32 @@
 <template>
-  <div>
+  <div class="tab-form-panel">
     <form>
-      <div class="form-group">
-        <label class="form-control-label">
-          {{$t('labels.points')}}
-        </label>
-        <input type="number" min="0" v-model="loyaltyPoints" class="form-control"/>
-      </div>
-      <div class="form-group">
-        <label class="form-control-label">
-          {{$t('labels.totalAmountSpenEarlier')}}
-        </label>
-        <money v-model="loyaltyAmountEarlier" class="form-control" name="loyaltyAmountEarlier"  v-bind="moneyFixed"></money>
-      </div>
-      <div class="form-group">
-        <label class="form-control-label">
-          {{$t('labels.numberOfItemsPurchasedEarlier')}}
-        </label>
-        <input type="number" min="0" v-model="loyaltyItemsEarlier" class="form-control"/>
-      </div>
-      <div class="form-buttons-w text-right">
-        <button type="button" id="cancel-save" class="btn btn-secondary" v-on:click="previousState()">
-          <span v-text="$t('buttons.cancel')">Cancel</span>
-        </button>
-        <button class="ml-2 btn btn-primary" @click.prevent="saveLoyaltyBased">{{$t('buttons.save')}}</button>
+      <div class="form-group mt-3 row">
+        <div class="form-group col-12">
+          <div class="form-group">
+            <label class="form-control-label">
+              {{$t('labels.points')}}
+            </label>
+            <input type="number" min="0" v-model="loyaltyPoints" class="form-control"/>
+          </div>
+          <div class="form-group">
+            <label class="form-control-label">
+              {{$t('labels.totalAmountSpenEarlier')}}
+            </label>
+            <money v-model="loyaltyAmountEarlier" class="form-control" name="loyaltyAmountEarlier"  v-bind="moneyFixed"></money>
+          </div>
+          <div class="form-group">
+            <label class="form-control-label">
+              {{$t('labels.numberOfItemsPurchasedEarlier')}}
+            </label>
+            <input type="number" min="0" v-model="loyaltyItemsEarlier" class="form-control"/>
+          </div>
+          <div class="form-buttons-w text-right">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+            <button type="button" @click="previousState" class="btn btn-primary ml-3">{{$t('buttons.cancel')}}</button>
+            <button class="btn btn-primary ml-3" @click.prevent="saveLoyaltyBased">{{$t('buttons.save')}}</button>
+          </div>
+        </div>
       </div>
     </form>
   </div>

@@ -47,6 +47,9 @@ export default class CouponBasedTabComponent extends mixins(Vue, CommonHelpers) 
   public generateCouponCode(){
     this.couponCode = this.generateRandom();
   }
+  public goBack() {
+    this.$router.push('/promotions')
+  }
   public saveCouponBased(){
     let self = this;
     let dto = {

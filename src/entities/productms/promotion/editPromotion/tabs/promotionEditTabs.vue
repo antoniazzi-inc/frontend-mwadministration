@@ -1,60 +1,58 @@
 <template>
   <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-12">
       <div>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-          <li class="nav-item" @click="currentTab = 'general'">
+          <li class="nav-item tab-nav" @click="currentTab = 'general'">
             <a :class="{'nav-link': true, 'active': currentTab === 'general'}" id="general-tab" data-toggle="tab"
                href="#general" role="tab" aria-controls="general" aria-selected="true">{{$t('labels.general')}}</a>
           </li>
-          <li class="nav-item" @click="currentTab = 'products'" v-if="promotion.promotionType === 'BUNDLE'">
+          <li class="nav-item tab-nav" @click="currentTab = 'products'" v-if="promotion.promotionType === 'BUNDLE'">
             <a :class="{'nav-link': true, 'active': currentTab === 'products'}" id="products-tab" data-toggle="tab"
                href="#products" role="tab" aria-controls="products" aria-selected="false">{{$t('labels.products')}}</a>
           </li>
-          <li class="nav-item" @click="currentTab = 'priceBased'" v-if="promotion.promotionType === 'PRICE'">
+          <li class="nav-item tab-nav" @click="currentTab = 'priceBased'" v-if="promotion.promotionType === 'PRICE'">
             <a :class="{'nav-link': true, 'active': currentTab === 'priceBased'}" id="priceBased-tab" data-toggle="tab"
                href="#priceBased" role="tab" aria-controls="priceBased" aria-selected="false">{{$t('labels.priceBased')}}</a>
           </li>
-          <li class="nav-item" @click="currentTab = 'quantityBased'" v-if="promotion.promotionType === 'QUANTITY'">
+          <li class="nav-item tab-nav" @click="currentTab = 'quantityBased'" v-if="promotion.promotionType === 'QUANTITY'">
             <a :class="{'nav-link': true, 'active': currentTab === 'quantityBased'}" id="quantityBased-tab"
                data-toggle="tab"
                href="#quantityBased" role="tab" aria-controls="quantityBased" aria-selected="false">{{$t('labels.quantityBased')}}</a>
           </li>
-
-          <li class="nav-item" @click="currentTab = 'affiliateBased'" v-if="promotion.promotionType === 'AFFILIATE'">
+          <li class="nav-item tab-nav" @click="currentTab = 'affiliateBased'" v-if="promotion.promotionType === 'AFFILIATE'">
             <a :class="{'nav-link': true, 'active': currentTab === 'affiliateBased'}" id="affiliateBased-tab"
                data-toggle="tab"
                href="#affiliateBased" role="tab" aria-controls="affiliateBased" aria-selected="false">{{$t('labels.affiliateBased')}}</a>
           </li>
-          <li class="nav-item" @click="currentTab = 'bundle'" v-if="promotion.promotionType === 'BUNDLE'">
+          <li class="nav-item tab-nav" @click="currentTab = 'bundle'" v-if="promotion.promotionType === 'BUNDLE'">
             <a :class="{'nav-link': true, 'active': currentTab === 'bundle'}" id="bundle-tab"
                data-toggle="tab" href="#bundle" role="tab" aria-controls="bundle" aria-selected="false">
               {{$t('labels.bundle')}}</a>
           </li>
-          <li class="nav-item" @click="currentTab = 'coupons'" v-if="promotion.promotionType === 'COUPON'">
+          <li class="nav-item tab-nav" @click="currentTab = 'coupons'" v-if="promotion.promotionType === 'COUPON'">
             <a :class="{'nav-link': true, 'active': currentTab === 'coupons'}" id="coupons-tab" data-toggle="tab"
                href="#coupons" role="tab" aria-controls="coupons" aria-selected="false">{{$t('labels.coupons')}}</a>
           </li>
-          <li class="nav-item" @click="currentTab = 'personalCoupon'"
+          <li class="nav-item tab-nav" @click="currentTab = 'personalCoupon'"
               v-if="promotion.promotionType === 'PERSONAL_COUPON' || promotion.promotionType === 'TEMPORARY_COUPON'">
             <a :class="{'nav-link': true, 'active': currentTab === 'personalCoupon'}" id="personalCoupon-tab"
                data-toggle="tab"
                href="#personalCoupon" role="tab" aria-controls="personalCoupon" aria-selected="false">{{promotion.promotionType
               === 'PERSONAL_COUPON' ? $t('labels.personalCoupon') : $t('labels.temporaryCoupon')}}</a>
           </li>
-          <li class="nav-item" @click="currentTab = 'usage'">
+          <li class="nav-item tab-nav" @click="currentTab = 'usage'">
             <a :class="{'nav-link': true, 'active': currentTab === 'usage'}" id="usage-tab" data-toggle="tab"
                href="#usage" role="tab" aria-controls="usage"
                aria-selected="false">{{$t('labels.usage')}}</a>
           </li>
-          <li class="nav-item" @click="currentTab = 'loyalty'" v-if="promotion.promotionType === 'LOYALTY'">
+          <li class="nav-item tab-nav" @click="currentTab = 'loyalty'" v-if="promotion.promotionType === 'LOYALTY'">
             <a :class="{'nav-link': true, 'active': currentTab === 'loyalty'}" id="loyalty-tab" data-toggle="tab"
                href="#loyalty" role="tab" aria-controls="loyalty" aria-selected="false">{{$t('labels.loyalty')}}</a>
           </li>
         </ul>
-        <button type="button" class="btn btn-link backToListBtn" @click="goBack">{{$t('buttons.backToList')}}</button>
       </div>
-      <div class="tab-content mt-3">
+      <div class="tab-content">
         <div :class="{'tab-pane': true, 'active': currentTab === 'general'}" id="general" role="tabpanel"
              aria-labelledby="general-tab">
           <general-tab-component :promotion="promotion" @updatePromo="updatePromotion"/>
@@ -97,9 +95,11 @@
         </div>
       </div>
     </div>
+    <!--
     <div class="col-md-3">
       <h4>{{$t('labels.historyPanel')}}</h4>
     </div>
+    -->
   </div>
 </template>
 <script type="ts" src="./promotionEditTabs.component.ts"></script>
@@ -110,11 +110,5 @@
     vertical-align: middle;
     margin-right: 16px;
     margin-left: 16px;
-  }
-
-  .backToListBtn {
-    position: absolute;
-    right: 0;
-    top: 0;
   }
 </style>

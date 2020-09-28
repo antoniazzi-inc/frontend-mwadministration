@@ -126,7 +126,7 @@
           <div class="form-group mt-3 row">
               <div class="col-md-6">
                 <label>{{$t('labels.validFrom')}}</label>
-                <div class="date-input">
+                <div class="dateHolder date-input">
                 <flat-pickr :config="validFromConfig" class="single-daterange form-control"
                             id="validFromDate" v-model="availableFrom"/>
                 </div>
@@ -145,20 +145,20 @@
         </form>
       </tab-content>
       <tab-content  @click="step = 2" :title="$t('labels.discount')" :before-change="stepForward" icon="fas fa-receipt" >
-        <div class="form-group mt-3">
+        <div class="form-group mt-3 maxwidth">
           <label class="control-label">{{$t('labels.discountType')}}</label>
           <select class="form-control" v-model="discountTypeId">
             <option v-for="(promotion, k) in discountTypes" :key="k" :value="promotion.id">{{$t(promotion.label)}}</option>
           </select>
         </div>
-        <div :class="{'form-group mt-3': true}" v-if="discountTypeId===1 || discountTypeId===2">
+        <div :class="{'form-group mt-3 maxwidth': true}" v-if="discountTypeId===1 || discountTypeId===2">
           <label class="control-label" v-if="discountTypeId===1">{{$t('labels.percentageAmount')}}</label>
           <label class="control-label" v-if="discountTypeId===2">{{$t('labels.fixedAmount')}}</label>
           <money v-if="discountTypeId===1" v-model="discountPriceAmount" :class="{'form-control': true, invalid: errors.has('discountAmount')}" name="discountAmount"  v-bind="moneyPercentage"></money>
           <money v-if="discountTypeId===2" v-model="discountPriceAmount" :class="{'form-control': true, invalid: errors.has('discountAmount')}" name="discountAmount"  v-bind="moneyConfig"></money>
           <span class="small danger">{{errors.first('discountAmount')}}</span>
         </div>
-        <div :class="{'form-group mt-3': true}" v-if="discountTypeId===4">
+        <div :class="{'form-group mt-3': true}" style="max-width:600px;" v-if="discountTypeId===4">
           <label class="control-label">{{$t('labels.FreeItem')}}</label>
           <searchable-select-component
             ref="productSelect"
@@ -169,7 +169,7 @@
             @onDelete="removeProduct"
             @onSelected="addProduct"/>
         </div>
-        <div :class="{'form-group mt-3': true}" v-if="discountTypeId===4">
+        <div :class="{'form-group mt-3 maxwidth': true}" v-if="discountTypeId===4">
           <label class="control-label">{{$t('labels.quantityAmount')}}</label>
           <input v-validate="'min_value:1'" :class="{'form-control': true, invalid: errors.has('discountAmount')}" type="number" class="form-control" name="discountAmount" v-model="discountQuantityAmount"/>
           <span class="text-danger small">{{errors.first('discountAmount')}}</span>
@@ -187,17 +187,17 @@
         <div class="form-group mt-3" v-if="promotion.promotionType === 'TIME'">
           <h4>{{$t('labels.pleaseClickFinish')}}</h4>
         </div>
-        <div class="form-group mt-3" v-if="promotion.promotionType === 'QUANTITY'">
+        <div class="form-group mt-3 maxwidth" v-if="promotion.promotionType === 'QUANTITY'">
           <label class="control-label">{{$t('labels.threshold')}}</label>
           <input :class="{'form-control': true, invalid: errors.has('quantity')}" type="number" v-validate="'numeric|min_value:1'" v-model="quantityType" name="quantity" class="form-control"/>
           <span class="text-danger small">{{errors.first('quantity')}}</span>
         </div>
-        <div class="form-group mt-3" v-if="promotion.promotionType === 'PRICE'">
+        <div class="form-group mt-3 maxwidth" v-if="promotion.promotionType === 'PRICE'">
           <label class="control-label">{{$t('labels.orderTotalThreshold')}}</label>
           <money v-model="totalThreshhold" :class="{'form-control': true, invalid: errors.has('totalThreshhold')}" v-validate="'required|min_value:1'" name="totalThreshhold"  v-bind="moneyConfig"></money>
           <span class="small text-danger">{{step4Error}}</span>
         </div>
-        <div class="form-group mt-3" v-if="promotion.promotionType === 'COUPON'">
+        <div class="form-group mt-3 maxwidth" v-if="promotion.promotionType === 'COUPON'">
           <label class="control-label">{{$t('labels.couponCode')}}</label>
           <div class="input-group">
             <div class="input-group-prepend">
@@ -205,11 +205,11 @@
                 {{$t('labels.generateCode')}}
               </div>
             </div>
-            <input v-validate="'required'" :class="{'form-control': true, invalid: errors.has('couponCode')}" placeholder="" type="text" v-model="couponCode" name="couponCode">
+            <input v-validate="'required'" :class="{'form-control': true, invalid: errors.has('couponCode')}" style="height:38px;" placeholder="" type="text" v-model="couponCode" name="couponCode">
           </div>
           <span class="text-danger small">{{errors.first('couponCode')}}</span>
         </div>
-        <div class="form-group mt-3" v-if="promotion.promotionType === 'COUPON' || promotion.promotionType === 'PERSONAL_COUPON' || promotion.promotionType === 'TEMPORARY_COUPON'">
+        <div class="form-group mt-3 maxwidth" v-if="promotion.promotionType === 'COUPON' || promotion.promotionType === 'PERSONAL_COUPON' || promotion.promotionType === 'TEMPORARY_COUPON'">
           <label class="control-label">{{$t('labels.maxTimesUsed')}}</label>
           <toggle-switch
                          :on-text="$t('labels.infinite')"
@@ -313,4 +313,7 @@
   .profile-tile{
     border-bottom: none;
   }
+  .maxwidth {
+     max-width: 300px;
+   }
 </style>

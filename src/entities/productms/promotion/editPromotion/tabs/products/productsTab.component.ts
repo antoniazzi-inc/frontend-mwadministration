@@ -108,6 +108,9 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
   public previousState(): void {
     this.$router.push('/entity/promotion');
   }
+  public goBack() {
+    this.$router.push('/promotions')
+  }
   public removeProduct(product:any){
     let index = null;
     let dto = {

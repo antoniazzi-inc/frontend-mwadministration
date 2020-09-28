@@ -51,6 +51,9 @@ export default class PriceBasedTabComponent extends mixins(CommonHelpers,Vue) {
   public previousState(){
     this.$router.push('/promotions')
   }
+  public goBack() {
+    this.$router.push('/promotions')
+  }
   public savePriceBased(){
     let dto = {}
     if(this.promotionCopy.typePriceBaseds && this.promotionCopy.typePriceBaseds[0]){

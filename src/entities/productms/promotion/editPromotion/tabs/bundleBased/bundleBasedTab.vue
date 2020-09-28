@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tab-form-panel">
     <div class="row">
       <div class="element-wrapper col-md-6" v-if="!editMode">
         <div v-for="(item, index) in allBundles" :key="index" @click="selectedBundleIndex = index">
@@ -77,6 +77,9 @@
           <button type="button" @click="saveBundle" class="btn btn-primary ml-2">{{$t('buttons.save')}}</button>
         </div>
       </div>
+    </div>
+    <div class="form-buttons-w text-right">
+      <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
     </div>
     <div class="modal" data-backdrop="static" data-keyboard="false" :id="'removeEntity'" tabindex="-1" role="dialog" ref="removeEntity">
       <div class="modal-dialog" role="document">

@@ -129,8 +129,8 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
       decimal: ',',
       thousands: '.',
       prefix: '',
-      suffix: '%',
-      precision: 0,
+      suffix: ' %',
+      precision: 2,
       masked: false
     };
     this.singleSelectConfig = new SearchableSelectConfig('label',
@@ -164,13 +164,13 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
     this.validFromConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
-      minDate: moment().format(DATE_FORMAT)
+      dateFormat: 'd-m-Y'
+      //,minDate: moment().format(DATE_FORMAT)
     }
     this.validToConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: moment().format(DATE_FORMAT)
     }
     this.moneyConfig = new MoneyConfig(undefined, undefined, '', Store.state.currency, 0, false)
@@ -444,6 +444,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
       if (resp) {
         this.createDto().then(() => {
           this.promotion.availableFrom = moment(this.availableFrom, 'YYYY-MM-DDTHH:mm')
+          console.log(this.promotion.availableFrom)
           this.promotion.availableTo = moment(this.availableTo, 'YYYY-MM-DDTHH:mm')
           if (this.promotion.availableTo === null) this.promotion.availableTo = undefined
           this.promotionService.post(this.promotion).then((resp: AxiosResponse) => {

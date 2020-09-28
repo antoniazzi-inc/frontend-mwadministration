@@ -90,7 +90,9 @@ export default class PersonalCouponBasedTabComponent extends mixins(CommonHelper
     // @ts-ignore
     $(this.$refs.removeUnusedCoupons).modal('hide')
   }
-
+  public goBack() {
+    this.$router.push('/promotions')
+  }
   public save() {
     let dto:any = this.typePersonalCouponBased;
     let couponCodes: ICoupon[] = []

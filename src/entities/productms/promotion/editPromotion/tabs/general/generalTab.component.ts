@@ -82,8 +82,8 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     this.discountQuantityAmount = 0
     this.freeItems = []
     this.discountPriceAmount = 0
-    this.money = new MoneyConfig('.', ',', Store.state.currency, '', 2, false)
-    this.moneyPercentage = new MoneyConfig('.', ',', '', '%', 0, false)
+    this.money = new MoneyConfig(',', '.', Store.state.currency, '', 2, false)
+    this.moneyPercentage = new MoneyConfig(',', '.', '', ' %', 2, false)
     this.allDiscountTypes = [{
       id: 1,
       name: 'percentage',
@@ -186,6 +186,11 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
   @Watch('availableFrom', {immediate: true, deep: true})
   public changeAvailableToMin(newVal: any) {
     this.validToConfig.minDate = moment(newVal).format(DATE_FORMAT)
+  }
+
+  public resetPromo() {
+    // TODO restore to original values in this tab-panel
+    this.goBack()
   }
 
   public getSelectedProductFromDiscount(freeItems: any) {
@@ -329,7 +334,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     });
   }
 
-  public back() {
+  public goBack() {
     this.$router.push('/promotions')
   }
 }

@@ -40,7 +40,9 @@ export default class AffiliateBasedTabComponent extends Vue {
       }
     }
   }
-
+  public goBack() {
+    this.$router.push('/promotions')
+  }
   public getAllAffiliates(aff: []) {
     this.$store.state.lookups.affiliates.forEach((af:any) => {
       aff.forEach(affiliate => {
