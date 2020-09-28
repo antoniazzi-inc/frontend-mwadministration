@@ -2,7 +2,7 @@
   <div class="container-fluid table-spacing" style="">
 
     <div class="row m-3 mt-4 pagination-v">
-      <div class="col-md-12" v-if="!isLoading && allData.length > 0">
+      <div class="col-md-12" v-if="!isLoading">
         <pagination @update="rerenderPage" :totalPages="totalPages" :table="$props.table" :page="currentPage"
                     @changePage="onChangePage" :total="totalItems"  :key="'pagination'" :perPage="itemsPerPage"
                     location="top" :tableFields="tableFields"></pagination>
@@ -56,6 +56,10 @@
               </template>
               <td class="text-right">
                 <div class="btn-group flex-btn-group-container text-center justify-content-center">
+                  <div v-if="$props.table === 'group'"
+                       @click.prevent="itemAction('onViewMembers', item)" class="ml-3 text-primary cursor-pointer" style="font-size:1.2em;">
+                    <i class="fas fa-users"></i>
+                  </div>
                   <div v-if="tables[$props.table].actions.edit"
                     @click.prevent="itemAction('onEdit', item)" class="ml-3 text-primary cursor-pointer" style="font-size:1.2em;">
                     <i class="os-icon os-icon-ui-49"></i>
@@ -79,7 +83,7 @@
       </div>
     </div>
     <div class="row m-3 mt-4 pagination-v">
-      <div class="col-md-12" v-if="!isLoading && allData.length > 0">
+      <div class="col-md-12" v-if="!isLoading">
         <pagination @update="rerenderPage" :totalPages="totalPages" :table="$props.table" :page="currentPage"
                     @changePage="onChangePage" :total="totalItems" :key="'pagination'" :perPage="itemsPerPage"
                     location="bottom" :tableFields="tableFields"></pagination>

@@ -12,6 +12,7 @@ import 'flatpickr/dist/flatpickr.css'
 import {Course} from "@/shared/models/productms/CourseModel";
 import {Language} from "@/shared/models/language.model";
 import {Event} from "@/shared/models/event.model";
+import {INSTANT_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -81,7 +82,7 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
         mainOperator: 'and',
         children: [{
           key: 'events.eventStart',
-          value: moment(this.eventStart).format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          value: moment(this.eventStart).format(INSTANT_FORMAT),
           inBetweenOperator: '>=',
           afterOperator: '',
           exactSearch: true
@@ -93,7 +94,7 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
         mainOperator: 'and',
         children: [{
           key: 'events.eventEnd',
-          value: moment(this.eventEnd).format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          value: moment(this.eventEnd).format(INSTANT_FORMAT),
           inBetweenOperator: '<=',
           afterOperator: '',
           exactSearch: true

@@ -13,6 +13,7 @@ import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/S
 import {promotionType} from "@/shared/models/productms/PromotionModel";
 import {IMoneyConfig, MoneyConfig} from "@/shared/models/moneyConfig";
 import moment from "moment";
+import {INSTANT_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -203,7 +204,7 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
         mainOperator: 'and',
         children: [{
           key: 'availableTo',
-          value: moment(this.availableTo).format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          value: moment(this.availableTo).format(INSTANT_FORMAT),
           inBetweenOperator: '<=',
           afterOperator: '',
           exactSearch: true

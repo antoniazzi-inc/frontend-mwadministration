@@ -16,6 +16,7 @@ import CustomerDeliveryAddress from "@/shared/models/orderms/CustomerDeliveryAdd
 import {IRelationAddress} from "@/shared/models/relationms/relation-address.model";
 import RelationAddressService from "@/shared/services/relationAddressService";
 import moment from "moment";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -39,6 +40,7 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
   public beneficiaries: any[]
   public stepValidationError: any
   public relationAddressService: any
+  public customerRelation: any
   public step: number
 
   constructor() {
@@ -47,6 +49,7 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
     this.stepValidationError = ''
     this.cartOrder = new CartOrder()
     this.beneficiaries = []
+    this.customerRelation = null
     this.cartOrderService = CartOrdersService.getInstance()
     this.relationService = RelationService.getInstance()
     this.relationAddressService = RelationAddressService.getInstance()
@@ -63,6 +66,9 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
       self.$refs[`step${self.step + 1}`].validateStep().then((validation: any) => {
         // @ts-ignore
         self.beneficiaries = self.$refs.step1.beneficiaryList
+        // @ts-ignore
+        self.customerRelation = self.$refs.step1.selectedRelation
+        self.beneficiaries.push(self.customerRelation)
         if (validation.msg) {
           self.stepValidationError = validation.msg
         } else {
@@ -86,7 +92,7 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
             invoiceType.ORDER, this.cartOrder.orderCustomer.fullName, this.cartOrder.orderCustomer.email, undefined, undefined, undefined,
             undefined, undefined, undefined, undefined, undefined, undefined, undefined, JSON.stringify(step4.invoiceAdditionalDetails),
             undefined, undefined, undefined, undefined, undefined, undefined, undefined)
-          this.cartOrder.invoice.scheduledOn = moment(step4.invoiceScheduledOn).format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+          this.cartOrder.invoice.scheduledOn = moment(step4.invoiceScheduledOn, DATE_FORMAT).format(INSTANT_FORMAT)
           if(step4.selectedInvoiceTemplate && step4.selectedInvoiceTemplate.id)
           this.cartOrder.invoice.invoiceTemplate = {
             id: step4.selectedInvoiceTemplate.id,

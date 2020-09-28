@@ -25,23 +25,23 @@
                         <div class="form-group col-md-3">
                           <label v-if="ind === 0" for="firstName">{{$t('labels.firstName')}}</label>
                           <input type="text" v-validate="{regex: validationRegEx}" v-model="item.relationProfile.firstName"
-                                 class="form-control mb-2 mr-sm-2" id="firstName" placeholder="First Name">
+                                 class="form-control mb-2 mr-sm-2" id="firstName" name="First Name" placeholder="First Name">
                           <span class="small text-danger">{{errors.first('First Name')}}</span>
                         </div>
                         <div class="form-group col-md-2">
                           <label v-if="ind === 0" for="middleName">{{$t('labels.middleName')}}</label>
-                          <input type="text" v-validate="{regex: validationRegEx}" v-model="item.relationProfile.middleName"
+                          <input type="text" v-validate="{regex: validationRegEx}" name="Middle Name" v-model="item.relationProfile.middleName"
                                  class="form-control mb-2 mr-sm-2" id="middleName" placeholder="Middle Name">
                           <span class="small text-danger">{{errors.first('Middle Name')}}</span>
                         </div>
                         <div class="form-group col-md-3">
                           <label v-if="ind === 0" for="lastName">{{$t('labels.lastName')}}</label>
                           <input type="text" v-validate="{regex: validationRegEx}" v-model="item.relationProfile.lastName"
-                                 class="form-control mb-2 mr-sm-2" id="lastName" placeholder="Last Name">
+                                 class="form-control mb-2 mr-sm-2" id="lastName" name="Last Name" placeholder="Last Name">
                           <span class="small text-danger">{{errors.first('Last Name')}}</span>
                         </div>
                         <div class="form-group col-md-4">
-                          <label v-if="ind === 0" for="email">{{$t('labels.email')}}</label>
+                          <label v-if="ind === 0">{{$t('labels.email')}}</label>
                           <div class="form-inline align-items-baseline row" :style="{width: '100%'}">
                             <input type="text" v-model="item.email" v-validate="'required|email'" :name="'email_' + ind"
                                    :class="{'form-control mb-2 mr-sm-2 col-md-9': true, invalid: errors.has('email_' + ind)}" :id="'email_' + ind" placeholder="example@example.com">

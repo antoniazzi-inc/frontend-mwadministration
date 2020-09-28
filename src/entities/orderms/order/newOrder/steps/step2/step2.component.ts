@@ -18,11 +18,14 @@ import OrderSubscription from "@/shared/models/orderms/OrderSubscriptionModel";
 import OrderLinePaymentSchedule from "@/shared/models/orderms/OrderLinePaymentScheduleModel";
 import moment from "moment";
 import AffiliateCommision from "@/shared/models/orderms/AffiliateCommisionModel";
+import {INSTANT_FORMAT} from "@/shared/filters";
+import OrderLineBeneficiary from "@/shared/models/orderms/OrderLineBeneficiaryModel";
 
 @Component({
   props: {
     cartOrder: Object,
-    beneficiaryList: Array
+    beneficiaryList: Array,
+    customerRelation: Object
   },
   components: {
     SearchableSelectComponent,
@@ -148,6 +151,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   }
 
   public productChanged(prod: any) {
+    let self = this
     if (!prod) return
     this.selectedProduct = prod
     this.productAttributes = []
@@ -177,6 +181,11 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
           orderProductAttributeValues: []
         }
       }
+      let ind = self.selectedBeneficiaries.findIndex((e: any) => e.id === self.$props.customerRelation.id)
+      if (ind === -1)
+        Vue.nextTick(function () {
+          self.selectedBeneficiaries.push(self.$props.customerRelation)
+        })
     })
   }
 
@@ -228,9 +237,6 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       } else {
         return false
       }
-      if (this.selectedBeneficiaries && this.selectedBeneficiaries.length) {
-        this.newOrderLine.beneficiaryList = this.selectedBeneficiaries
-      }
       if (this.selectedProductAttributes && this.selectedProductAttributes.length) {
         let attributes: any = []
         this.newOrderLineError = ''
@@ -275,7 +281,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
         }
         this.newOrderLine.orderSubscription = new OrderSubscription(undefined, undefined, undefined, undefined, undefined,
           this.cartOrderCopy.orderCustomer ? this.cartOrderCopy.orderCustomer.relationId : undefined,
-          this.selectedProduct.value.productSubscription.period, startDate !== null ? moment(startDate).format('YYYY-MM-DDTHH:mm:ss') + 'Z' : undefined,
+          this.selectedProduct.value.productSubscription.period, startDate !== null ? moment(startDate).format(INSTANT_FORMAT) : undefined,
           undefined, undefined, true, undefined, undefined)
       }
       if (this.selectedAffiliate && this.selectedAffiliate !== null) {
@@ -289,17 +295,17 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
           reminderDate = this.$store.state.administration.administrationSettings[reminderDateIndex].settingValueJson
         }
         let paymentSchedules = self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].paymentScheduleOptions.map((e: any, i: number) => {
-          let paymentDate: any = moment().format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+          let paymentDate: any = moment().format(INSTANT_FORMAT)
           if (i > 0) {
             switch (self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].period) {
               case 'month':
-                paymentDate = moment().add(i, "month").format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+                paymentDate = moment().add(i, "month").format(INSTANT_FORMAT)
                 break;
               case 'week':
-                paymentDate = moment().add(i, "week").format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+                paymentDate = moment().add(i, "week").format(INSTANT_FORMAT)
                 break;
               case 'day':
-                paymentDate = moment().add(i, "day").format('YYYY-MM-DDTHH:mm:ss') + 'Z'
+                paymentDate = moment().add(i, "day").format(INSTANT_FORMAT)
                 break;
             }
           }
@@ -308,25 +314,56 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
         })
         this.newOrderLine.orderLinePaymentSchedules = paymentSchedules
       }
-      if (this.allOrderLines) {
-        if (this.isEditingOrderLine) {
-          this.allOrderLines[this.indexToEdit] = this.newOrderLine
-          this.indexToEdit = -1
-          this.closeEditMode()
-          this.newOrderLine = new OrderLine()
-        } else {
-          this.allOrderLines.push(this.newOrderLine)
-          this.newOrderLine = new OrderLine()
+      if (this.selectedBeneficiaries && this.selectedBeneficiaries.length > 1) {
+        let customerInd = this.selectedBeneficiaries.findIndex((e: any) => e.id === this.cartOrderCopy.orderCustomer?.relationId)
+        let orderLinesToAdd = []
+        if (customerInd > -1) {
+          orderLinesToAdd.push(JSON.parse(JSON.stringify(this.newOrderLine)))
         }
+        this.selectedBeneficiaries.forEach((benef: any) => {
+          if (benef.id !== self.selectedBeneficiaries[customerInd].id) {
+            let currOrderLine = JSON.parse(JSON.stringify(self.newOrderLine))
+            let benefFullName = `${benef.relationProfile.firstName} ${benef.relationProfile.middleName} ${benef.relationProfile.lastName}`
+            currOrderLine.orderLineBeneficiary = new OrderLineBeneficiary(undefined, undefined, undefined, undefined, undefined, this.cartOrderCopy.orderCustomer?.relationId, benef.id, benef.email, benefFullName, benef.title)
+            let deliveryAddrInd = benef.relationAddresses.findIndex((addr: any) => addr.usedForDelivery)
+            currOrderLine.beneficiaryDeliveryAddress = deliveryAddrInd > -1 ? benef.relationAddresses[deliveryAddrInd] : benef.relationAddresses[0]
+            currOrderLine.beneficiaryDeliveryAddress.relationId = this.cartOrderCopy.orderCustomer?.relationId
+            currOrderLine.beneficiaryDeliveryAddress.beneficiaryRelationId = benef.id
+            currOrderLine.beneficiaryDeliveryAddress.beneficiaryRelationAddressId = currOrderLine.beneficiaryDeliveryAddress.id
+            currOrderLine.beneficiaryDeliveryAddress.id = undefined
+            currOrderLine.beneficiaryDeliveryAddress.version = undefined
+            currOrderLine.beneficiaryDeliveryAddress.createdOn = undefined
+            currOrderLine.beneficiaryDeliveryAddress.updatedOn = undefined
+            currOrderLine.beneficiaryDeliveryAddress.administrationId = undefined
+            orderLinesToAdd.push(currOrderLine)
+          }
+        })
+        this.createOrderLine(orderLinesToAdd)
       } else {
-        this.allOrderLines = [this.newOrderLine]
-        this.newOrderLine = new OrderLine()
+        this.createOrderLine([this.newOrderLine])
       }
       this.$emit('onUpdate', {field: 'orderLines', payload: this.allOrderLines})
       this.addProduct = false
       this.allProducts.push(this.selectedProduct)
       this.populatePromotions()
     })
+  }
+
+  public createOrderLine(orderLines: any) {
+    if (this.allOrderLines) {
+      if (this.isEditingOrderLine) {
+        this.allOrderLines[this.indexToEdit] = orderLines[0]
+        this.indexToEdit = -1
+        this.closeEditMode()
+        this.newOrderLine = new OrderLine()
+      } else {
+        this.allOrderLines = orderLines
+        this.newOrderLine = new OrderLine()
+      }
+    } else {
+      this.allOrderLines = orderLines
+      this.newOrderLine = new OrderLine()
+    }
   }
 
   public closeEditMode() {
@@ -349,6 +386,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   }
 
   public addBeneficiary(beneficiary: any) {
+    if (!beneficiary) return
     this.selectedBeneficiaries = beneficiary
   }
 
@@ -361,6 +399,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   }
 
   public removeBeneficiary(beneficiary: any) {
+    if (!beneficiary) return
     let index = this.selectedBeneficiaries.findIndex((e) => e.id === beneficiary.id)
     if (index > -1) {
       this.selectedBeneficiaries.splice(index, 1)
@@ -510,11 +549,11 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
           }
         })
     })
-    const allAvailablePromotions:any = []
-      this.$store.state.lookups.promotions.forEach((promo:any) => {
+    const allAvailablePromotions: any = []
+    this.$store.state.lookups.promotions.forEach((promo: any) => {
       const discountType = self.getDiscountType(promo.value).type
       const isWholeOrder = promo.value[discountType].discount.entireOrder
-        if(isWholeOrder) allAvailablePromotions.push(promo)
+      if (isWholeOrder) allAvailablePromotions.push(promo)
     })
     let finalArr = allAvailablePromotions.concat(allPromotions)
     Vue.nextTick(function () {

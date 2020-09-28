@@ -100,6 +100,9 @@ export default class GroupsSubTabComponent extends mixins(Vue, CommonHelpers) {
     this.isChanged = true
     return obj
   }
+  public onSort (obj:any, e:any) {
+
+  }
 
   public pullFunction (e: any) {
     return this.controlOnStart ? 'clone' : true

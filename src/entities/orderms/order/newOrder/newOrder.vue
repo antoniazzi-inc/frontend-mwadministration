@@ -17,7 +17,7 @@
         </div>
       </tab-content>
       <tab-content @click="step = 1" :title="$t('labels.products')" :before-change="validateStep" icon="dashicons dashicons-info">
-        <step2 ref="step2" @onUpdate="updateStep" :beneficiaryList="beneficiaries" :cartOrder="cartOrder"/>
+        <step2 ref="step2" :customerRelation="customerRelation" @onUpdate="updateStep" :beneficiaryList="beneficiaries" :cartOrder="cartOrder"/>
         <div class="row">
           <div class="col-md-12 text-right">
             <span class="text-right text-danger small">{{stepValidationError}}</span>

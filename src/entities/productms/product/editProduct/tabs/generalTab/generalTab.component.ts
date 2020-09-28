@@ -90,18 +90,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       masked: false
     };
 
-    public allTaxRates: any = [
-      {
-        value: 0,
-        title: 'vrijgesteld 0%'
-      }, {
-        value: 21,
-        title: 'high 21%'
-      }, {
-        value: 9,
-        title: 'low 9%'
-      }
-    ];
+    public allTaxRates: any = [];
 
     @Watch('product', { immediate: true, deep: true })
     public updateProd (newVal: any) {
@@ -152,7 +141,10 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
     public mounted () {
       this.allProductsCategories = this.$store.state.lookups.categories
-      this.allTaxRates = this.$store.state.lookups.taxRates
+      let tax = this.getAllCountryTaxRates(this.$store.state.lookups.taxRates, this.$store.state.administration.country.id)
+      if(tax) {
+        this.allTaxRates = tax
+      }
     }
 
     public removeLang (lang: any) {}

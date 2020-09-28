@@ -16,6 +16,13 @@ import { EventBus } from '@/shared/eventBus'
     PaginationTableComponent,
     'simple-search': SimpleSearchComponent,
     SearchableSelectComponent
+  },
+  beforeRouteEnter (to, from, next) {
+    next((vm: any) => {
+      if (to.query.groupId) {
+        vm.populateSearch(to.query.groupId)
+      }
+    })
   }
 })
 export default class RelationComponent extends mixins(CommonHelpers, Vue) {
@@ -25,7 +32,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   public searchableGroupsConfig: ISearchableSelectConfig
   public currentSearchName: string
   public currentSearchEmail: string
-  public currentSearchGroups: any[]
+  public currentSearchGroups: any
   public currentSearchTags: any[]
   public selectedTags: any[]
   public selectedGroups: any[]
@@ -55,7 +62,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
     this.currentSearchName = ''
     this.currentSearchEmail = ''
     this.currentSearchTags = []
-    this.currentSearchGroups = []
+    this.currentSearchGroups = null
     this.selectedTags = []
     this.currentSearchCategory = ''
     this.selectedGroups = []
@@ -73,11 +80,22 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
       } else {
         this.setAlert('relationsImported', 'success')
       }
-      // @ts-ignore
-      this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, undefined)
     })
+    // @ts-ignore
+     this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, undefined)
   }
 
+  public populateSearch (groupId:any) {
+    let self = this
+    let ind = this.$store.state.lookups.groups.findIndex((e:any)=> e.id === parseInt(groupId))
+    if(ind > -1) {
+      this.selectedGroups = this.$store.state.lookups.groups[ind]
+      this.currentSearchGroups = groupId
+      setTimeout(function () {
+        self.simpleSearch()
+      }, 150)
+    }
+  }
   public simpleSearch () {
     const queryArray: any = []
     if (this.currentSearchName !== '') {
@@ -116,16 +134,13 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
         }]
       })
     }
-    if (this.currentSearchGroups.length > 0) {
+    if (this.currentSearchGroups) {
       const groups: any = []
-      $.each(this.currentSearchGroups, function (k, v) {
-        groups.push(v.id)
-      })
       queryArray.push({
         mainOperator: 'and',
         children: [{
           key: 'relationGroups.id',
-          value: groups.join(),
+          value: this.currentSearchGroups,
           inBetweenOperator: '=in=',
           afterOperator: '',
           exactSearch: false
@@ -172,7 +187,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
     this.selectedTags = []
     this.currentSearchCategory = ''
     this.selectedCategories = null
-    this.currentSearchGroups = []
+    this.currentSearchGroups = null
     this.selectedGroups = []
     // @ts-ignore
     this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, undefined)
@@ -183,6 +198,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public deleteRelation (rel: any) {
+    if(!rel) return false
     this.active = false
     if (rel.id) {
       if (rel.id === this.$store.state.userIdentity.id) {
@@ -216,19 +232,11 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public groupSearchChanged (group: any) {
-    this.currentSearchGroups.push(group)
+    this.currentSearchGroups= group
   }
 
   public groupSearchRemoved (group: any) {
-    let index = null
-    $.each(this.currentSearchGroups, function (k, v) {
-      if (v.id === group.id) {
-        index = k
-      }
-    })
-    if (index !== null) {
-      this.currentSearchGroups.splice(index, 1)
-    }
+    this.currentSearchGroups = null
   }
 
   public categorySearchChanged (category: any) {
@@ -242,7 +250,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public startComplexSearch (query: any) {
-    console.log(query)
+    if(!query) return
     // @ts-ignore
     this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, query)
   }

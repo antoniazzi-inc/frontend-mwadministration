@@ -518,9 +518,6 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
       }
     })
   }
-  public getBeneficiaryName(item: any) {
-
-  }
 
   public getBeneficiaryAddress(item: any) {
     let street, houseNumber, city = '';

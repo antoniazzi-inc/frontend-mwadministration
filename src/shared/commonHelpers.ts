@@ -4,6 +4,7 @@ import {columnsVisibility} from '@/shared/tabelsDefinitions'
 import {Country} from '@/shared/models/administrationms/country.model'
 import axios from 'axios'
 import Store from "@/store";
+import {ITaxRate} from "@/shared/models/administrationms/tax-rate.model";
 
 @Component
 export default class CommonHelpers extends Vue {
@@ -55,6 +56,17 @@ export default class CommonHelpers extends Vue {
     }
     if (fieldsJson && fieldsJson[table]) return fieldsJson[table]
     return null
+  }
+  /*
+  * Name: getAllCountryTaxRates
+  * arg: taxes -> all system taxes, country -> filter by countryId
+  * description: Returns array of taxes filtered by country id
+  * Author: Nick Dam
+  */
+  public getAllCountryTaxRates(taxes: ITaxRate[], country: number) {
+    if(!taxes) return
+    let result:ITaxRate[]  = taxes.filter((tax:ITaxRate) => tax.country && tax.country.id === country)
+    return result
   }
 
   /*

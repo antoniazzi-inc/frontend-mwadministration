@@ -87,18 +87,23 @@ export default class RelationGroupsComponent extends mixins(CommonHelpers, Vue) 
     this.selectedCategory = selectedCat
   }
 
+  public onViewMembers (group:any) {
+    this.$router.push('/relations?groupId='+group.id)
+  }
   public saveGroup () {
     this.$validator.validateAll().then(async resp => {
       let isDuplicateName = false
-      this.allGroups.forEach((group: IRelationGroup) => {
-        if (group.label === this.group.label) {
-          isDuplicateName = true
+      if(!this.group.id){
+        this.allGroups.forEach((group: IRelationGroup) => {
+          if (group.label === this.group.label) {
+            isDuplicateName = true
+          }
+        })
+        if (isDuplicateName) {
+          // @ts-ignore
+          this.$refs.paginationTable.retrieveData('api/relationms/api/relation-groups', undefined, '')
+          return this.setAlert('relationGroupDuplicateName', 'error')
         }
-      })
-      if (isDuplicateName) {
-        // @ts-ignore
-        this.$refs.paginationTable.retrieveData('api/relationms/api/relation-groups', undefined, '')
-        return this.setAlert('relationGroupDuplicateName', 'error')
       }
       if (resp && !isDuplicateName) {
         this.group.name = this.group.label?.replace(/\s/g, '_')

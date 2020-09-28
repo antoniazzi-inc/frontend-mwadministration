@@ -95,8 +95,10 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * Author: Nick Dam
   */
   public async changeVisibility (item: any) {
-    await this.changeColumnVisibility(item, this.$props.table)
-    this.$emit('update')
+    if(item){
+      await this.changeColumnVisibility(item, this.$props.table)
+      this.$emit('update')
+    }
   }
 
   /*

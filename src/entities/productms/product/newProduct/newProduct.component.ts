@@ -25,6 +25,7 @@ import BaseImage from '@/shared/baseImage'
 import Store from '@/store/index'
 import {FollowupAction} from '@/shared/models/productms/FollowupActionModel'
 import {DATE_FORMAT} from "@/shared/filters";
+import {ITaxRate} from "@/shared/models/administrationms/tax-rate.model";
 
 @Component({
   components: {
@@ -59,7 +60,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   public step: number;
   public progress: any;
   public validToConfig: any;
-  public allTaxRates: any[];
+  public allTaxRates: ITaxRate[];
   public previewImages: any[];
   public typeCourses: any[];
   public inclusivePrice: any;
@@ -76,7 +77,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     this.availableFrom = new Date()
     this.availableTo = null
     this.mediaService = mediasService.getInstance()
-    this.allTaxRates = this.$store.state.lookups.taxRates
+    this.allTaxRates = []
     this.typeCourses = []
     this.previewImages = []
     this.productService = ProductService.getInstance()
@@ -124,6 +125,10 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   public created() {
     this.product.typeDigital = new TypeDigital()
     this.product.productSubscription = new ProductSubscription()
+    let tax = this.getAllCountryTaxRates(this.$store.state.lookups.taxRates, this.$store.state.administration.country.id)
+    if(tax) {
+      this.allTaxRates = tax
+    }
   }
 
   @Watch('notUrl', {immediate: false, deep: true})

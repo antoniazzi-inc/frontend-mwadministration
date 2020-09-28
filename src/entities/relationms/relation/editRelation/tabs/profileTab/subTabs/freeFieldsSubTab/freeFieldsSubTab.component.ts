@@ -167,7 +167,6 @@ export default class FreeFieldSubTabComponent extends mixins(CommonHelpers, Vue)
   }
 
   public removeField () {
-    const self = this
     if (this.itemToDelete.id) {
       this.relationCustomFieldService.delete(this.itemToDelete.id).then((resp: AxiosResponse) => {
         this.$emit('updateRel')

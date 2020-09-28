@@ -181,7 +181,14 @@ export default class MainNavBar extends mixins(commonHelpers, Vue) {
   }
 
   public saveUserProfile () {
-    this.user.relationProfile.birthDate = moment(this.birthDate)
+    this.user.relationProfile.birthDate = moment(this.birthDate, DATE_FORMAT).add(1, 'days').format('YYYY-MM-DD')
+    if( this.user.relationProfile &&  this.user.relationProfile.birthDate === 'Invalid date'){
+      this.user.relationProfile.birthDate = undefined
+    }
+    this.user.relationAddresses = undefined
+    this.user.relationPhones = undefined
+    this.user.contactHistories = undefined
+    this.user.relationCustomFields = undefined
     this.relationService.put(this.user).then((resp: AxiosResponse) => {
       if (resp) {
         this.setAlert('userUpdated', 'success')

@@ -11,6 +11,7 @@
           class="dragArea list-group areaHolder"
           :list="relationCopy.relationGroups"
           :clone="clone"
+          @sort="onSort"
           :group="{ name: 'groups', pull: pullFunction }"
           @start="start"
         >

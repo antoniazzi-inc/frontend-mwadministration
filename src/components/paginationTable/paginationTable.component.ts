@@ -37,7 +37,6 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
     table: String,
     active: Boolean
   }
-
   $refs!: {
     deleteModal: HTMLElement;
   }
@@ -84,15 +83,15 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
       this.$props.service.getAll(pagination, query).then((resp: any) => {
         this.totalItems = resp.data.totalElements
         this.currentPage = resp.data.pageable.pageNumber
-        this.totalPages = resp.data.totalPages
-        this.itemsPerPage = resp.data.pageable.pageSize
-        this.data = resp.data.content
         this.allData = resp.data.content
+        this.totalPages = resp.data.totalPages
         this.isLoading = false
+        this.data = resp.data.content
+        this.itemsPerPage = resp.data.pageable.pageSize
       }).catch(() => {
         this.isLoading = false
       })
-    }
+      }
   }
 
   public created () {
@@ -115,6 +114,9 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
         break
       case 'onInfo':
         this.$emit('onInfo', item)
+        break
+      case 'onViewMembers':
+        this.$emit('onViewMembers', item)
         break
     }
   }
@@ -139,7 +141,6 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
 
   public checkVisibility (col: any) {
     const tableFields = this.getTableVisibilityFields(this.$props.table)
-
-    return (tableFields) ? tableFields[col.field] ? tableFields[col.field] : true  : false
+    return tableFields[col.field]
   }
 }

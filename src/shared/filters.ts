@@ -7,7 +7,7 @@ export const DATE_TIME_FORMAT = 'DD-MM-YYYY HH:mm'
 export const DISPLAY_DATE_TIME_FORMAT = 'D MMM YYYY, HH:mm'
 
 export const DATE_TIME_LONG_FORMAT = "DD-MM-YYYY'T'HH:mm"
-export const INSTANT_FORMAT = "DD-MM-YYYY'T'HH:mm:ssZ"
+export const INSTANT_FORMAT = "YYYY-MM-DDTHH:mm:ssZ"
 export const ZONED_DATE_TIME_FORMAT = "DD-MM-YYYY'T'HH:mm:ssXXXXX"
 
 export function initFilters () {

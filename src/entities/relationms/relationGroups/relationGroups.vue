@@ -22,6 +22,7 @@
       :noDataLabel="'labels.noData'"
       @onEdit="editGroup"
       @onCopy="copyGroup"
+      @onViewMembers="onViewMembers"
       @onDelete="deleteGroup"
       :service="relationGroupService"/>
 

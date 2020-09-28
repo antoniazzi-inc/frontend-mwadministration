@@ -46,7 +46,7 @@ export default class NewUserComponent extends mixins(CommonHelpers, Vue) {
     this.relationService.get(id).then((resp: AxiosResponse) => {
       if (resp) {
         this.userAccount = resp.data
-        this.selectedRoles = resp.data.roles
+        this.selectedRoles = resp.data.roles.filter((role:any) => role.code !== 'ROLE_ADMIN' && role.code !== 'ROLE_USER')
       }
     })
   }
@@ -107,6 +107,10 @@ export default class NewUserComponent extends mixins(CommonHelpers, Vue) {
         allRoles.push({ id: 2, version: 0 }, { id: 3, version: 0 })
         this.userAccount.roles = allRoles
         if (this.userAccount.id) {
+          this.userAccount.relationAddresses = undefined
+          this.userAccount.relationPhones = undefined
+          this.userAccount.relationCustomFields = undefined
+          this.userAccount.contactHistories = undefined
           this.relationService
             .put(this.userAccount)
             .then((resp: AxiosResponse) => {

@@ -98,7 +98,7 @@
               </div>
             </form>
           </div>
-          <div class="form-group" v-if="selectedProduct && beneficiaryList && beneficiaryList.length">
+          <div class="form-group" v-if="selectedProduct">
             <label class="form-control-label">{{$t('labels.beneficiary')}}</label>
             <searchable-select-component :config="singleSelectConfigBeneficiary"
                                          :options="beneficiaryList"
