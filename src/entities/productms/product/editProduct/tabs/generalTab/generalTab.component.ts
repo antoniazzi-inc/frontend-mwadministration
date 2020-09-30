@@ -69,11 +69,11 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
     public multiLangMaxExceedConfig: IMultiLanguageConfig = new MultiLanguageConfig(false, true,
       '', 'labels.MaxExceedMessage', false,
-      false, false, false, false, false)
+      false, false, true, false, false)
 
     public multiLangNotAvailableConfig: IMultiLanguageConfig = new MultiLanguageConfig(false, true,
       '', 'labels.NotAvailableMessage', false,
-      false, false, false, false, false)
+      false, false, true, false, false)
 
     public isSubscription: any = false;
     public allProductsCategories: any = [];
@@ -302,7 +302,9 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
         }
       })
     }
-
+    public goBack() {
+      this.$router.push('/products')
+    }
     public validateSave () {
       const self = this
       let haveError = false

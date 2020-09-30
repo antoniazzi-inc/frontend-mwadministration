@@ -1,20 +1,20 @@
 <template>
-  <div class="element-box text-left">
-    <div class="form-desc">{{$t('labels.productCheckoutSettings')}}</div>
+  <div class="tab-form-panel">
+    <p>{{$t('labels.productCheckoutSettings')}}</p>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" @click="tabIndex = 0">
+      <li class="nav-item tab-nav smaller-tab" @click="tabIndex = 0">
         <a :class="{'nav-link': true, 'active': tabIndex === 0}" id="relFields-tab" data-toggle="tab"
            href="#relFields" role="tab" aria-controls="relFields" aria-selected="true">{{$t('labels.relFields')}}</a>
       </li>
-      <li class="nav-item" @click="tabIndex = 1">
+      <li class="nav-item tab-nav smaller-tab" @click="tabIndex = 1">
         <a :class="{'nav-link': true, 'active': tabIndex === 1}" id="freeFields-tab" data-toggle="tab"
            href="#freeFields" role="tab" aria-controls="freeFields" aria-selected="true">{{$t('labels.freeFields')}}</a>
       </li>
-      <li class="nav-item" @click="tabIndex = 2">
+      <li class="nav-item tab-nav smaller-tab" @click="tabIndex = 2">
         <a :class="{'nav-link': true, 'active': tabIndex === 2}" id="companyAndTaxes-tab" data-toggle="tab"
            href="#companyAndTaxes" role="tab" aria-controls="companyAndTaxes" aria-selected="true">{{$t('labels.companyAndTaxes')}}</a>
       </li>
-      <li class="nav-item" @click="tabIndex = 3">
+      <li class="nav-item tab-nav smaller-tab" @click="tabIndex = 3">
         <a :class="{'nav-link': true, 'active': tabIndex === 3}" id="termsAndConditions-tab" data-toggle="tab"
            href="#termsAndConditions" role="tab" aria-controls="termsAndConditions" aria-selected="true">{{$t('labels.termsAndConditions')}}</a>
       </li>
@@ -108,13 +108,14 @@
             </table>
           </div>
         </div>
-        <div class="form-buttons-w text-right">
+        <div class="form-buttons-w text-right mt-3">
+          <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
           <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
         </div>
       </div>
       <div :class="{'tab-pane': true, 'active': tabIndex === 1}" id="freeFields" role="tabpanel"
            aria-labelledby="freeFields-tab">
-        <table class="table table-striped">
+        <table class="table table-striped" style="margin-top:2em;">
           <thead>
           <th>{{$t('labels.name')}}</th>
           <th>{{$t('labels.visible')}}</th>
@@ -161,14 +162,15 @@
             </div>
           </div>
         </div>
-        <div class="form-buttons-w text-right">
+        <div class="form-buttons-w text-right mt-3">
+          <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
           <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
         </div>
       </div>
       <div :class="{'tab-pane': true, 'active': tabIndex === 2}" id="companyAndTaxes" role="tabpanel"
            aria-labelledby="companyAndTaxes-tab">
         <form>
-          <div class="row">
+          <div class="row mt-4">
             <div class="form-group col-md-6">
               <label class="form-control-label">{{$t('labels.orderAsCompany')}}</label>
               <toggle-switch
@@ -177,46 +179,47 @@
                 :value.sync="registrationSettingsJson.companyAndTaxes.orderAsCompany"/>
             </div>
           </div>
-          <div class="row" v-show="registrationSettingsJson.companyAndTaxes.orderAsCompany">
-            <div class="form-group col-md-6">
-              <label class="form-control-label">{{$t('labels.companyName')}}</label>
-              <div class="row">
-                <div class="col-md-6">
-                  <label class="form-control-label">{{$t('labels.visible')}}</label>
-                  <toggle-switch
-                    :on-text="$t('labels.yes')"
-                    :off-text="$t('labels.no')"
-                    :value.sync="registrationSettingsJson.companyAndTaxes.companyName.visible"/>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-control-label">{{$t('labels.required')}}</label>
-                  <toggle-switch
-                    :on-text="$t('labels.yes')"
-                    :off-text="$t('labels.no')"
-                    :value.sync="registrationSettingsJson.companyAndTaxes.companyName.required"/>
-                </div>
-              </div>
+
+          <div class="form-row align-items-left" v-show="registrationSettingsJson.companyAndTaxes.orderAsCompany">
+            <div class="col-auto" style="padding-top:2em; margin-right:20px;">
+              {{$t('labels.companyName')}}
             </div>
-            <div class="form-group col-md-6">
-              <label class="form-control-label">{{$t('labels.vatNumber')}}</label>
-              <div class="row">
-                <div class="col-md-6">
-                  <label class="form-control-label">{{$t('labels.visible')}}</label>
-                  <toggle-switch
-                    :on-text="$t('labels.yes')"
-                    :off-text="$t('labels.no')"
-                    :value.sync="registrationSettingsJson.companyAndTaxes.vatNumber.visible"/>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-control-label">{{$t('labels.required')}}</label>
-                  <toggle-switch
-                    :on-text="$t('labels.yes')"
-                    :off-text="$t('labels.no')"
-                    :value.sync="registrationSettingsJson.companyAndTaxes.vatNumber.required"/>
-                </div>
-              </div>
+            <div class="form-group col-auto">
+              <label class="form-control-label">{{$t('labels.visible')}}</label>
+              <toggle-switch
+                :on-text="$t('labels.yes')"
+                :off-text="$t('labels.no')"
+                :value.sync="registrationSettingsJson.companyAndTaxes.companyName.visible"/>
+            </div>
+            <div class="form-group col-auto">
+              <label class="form-control-label">{{$t('labels.required')}}</label>
+              <toggle-switch
+                :on-text="$t('labels.yes')"
+                :off-text="$t('labels.no')"
+                :value.sync="registrationSettingsJson.companyAndTaxes.companyName.required"/>
             </div>
           </div>
+
+          <div class="form-row align-items-left" style="margin-top:2em; margin-bottom:3em; " v-show="registrationSettingsJson.companyAndTaxes.orderAsCompany">
+            <div class="col-auto" style="padding-top:2em; margin-right:40px;">
+              {{$t('labels.vatNumber')}}
+            </div>
+            <div class="col-auto">
+              <label class="form-control-label">{{$t('labels.visible')}}</label>
+              <toggle-switch
+                :on-text="$t('labels.yes')"
+                :off-text="$t('labels.no')"
+                :value.sync="registrationSettingsJson.companyAndTaxes.vatNumber.visible"/>
+            </div>
+            <div class="col-auto">
+              <label class="form-control-label">{{$t('labels.required')}}</label>
+              <toggle-switch
+                :on-text="$t('labels.yes')"
+                :off-text="$t('labels.no')"
+                :value.sync="registrationSettingsJson.companyAndTaxes.vatNumber.required"/>
+            </div>
+          </div>
+
           <div class="row" v-show="registrationSettingsJson.companyAndTaxes.orderAsCompany">
             <div class="form-group col-md-6">
               <label class="form-control-label">{{$t('labels.vatCalculation')}}</label>
@@ -224,9 +227,12 @@
                      v-model="registrationSettingsJson.companyAndTaxes.vatCalculation"/>
             </div>
           </div>
-          <div class="form-buttons-w text-right">
+
+          <div class="form-buttons-w text-right mt-3">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
             <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
           </div>
+
         </form>
       </div>
       <div :class="{'tab-pane': true, 'active': tabIndex === 3}" id="termsAndConditions" role="tabpanel"
@@ -265,7 +271,8 @@
               <input type="text" class="form-control" v-model="termsAndConditions.linkText"/>
             </div>
           </div>
-          <div class="form-buttons-w text-right">
+          <div class="form-buttons-w text-right mt-3">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
             <button class="btn btn-primary" @click.prevent="saveTermsAndConditions">{{$t('buttons.save')}}</button>
           </div>
         </form>
@@ -277,5 +284,8 @@
 <style>
   .switch {
     margin: 0 !important;
+  }
+  .smaller-tab {
+    font-size:1.1em;
   }
 </style>

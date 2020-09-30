@@ -139,6 +139,10 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
     $(this.$refs.removeEntityAttributeOption).modal('hide')
   }
 
+  public goBack() {
+    this.$router.push('/products')
+  }
+
   public saveOptionField (event: any) {
     if (!this.selectedOption.id && this.selectedProductFeature.id) {
       this.selectedOption.stock = parseInt(this.selectedOption.stock)

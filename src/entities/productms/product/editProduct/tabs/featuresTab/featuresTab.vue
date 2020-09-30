@@ -1,7 +1,6 @@
 <template>
-    <div class="row text-left">
-        <div class="element-wrapper col-md-12">
-            <div class="element-box">
+  <div class="tab-form-panel">
+    <p class="mt-2">{{$t('labels.productFeatures')}}</p>
               <div class="modal" data-backdrop="static" data-keyboard="false" id="removeEntityAttribute" tabindex="-1" role="dialog" ref="removeEntityAttribute">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -51,7 +50,6 @@
                 <div class="form-desc" v-if="!editMode">
                     <div class="row">
                         <div class="col-md-9">
-                            <p>{{$t('labels.title')}}</p>
 
                           <template v-if="productCopy.attributes && productCopy.attributes.length">
                             <div class="accordion" id="accordionFeatures">
@@ -211,6 +209,7 @@
                     <div class="row">
                         <div class="col-md-12 text-right">
                             <div class="form-buttons-w">
+                                <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
                                 <button class="btn btn-outline-primary" @click.prevent="cancel">{{$t('buttons.cancel')}}</button>
                                 <button class="btn btn-primary ml-2" @click.prevent="save" :disabled="($refs.featureLang && $refs.featureLang.selectedLang.name === '') || (selectedProductFeature.attributeValues && selectedProductFeature.attributeValues.length === 0)">{{$t('buttons.save')}}</button>
                             </div>
@@ -218,8 +217,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
 </template>
 <script lang="ts" src="./featuresTab.component.ts"></script>
 <style scoped>

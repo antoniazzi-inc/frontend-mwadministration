@@ -1,8 +1,7 @@
 <template>
   <div class="tab-form-panel">
     <form>
-
-      <div class="form-group mt-3 row">
+      <div class="form-row mt-3">
         <div class="form-group col-12">
           <multi-language-component
             :config="multiLangConfig"

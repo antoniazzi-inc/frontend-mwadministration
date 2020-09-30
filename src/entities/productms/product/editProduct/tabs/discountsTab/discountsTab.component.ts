@@ -69,7 +69,9 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
   public mounted () {
 
   }
-
+  public goBack() {
+    this.$router.push('/products')
+  }
   public removeDiscount (discount: any) {
     let index = null
     $.each(this.selectedDiscounts, function (k: any, v: any) {

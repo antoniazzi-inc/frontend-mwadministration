@@ -73,6 +73,7 @@
       </tab-content>
       <tab-content  @click="step = 1" :title="$t('labels.productDetails')" icon="fas fa-tags">
         <form>
+
           <div class="form-group">
             <multi-language-component
               :config="multiLangConfig"
@@ -82,87 +83,91 @@
               @onChange="changeProductLang"
               @onRemove="removeProductLang"/>
           </div>
-          <div class="form-group row">
-              <div class="col-md-6">
-                <label>{{$t('labels.validFrom')}}</label>
-                <div class="date-input">
-                <flat-pickr :config="validFromConfig" class="single-daterange form-control"
-                            id="validFromDate" v-model="availableFrom"/>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label>{{$t('labels.validTo')}}</label>
-                <div class="dateHolder date-input">
-                  <flat-pickr :config="validToConfig" v-model="availableTo" class="single-daterange form-control"/>
-                  <i class="fa fa-times clearDate cursor-pointer" @click="availableTo=null">
-                    <span aria-hidden="true" class="sr-only">X</span>
-                  </i>
-                </div>
-                <span class="small text-danger" v-if="isValidatingStep2 && availableTo !== null && validateAvailableTo">{{$t('labels.validToMustBeAfterValidFrom')}}</span>
-              </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-6">
+
+          <div class="form-row align-items-left price-row">
+            <div class="col-auto">
               <div class="form-group">
                 <label class="control-label">{{$t('labels.exclusivePrice')}}</label>
-                <div class="input-group mb-3">
-                  <money @blur.native="calculateInclusive(true)"  v-model="product.price"
+                <div class="input-group mb-3" style="padding-bottom:0; margin-bottom:0">
+                  <money @blur.native="calculateInclusive(true)" style="max-width:150px; height:40px;" v-model="product.price"
                          :class="{'form-control': true, 'invalid': product.price <= 0.1}" v-bind="moneyConfig"/>
                   <div class="input-group-append">
-                    <span class="input-group-text cursor-pointer" @click.prevent="changeIsInclusive" id="basic-addon2">
+                    <span class="btn btn-rounded btn-success input-group-text cursor-pointer" @click.prevent="changeIsInclusive" id="basic-addon2">
                       <span v-if="!isInclusive">{{$t('labels.useInclPrice')}}</span>
                       <span v-if="isInclusive">{{$t('labels.useExclPrice')}}</span>
                     </span>
                   </div>
                 </div>
                 <span v-if="product.price <= 0.1 && isValidatingStep2" class="text-danger small">{{$t('labels.priceIsRequired')}}</span>
-                <p v-show="inclusive() > 0"><small>{{$t('labels.inclusivePriceIs')}}: {{inclusive()}}{{$store.state.currency}}</small></p>
+                <p v-show="inclusive() > 0" style="padding-top:2px;">{{$t('labels.inclusivePriceIs')}}: {{$store.state.currency}} {{inclusive()}}</p>
               </div>
             </div>
-            <div class="col-md-6 pt-2">
+            <div class="col-auto">
               <div class="form-group" v-show="isInclusive">
                 <label class="control-label">{{$t('labels.inclusivePrice')}}</label>
-                <money @blur.native="calculateExclusive" v-model="inclusivePrice" :class="{'form-control': true}" name="priceAmount"  v-bind="moneyConfig"></money>
+                <div class="input-group mb-3">
+                  <money @blur.native="calculateExclusive" style="max-width:150px; height:40px;" v-model="inclusivePrice" :class="{'form-control': true}" name="priceAmount"  v-bind="moneyConfig"></money>
+                </div>
+              </div>
+            </div>
+            <div class="col-auto">
+              <div class="form-group">
+                <label class="control-label">{{$t('labels.taxRate')}}</label>
+                <select :class="{'form-control': true, invalid: errors.has('tax')}" style="min-width:100px; height:40px;" v-model="product.tax" @change="calculateTax()" v-validate="'required'" name="tax">
+                  <option v-for="(item, index) in allTaxRates" :key="index" :value="item.rate">{{item.rate}}%</option>
+                </select>
+                <span class="small text-danger">{{errors.first('tax')}}</span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <label class="control-label">{{$t('labels.roundedTotal')}}</label>
+              <toggle-switch
+                :on-text="$t('labels.yes')"
+                :off-text="$t('labels.no')"
+                :value.sync="product.priceRounding"/>
+              <p><small>{{$t('labels.finalCalculatedTotalMustBeRoundedTo5Cents')}}</small></p>
+            </div>
+          </div>
+
+          <div class="form-row align-items-left">
+            <div class="col-auto">
+              <label>{{$t('labels.validFrom')}}</label>
+              <div class="dateHolder date-input">
+                <flat-pickr :config="validFromConfig" class="single-daterange form-control" id="validFromDate" v-model="availableFrom"/>
+              </div>
+            </div>
+            <div class="col-auto">
+              <label>{{$t('labels.validTo')}}</label>
+              <div class="dateHolder date-input">
+                <flat-pickr :config="validToConfig" v-model="availableTo" class="single-daterange form-control" id="validToDate"/>
+                <i class="fa fa-times clearDate cursor-pointer" @click="availableTo=null">
+                  <span aria-hidden="true" class="sr-only">X</span>
+                </i>
+              </div>
+              <span class="small text-danger" v-if="isValidatingStep2 && availableTo !== null && validateAvailableTo">{{$t('labels.validToMustBeAfterValidFrom')}}</span>
+            </div>
+            <div class="col-auto" style="margin-left:100px;" v-if="product.productType === 'SERVICE'">
+              <div class="form-group">
+                <label class="control-label">{{$t('labels.priceType')}}</label>
+                <select :class="{'form-control': true}" v-model="product.typeService.priceType">
+                  <option value="fixed">{{$t('labels.fixed')}}</option>
+                  <option value="hourly">{{$t('labels.hourly')}}</option>
+                  <option value="15minutes">{{$t('labels.15minutes')}}</option>
+                  <option value="daily">{{$t('labels.daily')}}</option>
+                </select>
               </div>
             </div>
           </div>
-          <div class="form-group" v-if="product.productType === 'SERVICE'">
-            <label class="control-label">{{$t('labels.priceType')}}</label>
-            <select :class="{'form-control': true}" v-model="product.typeService.priceType">
-              <option value="fixed">{{$t('labels.fixed')}}</option>
-              <option value="hourly">{{$t('labels.hourly')}}</option>
-              <option value="15minutes">{{$t('labels.15minutes')}}</option>
-              <option value="daily">{{$t('labels.daily')}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="control-label">{{$t('labels.taxRate')}}</label>
-            <select :class="{'form-control': true, invalid: errors.has('tax')}" v-model="product.tax" @change="calculateTax()" v-validate="'required'" name="tax">
-              <option v-for="(item, index) in allTaxRates" :key="index" :value="item.rate">{{item.rate}}%</option>
-            </select>
-            <span class="small text-danger">{{errors.first('tax')}}</span>
-          </div>
-          <div class="form-group col-md-6">
-            <div class="row">
-              <div class="col-md-6">
-                <label class="control-label">{{$t('labels.isSubscription')}}</label>
-                <toggle-switch id="repeatSubscription"
-                               :on-text="$t('labels.yes')"
-                               :off-text="$t('labels.no')"
-                               :value.sync="isSubscription"/>
-              </div>
-              <div class="col-md-6">
-                <label class="control-label">{{$t('labels.roundedTotal')}}</label>
-                <toggle-switch
-                               :on-text="$t('labels.yes')"
-                               :off-text="$t('labels.no')"
-                               :value.sync="product.priceRounding"/>
-                <p><small>{{$t('labels.finalCalculatedTotalMustBeRoundedTo5Cents')}}</small></p>
-              </div>
+
+          <div class="form-row align-items-left price-row">
+            <div class="col-auto" style="margin-right:30px;">
+              <label class="control-label">{{$t('labels.isSubscription')}}</label>
+              <toggle-switch id="repeatSubscription"
+                             :on-text="$t('labels.yes')"
+                             :off-text="$t('labels.no')"
+                             :value.sync="isSubscription"/>
             </div>
-          </div>
-          <div class="row" v-if="isSubscription && product.productSubscription">
-            <div class="form-group col-md-4">
+            <div class="form-group col-auto" v-if="isSubscription && product.productSubscription">
               <label class="control-label">{{$t('labels.startDate')}}</label>
               <select :class="{'form-control':true, invalid: errors.has('Start Date')}" v-validate="'required'"
                       v-model="product.productSubscription.startDate" name="Start Date">
@@ -173,7 +178,7 @@
               </select>
               <span class="small text-danger">{{errors.first('Start Date')}}</span>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-auto" v-if="isSubscription && product.productSubscription">
               <label class="control-label">{{$t('labels.period')}}</label>
               <select :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required'"
                       v-model="product.productSubscription.period" name="period">
@@ -186,18 +191,21 @@
               </select>
               <span class="small text-danger">{{errors.first('period')}}</span>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-auto" v-if="isSubscription && product.productSubscription">
               <label class="form-control-label">{{$t('labels.subscriptionMaxTerms')}}</label>
               <input :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required|min_value:0'"
-                     type="number" name="Subscription Max Terms" v-model="product.productSubscription.maxTimes"/>
+                     type="number" name="Subscription Max Terms" style="max-width:100px" v-model="product.productSubscription.maxTimes"/>
               <span class="small text-danger">{{errors.first('Subscription Max Terms')}}</span>
             </div>
           </div>
+
         </form>
       </tab-content>
+
       <tab-content  @click="step = 2" :title="$t('labels.thumbnail')" icon="fas fa-receipt" >
         <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove" v-if="step === 2"/>
       </tab-content>
+
       <tab-content  @click="step = 3" :title="$t('labels.finalStep')" icon="fas fa-receipt">
         <h5 class="text-danger" v-if="product.productType === 'DIGITAL'">{{$t('labels.pleaseUploadAfileOrProvideALink')}}</h5>
         <div class="row m-5" v-if="isSaving">
@@ -259,6 +267,13 @@
   }
   .productIcon{
     font-size: 4.5rem;
+  }
+  .price-row {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+  .price-row .col-auto {
+    margin-right: 20px;
   }
   .profile-tile-box:hover{
     -webkit-box-shadow: 6px 4px 13px 5px rgba(28,76,195,0.57);

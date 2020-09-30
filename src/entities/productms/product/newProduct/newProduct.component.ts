@@ -100,13 +100,12 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     this.validFromConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
-      minDate: moment().format(DATE_FORMAT)
+      dateFormat: 'd-m-Y'
     }
     this.validToConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: moment().format(DATE_FORMAT)
     }
     this.moneyConfig = new MoneyConfig(undefined, undefined, '', Store.state.currency, 0, false)

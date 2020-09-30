@@ -144,6 +144,10 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
       }
     }
 
+    public goBack() {
+      this.$router.push('/products')
+    }
+
     public removeListManagerid (listMgr: any) {
       let index = null
       $.each(this.selectedListManagers, function (k, v) {
