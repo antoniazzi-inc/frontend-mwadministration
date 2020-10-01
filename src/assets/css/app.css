@@ -355,6 +355,15 @@
 }
 
 /* PJE */
+.color-button {
+    height:36px;
+    max-width: 100px;
+    border-radius: 8px;
+    border: solid 1px #fff;
+}
+.color-button:hover {
+    border: solid 1px #000;
+}
 .tab-nav {
     font-size: 1.2em;
     font-weight: 800;

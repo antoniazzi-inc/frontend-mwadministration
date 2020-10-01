@@ -38,6 +38,7 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
     public selectedFont: any = null;
     public btnStyle: any = {};
     public htmlContent: any = '';
+    public embedCode: any = '';
 
     public payBtn: any = {
       emptyCart: true,
@@ -102,12 +103,17 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
       Vue.nextTick(function () {
         self.selectedFont = newVal.payButtonJson && newVal.payButtonJson.fontName ? newVal.payButtonJson.fontName : self.payBtn.fontName
         self.generateStyleForButton(self.payBtn)
+        self.generateEmbedCode(newVal)
       })
     }
 
     @Watch('payBtn', { immediate: true, deep: true })
     public updatePayBtn (newVal: any) {
       this.generateStyleForButton(newVal)
+    }
+
+    public goBack() {
+      this.$router.push('/products')
     }
 
     public save () {
@@ -139,7 +145,15 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
       return url
     }
 
+    public generateEmbedCode(product: any) {
+      this.embedCode = '<div id="arcomplete" data-cred="' + product.administrationId + '.MTA2MDkwMA==" data-product="' + product.id + '"></div><script src="https://cdn-autorespond-nl.ams3.digitaloceanspaces.com/embedded/arcompactcart.js"></script>'
+    }
+
     public generateStyleForButton (styleObj: any) {
+      let shadow = styleObj.shadowSize + 'px ' + styleObj.shadowSize + 'px 10px ' + styleObj.shadowColor
+      if (styleObj.shadowSize === '0') {
+        shadow = '0px 0px 0px'
+      }
       this.btnStyle = {
         'font-style': styleObj.italic ? 'italic' : 'normal',
         'font-weight': styleObj.bold ? 'bold' : 'normal',
@@ -150,9 +164,9 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
         border: styleObj.borderThickness + 'px ' + styleObj.borderStyle + ' ' + styleObj.borderColor,
         background: styleObj.backgroundColor,
         'border-radius': styleObj.roundCorners + 'px',
-        '-webkit-box-shadow': styleObj.shadowSize + 'px ' + styleObj.shadowSize + 'px ' + styleObj.shadowColor,
-        '-moz-box-shadow': styleObj.shadowSize + 'px ' + styleObj.shadowSize + 'px ' + styleObj.shadowColor,
-        'box-shadow': styleObj.shadowSize + 'px ' + styleObj.shadowSize + 'px ' + styleObj.shadowColor,
+        '-webkit-box-shadow': shadow,
+        '-moz-box-shadow': shadow,
+        'box-shadow': shadow,
         'text-align': 'center',
         'font-size': styleObj.fontSize + 'px'
       }
@@ -212,7 +226,19 @@ export default class PayBtnTabComponent extends mixins(CommonHelpers, Vue) {
       this.$vueOnToast.pop('success', this.$t('labels.payBtnHtmlCopiedToClipboard'))
     }
 
-    public copyCSS () {
+  public copyEmbed () {
+    const range: any = document.createRange()
+    range.selectNode(document.getElementById('embedCode'))
+    // @ts-ignore
+    window.getSelection().removeAllRanges()
+    // @ts-ignore
+    window.getSelection().addRange(range)
+    document.execCommand('copy')
+    // @ts-ignore
+    window.getSelection().removeAllRanges()
+  }
+
+  public copyCSS () {
       const range = document.createRange()
       // @ts-ignore
       range.selectNode(document.getElementById('cssRule'))
