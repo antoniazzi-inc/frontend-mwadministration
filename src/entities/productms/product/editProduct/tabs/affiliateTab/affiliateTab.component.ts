@@ -40,7 +40,7 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     public moneyFixed = {
       decimal: ',',
       thousands: '.',
-      prefix: Store.state.currency,
+      prefix: Store.state.currency + ' ',
       suffix: '',
       precision: 2,
       masked: false
@@ -87,7 +87,9 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
         this.setAlert('productUpdated', 'success')
       })
     }
-
+    public goBack() {
+      this.$router.push('/products')
+    }
     public cancel () {
       this.productCopy = this.productBackup
     }

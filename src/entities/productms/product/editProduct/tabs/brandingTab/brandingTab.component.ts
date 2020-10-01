@@ -177,7 +177,9 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       self.$set(self.editFile, 'cropper', cropper)
     }, 50)
   }
-
+  public goBack() {
+    this.$router.push('/products')
+  }
   public retrieve() {
     this.allCompanies = this.$store.state.lookups.companies;
     this.allInvoiceTemplates = this.$store.state.lookups.invoiceTemplates;

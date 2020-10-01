@@ -94,7 +94,9 @@ export default class PhysicalTabComponent extends mixins(Vue, CommonHelpers) {
       })
       this.retrieve()
     }
-
+    public goBack() {
+      this.$router.push('/products')
+    }
     public retrieve () {
       const self = this
       const methods: any = []

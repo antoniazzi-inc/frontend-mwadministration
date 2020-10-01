@@ -1,21 +1,23 @@
 <template>
   <div class="container-fluid">
-    <div class="row text-left">
-      <div class="col-md-12">
-        <h5 class="form-header"><strong>{{getProductName()}}</strong></h5>
-        <div class="form-desc">
-          {{$t('labels.created')}} {{ product.createdOn | formatDate}}
-          {{$t('labels.and')}}
-          {{$t('labels.updated')}} {{ product.updatedOn | formatDate}}
-        </div>
-        <product-edit-tabs-component :product="product" ref="editTabs"
-                                      @updateProduct="updateProduct"></product-edit-tabs-component>
-      </div>
-    </div>
+    <h2 id="page-heading" class="text-left mt-3">
+      {{getProductName()}}
+      <router-link to="/products" class="text-decoration-none text-white">
+        <button tag="button" class="btn btn-primary float-right create-tag">
+          <span>{{$t('buttons.backToList')}}</span>
+        </button>
+      </router-link>
+    </h2>
+    <p style="">
+      {{$t('labels.created') | lower}} {{ product.createdOn | formatDate}}
+      {{$t('labels.and') | lower}} {{$t('labels.updated') | lower}} {{ product.updatedOn | formatDate}}
+    </p>
+    <product-edit-tabs-component :product="product" ref="editTabs" @updateProduct="updateProduct"></product-edit-tabs-component>
   </div>
 </template>
 <script type="ts" src="./editProduct.component.ts"></script>
 <style scoped>
+  /*
   .user-profile {
     border-radius: 6px;
     background-color: #fff;
@@ -137,4 +139,5 @@
     max-height: 400px;
     overflow-y: auto;
   }
+  */
 </style>

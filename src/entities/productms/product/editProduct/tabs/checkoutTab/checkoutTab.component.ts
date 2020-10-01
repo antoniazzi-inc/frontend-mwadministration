@@ -172,7 +172,9 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         this.$emit('update', resp.data)
       })
     }
-
+    public goBack() {
+      this.$router.push('/products')
+    }
     public checkForHttps () {
       this.termsAndConditions.linkToConditions = this.checkForUrlHttps(this.termsAndConditions.linkToConditions)
     }

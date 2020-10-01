@@ -9,9 +9,8 @@
       </router-link>
     </h2>
     <p style="">
-      {{$t('labels.created')}} {{ promotion.createdOn | formatDate}}
-      {{$t('labels.and')}}
-      {{$t('labels.updated')}} {{ promotion.updatedOn | formatDate}}
+      {{$t('labels.created') | lower}} {{ promotion.createdOn | formatDate}}
+      {{$t('labels.and') | lower}} {{$t('labels.updated') | lower}} {{ promotion.updatedOn | formatDate}}
     </p>
     <PromotionEditTabsComponent :promotion="promotion" @updatePromotion="updatePromotion"/>
   </div>

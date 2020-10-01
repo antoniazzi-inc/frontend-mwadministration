@@ -1,209 +1,206 @@
 <template>
-    <div class="row">
-        <div class="element-wrapper col-md-12">
-            <div class="element-box">
-                <!--<b-modal ref="removeEntityImage" id="removeEntityImage" >
-                    <span slot="modal-title"><span id="vueadminApp.productmsMedia.delete.question" v-text="$t('entity.delete.title')">Confirm delete operation</span></span>
-                    <div class="mt-4">
-                        <p id="jhi-delete-image-heading" v-bind:title="$t('vueadminApp.productmsMedia.delete.question')">Are you sure you want to delete this image?</p>
-                    </div>
-                    <div slot="modal-footer">
-                        <button type="button" class="btn btn-secondary" v-text="$t('buttonscancel')" v-on:click="closeDialog()">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="jhi-confirm-delete-image" v-text="$t('buttonsdelete')" v-on:click="removeImage">Delete</button>
-                    </div>
-                </b-modal>-->
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item" @click="currentTab = 'general'">
-                  <a :class="{'nav-link': true, 'active': currentTab === 'general'}" id="general-tab" data-toggle="tab"
-                     href="#general" role="tab" aria-controls="general" aria-selected="true">{{$t('labels.general')}}</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'tabUSP'">
-                  <a :class="{'nav-link': true, 'active': currentTab === 'tabUSP'}" id="tabUSP-tab" data-toggle="tab"
-                     href="#tabUSP" role="tab" aria-controls="tabUSP" aria-selected="false">{{$t('labels.tabUSP')}}</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'tabTestimonials'">
-                  <a :class="{'nav-link': true, 'active': currentTab === 'tabTestimonials'}" id="tabTestimonials-tab" data-toggle="tab"
-                     href="#tabTestimonials" role="tab" aria-controls="tabTestimonials" aria-selected="false">{{$t('labels.tabTestimonials')}}</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'tabDiscounts'">
-                  <a :class="{'nav-link': true, 'active': currentTab === 'tabDiscounts'}" id="tabDiscounts-tab"
-                     data-toggle="tab" href="#tabDiscounts" role="tab" aria-controls="tabDiscounts" aria-selected="false">
-                    {{$t('labels.tabDiscounts')}}</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'tabSuggestions'">
-                  <a :class="{'nav-link': true, 'active': currentTab === 'tabSuggestions'}" id="tabSuggestions-tab" data-toggle="tab"
-                     href="#tabSuggestions" role="tab" aria-controls="tabSuggestions" aria-selected="false">{{$t('labels.tabSuggestions')}}</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'tabThankyou'">
-                  <a :class="{'nav-link': true, 'active': currentTab === 'tabThankyou'}" id="tabThankyou-tab" data-toggle="tab"
-                     href="#tabThankyou" role="tab" aria-controls="tabThankyou"
-                     aria-selected="false">{{$t('labels.tabThankyou')}}</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'tabSocialAff'">
-                  <a :class="{'nav-link': true, 'active': currentTab === 'tabSocialAff'}" id="tabSocialAff-tab" data-toggle="tab"
-                     href="#tabSocialAff" role="tab" aria-controls="tabSocialAff" aria-selected="false">{{$t('labels.tabSocialAff')}}</a>
-                </li>
-                <li class="nav-item" @click="currentTab = 'images'">
-                  <a :class="{'nav-link': true, 'active': currentTab === 'images'}" id="images-tab" data-toggle="tab"
-                     href="#images" role="tab" aria-controls="images"
-                     aria-selected="false">{{$t('labels.images')}}</a>
-                </li>
-              </ul>
-              <div class="tab-content text-left">
-                <div :class="{'tab-pane': true, 'active': currentTab === 'general'}" id="general" role="tabpanel" aria-labelledby="general-tab">
-                  <form>
-                    <div class="row mt-4">
-                      <div class="form-group col-md-6">
-                        <label class="form-control-label">{{$t('labels.salesPageUrl')}}</label>
-                        <input @blur="checkForHttp" name="Sales Page Url" v-validate="'url'" type="url" :class="{'form-control':true}" v-model="salesPageUrl"/>
-                        <small class="text-danger">{{errors.first('Sales Page Url')}}</small>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label class="form-control-label">{{$t('labels.selectInvoiceTemplate')}}</label>
-                        <searchable-select-component :config="singleSelectConfig"
-                                                     :options="allInvoiceTemplates"
-                                                     :value="selectedInvoiceTemplate"
-                                                     @onSelected="addInvoiceTemplate"
-                                                     @onDelete="removeInvoiceTemplate"/>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="form-group col-md-12">
-                        <label class="form-control-label">{{$t('labels.backToCallingPage')}}</label>
-                        <toggle-switch :on-text="$t('labels.yes')"
-                                       :off-text="$t('labels.no')"
-                                       :value.sync="backToCallingPage"></toggle-switch>
-                      </div>
-                    </div>
-                    <div class="form-buttons-w text-right">
-                      <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
-                    </div>
-                  </form>
-                </div>
-                <div :class="{'tab-pane': true, 'active': currentTab === 'tabUSP'}" id="tabUSP" role="tabpanel" aria-labelledby="tabUSP-tab">
-                  <form>
-                    <div class="form-group mt-4">
-                      <label class="form-control-label">{{$t('labels.tabUSP')}}</label>
-                      <trumbowyg v-model="upsellCart1" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
-                    </div>
-                    <div class="form-buttons-w text-right">
-                      <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
-                    </div>
-                  </form>
-                </div>
-                <div :class="{'tab-pane': true, 'active': currentTab === 'tabTestimonials'}" id="tabTestimonials" role="tabpanel" aria-labelledby="tabTestimonials-tab">
-                  <form>
-                    <div class="form-group mt-4">
-                      <label class="form-control-label">{{$t('labels.tabTestimonials')}}</label>
-                      <trumbowyg v-model="upsellCart2" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
-                    </div>
-                    <div class="form-buttons-w text-right">
-                      <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
-                    </div>
-                  </form>
-                </div>
-                <div :class="{'tab-pane': true, 'active': currentTab === 'tabDiscounts'}" id="tabDiscounts" role="tabpanel" aria-labelledby="tabDiscounts-tab">
-                  <form>
-                    <div class="form-group mt-4">
-                      <label class="form-control-label">{{$t('labels.tabDiscounts')}}</label>
-                      <trumbowyg v-model="upsellCart3" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
-                    </div>
-                    <div class="form-buttons-w text-right">
-                      <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
-                    </div>
-                  </form>
-                </div>
-                <div :class="{'tab-pane': true, 'active': currentTab === 'tabSuggestions'}" id="tabSuggestions" role="tabpanel" aria-labelledby="tabSuggestions-tab">
-                  <form>
-                    <div class="form-group mt-4">
-                      <label class="form-control-label">{{$t('labels.tabSuggestions')}}</label>
-                      <trumbowyg v-model="checkoutUpsell" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
-                    </div>
-                    <div class="form-buttons-w text-right">
-                      <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
-                    </div>
-                  </form>
-                </div>
-                <div :class="{'tab-pane': true, 'active': currentTab === 'tabThankyou'}" id="tabThankyou" role="tabpanel" aria-labelledby="tabThankyou-tab">
-                  <form>
-                    <div class="form-group mt-4">
-                      <label class="form-control-label">{{$t('labels.thankYouRedirect')}}</label>
-                      <input type="text" class="form-control" v-model="thankYouRedirect"/>
-                    </div>
-                    <div class="form-group">
-                      <label class="form-control-label">{{$t('labels.thankYouContent')}}</label>
-                      <trumbowyg v-model="thankYouContent" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
-                    </div>
-                    <div class="form-buttons-w text-right">
-                      <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
-                    </div>
-                  </form>
-                </div>
-                <div :class="{'tab-pane': true, 'active': currentTab === 'tabSocialAff'}" id="tabSocialAff" role="tabpanel" aria-labelledby="tabSocialAff-tab">
-                  <form>
-                    <div class="form-group">
-                      <label class="form-control-label">{{$t('labels.tabSocialAff')}}</label>
-                      <trumbowyg v-model="socialAffiliates" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
-                    </div>
-                    <div class="form-buttons-w text-right">
-                      <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
-                    </div>
-                  </form>
-                </div>
-                <div :class="{'tab-pane': true, 'active': currentTab === 'images'}" id="images" role="tabpanel" aria-labelledby="images-tab">
-                  <div class="row">
-                    <div class="form-group mt-4 col-md-12">
-                      <button class="btn btn-outline-primary mb-2" @click="loadImageGallery(false)">{{$t('labels.openMediaLibrary')}}</button>
-                      <upload-widget @onError="imageUploadError" @changeFeaturedImage="changeFeaturedImage" :showFeaturedFlag="true" :allFiles="allMediaFiles" @onUpload="imageLoaded" @onRemove="onImageRemove" :multiple="true"/>
-                    </div>
-                  </div>
-                  <div class="form-buttons-w text-right">
-                    <button class="btn btn-primary" @click.prevent="saveMedia" :disabled="isSaving">{{$t('buttons.save')}}</button>
-                  </div>
-                </div>
-              </div>
-              <div class="modal" data-backdrop="static" data-keyboard="false" id="editImageUploaded" tabindex="-1" role="dialog" ref="editImageUploaded">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <form @submit.prevent="saveEditedImage">
-                      <div class="modal-body">
-                        <div class="form-group">
-                          <label for="name">{{$t('labels.name')}}:</label>
-                          <input type="text" class="form-control" required id="name"  placeholder="Please enter a file name" v-model="editFile.name">
-                        </div>
-                        <div class="form-group">
-                          <label>{{$t('labels.image')}}: </label>
-                          <div class="edit-image">
-                            <img :src="editFile.blob" :ref="'editImageRef'" />
-                          </div>
-
-                          <div class="edit-image-tool">
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-primary" @click="rotateLeft" title="cropper.rotate(-90)"><i class="fa fa-undo" aria-hidden="true"></i></button>
-                              <button type="button" class="btn btn-primary" @click="rotateRight"  title="cropper.rotate(90)"><i class="fa fa-repeat" aria-hidden="true"></i></button>
-                            </div>
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-primary" @click="crop" title="cropper.crop()"><i class="fa fa-check" aria-hidden="true"></i></button>
-                              <button type="button" class="btn btn-primary" @click="clear" title="cropper.clear()"><i class="fa fa-remove" aria-hidden="true"></i></button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click.prevent="editFile.show = false">{{$t('buttons.close')}}</button>
-                        <button type="submit" class="btn btn-primary">{{$t('buttons.save')}}</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
+  <div class="tab-form-panel">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'general'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'general'}" id="general-tab" data-toggle="tab"
+           href="#general" role="tab" aria-controls="general" aria-selected="true">{{$t('labels.general')}}</a>
+      </li>
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabUSP'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'tabUSP'}" id="tabUSP-tab" data-toggle="tab"
+           href="#tabUSP" role="tab" aria-controls="tabUSP" aria-selected="false">{{$t('labels.tabUSP')}}</a>
+      </li>
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabTestimonials'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'tabTestimonials'}" id="tabTestimonials-tab" data-toggle="tab"
+           href="#tabTestimonials" role="tab" aria-controls="tabTestimonials" aria-selected="false">{{$t('labels.tabTestimonials')}}</a>
+      </li>
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabDiscounts'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'tabDiscounts'}" id="tabDiscounts-tab"
+           data-toggle="tab" href="#tabDiscounts" role="tab" aria-controls="tabDiscounts" aria-selected="false">
+          {{$t('labels.tabDiscounts')}}</a>
+      </li>
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabSuggestions'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'tabSuggestions'}" id="tabSuggestions-tab" data-toggle="tab"
+           href="#tabSuggestions" role="tab" aria-controls="tabSuggestions" aria-selected="false">{{$t('labels.tabSuggestions')}}</a>
+      </li>
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabThankyou'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'tabThankyou'}" id="tabThankyou-tab" data-toggle="tab"
+           href="#tabThankyou" role="tab" aria-controls="tabThankyou"
+           aria-selected="false">{{$t('labels.tabThankyou')}}</a>
+      </li>
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabSocialAff'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'tabSocialAff'}" id="tabSocialAff-tab" data-toggle="tab"
+           href="#tabSocialAff" role="tab" aria-controls="tabSocialAff" aria-selected="false">{{$t('labels.tabSocialAff')}}</a>
+      </li>
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'images'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'images'}" id="images-tab" data-toggle="tab"
+           href="#images" role="tab" aria-controls="images"
+           aria-selected="false">{{$t('labels.images')}}</a>
+      </li>
+    </ul>
+    <div class="tab-content text-left">
+      <div :class="{'tab-pane': true, 'active': currentTab === 'general'}" id="general" role="tabpanel" aria-labelledby="general-tab">
+        <form>
+          <div class="row mt-4">
+            <div class="form-group col-md-6">
+              <label class="form-control-label">{{$t('labels.salesPageUrl')}}</label>
+              <input @blur="checkForHttp" name="Sales Page Url" v-validate="'url'" type="url" :class="{'form-control':true}" v-model="salesPageUrl"/>
+              <small class="text-danger">{{errors.first('Sales Page Url')}}</small>
             </div>
-            <media-library ref="mediaLib" :items="allMedia" @onSearch="searchMedia" @retrieveItems="loadImageGallery(false)" @onUploadGallery="uploadFromGallery" @onUpload="uploadImgGallery" @onFilter="filterMedia" @onRemove="removeImage" :isLoading="isMediaLoading" mediaLibraryType="images"></media-library>
+            <div class="form-group col-md-6">
+              <label class="form-control-label">{{$t('labels.selectInvoiceTemplate')}}</label>
+              <searchable-select-component :config="singleSelectConfig"
+                                           :options="allInvoiceTemplates"
+                                           :value="selectedInvoiceTemplate"
+                                           @onSelected="addInvoiceTemplate"
+                                           @onDelete="removeInvoiceTemplate"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="form-control-label">{{$t('labels.backToCallingPage')}}</label>
+              <toggle-switch :on-text="$t('labels.yes')"
+                             :off-text="$t('labels.no')"
+                             :value.sync="backToCallingPage"></toggle-switch>
+            </div>
+          </div>
+          <div class="form-buttons-w text-right">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div :class="{'tab-pane': true, 'active': currentTab === 'tabUSP'}" id="tabUSP" role="tabpanel" aria-labelledby="tabUSP-tab">
+        <form>
+          <div class="form-group mt-4">
+            <label class="form-control-label">{{$t('labels.tabUSP')}}</label>
+            <trumbowyg v-model="upsellCart1" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+          </div>
+          <div class="form-buttons-w text-right">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div :class="{'tab-pane': true, 'active': currentTab === 'tabTestimonials'}" id="tabTestimonials" role="tabpanel" aria-labelledby="tabTestimonials-tab">
+        <form>
+          <div class="form-group mt-4">
+            <label class="form-control-label">{{$t('labels.tabTestimonials')}}</label>
+            <trumbowyg v-model="upsellCart2" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+          </div>
+          <div class="form-buttons-w text-right">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div :class="{'tab-pane': true, 'active': currentTab === 'tabDiscounts'}" id="tabDiscounts" role="tabpanel" aria-labelledby="tabDiscounts-tab">
+        <form>
+          <div class="form-group mt-4">
+            <label class="form-control-label">{{$t('labels.tabDiscounts')}}</label>
+            <trumbowyg v-model="upsellCart3" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+          </div>
+          <div class="form-buttons-w text-right">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div :class="{'tab-pane': true, 'active': currentTab === 'tabSuggestions'}" id="tabSuggestions" role="tabpanel" aria-labelledby="tabSuggestions-tab">
+        <form>
+          <div class="form-group mt-4">
+            <label class="form-control-label">{{$t('labels.tabSuggestions')}}</label>
+            <trumbowyg v-model="checkoutUpsell" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+          </div>
+          <div class="form-buttons-w text-right">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div :class="{'tab-pane': true, 'active': currentTab === 'tabThankyou'}" id="tabThankyou" role="tabpanel" aria-labelledby="tabThankyou-tab">
+        <form>
+          <div class="form-group mt-4">
+            <label class="form-control-label">{{$t('labels.thankYouRedirect')}}</label>
+            <input type="text" class="form-control" v-model="thankYouRedirect"/>
+          </div>
+          <div class="form-group">
+            <label class="form-control-label">{{$t('labels.thankYouContent')}}</label>
+            <trumbowyg v-model="thankYouContent" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+          </div>
+          <div class="form-buttons-w text-right">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div :class="{'tab-pane': true, 'active': currentTab === 'tabSocialAff'}" id="tabSocialAff" role="tabpanel" aria-labelledby="tabSocialAff-tab">
+        <form>
+          <div class="form-group mt-4">
+            <label class="form-control-label">{{$t('labels.tabSocialAff')}}</label>
+            <trumbowyg v-model="socialAffiliates" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+          </div>
+          <div class="form-buttons-w text-right">
+            <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+            <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div :class="{'tab-pane': true, 'active': currentTab === 'images'}" id="images" role="tabpanel" aria-labelledby="images-tab">
+        <div class="row">
+          <div class="form-group mt-4 col-md-12">
+            <button class="btn btn-outline-primary mb-2" @click="loadImageGallery(false)">{{$t('labels.openMediaLibrary')}}</button>
+            <upload-widget @onError="imageUploadError" @changeFeaturedImage="changeFeaturedImage" :showFeaturedFlag="true" :allFiles="allMediaFiles" @onUpload="imageLoaded" @onRemove="onImageRemove" :multiple="true"/>
+          </div>
         </div>
+        <div class="form-buttons-w text-right">
+          <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
+          <button class="btn btn-primary" @click.prevent="saveMedia" :disabled="isSaving">{{$t('buttons.save')}}</button>
+        </div>
+      </div>
     </div>
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="editImageUploaded" tabindex="-1" role="dialog" ref="editImageUploaded">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <form @submit.prevent="saveEditedImage">
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="name">{{$t('labels.name')}}:</label>
+                    <input type="text" class="form-control" required id="name"  placeholder="Please enter a file name" v-model="editFile.name">
+                  </div>
+                  <div class="form-group">
+                    <label>{{$t('labels.image')}}: </label>
+                    <div class="edit-image">
+                      <img :src="editFile.blob" :ref="'editImageRef'" />
+                    </div>
+
+                    <div class="edit-image-tool">
+                      <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" @click="rotateLeft" title="cropper.rotate(-90)"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-primary" @click="rotateRight"  title="cropper.rotate(90)"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+                      </div>
+                      <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" @click="crop" title="cropper.crop()"><i class="fa fa-check" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-primary" @click="clear" title="cropper.clear()"><i class="fa fa-remove" aria-hidden="true"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal" @click.prevent="editFile.show = false">{{$t('buttons.close')}}</button>
+                  <button type="submit" class="btn btn-primary">{{$t('buttons.save')}}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    <media-library ref="mediaLib" :items="allMedia" @onSearch="searchMedia" @retrieveItems="loadImageGallery(false)" @onUploadGallery="uploadFromGallery" @onUpload="uploadImgGallery" @onFilter="filterMedia" @onRemove="removeImage" :isLoading="isMediaLoading" mediaLibraryType="images"></media-library>
+  </div>
 </template>
 <script lang="ts" src="./brandingTab.component.ts"></script>
 <style>
+  .smaller-tab {
+    font-size:1.1em;
+  }
     .deleteImage{
         position: absolute;
         top: -8px;
