@@ -51,7 +51,7 @@
                     <div class="form-group">
                       <label for="">{{$t('labels.color')}}</label>
                       <div class="dropdown col-md-12" style="padding-left:0px">
-                        <button :disabled="errors.any()>0" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true"
+                        <button :disabled="errors.any()>0" id="dLabel" type="button" class="color-button" data-toggle="dropdown" aria-haspopup="true"
                                 :style="{'background-color': category.color, width: '80px', height: '40px'}" aria-expanded="false"> &nbsp;
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dLabel">

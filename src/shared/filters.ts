@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import moment from 'moment'
+import Store from "@/store";
 
 export const DATE_FORMAT = 'DD-MM-YYYY'
 export const DATE_TIME_FORMAT = 'DD-MM-YYYY HH:mm'
@@ -46,6 +47,10 @@ export function initFilters () {
   })
   Vue.filter('formatSize', function (value: any) {
     return `${value / 1000} kb`
+  })
+  Vue.filter('formatAmount', function (value: any) {
+    if (!value) return Store.state.currency + ' 0,00'
+    return Store.state.currency + ' ' + value // TODO use moneyconfig here...
   })
   Vue.filter('lower', function (value: any) {
     if (!value) return ''
