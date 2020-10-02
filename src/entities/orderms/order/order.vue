@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+
     <h2 id="page-heading" class="text-left mt-3">
       <span id="tag-heading">{{$t('labels.orders')}}</span>
       <router-link to="/orders/new" class="text-decoration-none text-white">
@@ -8,70 +9,77 @@
         </button>
       </router-link>
     </h2>
+
     <div class="row">
-      <div class="col-md-3">
+
+      <div class="col-md-3" id="rdr-search">
         <form name="searchForm" class="form text-left" @submit.prevent.stop="simpleSearch">
           <div class="form-group mt-3">
             <label class="form-control-label">{{$t('labels.customerNameOrEmail')}}</label>
             <input type="text" class="form-control" name="currentSearchName" id="currentSearchName" v-model="currentSearchName" />
           </div>
-          <div class="form-group mt-3">
-            <label class="form-control-label">{{$t('labels.orderId')}}</label>
-            <input type="number" class="form-control" name="currentSearchOrderId" id="currentSearchOrderId" v-model="currentSearchOrderId" />
+          <div class="row mt-3">
+            <div class="form-group col-6">
+              <label class="form-control-label">{{$t('labels.orderId')}}</label>
+              <input type="number" class="form-control" name="currentSearchOrderId" id="currentSearchOrderId" v-model="currentSearchOrderId" />
+            </div>
+            <div class="form-group col-6">
+              <label class="form-control-label">{{$t('labels.invoiceNumberSearch')}}</label>
+              <input type="text" class="form-control" name="invoiceNumberSearch" id="invoiceNumberSearch" v-model="invoiceNumberSearch" />
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="form-group col-6">
+              <label class="form-control-label">{{$t('labels.recentlyAdded')}}</label>
+              <select v-model="RecentlyAddedSearch" class="form-control">
+                <option value="today">{{$t('labels.today')}}</option>
+                <option value="yesterday">{{$t('labels.yesterday')}}</option>
+                <option value="last7days">{{$t('labels.last7days')}}</option>
+                <option value="thisMonth">{{$t('labels.thisMonth')}}</option>
+                <option value="lastMonth">{{$t('labels.lastMonth')}}</option>
+                <option value="all">{{$t('labels.all')}}</option>
+              </select>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-control-label">{{$t('labels.paymentStatus')}}</label>
+              <select v-model="paymentStatusSearch" class="form-control">
+                <option value="true">{{$t('labels.paid')}}</option>
+                <option value="false">{{$t('labels.notPaid')}}</option>
+                <option value="all">{{$t('labels.all')}}</option>
+              </select>
+            </div>
           </div>
           <div class="form-group mt-3">
             <label class="form-control-label">{{$t('labels.products')}}</label>
             <searchable-select-component :config="searchableProductsConfig"
-                                         :options="$store.state.lookups.products"
-                                         :value="selectedProducts"
-                                         @onChange="productSearchChanged"
-                                         @onDelete="productSearchRemoved"/>
+             :options="$store.state.lookups.products"
+             :value="selectedProducts"
+             @onChange="productSearchChanged"
+             @onDelete="productSearchRemoved"/>
           </div>
           <div class="form-group mt-3">
             <label class="form-control-label">{{$t('labels.productCategories')}}</label>
             <searchable-select-component :config="searchableCatsConfig"
-                                         :options="$store.state.lookups.categories"
-                                         :value="selectedCategories"
-                                         @onSelected="categorySearchChanged"
-                                         @onDelete="categorySearchRemoved"/>
-          </div>
-          <div class="form-group mt-3">
-            <label class="form-control-label">{{$t('labels.invoiceNumberSearch')}}</label>
-            <input type="text" class="form-control" name="invoiceNumberSearch" id="invoiceNumberSearch" v-model="invoiceNumberSearch" />
+             :options="$store.state.lookups.categories"
+             :value="selectedCategories"
+             @onSelected="categorySearchChanged"
+             @onDelete="categorySearchRemoved"/>
           </div>
           <div class="form-group mt-3">
             <label class="form-control-label">{{$t('labels.affiliates')}}</label>
             <searchable-select-component :config="searchableAffiliatesConfig"
-                                         :options="$store.state.lookups.affiliates"
-                                         :value="selectedAffiliates"
-                                         @onSelected="affiliateSearchChanged"
-                                         @onDelete="affiliateSearchRemoved"/>
-          </div>
-          <div class="form-group mt-3">
-            <label class="form-control-label">{{$t('labels.recentlyAdded')}}</label>
-            <select v-model="RecentlyAddedSearch" class="form-control">
-              <option value="today">{{$t('labels.today')}}</option>
-              <option value="yesterday">{{$t('labels.yesterday')}}</option>
-              <option value="last7days">{{$t('labels.last7days')}}</option>
-              <option value="thisMonth">{{$t('labels.thisMonth')}}</option>
-              <option value="lastMonth">{{$t('labels.lastMonth')}}</option>
-              <option value="all">{{$t('labels.all')}}</option>
-            </select>
+             :options="$store.state.lookups.affiliates"
+             :value="selectedAffiliates"
+             @onSelected="affiliateSearchChanged"
+             @onDelete="affiliateSearchRemoved"/>
           </div>
           <div class="form-group mt-3">
             <label class="form-control-label">{{$t('labels.searchByPromotion')}}</label>
             <searchable-select-component :config="searchablePromotionsConfig"
-                                         :options="$store.state.lookups.promotions"
-                                         :value="selectedPromotion"
-                                         @onChange="promotionSearchChanged"
-                                         @onDelete="promotionSearchRemoved"/>
-          </div>
-          <div class="form-group mt-3">
-            <label class="form-control-label">{{$t('labels.paymentStatus')}}</label>
-            <select v-model="paymentStatusSearch" class="form-control">
-              <option value="true">{{$t('labels.paid')}}</option>
-              <option value="false">{{$t('labels.notPaid')}}</option>
-            </select>
+             :options="$store.state.lookups.promotions"
+             :value="selectedPromotion"
+             @onChange="promotionSearchChanged"
+             @onDelete="promotionSearchRemoved"/>
           </div>
           <div class="text-right">
             <button type="button" class="btn btn-outline-primary" @click="clear()">{{$t('buttons.clear')}}</button>
@@ -79,6 +87,7 @@
           </div>
         </form>
       </div>
+
       <div class="col-md-9">
         <PaginationTableComponent
           :ref="'paginationTable'"
@@ -113,3 +122,13 @@
   </div>
 </template>
 <script src="./order.component.ts" lang="ts"></script>
+
+<style scoped>
+  #rdr-search {
+    border: 1px solid #e0e0e8;
+    padding: 1em;
+    background-color: #fff;
+    margin:0em;
+    margin-top:2em;
+  }
+</style>

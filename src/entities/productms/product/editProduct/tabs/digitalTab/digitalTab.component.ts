@@ -111,6 +111,10 @@ export default class DigitalTabComponent extends mixins(CommonHelpers, Vue) {
     }
   }
 
+  public goBack() {
+    this.$router.push('/products')
+  }
+
   public updateEmailContent(content: any) {
 
     this.errorDigitalContent = false;

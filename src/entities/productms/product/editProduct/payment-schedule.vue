@@ -1,5 +1,5 @@
 <template>
-  <div class="content-w text-left">
+  <div class="content-w text-left" style="background-color: #fff; background: none">
     <div class="content-i">
         <div class="modal" data-backdrop="static" data-keyboard="false" id="removeEntityPaymentSchedule" tabindex="-1"
              role="dialog" ref="removeEntityPaymentSchedule">
@@ -49,21 +49,19 @@
             </div>
           </div>
         </div>
-        <div v-if="!editMode">
-          <div role="tablist" v-if="paymentSchedules.length">
+        <div v-if="!editMode" style="background-color: #fff;">
+          <div role="tablist" v-if="paymentSchedules.length" style="max-width:700px;">
             <div class="accordion" id="accordionFeatures">
-              <template @click.prevent="selectedPaymentSchedule = item" v-for="(item, index) in paymentSchedules">
+              <template class="cursor-pointer pipeline-item mt-2" @click.prevent="selectedPaymentSchedule = item" v-for="(item, index) in paymentSchedules">
                 <div class="card schedule" :key="index">
-                  <div class="card-header row pl-0 ml-0 pr-0 mr-0 align-items-center" :id="'headingOne' + index">
-                    <h2 class="mb-0 col-md-10">
-                      <button class="btn btn-link" type="button" data-toggle="collapse"
-                              :data-target="'#collapseOne' + index" aria-expanded="false"
-                              :aria-controls="'collapseOne' + index">
-                        {{item.name}}
-                      </button>
-                    </h2>
+                  <div class="card-header row pl-0 ml-0 pr-0 mr-0 align-items-center" :id="'headingOne' + index" data-toggle="collapse" :data-target="'#collapseOne' + index" aria-expanded="false"
+                       :aria-controls="'collapseOne' + index">
+                    <h5 class="mb-0 col-md-10">
+                      {{item.name}}
+                      <span style="color:#909090; font-size:0.8em; text-align: right; padding-left:1em;">{{$t('labels.clickForOptions')}}...</span>
+                    </h5>
                     <div class="col-md-2 text-right">
-                      <i class="fas fa-edit text-warning" @click="editPaymentSchedule(item)"/>
+                      <i class="fas fa-edit text-success" @click="editPaymentSchedule(item)"/>
                       <i class="fas fa-trash-alt text-danger ml-2" data-toggle="modal"
                          data-target="#removeEntityPaymentSchedule" @click.prevent="prepareRemoveSchedule(item)"/>
                     </div>
@@ -107,7 +105,7 @@
           <div class="row">
             <div class="col-md-6">
               <form>
-                <h3 class="title">{{$t('labels.addEditPaymentSchedule')}}</h3>
+                <h3 class="title">{{$t('labels.editPaymentSchedule')}}</h3>
                 <hr/>
                 <div class="form-group">
                   <label class="form-control-label">{{$t('labels.name')}}</label>
@@ -124,34 +122,33 @@
                 <div class="form-group">
                   <label class="form-control-label">{{$t('labels.availableForCustomers')}}</label>
                   <toggle-switch id="availableForCustomers"
-                                 :on-text="$t('labels.yes')"
-                                 :off-text="$t('labels.no')"
-                                 :value.sync="selectedPaymentSchedule.availableForCustomers"/>
+                     :on-text="$t('labels.yes')"
+                     :off-text="$t('labels.no')"
+                     :value.sync="selectedPaymentSchedule.availableForCustomers"/>
                 </div>
               </form>
             </div>
             <div class="col-md-6 scrollable-medium">
               <form>
-                <button type="button" class="btn btn-outline-primary ml-2" @click.prevent="addNewPaymentScheduleOption">
+                <button type="button" class="btn btn-primary ml-2" @click.prevent="addNewPaymentScheduleOption">
                   <i class="fas fa-plus"></i> {{$t('buttons.newPaymentScheduleOption')}}
                 </button>
                 <hr/>
                 <div v-for="(option, key) in selectedPaymentSchedule.paymentScheduleOptions" :key="key">
-                  <div class="row">
-                    <div class="form-group col-md-6">
+                  <div class="form-row">
+                    <div class="form-group col-auto">
                       <label class="form-control-label">{{$t('labels.name')}}</label>
                       <input type="text" class="form-control" v-model="option.name"/>
                     </div>
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-auto">
                       <label class="form-control-label">{{$t('labels.priceAmount')}}</label>
-                      <money v-model="option.price" class="form-control" name="priceAmount" v-bind="money"/>
+                      <money v-model="option.price" style="max-width:100px;" class="form-control" name="priceAmount" v-bind="money"/>
                     </div>
-                    <div class="form-group col-md-1 align-content-center">
-                      <i class="fa fa-trash-alt ml-2 cursor-pointer" data-toggle="modal"
-                         data-target="#removeEntityPaymentScheduleOption"
-                         @click.prevent="prepareRemoveScheduleOption(option)"></i>
+                    <div class="form-group col-auto" style="padding-top:2em">
+                      <button type="button" class="btn btn-sm" data-target="#removeEntityPaymentScheduleOption" data-toggle="modal" @click.prevent="prepareRemoveScheduleOption(option)">
+                        <i class="fa fa-trash-alt" style="font-size:1.2em"></i>
+                      </button>
                     </div>
-
                   </div>
                 </div>
               </form>
@@ -184,5 +181,14 @@
     border-radius: 16px;
     box-shadow: 4px 4px 4px #ccc;
     cursor: pointer;
+  }
+  .pipeline-item {
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    position: relative;
+    -webkit-box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid #e0e0e0;
   }
 </style>

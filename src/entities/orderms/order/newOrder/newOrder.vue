@@ -1,12 +1,22 @@
 <template>
   <div class="container-fluid text-left">
+    <h2 id="page-heading" class="text-left mt-3">
+      <span id="tag-heading">{{$t('labels.newOrder')}}</span>
+      <router-link to="/orders" class="text-decoration-none text-white">
+        <button tag="button" class="btn btn-secondary float-right create-tag">
+          <span>{{$t('labels.backToOrders')}}</span>
+        </button>
+      </router-link>
+    </h2>
+    <div class="wizard-panel">
+
     <form-wizard @on-complete="onComplete"
-                 :title="$t('labels.newOrder')"
+                 :title="''"
                  :subtitle="''"
-                 shape="tab"
+                 shape="circle"
                  @on-change="changeTab"
                  :start-index="step"
-                 color="#1c4cc3"
+                 color="#0a7cf8"
                  error-color="#ff4949">
       <tab-content @click="step = 0" :title="$t('labels.customer')" :before-change="validateStep" icon="dashicons dashicons-clipboard">
         <step1 ref="step1" @onUpdate="updateStep" :cartOrder="cartOrder"/>
@@ -36,6 +46,7 @@
         <step4 ref="step4" @onUpdate="updateStep" :cartOrder="cartOrder"/>
       </tab-content>
     </form-wizard>
+  </div>
   </div>
 </template>
 <script src="./newOrder.component.ts" lang="ts"></script>
