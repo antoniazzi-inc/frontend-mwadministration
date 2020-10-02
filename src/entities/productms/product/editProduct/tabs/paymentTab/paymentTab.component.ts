@@ -43,6 +43,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   public allPaymentMethods: any = [];
   public forceDirectPayment = false;
   public isSubscription = false;
+  public isUsePaymentSchedules = false;
   public addAllPaymentMethods = false;
   public sentAnnouncement = false;
   public sendInvoiceLater = false;
@@ -77,7 +78,10 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   @Watch('product', {immediate: true, deep: true})
   public updateProd(newVal: any) {
     if (newVal.productSubscription && newVal.productSubscription !== null && !this.isSubscription) this.isSubscription = true;
-    if (newVal && newVal.paymentSchedules && newVal.paymentSchedules !== null && newVal.paymentSchedules.length > 0 && !this.isSubscription) this.sentAnnouncement = true;
+    if (newVal && newVal.paymentSchedules && newVal.paymentSchedules !== null && newVal.paymentSchedules.length > 0 && !this.isSubscription) {
+      this.isUsePaymentSchedules = true;
+      this.sentAnnouncement = true;
+    }
     this.populatePaymentMethods(newVal);
     this.productCopy = newVal
   }
@@ -229,6 +233,18 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       this.productCopy.productPaymentMethods ? this.productCopy.productPaymentMethods.push(resp.data) : this.productCopy.productPaymentMethods = [resp.data];
       this.$emit('update', this.productCopy)
     })
+  }
+
+  public goBack() {
+    this.$router.push('/products')
+  }
+
+  public updateAnnouncement() {
+
+  }
+  public closeModal() {
+    // @ts-ignore
+    $(this.$refs.announcementModal).modal('hide')
   }
 
   public save() {

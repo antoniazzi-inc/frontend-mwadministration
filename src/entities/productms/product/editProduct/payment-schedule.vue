@@ -1,7 +1,6 @@
 <template>
   <div class="content-w text-left">
     <div class="content-i">
-      <div class="content-box">
         <div class="modal" data-backdrop="static" data-keyboard="false" id="removeEntityPaymentSchedule" tabindex="-1"
              role="dialog" ref="removeEntityPaymentSchedule">
           <div class="modal-dialog" role="document">
@@ -54,7 +53,7 @@
           <div role="tablist" v-if="paymentSchedules.length">
             <div class="accordion" id="accordionFeatures">
               <template @click.prevent="selectedPaymentSchedule = item" v-for="(item, index) in paymentSchedules">
-                <div class="card" :key="index">
+                <div class="card schedule" :key="index">
                   <div class="card-header row pl-0 ml-0 pr-0 mr-0 align-items-center" :id="'headingOne' + index">
                     <h2 class="mb-0 col-md-10">
                       <button class="btn btn-link" type="button" data-toggle="collapse"
@@ -98,11 +97,13 @@
               </template>
             </div>
           </div>
+          <!--
           <div class="justify-content-center text-center">
             <p>{{$t('labels.noData')}}</p>
           </div>
+          -->
         </div>
-        <div v-if="editMode || $props.addNewPayment">
+        <div v-if="editMode || $props.addNewPayment" id="editScheduleForm">
           <div class="row">
             <div class="col-md-6">
               <form>
@@ -162,7 +163,26 @@
           </div>
         </div>
       </div>
-    </div>
+
   </div>
 </template>
 <script lang="ts" src="./payment-schedule.component.ts"></script>
+
+<style scoped>
+  #editScheduleForm {
+    background-color: #f2f4f8;
+    border: solid 1px #d0d0d0;
+    margin:0.5em;
+    margin-bottom:2em;
+    border-radius: 10px;
+    padding: 1em;
+    box-shadow: 5px 20px 28px #aaa;
+  }
+  .schedule {
+    margin-bottom:1em;
+    padding:0px;
+    border-radius: 16px;
+    box-shadow: 4px 4px 4px #ccc;
+    cursor: pointer;
+  }
+</style>
