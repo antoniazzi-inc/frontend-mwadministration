@@ -10,4 +10,4 @@
     </div>
   </div>
 </template>
-<script src="./ToggleSwitchComplexSearch.component.ts"/>
+<script src="./isAffiliateComplexSearch.component.ts"/>

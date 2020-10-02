@@ -134,7 +134,7 @@
                         :class="index === selectedRowIndex ? 'selectedEvent cursor-pointer' : 'cursor-pointer'"
                         :key="index"
                         @click="selectRow(item, index)">
-                      <td>{{getMultiLangName(item.eventLanguages).name}}</td>
+                      <td>{{item.eventLanguages ? getMultiLangName(item.eventLanguages).name : ''}}</td>
                       <td>{{getEventDate(item)}}</td>
                       <td>{{getLocation(item)}}</td>
                       <td>{{getReservedSeats(item.eventReservations)}}/{{item.seats}}</td>
@@ -194,7 +194,7 @@
             -->
             <form name="editForm" role="form" novalidate v-on:submit.prevent="save()">
               <div class="element-wrapper">
-                <h4 class="element-header" v-text="$t('labels.reservations') + ' ' + selectedEvent.eventLanguages[0].name"></h4>
+                <h4 class="element-header" v-text="$t('labels.reservations') + ' ' + selectedEvent.eventLanguages && selectedEvent.eventLanguages.length ? selectedEvent.eventLanguages[0].name : ''"></h4>
                 <input type="search" class="form-control mb-2" :placeholder="$t('labels.search')" v-model="reservationsListSearch" @input="doSearchReservations()"/>
                 <div class="form-group halfHeight">
                   <table class="table table-striped">
@@ -287,7 +287,7 @@
             -->
             <form name="editForm" role="form" novalidate v-on:submit.prevent="save()">
               <div class="element-wrapper">
-                <h4 class="element-header" v-text="$t('labels.waitingList') + ' ' + selectedEvent.eventLanguages[0].name"></h4>
+                <h4 class="element-header" v-text="$t('labels.waitingList') + ' ' + selectedEvent.eventLanguages && selectedEvent.eventLanguages.length ? selectedEvent.eventLanguages[0].name : ''"></h4>
                 <input type="search" class="form-control mb-2" :placeholder="$t('labels.search')" v-model="waitingListSearch" @input="doSearchLists()"/>
                 <div class="form-group halfHeight">
                   <table class="table table-striped">

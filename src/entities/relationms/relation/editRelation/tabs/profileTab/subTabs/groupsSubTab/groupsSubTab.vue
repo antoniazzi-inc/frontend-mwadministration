@@ -12,6 +12,7 @@
           :list="relationCopy.relationGroups"
           :clone="clone"
           @sort="onSort"
+          :sort="false"
           :group="{ name: 'groups', pull: pullFunction }"
           @start="start"
         >
@@ -34,7 +35,7 @@
               <input type="search" @input="search" class="form-control" :placeholder="$t('labels.search')" v-model="groupSearch">
             </div>
           </div>
-        <draggable @start="isChanged = true" class="dragArea list-group areaHolder" :list="allGroups" group="groups">
+        <draggable @start="isChanged = true" :sort="false" class="dragArea list-group areaHolder" :list="allGroups" group="groups">
           <div class="list-group-item mt-2 mb-2 cursor-pointer btn-grey" v-for="element in allGroups" :key="element.id">
             <i class="fas fa-users"></i>
             <span class="text-left col-md-8" style="font-size:1.2em">{{element.label}}</span>

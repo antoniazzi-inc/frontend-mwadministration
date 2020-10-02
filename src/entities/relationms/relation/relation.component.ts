@@ -9,13 +9,15 @@ import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import complexSearchComponent from '@/entities/relationms/relation/complexSearch/complexSearch.vue'
 import { EventBus } from '@/shared/eventBus'
+import ComplexSearchComponent from "@/components/complexSearchWidget/complexSearch.vue";
 
 @Component({
   components: {
     complexSearch: complexSearchComponent,
     PaginationTableComponent,
     'simple-search': SimpleSearchComponent,
-    SearchableSelectComponent
+    SearchableSelectComponent,
+    ComplexSearchComponent
   },
   beforeRouteEnter (to, from, next) {
     next((vm: any) => {

@@ -43,7 +43,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.dateConfig = {
       wrap: false,
       altInput: false,
-      dateFormat: 'm-d-Y'
+      dateFormat: 'd-m-Y'
     }
     this.invoiceDate = null
     this.invoiceDeliveryDate = moment().format(DATE_FORMAT)

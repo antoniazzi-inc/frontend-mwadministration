@@ -22,6 +22,7 @@
     "moment": "^2.24.0",
     "papaparse": "^5.2.0",
     "popper.js": "^1.16.1",
+    "query-builder-vue": "^1.0.1",
     "sockjs-client": "^1.4.0",
     "util": "^0.12.2",
     "v-money": "^0.8.1",

@@ -63,11 +63,12 @@
             </form>
           </div>
           <div class="tab-pane fade" id="complexSearch" role="tabpanel" aria-labelledby="complexSearch-tab">
-            <complex-search
+            <complex-search-component :location="'relations'" @search="startComplexSearch"/>
+            <!--<complex-search
               :query-name="queryName"
               :query-id="complexId"
               :complex-filter="complexFilter"
-              @search="startComplexSearch" @show-queries="openSearchQueries(false)" />
+              @search="startComplexSearch" @show-queries="openSearchQueries(false)" />-->
           </div>
         </div>
       </div>

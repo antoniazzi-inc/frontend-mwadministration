@@ -1,9 +1,140 @@
-
 import { mixins } from 'vue-class-component'
-import { Component, Vue } from 'vue-property-decorator'
-import CommonHelpers from '@/shared/commonHelpers'
+import { Vue } from 'vue-property-decorator'
 import Store from '@/store/index'
 import { ILanguage, Language } from '@/shared/models/language.model'
+import RelationFIeldsComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/relationFIeldsComplexSearch/relationFIeldsComplexSearch.vue";
+import RelationFreeFIeldsComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/relationFreeFIeldsComplexSearch/relationFreeFIeldsComplexSearch.vue";
+import WorkflowSelectComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/WorkflowSelectComplexSearch/WorkflowSelectComplexSearch.vue";
+import OrderComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/OrderComplexSearch/OrderComplexSearch.vue";
+import IsAffiliateComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/isAffiliateComplexSearchComponent/isAffiliateComplexSearch.vue";
+import IsCustomerComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/isCustomerComplexSearchComponent/isCustomerComplexSearch.vue";
+import OrderQuantityComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/OrderQuantityComplexSearchComponent/OrderQuantityComplexSearch.vue";
+import OrderAmountComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/OrderAmountComplexSearchComponent/OrderAmountComplexSearch.vue";
+import RegionsComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/RegionsComplexSearchComponent/RegionsComplexSearch.vue";
+import LinkComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/LinkComplexSearchComponent/LinkComplexSearch.vue";
+import EmailComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/EmailComplexSearchComponent/EmailComplexSearch.vue";
+import MailingComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/MailingComplexSearchComponent/MailingComplexSearch.vue";
+import ListManagerComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/ListManagerComplexSearchComponent/ListManagerComplexSearch.vue";
+import TagsComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/TagsComplexSearchComponent/TagsComplexSearch.vue";
+import CategoriesComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/CategoriesComplexSearchComponent/CategoriesComplexSearch.vue";
+import PointsComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/PointsComplexSearchComponent/PointsComplexSearch.vue";
+import GroupsComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/GroupsComplexSearchComponent/GroupsComplexSearch.vue";
+import CoursesSelectComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/CoursesSelectComplexSearch/CoursesSelectComplexSearch.vue";
+export const CommonRules:any = [{
+  identifier: 'relFields',
+  name: 'relationField',
+  component: RelationFIeldsComplexSearchComponent,
+  initialValue: () => {return null},
+},{
+  identifier: 'freeFields',
+  name: 'freeFields',
+  component: RelationFreeFIeldsComplexSearchComponent,
+  initialValue: () => {return null},
+},{
+  identifier: 'groups',
+  name: 'groups',
+  component: GroupsComplexSearchComponent,
+  initialValue: () => {return null},
+},{
+  identifier: 'points',
+  name: 'points',
+  component: PointsComplexSearchComponent,
+  initialValue: () => 0,
+},{
+  identifier: 'categories',
+  name: 'categories',
+  component: CategoriesComplexSearchComponent,
+  initialValue: () => {return null},
+},{
+  identifier: 'tags',
+  name: 'tags',
+  component: TagsComplexSearchComponent,
+  initialValue: () => {return null},
+}]
+
+
+export const AutomationRules:any = [{
+  identifier: 'listManager',
+  name: 'listManager',
+  component: ListManagerComplexSearchComponent,
+  initialValue: () => {return null},
+},{
+  identifier: 'workflow',
+  name: 'workflow',
+  component: WorkflowSelectComplexSearchComponent,
+  initialValue: () => {return null},
+},{
+  identifier: 'mailing',
+  name: 'mailing',
+  component: MailingComplexSearchComponent,
+  initialValue: () => {return null},
+},{
+  identifier: 'email',
+  name: 'email',
+  component: EmailComplexSearchComponent,
+  initialValue: () => '',
+},{
+  identifier: 'link',
+  name: 'link',
+  component: LinkComplexSearchComponent,
+  initialValue: () => '',
+},{
+  identifier: 'course',
+  name: 'course',
+  component: CoursesSelectComplexSearchComponent,
+  initialValue: () => {return null},
+}/*,{
+  identifier: 'regions',
+  name: 'regions',
+  component: RegionsComplexSearchComponent,
+  initialValue: () => {return null},
+}*/]
+export const ShopRules:any = [{
+  identifier: 'orders',
+  name: 'orders',
+  component: OrderComplexSearchComponent,
+  initialValue: () => {return null},
+},{
+  identifier: 'orderAmount',
+  name: 'orderAmount',
+  component: OrderAmountComplexSearchComponent,
+  initialValue: () => 0,
+},{
+  identifier: 'orderQuantity',
+  name: 'orderQuantity',
+  component: OrderQuantityComplexSearchComponent,
+  initialValue: () => {return 1},
+},{
+  identifier: 'isCustomer',
+  name: 'isCustomer',
+  component: IsCustomerComplexSearchComponent,
+  initialValue: () => true,
+},{
+  identifier: 'isAffiliate',
+  name: 'isAffiliate',
+  component: IsAffiliateComplexSearchComponent,
+  initialValue: () => false,
+}]
+
+
 export default class SearchRules extends mixins(Vue) {
     public commonRules: any;
     public shopRules: any;

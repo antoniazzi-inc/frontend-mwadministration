@@ -10,7 +10,7 @@ import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
     ToggleSwitch
   }
 })
-export default class IsAffiliateComplexSearchComponent extends mixins(CommonHelpers, Vue) {
+export default class IsCustomerComplexSearchComponent extends mixins(CommonHelpers, Vue) {
   public initalValue:boolean
   public label:string
   constructor() {
@@ -22,6 +22,10 @@ export default class IsAffiliateComplexSearchComponent extends mixins(CommonHelp
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){
     this.initalValue = newVal
+  }
+  @Watch('initalValue', {immediate: true, deep: true})
+  public updateInitalValue(newVal:any){
+    this.$emit('input', {attribute: null, subAttribute: null, operator: null, value: newVal})
   }
 
   public mounted(){

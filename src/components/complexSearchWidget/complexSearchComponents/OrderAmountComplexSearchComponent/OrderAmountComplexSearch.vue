@@ -1,6 +1,15 @@
 <template>
-  <div>
-    <input type="number" class="form-control mt-4" v-model="value">
-  </div>
+  <form>
+    <div class="form-group">
+      <searchable-select-component :config="operatorsSingleSelectConfig"
+                                   :options="allOperators"
+                                   :value="selectedOperator"
+                                   @onSelected="addOperator"
+                                   @onDelete="removeOperator"/>
+    </div>
+    <div class="form-group">
+      <money type="text" class="form-control" v-bind="moneyConfig" v-model="initialValue"/>
+    </div>
+  </form>
 </template>
-<script src="src/components/complexSearchWidget/complexSearchComponents/OrderQuantityComplexSearchComponent/OrderQuantityComplexSearch.component.ts"/>
+<script src="./OrderAmountComplexSearch.component.ts"/>

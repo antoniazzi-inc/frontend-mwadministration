@@ -1,5 +1,5 @@
 <template>
-    <div class="vue-query-builder" :class="{ 'vue-query-builder-styled': true}">
+    <div class="container-fluid group-operator" :class="{ 'vue-query-builder-styled': true}">
         <group-component name="groupComp"
             :index="-1"
             :query="query"
@@ -17,8 +17,8 @@
 <style>
     .vue-query-builder-styled .vqb-rule {
         margin-top: 15px;
-        /* background-color: #f5f5f5; */
-        /* background-color: #5C9BD1; */
+        background-color: #f5f5f5;
+        background-color: #5C9BD1;
         color: white;
         border-color: #ddd;
         padding: 15px;
@@ -30,17 +30,17 @@
 
     .vue-query-builder-styled .vqb-group.depth-1 .vqb-rule,
     .vue-query-builder-styled .vqb-group.depth-2 {
-        /* border-left: 2px solid #8bc34a; */
+        border-left: 2px solid #8bc34a;
     }
 
     .vue-query-builder-styled .vqb-group.depth-2 .vqb-rule,
     .vue-query-builder-styled .vqb-group.depth-3 {
-        /* border-left: 2px solid #00bcd4; */
+        border-left: 2px solid #00bcd4;
     }
 
     .vue-query-builder-styled .vqb-group.depth-3 .vqb-rule,
     .vue-query-builder-styled .vqb-group.depth-4 {
-        /* border-left: 2px solid #ff5722; */
+        border-left: 2px solid #ff5722;
     }
 
     .vue-query-builder-styled .close {

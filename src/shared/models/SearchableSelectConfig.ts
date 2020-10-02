@@ -26,11 +26,11 @@ export class SearchableSelectConfig implements ISearchableSelectConfig {
     this.trackBy = this.trackBy ? this.trackBy : 'label'
     this.placeholder = this.placeholder ? this.placeholder : 'selectValue'
     this.addCaption = this.addCaption ? this.addCaption : ''
-    this.enableAdd = this.enableAdd ? this.enableAdd : false
-    this.allowEmpty = this.allowEmpty ? this.allowEmpty : true
-    this.multiple = this.multiple ? this.multiple : false
-    this.internalSearch = this.internalSearch ? this.internalSearch : false
-    this.hasGroups = this.hasGroups ? this.hasGroups : false
-    this.preselectFirst = this.preselectFirst ? this.preselectFirst : false
+    this.enableAdd = this.enableAdd  !== undefined ? this.enableAdd : false
+    this.allowEmpty = this.allowEmpty  !== undefined  ? this.allowEmpty : true
+    this.multiple = this.multiple  !== undefined  ? this.multiple : false
+    this.internalSearch = this.internalSearch  !== undefined  ? this.internalSearch : false
+    this.hasGroups = this.hasGroups  !== undefined  ? this.hasGroups : false
+    this.preselectFirst = this.preselectFirst  !== undefined  ? this.preselectFirst : false
   }
 }

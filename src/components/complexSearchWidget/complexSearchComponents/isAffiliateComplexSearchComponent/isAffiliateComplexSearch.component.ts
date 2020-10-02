@@ -4,14 +4,13 @@ import {Component, Vue, Watch} from "vue-property-decorator";
 import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 @Component({
   props: {
-    value: Boolean,
-    is: Object
+    value: Boolean
   },
   components:{
     ToggleSwitch
   }
 })
-export default class ToggleSwitchComplexSearchComponent extends mixins(CommonHelpers, Vue) {
+export default class IsAffiliateComplexSearchComponent extends mixins(CommonHelpers, Vue) {
   public initalValue:boolean
   public label:string
   constructor() {
@@ -23,6 +22,10 @@ export default class ToggleSwitchComplexSearchComponent extends mixins(CommonHel
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){
     this.initalValue = newVal
+  }
+  @Watch('initalValue', {immediate: true, deep: true})
+  public updateInitalValue(newVal:any){
+    this.$emit('input', {attribute: null, subAttribute: null, operator: null, value: newVal})
   }
 
   public mounted(){

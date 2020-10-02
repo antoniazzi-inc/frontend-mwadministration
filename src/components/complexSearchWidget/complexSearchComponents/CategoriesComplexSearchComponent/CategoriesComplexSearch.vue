@@ -1,4 +1,19 @@
 <template>
-  <div></div>
+  <form>
+    <div class="form-group">
+      <searchable-select-component :config="operatorsSingleSelectConfig"
+                                   :options="allOperators"
+                                   :value="selectedOperator"
+                                   @onSelected="addOperator"
+                                   @onDelete="removeOperator"/>
+    </div>
+    <div class="form-group">
+      <searchable-select-component :config="categoriesSingleSelectConfig"
+                                   :options="$store.state.lookups.categories"
+                                   :value="selectedCategories"
+                                   @onSelected="addCategory"
+                                   @onDelete="removeCategory"/>
+    </div>
+  </form>
 </template>
-<script src="./TagsComplexSearch.component.ts"/>
+<script src="./CategoriesComplexSearch.component.ts"/>

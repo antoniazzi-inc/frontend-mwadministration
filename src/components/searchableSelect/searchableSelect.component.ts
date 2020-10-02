@@ -38,7 +38,9 @@ export default class SearchableSelectComponent extends Vue {
   }
 
   public valueRemoved (removeVal: object) {
-    this.$emit('onDelete', removeVal)
+    if(this.$props.config.allowEmpty){
+      this.$emit('onDelete', removeVal)
+    }
   }
 
   public search (query: string) {

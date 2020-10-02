@@ -20,6 +20,7 @@ export default class GroupsSubTabComponent extends mixins(Vue, CommonHelpers) {
   public currentTab: string
   public groupSearch: string
   public relationService: any
+  public groupsBackup: any[]
   public controlOnStart: boolean
   public isChanged: boolean
   public allGroups: IRelationGroup[]
@@ -33,6 +34,7 @@ export default class GroupsSubTabComponent extends mixins(Vue, CommonHelpers) {
     this.controlOnStart = false
     this.isChanged = false
     this.allGroups = []
+    this.groupsBackup = []
   }
 
   public mounted () {

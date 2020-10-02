@@ -1,41 +1,40 @@
 <template>
-  <div class="container-fluid group-ctrl-slot">
+  <div class="container-fluid group-operator">
     <div class="row">
-      <div class="col-auto">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <div class="btn-group" :class="{ show: expanded }" role="group">
-            <button
-              id="btnGroupDrop1"
-              type="button"
-              class="btn btn-primary dropdown-toggle"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              :aria-expanded="String(expanded)"
-              @click="expanded = !expanded"
-            >{{ ruleName }}</button>
-            <div class="dropdown-menu" :class="{ show: expanded }" aria-labelledby="btnGroupDrop1">
-              <a @click="setRule('')" class="dropdown-item" href="#">Select a Rule</a>
-              <a
-                v-for="rule in groupCtrl.rules"
-                :key="rule.identifier"
-                @click="setRule(rule.identifier)"
-                class="dropdown-item"
-                href="#"
-              >{{ rule.name }}</a>
-            </div>
-          </div>
+      <div class="col-md-12">
+        <div class="dropdown" :class="{ show: expanded }">
           <button
+            class="btn btn-primary dropdown-toggle"
             type="button"
-            class="btn btn-primary"
-            :disabled="selectedRule === ''"
-            @click="addRule"
-          >Add Rule</button>
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            :aria-expanded="String(expanded)"
+            v-text="groupOperator.currentOperator"
+            @click.prevent.stop="toggleExpanded"
+          />
+          <div
+            class="dropdown-menu"
+            :class="{ show: expanded }"
+            aria-labelledby="dropdownMenuButton"
+          >
+            <a
+              v-for="operator in groupOperator.operators"
+              :key="operator.identifier"
+              v-text="operator.name"
+              @click="selectOperator(operator.identifier)"
+              class="dropdown-item"
+              href="#"
+            />
+          </div>
         </div>
-      </div>
-      <div class="col-auto">
-        <button class="btn btn-primary" @click="groupCtrl.newGroup" v-text="'Add Group'"/>
       </div>
     </div>
   </div>
 </template>
-<script src="./groupControl.component.ts"/>
+<script src="./groupOperator.component.ts"/>
+<style scoped>
+  .group-operator {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+</style>
