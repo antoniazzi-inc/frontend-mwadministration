@@ -125,6 +125,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   @Watch('cartOrder.customerBillingAddress', {immediate: true, deep: true})
   public updateCustomerBillingAddr(newVal: any) {
     if (newVal) {
+      this.selectedBillingCountry = this.preselectCountry(newVal.countryId ? newVal.countryId : 150)
       if (this.isDeliveryBilling) {
         let addr = newVal
         let relAddrId = newVal.id
@@ -247,7 +248,6 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   }
 
   public mounted() {
-    //this.populateRelations()
     this.selectedRelation.relationProfile = new RelationProfile()
     if (!this.cartOrderCopy.customerBillingAddress)
       this.cartOrderCopy.customerBillingAddress = new CustomerBillingAddress()

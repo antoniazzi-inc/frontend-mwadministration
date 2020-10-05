@@ -13,7 +13,7 @@ import Invoice, {invoiceType} from "@/shared/models/orderms/InvoiceModel";
 import Axios, {AxiosResponse} from "axios";
 import CustomerBillingAddress from "@/shared/models/orderms/CustomerBillingAddressModel";
 import CustomerDeliveryAddress from "@/shared/models/orderms/CustomerDeliveryAddressModel";
-import {IRelationAddress} from "@/shared/models/relationms/relation-address.model";
+import {IRelationAddress, RelationAddress} from "@/shared/models/relationms/relation-address.model";
 import RelationAddressService from "@/shared/services/relationAddressService";
 import moment from "moment";
 import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
@@ -25,6 +25,13 @@ import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
     step2: Step2Component,
     step3: Step3Component,
     step4: Step4Component,
+  },
+  beforeRouteEnter (to, from, next) {
+    next((vm: any) => {
+      if (to.query.relId) {
+        vm.populateRelation(to.query.relId)
+      }
+    })
   }
 })
 export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
@@ -58,7 +65,23 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
   public mounted() {
 
   }
-
+  public populateRelation(relId: any) {
+    this.relationService.get(relId).then((resp:AxiosResponse)=>{
+      if(resp && resp.data){
+        let step1: any = this.$refs.step1
+        // @ts-ignore
+        step1.selectedRelation = resp.data
+        let billAddrInd = resp.data.relationAddresses.findIndex((addr:any)=> addr.usedForBilling === true)
+        // @ts-ignore
+        billAddrInd > -1 ? step1.cartOrder.customerBillingAddress = resp.data.relationAddresses[billAddrInd] :
+          resp.data.relationAddresses && resp.data.relationAddresses.length ? step1.cartOrder.customerBillingAddress = resp.data.relationAddresses[0] : step1.cartOrder.customerBillingAddress = new RelationAddress()
+        let deliveryAddrInd = resp.data.relationAddresses.findIndex((addr:any)=> addr.usedForDelivery === true)
+        // @ts-ignore
+        deliveryAddrInd > -1 ? step1.cartOrder.customerDeliveryAddress = resp.data.relationAddresses[deliveryAddrInd] :
+          resp.data.relationAddresses && resp.data.relationAddresses.length ? step1.cartOrder.customerDeliveryAddress = resp.data.relationAddresses[0] : step1.cartOrder.customerDeliveryAddress = new RelationAddress()
+      }
+    })
+  }
   public validateStep(step: number) {
     let self = this
     return new Promise(resolve => {

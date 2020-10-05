@@ -58,6 +58,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     public notAvailableMessage: any = [];
     public availableProductLanguages: any = {};
     public selectedCategories: any = null;
+    public availableLangs: any = {};
     public availableFromError: any = false;
     public isSaveDisabled: any = false;
     public availableToError: any = false;
@@ -69,11 +70,11 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
     public multiLangMaxExceedConfig: IMultiLanguageConfig = new MultiLanguageConfig(false, true,
       '', 'labels.MaxExceedMessage', false,
-      false, false, true, false, false)
+      false, false, false, false, false)
 
     public multiLangNotAvailableConfig: IMultiLanguageConfig = new MultiLanguageConfig(false, true,
       '', 'labels.NotAvailableMessage', false,
-      false, false, true, false, false)
+      false, false, false, false, false)
 
     public isSubscription: any = false;
     public allProductsCategories: any = [];
@@ -175,6 +176,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public addNewLang (lang: any) {
+      this.availableLangs[lang] = new ProductLanguage()
       const lng = new ProductLanguage(undefined, undefined, undefined, undefined, lang,
         '', '', '', '')
       this.productCopy.productLanguages ? this.productCopy.productLanguages.push(lng) : this.productCopy.productLanguages = [lng]

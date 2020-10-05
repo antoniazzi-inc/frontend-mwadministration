@@ -72,12 +72,12 @@
                 </button>
                 <div aria-labelledby="dropdownMenuButton1" x-placement="bottom-start" class="dropdown-menu">
                   <a data-target="#onboardingFormModal" data-toggle="modal" class="dropdown-item m-1">{{$t('labels.sendMail')}}</a>
-                  <a href="#" class="dropdown-item m-1"> {{$t('labels.startListManager')}}</a>
-                  <a href="#" class="dropdown-item m-1"> {{$t('labels.startWorkflow')}}</a>
-                  <a href="#" class="dropdown-item m-1"> {{$t('labels.startTask')}}</a>
-                  <a href="#" class="dropdown-item m-1"> {{$t('labels.startNewOrder')}}</a>
-                  <a href="#" class="dropdown-item m-1"> {{$t('labels.newContact')}}</a>
-                  <a href="#" class="dropdown-item m-1"> {{$t('labels.mergeRelation')}}</a>
+                  <router-link to="#" class="dropdown-item m-1"> {{$t('labels.startListManager')}}</router-link>
+                  <router-link to="#" class="dropdown-item m-1"> {{$t('labels.startWorkflow')}}</router-link>
+                  <router-link to="#" class="dropdown-item m-1"> {{$t('labels.startTask')}}</router-link>
+                  <router-link :to="`/orders/new?relId=${relation.id}`" class="dropdown-item m-1"> {{$t('labels.startNewOrder')}}</router-link>
+                  <a href="#" @click.prevent.stop="activeTab='contactHistory'" class="dropdown-item m-1"> {{$t('labels.newContact')}}</a>
+                  <router-link to="#" class="dropdown-item m-1"> {{$t('labels.mergeRelation')}}</router-link>
                 </div>
               </div>
             </div>

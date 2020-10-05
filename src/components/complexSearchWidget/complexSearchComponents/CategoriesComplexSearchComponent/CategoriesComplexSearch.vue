@@ -10,7 +10,7 @@
     <div class="form-group">
       <searchable-select-component :config="categoriesSingleSelectConfig"
                                    :options="$store.state.lookups.categories"
-                                   :value="selectedCategories"
+                                   :value="selectedCategory"
                                    @onSelected="addCategory"
                                    @onDelete="removeCategory"/>
     </div>

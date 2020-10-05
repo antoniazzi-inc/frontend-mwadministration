@@ -14,41 +14,38 @@ export default class CategoriesComplexSearchComponent extends mixins(CommonHelpe
   public operatorsSingleSelectConfig: ISearchableSelectConfig
   public allOperators: any[]
   public selectedOperator: any
-  public selectedCategories: any[]
+  public selectedCategory: any
   constructor() {
     super();
     this.categoriesSingleSelectConfig =  new SearchableSelectConfig('code',
       'labels.selectCategory', '', false,
-      false, false, true, false)
+      false, false, false, false)
     this.operatorsSingleSelectConfig = new SearchableSelectConfig('label',
       'labels.selectOperator', '', false,
       false, false, false, false, false, true)
     this.allOperators = equalOperators
     this.selectedOperator = null
-    this.selectedCategories = []
+    this.selectedCategory = null
   }
 
   public addCategory(e:any){
     if(!e) return
-    this.selectedCategories.push(e)
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedCategories})
+    this.selectedCategory = e
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedCategory})
   }
   public removeCategory(e:any){
     if(!e) return
-    let ind = this.selectedCategories.findIndex((obj:any) => obj.id === e.id)
-    if(ind > -1){
-      this.selectedCategories.splice(ind, 1)
-      this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedCategories})
-    }
+    this.selectedCategory = null
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedCategory})
   }
   public addOperator(e:any){
     if(!e) return
     this.selectedOperator = e
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedCategories})
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedCategory})
   }
   public removeOperator(e:any){
     if(!e) return
     this.selectedOperator = null
-    this.$emit('input', {attribute: null, subAttribute: null, operator: null, value: this.selectedCategories})
+    this.$emit('input', {attribute: null, subAttribute: null, operator: null, value: this.selectedCategory})
   }
 }

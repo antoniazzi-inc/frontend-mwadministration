@@ -138,6 +138,7 @@
       <div class="form-row mt-3">
         <div class="form-group col-sm-5">
           <multi-language-component
+            :availableLangs="availableLangs"
             :config="multiLangMaxExceedConfig"
             :value="maxExceededMessage"
             @onChange="updateMaxExceedLang"/>
@@ -145,6 +146,7 @@
         <div class="col-md-1"></div>
           <div class="form-group col-sm-5">
             <multi-language-component
+              :availableLangs="availableLangs"
               :config="multiLangNotAvailableConfig"
               :value="notAvailableMessage"
               @onChange="updateNotAvailableLang"/>
