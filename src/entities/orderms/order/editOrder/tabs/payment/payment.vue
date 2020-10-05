@@ -1,5 +1,5 @@
 <template>
-<div class="row">
+<div class="row tab-form-panel">
     <div class="col-md-6">
         <table class="table table-striped" v-if="$props.order.invoice">
             <thead>

@@ -57,8 +57,13 @@
       </div>
       <hr/>
       <div v-if="cartOrderCopy && cartOrderCopy.orderLines">
+        <div class="row p-0 m-0">
+          <div class="col-md-7">{{ $t('labels.item') }}</div>
+          <div class="col-md-2">{{ $t('labels.orderQuantityShort') }}</div>
+          <div class="col-md-3">{{ $t('labels.price') }}</div>
+        </div>
         <div class="row p-0 m-0" v-for="(item, index) in cartOrderCopy.orderLines" :key="index">
-          <div class="col-md-9 small">
+          <div class="col-md-7">
             <p>
               <span>[{{ item.orderProduct.productId }}] {{ item.orderProduct.productName }} (x{{item.quantity}})</span><br/>
               <span v-if="item.orderProduct.productDescription">{{ item.orderProduct.productDescription }}</span>
@@ -80,7 +85,10 @@
             </p>
 
           </div>
-          <div class="col-md-3 text-right small">
+          <div class="col-md-2 text-center">
+            {{item.quantity}}
+          </div>
+          <div class="col-md-3 text-right">
             <p>
               <span>{{ item.totalAmount }} {{ cartOrderCopy.currency }}</span>
             </p>
