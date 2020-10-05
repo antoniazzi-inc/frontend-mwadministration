@@ -21,7 +21,7 @@
                                    @onSelected="addOperator"
                                    @onDelete="removeOperator"/>
     </div>
-    <div class="form-group">
+    <div class="form-group" v-if="selectedOperator && selectedOperator.labelValue.match('after') || selectedOperator && selectedOperator.labelValue.match('before')">
       <div class="dateHolder date-input">
         <flat-pickr :config="dateConfig" class="single-daterange form-control" v-model="dateValue"/>
         <i class="fa fa-times clearDate cursor-pointer" @click="dateValue=null">

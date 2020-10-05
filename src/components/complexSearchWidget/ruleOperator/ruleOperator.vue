@@ -2,7 +2,8 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12">
-        {{ $t('labels.' + ruleName, {value: $props.ruleCtrl.ruleData}) }}
+
+        {{ $t('labels.' + ruleName, {value: $props.ruleCtrl.ruleData ? $props.ruleCtrl.ruleData.value : ''}) }}
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12">
         <keep-alive>

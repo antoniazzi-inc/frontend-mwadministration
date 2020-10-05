@@ -126,12 +126,12 @@ export const ShopRules:any = [{
   identifier: 'isCustomer',
   name: 'isCustomer',
   component: IsCustomerComplexSearchComponent,
-  initialValue: () => true,
+  initialValue: () => {return {value: true}},
 },{
   identifier: 'isAffiliate',
   name: 'isAffiliate',
   component: IsAffiliateComplexSearchComponent,
-  initialValue: () => false,
+  initialValue: () => {return {value: true}},
 }]
 
 

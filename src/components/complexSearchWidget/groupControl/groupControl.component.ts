@@ -4,20 +4,25 @@ import {Component, Vue} from "vue-property-decorator";
 
 @Component({
   props: {
-    groupCtrl: [Object, Array]
+    groupCtrl: [Object, Array],
+    depth: Number
   },
   components: {}
 })
 export default class GroupControlComponent extends mixins(CommonHelpers, Vue) {
   public selectedRule: any
   public expanded: any
+  public isSecondLevel: boolean
 
   constructor() {
     super();
     this.selectedRule = ""
     this.expanded = false
+    this.isSecondLevel = false
   }
-
+  public mounted(){
+    this.isSecondLevel = $(this.$el).parent().parent().hasClass('query-builder-child__component')
+  }
   get ruleName() {
     if (this.selectedRule === "") {
       return this.$t('labels.selectRule');
@@ -28,6 +33,7 @@ export default class GroupControlComponent extends mixins(CommonHelpers, Vue) {
   public setRule(rule: any) {
     this.expanded = false;
     this.selectedRule = rule;
+    this.addRule(rule)
   }
 
   public addRule(rule: any) {
@@ -40,6 +46,10 @@ export default class GroupControlComponent extends mixins(CommonHelpers, Vue) {
 
   public toggleExpanded(){
     this.$set(this, 'expanded', !this.expanded)
+  }
+  public createNewGroup(){
+    this.$emit('groupAdded')
+    this.$props.groupCtrl.newGroup
   }
 }
 

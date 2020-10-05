@@ -6,7 +6,7 @@
       </template>
 
       <template #groupControl="props">
-        <group-ctrl-slot :group-ctrl="props"/>
+        <group-ctrl-slot :group-ctrl="props" :isSecondLvl="secondLvl"/>
       </template>
 
       <template #rule="props">
@@ -21,5 +21,7 @@
     margin: 30px auto;
     padding: 10px;
     border: 1px solid hsl(0, 0%, 75%);
+    overflow-y: auto;
+    min-height: 70vh;
   }
 </style>

@@ -4,7 +4,7 @@ import {Component, Vue, Watch} from "vue-property-decorator";
 import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 @Component({
   props: {
-    value: Boolean
+    value: Object
   },
   components:{
     ToggleSwitch
@@ -21,7 +21,7 @@ export default class IsAffiliateComplexSearchComponent extends mixins(CommonHelp
 
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){
-    this.initalValue = newVal
+    this.initalValue = newVal.value
   }
   @Watch('initalValue', {immediate: true, deep: true})
   public updateInitalValue(newVal:any){

@@ -33,8 +33,10 @@ import SearchableSelectComplexSearchComponent
 })
 export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
   public query:any
+  public secondLvl:number
   constructor() {
     super();
+    this.secondLvl = 0
     this.query = {
       operatorIdentifier: 'AND',
       children: []
@@ -43,8 +45,15 @@ export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
   @Watch('query', {immediate: true, deep: true})
   public updateQuery(newVal:any){
     console.log('**********COMPLEX SEARCH QUERY**************')
-    console.log(newVal)
+    console.log(JSON.stringify(newVal))
     console.log('**********COMPLEX SEARCH QUERY**************')
+    if(newVal && newVal.children && newVal.children.length) {
+      newVal.children.forEach((child:any)=>{
+        if(child.children && child.children.length){
+          this.secondLvl++
+        }
+      })
+    }
   }
   get config() {
     return {
@@ -73,7 +82,7 @@ export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
       case '':
         break;
       default:
-        return []
+        return CommonRules
     }
   }
 }

@@ -70,7 +70,6 @@ export default class CoursesSelectComplexSearchComponent extends mixins(CommonHe
     } else {
       this.$set(this, 'allEvents', [])
     }
-    debugger
     this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: this.dateValue})
   }
   public removeCourse(e:any){

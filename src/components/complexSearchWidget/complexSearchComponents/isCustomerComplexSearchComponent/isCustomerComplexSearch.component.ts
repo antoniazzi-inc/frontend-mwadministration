@@ -4,24 +4,24 @@ import {Component, Vue, Watch} from "vue-property-decorator";
 import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 @Component({
   props: {
-    value: Boolean
+    value: Object
   },
   components:{
     ToggleSwitch
   }
 })
 export default class IsCustomerComplexSearchComponent extends mixins(CommonHelpers, Vue) {
-  public initalValue:boolean
+  public initalValue:any
   public label:string
   constructor() {
     super();
-    this.initalValue = false
+    this.initalValue = null
     this.label = ''
   }
 
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){
-    this.initalValue = newVal
+    this.initalValue = newVal.value
   }
   @Watch('initalValue', {immediate: true, deep: true})
   public updateInitalValue(newVal:any){

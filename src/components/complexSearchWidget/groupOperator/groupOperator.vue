@@ -21,7 +21,7 @@
               v-for="operator in groupOperator.operators"
               :key="operator.identifier"
               v-text="operator.name"
-              @click="selectOperator(operator.identifier)"
+              @click.prevent.stop="selectOperator(operator.identifier)"
               class="dropdown-item"
               href="#"
             />
