@@ -147,11 +147,9 @@
         </div>
       </div>
       <div class="form-row" v-if="!isSubscription && isUsePaymentSchedules">
-        <div class="form-group col-md-9">
+        <div class="form-group col-md-10">
           <payment-schedule ref="paymentSchedule" :product="productCopy" :addNewPayment="addNewPayment" @onCancel="cancelPaymentSchedule" @productUpdated="updateProduct"/>
-        </div>
-        <div class="form-group col-md-3">
-          <button type="button" class="btn btn-primary" @click.prevent="addNewPaymentSchedule">
+          <button type="button" class="btn btn-primary" style="margin-top:1em;" @click.prevent="addNewPaymentSchedule">
             <i class="fas fa-plus"></i> {{$t('buttons.createNew')}}
           </button>
         </div>

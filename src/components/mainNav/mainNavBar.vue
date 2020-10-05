@@ -346,7 +346,11 @@
   }
   .dropdown-item{
     color: white;
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 1.3em;
+    padding:0;
+    margin:0;
+    padding-left:30px;
   }
   hr {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);

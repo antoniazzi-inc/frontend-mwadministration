@@ -60,7 +60,7 @@
                   <div class="card-header row pl-0 ml-0 pr-0 mr-0 align-items-center" :id="'headingOne' + index" data-toggle="collapse" :data-target="'#collapseOne' + index">
                     <h5 class="mb-0 col-md-10">
                       {{getAttributeName(item.attributeLanguages ? item.attributeLanguages : undefined)}}
-                      <span style="color:#b0b0b0; font-size:0.8em; text-align: right; padding-left:1em;"> {{$t('labels.clickForOptions')}}...</span>
+                      <span style="color:#909090; font-size:0.8em; text-align: right; padding-left:1em;"> {{$t('labels.clickForOptions')}}...</span>
                     </h5>
                     <div class="col-md-2 text-right">
                       <i class="fas fa-edit text-success" @click="editAttribute(item)"/>
