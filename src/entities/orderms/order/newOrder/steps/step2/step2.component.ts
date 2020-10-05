@@ -62,7 +62,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public selectedAffiliate: any
   public selectedProductAttributes: any[]
   public productAttributes: any[]
-  public availablePrmotions: any
+  public availablePromotions: any
   public allPromotions: any[]
   public selectedBeneficiaries: any[]
   public allProducts: any[]
@@ -102,7 +102,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.productService = productService.getInstance()
     this.productAttributes = []
     this.allProducts = []
-    this.availablePrmotions = []
+    this.availablePromotions = []
     this.selectedBeneficiaries = []
     this.allOrderLines = []
     this.allPromotions = []
@@ -552,12 +552,12 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     const allAvailablePromotions: any = []
     this.$store.state.lookups.promotions.forEach((promo: any) => {
       const discountType = self.getDiscountType(promo.value).type
-      const isWholeOrder = promo.value[discountType].discount.entireOrder
+      const isWholeOrder = (promo.value[discountType].discount) ? promo.value[discountType].discount.entireOrder : false
       if (isWholeOrder) allAvailablePromotions.push(promo)
     })
     let finalArr = allAvailablePromotions.concat(allPromotions)
     Vue.nextTick(function () {
-      self.availablePrmotions = Array.from(new Set(finalArr))
+      self.availablePromotions = Array.from(new Set(finalArr))
     })
   }
 }

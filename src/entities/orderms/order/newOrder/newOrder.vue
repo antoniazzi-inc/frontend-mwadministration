@@ -22,7 +22,7 @@
         <step1 ref="step1" @onUpdate="updateStep" :cartOrder="cartOrder"/>
         <div class="row">
           <div class="col-md-12 text-right">
-            <span class="text-right text-danger small">{{stepValidationError}}</span>
+            <span class="text-right text-danger">{{stepValidationError}}</span>
           </div>
         </div>
       </tab-content>
@@ -30,7 +30,7 @@
         <step2 ref="step2" :customerRelation="customerRelation" @onUpdate="updateStep" :beneficiaryList="beneficiaries" :cartOrder="cartOrder"/>
         <div class="row">
           <div class="col-md-12 text-right">
-            <span class="text-right text-danger small">{{stepValidationError}}</span>
+            <span class="text-right text-danger">{{stepValidationError}}</span>
           </div>
         </div>
       </tab-content>
@@ -38,7 +38,7 @@
         <step3 ref="step3" @onUpdate="updateStep" :cartOrder="cartOrder"/>
         <div class="row">
           <div class="col-md-12 text-right">
-            <span class="text-right text-danger small">{{stepValidationError}}</span>
+            <span class="text-right text-danger">{{stepValidationError}}</span>
           </div>
         </div>
       </tab-content>

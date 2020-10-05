@@ -1,19 +1,24 @@
 <template>
   <div class="row">
     <div class="col-md-12">
-      <div class="title text-center">{{ $t('labels.invoiceOverview') }}</div>
       <hr>
       <div class="row p-0 m-0">
         <div class="col-md-6 text-left form-group">
           <span>{{ cartOrderCopy.orderCustomer && cartOrderCopy.orderCustomer.fullName ? cartOrderCopy.orderCustomer.fullName : '' }}</span>
-          <!--<br/>
-          <span v-if="$parent.$parent.$refs.customerPanel.isCompany">{{$parent.$parent.$refs.customerPanel.selectedCompany ? $parent.$parent.$refs.customerPanel.selectedCompany.name : '' }}</span>
-          <br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>-->
-          <span>{{ getCustomerRelationAddress() }}</span>
+
+          <br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>
+          <span v-if="$parent.$parent.$refs.customerPanel.isCompany">
+            {{$parent.$parent.$refs.customerPanel.selectedCompany ? $parent.$parent.$refs.customerPanel.selectedCompany.name : '' }}
+          </span>
+
+          <br/>
+          <span>{{ getCustomerRelationAddressPart1() }}</span>
+          <br/>
+          <span>{{ getCustomerRelationAddressPart2() }}</span>
           <br/>
           <span>{{ customerCountry }}</span>
-          <!--<br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>
-          <span v-if="$parent.$parent.$refs.customerPanel.isCompany">{{$parent.$parent.$refs.customerPanel.companyVat}}</span>-->
+          <br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>
+          <span v-if="$parent.$parent.$refs.customerPanel.isCompany">{{$parent.$parent.$refs.customerPanel.companyVat}}</span>
         </div>
         <div class="col-md-6 text-right form-group">
           <label class="form-control-label text-center">{{ $t('labels.sendInvoiceTo') }}:</label>

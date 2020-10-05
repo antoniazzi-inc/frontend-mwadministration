@@ -1,8 +1,8 @@
 <template>
     <div class="row">
-      <div class="col-md-7">
+      <div class="col-md-6">
         <div class="form-group col-md-12">
-          <label class="form-control-label">{{ $t('labels.customer') }}</label>
+          <h3 class="form-control-label">{{ $t('labels.customer') }}</h3>
           <searchable-select-component :config="singleSelectConfig"
                                        :options="allRelations"
                                        :value="selectedRelation"
@@ -10,28 +10,31 @@
                                        @onSearch="searchRelation"
                                        @onDelete="removeRelation"/>
         </div>
+        <div class="form-group col-md-12" v-if="selectedRelation && selectedRelation.relationProfile">
+          <label class="sr-only"> {{ $t('labels.email') }}</label>
+          <input v-validate="'required|email'" name="email" v-model="selectedRelation.email"
+                 :disabled="selectedRelation && selectedRelation.id"
+                 :class="{'form-control mb-2 mt-2 mr-sm-1 mb-sm-0': true, invalid: errors.has('email')}"
+                 :placeholder="$t('labels.email')" type="text"/>
+          <span class="small text-danger">{{ errors.first('email') }}</span>
+        </div>
         <div class="form-group col-md-12">
           <form class="form-inline" v-if="selectedRelation && selectedRelation.relationProfile">
-            <label class="sr-only"> {{ $t('labels.email') }}</label>
-            <input v-validate="'required|email'" name="email" v-model="selectedRelation.email"
-                   :disabled="selectedRelation && selectedRelation.id"
-                   :class="{'form-control mb-2 mt-2 mr-sm-1 mb-sm-0': true, invalid: errors.has('email')}"
-                   :placeholder="$t('labels.email')" type="text">
             <label class="sr-only"> {{ $t('labels.title') }}</label>
             <input v-model="selectedRelation.relationProfile.title" style="width: 100px"
                    class="form-control mb-2 mt-2 mr-sm-1 mb-sm-0" :placeholder="$t('labels.title')" type="text">
             <label class="sr-only"> {{ $t('labels.firstName') }}</label>
             <input v-model="selectedRelation.relationProfile.firstName" class="form-control mt-2 mb-2 mr-sm-1 mb-sm-0"
-                   :placeholder="$t('labels.firstName')" type="text">
+                   :placeholder="$t('labels.firstName')" style="min-width:10em" type="text">
             <label class="sr-only">{{ $t('labels.middleName') }}</label>
             <input v-model="selectedRelation.relationProfile.middleName" class="form-control mt-2 mb-2 mr-sm-1 mb-sm-0"
-                   :placeholder="$t('labels.middleName')" type="text">
+                   placeholder="" type="text" style="max-width: 6em">
             <label class="sr-only"> {{ $t('labels.lastName') }}</label>
             <input v-model="selectedRelation.relationProfile.lastName" v-validate="'required'" name="lastName"
                    :class="{'form-control mb-2 mt-2 mr-sm-1 mb-sm-0': true, invalid: errors.has('lastName')}"
-                   :placeholder="$t('labels.lastName')" type="text">
+                   :placeholder="$t('labels.lastName')" style="min-width:20em" type="text">
           </form>
-          <span class="small text-danger">{{ errors.first('email') }} {{ errors.first('lastName') }}</span>
+          <span class="small text-danger">{{ errors.first('lastName') }}</span>
         </div>
         <div class="row pl-3">
           <div class="modal" data-backdrop="static" data-keyboard="false" id="addCompany" tabindex="-1" role="dialog" ref="addCompany">
@@ -196,23 +199,21 @@
           </div>
         </div>
         <div class="row pl-3 mt-2" v-if="cartOrderCopy.customerBillingAddress">
-          <div class="col-md-4">
+          <div class="col-md-2">
             <label class="form-control-label">{{ $t('labels.postalCode') }}</label>
             <input type="text" class="form-control" v-model="cartOrderCopy.customerBillingAddress.postalCode"/>
           </div>
-          <div class="col-md-8" v-if="cartOrderCopy.customerBillingAddress">
+          <div class="col-md-5" v-if="cartOrderCopy.customerBillingAddress">
             <label class="form-control-label">{{ $t('labels.city') }}</label>
             <input type="text" class="form-control" v-model="cartOrderCopy.customerBillingAddress.city"/>
           </div>
-        </div>
-        <div class="row pl-3 mt-2" v-if="cartOrderCopy.customerBillingAddress">
-          <div class="col-md-12">
+          <div class="col-md-5" v-if="cartOrderCopy.customerBillingAddress">
             <label class="form-control-label">{{ $t('labels.country') }}</label>
             <searchable-select-component :config="searchableConfig"
-                                         :options="$store.state.allCountries"
-                                         :value="selectedBillingCountry"
-                                         @onChange="billingCountryChanged"
-                                         @onDelete="billingCountryRemoved"/>
+               :options="$store.state.allCountries"
+               :value="selectedBillingCountry"
+               @onChange="billingCountryChanged"
+               @onDelete="billingCountryRemoved"/>
           </div>
         </div>
         <div class="col-md-12 mt-3">
@@ -236,34 +237,39 @@
             </div>
           </div>
           <div class="row pl-3 mt-2" v-if="cartOrderCopy.customerBillingAddress">
-            <div class="col-md-4">
+            <div class="col-md-2">
               <label class="form-control-label">{{ $t('labels.postalCode') }}</label>
               <input type="text" class="form-control" v-model="cartOrderCopy.customerDeliveryAddress.postalCode"/>
             </div>
-            <div class="col-md-8" v-if="cartOrderCopy.customerBillingAddress">
+            <div class="col-md-5" v-if="cartOrderCopy.customerBillingAddress">
               <label class="form-control-label">{{ $t('labels.city') }}</label>
               <input type="text" class="form-control" v-model="cartOrderCopy.customerDeliveryAddress.city"/>
             </div>
-          </div>
-          <div class="row pl-3 mt-2" v-if="cartOrderCopy.customerDeliveryAddress">
-            <div class="col-md-12">
+            <div class="col-md-5" v-if="cartOrderCopy.customerBillingAddress">
               <label class="form-control-label">{{ $t('labels.country') }}</label>
               <searchable-select-component :config="searchableConfig"
-                                           :options="$store.state.allCountries"
-                                           :value="selectedDeliveryCountry"
-                                           @onChange="deliveryCountryChanged"
-                                           @onDelete="deliveryCountryRemoved"/>
+                 :options="$store.state.allCountries"
+                 :value="selectedDeliveryCountry"
+                 @onChange="deliveryCountryChanged"
+                 @onDelete="deliveryCountryRemoved"/>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="col-md-1">
+      </div>
+
       <div class="col-md-5">
         <div class="row p-0 m-0">
-          <div class="col-md-6"><span class="small"> *{{$t('labels.customerIsAlreadyABeneficiary')}}</span></div>
-          <div class="col-md-6 p-0 m-0 align-self-center text-right">
-            <div class="form-group m-0">
-              <button type="button" @click="addNewBeneficiary" data-toggle="modal" data-target="#addNewBeneficiary" class="btn btn-outline-primary">{{$t('buttons.addNewBeneficiary')}}</button>
-            </div>
+          <div class="col-md-12">
+            <h3 class="form-control-label">{{ $t('labels.beneficiary') }}</h3>
+          </div>
+        </div>
+        <div class="row p-0 m-0">
+          <div class="col-md-12">{{$t('labels.customerIsAlreadyABeneficiary')}}</div>
+          <div class="col-auto mt-3">
+            <button type="button" @click="addNewBeneficiary" data-toggle="modal" data-target="#addNewBeneficiary" class="btn btn-outline-primary">{{$t('buttons.addNewBeneficiary')}}</button>
           </div>
         </div>
         <div class="modal" data-backdrop="static" data-keyboard="false" id="addNewBeneficiary" tabindex="-1" role="dialog" ref="addNewBeneficiary">
@@ -278,39 +284,38 @@
               <div class="modal-body">
                 <div class="mt-4">
                   <div class="mt-4">
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        {{ $t('labels.createNewBeneficiary')}}<input type="checkbox" v-model="createNewBeneficiary" class="form-check-input pl-2 ml-2" value="">
-                      </label>
-                    </div>
                     <div class="form-group" v-if="!createNewBeneficiary">
                       <label class="form-control-label">{{$t('labels.orderBeneficiary')}}</label>
                       <searchable-select-component :config="singleSelectConfig"
-                                                   :options="allRelations"
-                                                   :value="selectedBeneficiaryRelation"
-                                                   @onChange="addBeneficiaryRelation"
-                                                   @onSearch="searchRelation"
-                                                   @onDelete="removeBeneficiaryRelation"/>
+                         :options="allRelations"
+                         :value="selectedBeneficiaryRelation"
+                         @onChange="addBeneficiaryRelation"
+                         @onSearch="searchRelation"
+                         @onDelete="removeBeneficiaryRelation"/>
                     </div>
+                    <div class="form-group">
+                      <button class="btn btn-outline-primary" type="button" v-if="createNewBeneficiary === false" @click.prevent="(createNewBeneficiary) ? createNewBeneficiary = false : createNewBeneficiary = true"> {{$t('labels.createNewBeneficiary')}}</button>
+                      <button class="btn btn-outline-primary" type="button" v-if="createNewBeneficiary === true" @click.prevent="createNewBeneficiary = false"> {{$t('buttons.cancel')}}</button>
+                    </div>
+                    <label class="sr-only"> {{ $t('labels.email') }}</label>
+                    <input v-validate="'required|email'" name="emailBeneficiary" v-model="selectedBeneficiaryRelation.email"
+                           :disabled="selectedBeneficiaryRelation && selectedBeneficiaryRelation.id"
+                           :class="{'form-control mb-2 mt-2 mr-sm-1 mb-sm-0': true, invalid: errors.has('emailBeneficiary')}"
+                           :placeholder="$t('labels.email')" type="text">
                     <form class="form-inline" v-if="selectedBeneficiaryRelation">
-                      <label class="sr-only"> {{ $t('labels.email') }}</label>
-                      <input v-validate="'required|email'" name="emailBeneficiary" v-model="selectedBeneficiaryRelation.email"
-                             :disabled="selectedBeneficiaryRelation && selectedBeneficiaryRelation.id"
-                             :class="{'form-control mb-2 mt-2 mr-sm-1 mb-sm-0': true, invalid: errors.has('emailBeneficiary')}"
-                             :placeholder="$t('labels.email')" type="text">
                       <label class="sr-only"> {{ $t('labels.title') }}</label>
-                      <input v-model="selectedBeneficiaryRelation.relationProfile.title" style="width: 100px"
+                      <input v-model="selectedBeneficiaryRelation.relationProfile.title" style="width: 4em"
                              class="form-control mb-2 mt-2 mr-sm-1 mb-sm-0" :placeholder="$t('labels.title')" type="text">
                       <label class="sr-only"> {{ $t('labels.firstName') }}</label>
                       <input v-model="selectedBeneficiaryRelation.relationProfile.firstName" class="form-control mt-2 mb-2 mr-sm-1 mb-sm-0"
-                             :placeholder="$t('labels.firstName')" type="text">
+                             :placeholder="$t('labels.firstName')" type="text" style="min-width:10em">
                       <label class="sr-only">{{ $t('labels.middleName') }}</label>
                       <input v-model="selectedBeneficiaryRelation.relationProfile.middleName" class="form-control mt-2 mb-2 mr-sm-1 mb-sm-0"
-                             :placeholder="$t('labels.middleName')" type="text">
+                             placeholder="" type="text" style="max-width:6em">
                       <label class="sr-only"> {{ $t('labels.lastName') }}</label>
                       <input v-model="selectedBeneficiaryRelation.relationProfile.lastName" v-validate="'required'" name="lastNameBeneficiary"
                              :class="{'form-control mb-2 mt-2 mr-sm-1 mb-sm-0': true, invalid: errors.has('lastNameBeneficiary')}"
-                             :placeholder="$t('labels.lastName')" type="text">
+                             :placeholder="$t('labels.lastName')" type="text" style="width:30em">
                     </form>
                     <div class="form-group mt-3" v-if="!createNewBeneficiary">
                       <label class="form-control-label">{{$t('labels.addressToUseInInvoice')}}</label>
@@ -333,23 +338,21 @@
                       </div>
                     </div>
                     <div class="row pl-3 mt-2">
-                      <div class="col-md-4">
+                      <div class="col-md-2">
                         <label class="form-control-label">{{ $t('labels.postalCode') }}</label>
                         <input type="text" class="form-control" v-model="beneficiaryAddress.postalCode"/>
                       </div>
-                      <div class="col-md-8">
+                      <div class="col-md-5">
                         <label class="form-control-label">{{ $t('labels.city') }}</label>
                         <input type="text" class="form-control" v-model="beneficiaryAddress.city"/>
                       </div>
-                    </div>
-                    <div class="row pl-3 mt-2">
-                      <div class="col-md-12">
+                      <div class="col-md-5">
                         <label class="form-control-label">{{ $t('labels.country') }}</label>
                         <searchable-select-component :config="searchableConfig"
-                                                     :options="$store.state.allCountries"
-                                                     :value="selectedCountryBeneficiary"
-                                                     @onChange="addCountryBeneficiary"
-                                                     @onDelete="removeCountryBeneficiary"/>
+                           :options="$store.state.allCountries"
+                           :value="selectedCountryBeneficiary"
+                           @onChange="addCountryBeneficiary"
+                           @onDelete="removeCountryBeneficiary"/>
                       </div>
                     </div>
                   </div>
@@ -361,10 +364,8 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @click="saveNewBeneficiary()">
-                  {{$t('buttons.confirm')}}
-                </button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+                <button type="button" class="btn btn-primary" @click="saveNewBeneficiary()">{{$t('buttons.confirm')}}</button>
               </div>
             </div>
           </div>
@@ -394,41 +395,33 @@
             </div>
           </div>
           <div class="col-md-12 pt-3">
-          <div class="scrollable-medium pb-1" v-if="beneficiaryList.length">
-            <div class="row" v-for="(beneficiary, index) in beneficiaryList" :key="index">
-              <div class="col-md-12" v-if="beneficiary">
-                <div class="support-index show-ticket-content">
-                  <div class="support-tickets m-0 pl-2 pt-2">
-                    <div class="support-ticket">
-                      <div class="st-body">
-                        <div class="avatar"><i style="font-size: 2.5rem;" class="fa fa-plus"></i></div>
-                        <div class="st-meta">
-                          <i class="fas fa-edit text-warning" data-toggle="modal" data-target="#addNewBeneficiary" @click="editBeneficiary(beneficiary, index)"></i>
-                          <div class="fas fa-trash-alt ml-2 text-danger" data-toggle="modal" data-target="#removeBeneficiaryConfirm" @click="deleteBeneficiary(index)"></div>
-                        </div>
-                        <div class="ticket-content">
-                          <h6 class="ticket-title">
-                            <span class="label">{{beneficiary.fullName}}</span>
-                            <br/>
-                            <span class="label">{{beneficiary.email ? beneficiary.email : beneficiary.website}}</span>
-                          </h6>
-                        </div>
-                      </div>
-                      <div class="st-foot">
-                        <span class="label"><span class="value">{{getBeneficiaryAddress(beneficiary)}}</span></span><br/>
-                      </div>
+            <div class="scrollable-medium pb-1" v-if="beneficiaryList.length">
+              <div class="pipeline-item mt-2" v-for="(beneficiary, index) in beneficiaryList" :key="index">
+                <div class="pi-body" style="padding:0.6em">
+                  <div class="pi-info">
+                    <div class="h6 pi-name">
+                      {{getFullName(beneficiary)}}
                     </div>
+                    <div class="pi-sub" style="padding-top:5px;">
+                      {{getBeneficiaryAddress(beneficiary)}}
+                      {{beneficiary.email ? beneficiary.email : beneficiary.website}}
+                    </div>
+                  </div>
+                </div>
+                <div class="pi-foot" style="padding:2px;">
+                  <div class="tags">
+                    <i class="text-success fas fa-edit m-2" data-toggle="modal" data-target="#addNewBeneficiary" @click="editBeneficiary(beneficiary, index)" style="cursor: pointer"></i>
+                    <i class="fas fa-trash-alt m-2 text-danger" data-toggle="modal" data-target="#removeBeneficiaryConfirm" @click="deleteBeneficiary(index)" style="cursor: pointer"></i>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          </div>
           <div class="row pl-3 mt-3">
-            <div class="col-md-12">
+            <div class="col-md-11">
               <div class="form-group" v-if="beneficiaryList.length">
                 <label class="form-control-label">{{$t('labels.beneficiaryEmail')}}</label>
-                <textarea cols="3" v-model="beneficiaryEmailContent" class="form-control"></textarea>
+                <textarea rows="4" v-model="beneficiaryEmailContent" class="form-control"></textarea>
               </div>
             </div>
           </div>
@@ -437,3 +430,29 @@
     </div>
 </template>
 <script src="./step1.component.ts" lang="ts"></script>
+
+<style scoped>
+  .pipeline-item {
+    background-color: #fff;
+    margin: 20px;
+    margin-left: 10px;
+    border-radius: 4px;
+    position: relative;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);
+  }
+  .pipeline-item .pi-foot {
+    background-color: #f1f4f8;
+    padding: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-radius: 0px 0px 4px 4px;
+  }
+</style>

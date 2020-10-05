@@ -1,15 +1,17 @@
 <template>
   <div class="row">
     <div class="col-md-6">
-      <div class="row p-0 m-0" v-if="!addProduct">
-        <div class="col-md-6 text-left">
-          <button type="button" @click="addNewProduct" class="btn-primary btn">{{$t('labels.selectProduct')}}</button>
+      <h3 class="form-control-label">{{ $t('labels.orderedItems') }}</h3>
+      <div class="form-row p-0 m-0" v-if="!addProduct && !addPromotion">
+        <div class="col-auto">
+          <button type="button" @click="addNewProduct" class="btn-primary btn">{{$t('labels.addProduct')}}</button>
         </div>
-        <div class="col-md-6 text-right" v-if="allOrderLines && allOrderLines.length">
-          <button type="button" class="btn-outline-primary btn" @click="addNewPromotion">{{$t('labels.selectPromotion')}}</button>
+        <div class="col-auto" v-if="allOrderLines && allOrderLines.length && !addPromotion">
+          <button type="button" class="btn-primary btn" @click="addNewPromotion">{{$t('labels.addPromotion')}}</button>
         </div>
       </div>
-      <div v-if="addProduct && !addPromotion">
+
+      <div v-if="addProduct && !addPromotion" id="add-prod-form">
         <form>
           <div class="form-group">
             <label>{{$t('labels.selectProduct')}}</label>
@@ -27,26 +29,30 @@
                                          @onChange="productAttributeChanged"
                                          @onDelete="productAttributeRemoved"/>
           </div>
-          <div class="form-group" v-if="selectedProduct">
-            <label class="form-control-label">{{$t('labels.price')}}</label>
-            <money v-model="selectedProduct.value.price" :disabled="selectedProduct ? !selectedProduct.value.userDefinedPrice : true" class="form-control" name="loyaltyAmountEarlier"  v-bind="moneyFixed"></money>
+          <div class="form-row" v-if="selectedProduct">
+            <div class="form-group col-md-6">
+              <label class="form-control-label">{{$t('labels.price')}}</label>
+              <money v-model="selectedProduct.value.price" style="max-width: 150px" :disabled="selectedProduct ? !selectedProduct.value.userDefinedPrice : true" class="form-control" name="loyaltyAmountEarlier"  v-bind="moneyFixed"></money>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-control-label">{{$t('labels.quantity')}}</label>
+              <input type="number" v-validate="'required|min_value:1|decimal:0'" style="max-width: 100px" name="quantityProd" min="1" :class="{'form-control': true, invalid: errors.has('quantityProd')}" v-model="newOrderLine.quantity"/>
+              <span class="small text-danger">{{errors.first('quantityProd')}}</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-control-label">{{$t('labels.quantity')}}</label>
-            <input type="number" v-validate="'required|min_value:1|decimal:0'" name="quantityProd" min="1" :class="{'form-control': true, invalid: errors.has('quantityProd')}" v-model="newOrderLine.quantity"/>
-            <span class="small text-danger">{{errors.first('quantityProd')}}</span>
-          </div>
-          <div class="form-group">
-            <label class="form-control-label">{{$t('labels.additionalInfo')}}</label>
-            <textarea cols="3" class="form-control" maxlength="256" v-model="newOrderLine.additionalInfo"/>
-          </div>
-          <div class="form-group">
-            <label class="form-control-label">{{$t('labels.affiliate')}}</label>
-            <searchable-select-component :config="singleSelectConfigAffiliate"
-                                         :options="$store.state.lookups.affiliates"
-                                         :value="selectedAffiliate"
-                                         @onSelected="changeAffiliate"
-                                         @onDelete="removeAffiliate"/>
+          <div class="form-row" v-if="selectedProduct">
+            <div class="form-group col-md-6">
+              <label class="form-control-label">{{$t('labels.additionalInfo')}}</label>
+              <textarea rows="3" class="form-control" maxlength="256" v-model="newOrderLine.additionalInfo"/>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-control-label">{{$t('labels.affiliate')}}</label>
+              <searchable-select-component :config="singleSelectConfigAffiliate"
+                 :options="$store.state.lookups.affiliates"
+                 :value="selectedAffiliate"
+                 @onSelected="changeAffiliate"
+                 @onDelete="removeAffiliate"/>
+            </div>
           </div>
           <div class="form-group" v-show="selectedProduct && selectedProduct.value.productType === 'PHYSICAL'">
             <label class="form-control-label">{{$t('labels.shippingTitle')}}</label>
@@ -113,95 +119,73 @@
           </div>
         </form>
       </div>
-      <div v-else-if="addPromotion && !addProduct" class="row">
+
+      <div v-else-if="addPromotion && !addProduct" id="add-promo-form" class="row">
         <div class="form-group col-md-12 mt-4">
           <label class="form-control-label">{{$t('labels.selectPromotion')}}</label>
           <searchable-select-component :config="singleSelectConfigPromotion"
-                                       :options="availablePrmotions"
-                                       :value="selectedPromotion"
-                                       @onChange="addSelectedPromotion"
-                                       @onDelete="removeSelectedPromotion"/>
+             :options="availablePromotions"
+             :value="selectedPromotion"
+             @onChange="addSelectedPromotion"
+             @onDelete="removeSelectedPromotion"/>
         </div>
         <div class="form-group text-right col-md-12">
           <button class="btn btn-outline-danger" @click="closeAddPromotion">{{$t('buttons.cancel')}}</button>
           <button class="btn btn-primary ml-2" @click.stop.prevent="addNewOrderPromotion">{{$t('buttons.add')}}</button>
         </div>
       </div>
+
       <div v-else class="scrollable">
-        <div class="row mt-3" v-for="(item, index) in allOrderLines" :key="index">
-          <div class="col-md-12">
-            <div class="support-index show-ticket-content">
-              <div class="support-tickets m-0 pl-2 pt-2">
-                <div class="support-ticket">
-                  <div class="st-body">
-                    <div class="avatar"><i style="font-size: 2.5rem;" class="fas fa-cash-register"></i></div>
-                    <div class="st-meta">
-                      <i class="fas fa-edit text-warning cursor-pointer" @click="editOrderLine(item, index)"></i>
-                      <div class="fas fa-trash-alt ml-2 text-danger cursor-pointer" data-toggle="modal" data-target="#removeLine" @click="removeOrderLine(index)"></div>
-                    </div>
-                    <div class="ticket-content">
-                      <h6 class="ticket-title">
-                        <span class="label">{{item.orderProduct.id}} </span>
-                        <span class="label">{{getProductName(item)}}</span>
-                        <br/>
-                        <span class="small">{{getProductDesc(item)}}</span>
-                        <br/>
-                        <span class="small">{{item.orderProduct.price}}€</span>
-                        <br/>
-                        <span class="small">{{getProductAttributes(item)}}</span>
-                        <br/>
-                        <span class="small"></span>
-                        <br/>
-                        <span class="small"> {{getDeliveryMethodName(item)}}<i class="ml-3 fas fa-truck-loading"></i></span>
-                      </h6>
-                    </div>
-                  </div>
-                  <div class="st-foot">
-                    <div class="row">
-                      <div class="col-md-6 pt-2 pb-2">
-                        <span class="label">{{$t('labels.quantity')}}: <span class="value">{{item.quantity}}</span></span>
-                      </div>
-                      <div class="col-md-6 pt-2 pb-2 text-right"  v-if="item && item.beneficiaryList && item.beneficiaryList.length > 1">
-                        <span class="label">{{$t('labels.totalBeneficiaries')}}: <span class="value">{{item.beneficiaryList ? item.beneficiaryList.length : 0}}</span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
+        <div class="pipeline-item" v-for="(item, index) in allOrderLines" :key="index">
+          <div class="pi-controls">
+            <i class="fa fa-edit text-success" @click="editOrderLine(item, index)"></i>
+            <i class="fa fa-trash-alt ml-2 text-danger" data-toggle="modal"
+               data-target="#removeLine" @click="removeOrderLine(index)"></i>
+          </div>
+          <div class="pi-body">
+            <div class="avatar"><i style="font-size: 2.5rem;" class="fas fa-cash-register"></i></div>
+            <div class="ml-3 pi-info">
+              <div class="h5 pi-name">{{getProductName(item)}}</div>
+              <div class="pi-sub">{{getProductAttributes(item)}}</div>
+              <div class="pi-sub">{{item.orderProduct.price | formatAmount}}</div>
+              <div class="pi-sub" v-if="item && item.beneficiaryList && item.beneficiaryList.length > 1">
+                {{$t('labels.totalBeneficiaries')}}: <span class="value">{{item.beneficiaryList ? item.beneficiaryList.length : 0}}</span>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row mt-3" v-for="(item, index) in allPromotions" :key="'promo_'+index">
-          <div class="col-md-12">
-            <div class="support-index show-ticket-content">
-              <div class="support-tickets m-0 pl-2 pt-2">
-                <div class="support-ticket">
-                  <div class="st-body">
-                    <div class="avatar"><i style="font-size: 2.5rem;" class="fa fa-tag"></i></div>
-                    <div class="st-meta">
-                      <div class="fas fa-trash-alt text-danger cursor-pointer" data-toggle="modal" data-target="#removeLine" @click="deletePromotion(index)"></div>
-                    </div>
-                    <div class="ticket-content">
-                      <h6 class="ticket-title">
-                        <span class="label">{{item.value.id}} </span>
-                        <span class="label">{{item.label}}</span>
-                        <br/>
-                        <span class="small">{{getMultiLangName(item.value.promotionLanguages).description}}</span>
-                        <br/>
-                        <span class="small">{{getDiscount(item.value)}}</span>
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="pi-foot">
+            <div class="extra-info">{{$t('labels.id')}}: {{item.orderProduct.productId}}</div>
+            <div class="extra-info" v-if="item.quantity > 1">{{$t('labels.quantity')}}: {{item.quantity}}x</div>
           </div>
         </div>
+
+        <div class="pipeline-item" v-for="(item, index) in allPromotions" :key="'promo_'+index">
+          <div class="pi-controls">
+            <i class="fa fa-trash-alt ml-2 text-danger" data-toggle="modal"
+               data-target="#removeLine" @click="deletePromotion(index)"></i>
+          </div>
+          <div class="pi-body">
+            <div class="avatar"><i style="font-size: 2.5rem;" class="fa fa-tag"></i></div>
+            <div class="ml-3 pi-info">
+              <div class="h5 pi-name">{{item.label}}</div>
+              <div class="pi-sub">{{getMultiLangName(item.value.promotionLanguages).description}}</div>
+              <div class="pi-sub">{{getDiscount(item.value)}}</div>
+            </div>
+          </div>
+          <div class="pi-foot">
+            <div class="extra-info">{{$t('labels.id')}}: {{item.value.id}}</div>
+          </div>
+        </div>
+
       </div>
     </div>
+
     <div class="col-md-6">
+      <h3 class="form-control-label">{{ $t('labels.invoiceOverview') }}</h3>
       <invoice-preview-component :cart-order="cartOrderCopy"/>
     </div>
+
     <div class="modal" data-backdrop="static" data-keyboard="false" id="removeLine" tabindex="-1" role="dialog" ref="removeLine">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -231,3 +215,30 @@
   </div>
 </template>
 <script src="./step2.component.ts" lang="ts"></script>
+
+<style sacoped>
+  #add-prod-form, #add-promo-form {
+    border: solid 1px #d0d0d0;
+    border-radius: 8px;
+    padding: 1em;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);
+  }
+  .pipeline-item {
+    cursor: default!important;
+    margin: 20px;
+    margin-left: 10px;
+    border-radius: 4px;
+    position: relative;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);
+  }
+  .pi-controls i{
+    cursor: pointer!important;
+  }
+  .pi-sub {
+    font-size:1.2em;
+    line-height:2em;
+    overflow: hidden;
+  }
+</style>

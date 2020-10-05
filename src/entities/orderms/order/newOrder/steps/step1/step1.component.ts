@@ -519,6 +519,13 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     })
   }
 
+  public getFullName(item:any) {
+    let fn = (item.relationProfile.firstName) ? item.relationProfile.firstName : ''
+    let mn = (item.relationProfile.middleName) ? item.relationProfile.middleName : ''
+    let ln = (item.relationProfile.lastName) ? item.relationProfile.lastName : ''
+    return fn + ' ' + mn + ' ' + ln
+  }
+
   public getBeneficiaryAddress(item: any) {
     let street, houseNumber, city = '';
     let country = null;
