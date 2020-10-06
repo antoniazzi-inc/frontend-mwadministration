@@ -1,5 +1,5 @@
 <template>
-    <div class="row p-3 text-left">
+    <div class="row p-3 text-left tab-form-panel">
         <div class="col-md-12">
             <div class="row p-0 mt-3" v-if="!addProduct">
                 <div class="col-md-6 text-left">

@@ -1,11 +1,9 @@
 <template>
   <div class="pl-0 pr-0 text-left">
-    <div class="col-md-12 pl-0 pr-0">
-      <div class="form-group">
-        <trumbowyg v-model="selectedContent" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
-      </div>
+    <div class="col-md-12 pl-0 pr-0 form-group">
+      <trumbowyg v-model="selectedContent" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
     </div>
-    <div class="col-md-12 pl-0 pr-0" style="margin-top:5px">
+    <div class="col-md-12 pl-0 pr-0 mlbtns" style="margin-top:5px">
       <div class="btn-group" v-if="availableLangs">
                 <span :key="index" to="" v-for="(lang, index) in allAvailableLanguages" @click="changeLang(lang)"
                       :class="{btn: true, 'btn-outline-primary ml-0 btn-small btn-rounded': true,
@@ -24,3 +22,13 @@
   </div>
 </template>
 <script type="ts" src="./multiLanguageHtmlEditor.component.ts"></script>
+<style scoped>
+  .mlbtns .btn-group > .btn-outline-primary {
+    border: solid 1px #d0d0d0;
+    background-color: #f2f4f8;
+    border-left: 0px;
+  }
+  .mlbtns .btn-group > .btn-outline-primary.active {
+    background-color: #007bff;
+  }
+</style>

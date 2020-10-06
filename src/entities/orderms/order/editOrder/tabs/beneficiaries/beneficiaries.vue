@@ -1,5 +1,5 @@
 <template>
-    <div class="p-3 text-left">
+    <div class="p-3 text-left tab-form-panel">
         <div class="row justify-content-center">
             <div class="col-12">
                     <div>

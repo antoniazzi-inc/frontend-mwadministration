@@ -13,10 +13,10 @@
         <a :class="{'nav-link': true, 'active': currentTab === 'tabTestimonials'}" id="tabTestimonials-tab" data-toggle="tab"
            href="#tabTestimonials" role="tab" aria-controls="tabTestimonials" aria-selected="false">{{$t('labels.tabTestimonials')}}</a>
       </li>
-      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabDiscounts'">
-        <a :class="{'nav-link': true, 'active': currentTab === 'tabDiscounts'}" id="tabDiscounts-tab"
-           data-toggle="tab" href="#tabDiscounts" role="tab" aria-controls="tabDiscounts" aria-selected="false">
-          {{$t('labels.tabDiscounts')}}</a>
+      <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabUpselling'">
+        <a :class="{'nav-link': true, 'active': currentTab === 'tabUpselling'}" id="tabUpselling-tab"
+           data-toggle="tab" href="#tabUpselling" role="tab" aria-controls="tabUpselling" aria-selected="false">
+          {{$t('labels.tabUpselling')}}</a>
       </li>
       <li class="nav-item tab-nav smaller-tab" @click="currentTab = 'tabSuggestions'">
         <a :class="{'nav-link': true, 'active': currentTab === 'tabSuggestions'}" id="tabSuggestions-tab" data-toggle="tab"
@@ -63,6 +63,22 @@
                              :value.sync="backToCallingPage"></toggle-switch>
             </div>
           </div>
+          <div class="row mt-4">
+            <div class="form-group col-md-6">
+              <label class="form-control-label">{{$t('labels.shopPageLayout')}}</label>
+              <select class="form-control">
+                <option value="1">{{$t('labels.shopPageLayout_1')}}</option>
+                <option value="2">{{$t('labels.shopPageLayout_2')}}</option>
+                <option value="3">{{$t('labels.shopPageLayout_3')}}</option>
+                <option value="4">{{$t('labels.shopPageLayout_4')}}</option>
+                <option value="5">{{$t('labels.shopPageLayout_5')}}</option>
+                <option value="6">{{$t('labels.shopPageLayout_6')}}</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6" style="padding:2em;">
+              (here comes a small example screenshot of the selected layout)
+            </div>
+          </div>
           <div class="form-buttons-w text-right">
             <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
             <button class="btn btn-primary" @click.prevent="save">{{$t('buttons.save')}}</button>
@@ -71,9 +87,37 @@
       </div>
       <div :class="{'tab-pane': true, 'active': currentTab === 'tabUSP'}" id="tabUSP" role="tabpanel" aria-labelledby="tabUSP-tab">
         <form>
+          <!--
           <div class="form-group mt-4">
             <label class="form-control-label">{{$t('labels.tabUSP')}}</label>
             <trumbowyg v-model="upsellCart1" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+          </div>
+          -->
+          <div class="row mt-4">
+            <div class="col-md-2 pr-2">
+              <h5>{{$t('labels.usp')}} 1</h5>
+              <textarea class="form-control" name="usp1" rows="6"></textarea>
+            </div>
+            <div class="col-md-2 pr-2">
+              <h5>{{$t('labels.usp')}} 2</h5>
+              <textarea class="form-control" name="usp2" rows="6"></textarea>
+            </div>
+            <div class="col-md-2 pr-2">
+              <h5>{{$t('labels.usp')}} 3</h5>
+              <textarea class="form-control" name="usp3" rows="6"></textarea>
+            </div>
+            <div class="col-md-2 pr-2">
+              <h5>{{$t('labels.usp')}} 4</h5>
+              <textarea class="form-control" name="usp4" rows="6"></textarea>
+            </div>
+            <div class="col-md-2 pr-2">
+              <h5>{{$t('labels.usp')}} 5</h5>
+              <textarea class="form-control" name="usp5" rows="6"></textarea>
+            </div>
+            <div class="col-md-2 pr-2">
+              <h5>{{$t('labels.usp')}} 6</h5>
+              <textarea class="form-control" name="usp6" rows="6"></textarea>
+            </div>
           </div>
           <div class="form-buttons-w text-right">
             <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
@@ -83,9 +127,47 @@
       </div>
       <div :class="{'tab-pane': true, 'active': currentTab === 'tabTestimonials'}" id="tabTestimonials" role="tabpanel" aria-labelledby="tabTestimonials-tab">
         <form>
+          <!--
           <div class="form-group mt-4">
             <label class="form-control-label">{{$t('labels.tabTestimonials')}}</label>
             <trumbowyg v-model="upsellCart2" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+          </div>
+          -->
+          <div class="row mt-4">
+            <div class="col-md-4 pr-5">
+              <h5>{{$t('labels.testimonial')}} 1</h5>
+              <input name="testimonial1Name" type="text" :placeholder="$t('labels.name')" :class="{'form-control':true}"/>
+            </div>
+            <div class="col-md-4 pr-5">
+              <h5>{{$t('labels.testimonial')}} 2</h5>
+              <input name="testimonial2Name" type="text" :placeholder="$t('labels.name')" :class="{'form-control':true}"/>
+            </div>
+            <div class="col-md-4">
+              <h5>{{$t('labels.testimonial')}} 3</h5>
+              <input name="testimonial3Name" type="text" :placeholder="$t('labels.name')" :class="{'form-control':true}"/>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-4 pr-5">
+              <input name="testimonial1Image" type="text" :placeholder="$t('labels.image') + ' url'" :class="{'form-control':true}"/>
+            </div>
+            <div class="col-md-4 pr-5">
+              <input name="testimonial2Image" type="text" :placeholder="$t('labels.image') + ' url'" :class="{'form-control':true}"/>
+            </div>
+            <div class="col-md-4">
+              <input name="testimonial3Image" type="text" :placeholder="$t('labels.image') + ' url'" :class="{'form-control':true}"/>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class=" col-md-4 pr-5">
+              <textarea class="form-control" rows="6"></textarea>
+            </div>
+            <div class="col-md-4 pr-5">
+              <textarea class="form-control" rows="6"></textarea>
+            </div>
+            <div class="col-md-4">
+              <textarea class="form-control" rows="6"></textarea>
+            </div>
           </div>
           <div class="form-buttons-w text-right">
             <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
@@ -93,11 +175,52 @@
           </div>
         </form>
       </div>
-      <div :class="{'tab-pane': true, 'active': currentTab === 'tabDiscounts'}" id="tabDiscounts" role="tabpanel" aria-labelledby="tabDiscounts-tab">
+      <div :class="{'tab-pane': true, 'active': currentTab === 'tabUpselling'}" id="tabUpselling" role="tabpanel" aria-labelledby="tabUpselling-tab">
         <form>
-          <div class="form-group mt-4">
-            <label class="form-control-label">{{$t('labels.tabDiscounts')}}</label>
+            <!--
             <trumbowyg v-model="upsellCart3" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+            -->
+          <div class="row mt-4">
+            <div class="col-md-4 pr-5">
+              <h5>{{$t('labels.upsell')}}</h5>
+              <searchable-select-component :config="singleProductSelectConfig"
+                 :options="allProducts"
+                 :value="null"/>
+            </div>
+            <div class="col-md-4 pr-5">
+              <h5>{{$t('labels.orderbump')}}</h5>
+              <searchable-select-component :config="singleProductSelectConfig"
+                 :options="allProducts"
+                 :value="null"/>
+            </div>
+            <div class="col-md-4">
+              <h5>{{$t('labels.alternproduct')}}</h5>
+              <searchable-select-component :config="singleProductSelectConfig"
+                 :options="allProducts"
+                 :value="null"/>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-4 pr-5">
+              <input name="upsellTitle" type="text" :placeholder="$t('labels.upsellTitle')" :class="{'form-control':true}"/>
+            </div>
+            <div class="col-md-4 pr-5">
+              <input name="orderBumpTitle" type="text" :placeholder="$t('labels.bumpTitle')" :class="{'form-control':true}"/>
+            </div>
+            <div class="col-md-4">
+              <input name="altProductTitle" type="text" :placeholder="$t('labels.altProductTitle')" :class="{'form-control':true}"/>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class=" col-md-4 pr-5">
+              <textarea class="form-control" rows="3"></textarea>
+            </div>
+            <div class="col-md-4 pr-5">
+              <textarea class="form-control" rows="3""></textarea>
+            </div>
+            <div class="col-md-4">
+              <textarea class="form-control" rows="3"></textarea>
+            </div>
           </div>
           <div class="form-buttons-w text-right">
             <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>

@@ -1,19 +1,24 @@
 <template>
   <div class="row">
     <div class="col-md-12">
-      <div class="title text-center">{{ $t('labels.invoiceOverview') }}</div>
       <hr>
       <div class="row p-0 m-0">
         <div class="col-md-6 text-left form-group">
           <span>{{ cartOrderCopy.orderCustomer && cartOrderCopy.orderCustomer.fullName ? cartOrderCopy.orderCustomer.fullName : '' }}</span>
-          <!--<br/>
-          <span v-if="$parent.$parent.$refs.customerPanel.isCompany">{{$parent.$parent.$refs.customerPanel.selectedCompany ? $parent.$parent.$refs.customerPanel.selectedCompany.name : '' }}</span>
-          <br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>-->
-          <span>{{ getCustomerRelationAddress() }}</span>
+
+          <br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>
+          <span v-if="$parent.$parent.$refs.customerPanel.isCompany">
+            {{$parent.$parent.$refs.customerPanel.selectedCompany ? $parent.$parent.$refs.customerPanel.selectedCompany.name : '' }}
+          </span>
+
+          <br/>
+          <span>{{ getCustomerRelationAddressPart1() }}</span>
+          <br/>
+          <span>{{ getCustomerRelationAddressPart2() }}</span>
           <br/>
           <span>{{ customerCountry }}</span>
-          <!--<br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>
-          <span v-if="$parent.$parent.$refs.customerPanel.isCompany">{{$parent.$parent.$refs.customerPanel.companyVat}}</span>-->
+          <br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>
+          <span v-if="$parent.$parent.$refs.customerPanel.isCompany">{{$parent.$parent.$refs.customerPanel.companyVat}}</span>
         </div>
         <div class="col-md-6 text-right form-group">
           <label class="form-control-label text-center">{{ $t('labels.sendInvoiceTo') }}:</label>
@@ -52,8 +57,13 @@
       </div>
       <hr/>
       <div v-if="cartOrderCopy && cartOrderCopy.orderLines">
+        <div class="row p-0 m-0">
+          <div class="col-md-7">{{ $t('labels.item') }}</div>
+          <div class="col-md-2">{{ $t('labels.orderQuantityShort') }}</div>
+          <div class="col-md-3">{{ $t('labels.price') }}</div>
+        </div>
         <div class="row p-0 m-0" v-for="(item, index) in cartOrderCopy.orderLines" :key="index">
-          <div class="col-md-9 small">
+          <div class="col-md-7">
             <p>
               <span>[{{ item.orderProduct.productId }}] {{ item.orderProduct.productName }} (x{{item.quantity}})</span><br/>
               <span v-if="item.orderProduct.productDescription">{{ item.orderProduct.productDescription }}</span>
@@ -75,7 +85,10 @@
             </p>
 
           </div>
-          <div class="col-md-3 text-right small">
+          <div class="col-md-2 text-center">
+            {{item.quantity}}
+          </div>
+          <div class="col-md-3 text-right">
             <p>
               <span>{{ item.totalAmount }} {{ cartOrderCopy.currency }}</span>
             </p>

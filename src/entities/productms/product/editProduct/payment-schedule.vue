@@ -78,7 +78,7 @@
                         <tbody>
                         <tr v-for="(option, key) in item.paymentScheduleOptions" :key="key">
                           <td>{{option.name}}</td>
-                          <td>{{option.price}}</td>
+                          <td>{{option.price | formatAmount}}</td>
                           <td>
                             <div class="text-danger ml-3 cursor-pointer" data-toggle="modal"
                                  data-target="#removeEntityPaymentScheduleOption"

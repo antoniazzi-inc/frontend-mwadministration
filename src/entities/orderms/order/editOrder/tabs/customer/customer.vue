@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tab-form-panel">
     <div class="row justify-content-center text-left pl-3 pr-3 mt-4">
       <div class="col-12">
         <form name="editForm" role="form" novalidate v-on:submit.prevent="save()">

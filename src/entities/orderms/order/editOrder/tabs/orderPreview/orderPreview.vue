@@ -1,5 +1,5 @@
 <template>
-    <div class="row mt-3">
+    <div class="tab-form-panel row">
         <div class="col-md-12" v-if="invoicePreview.cartOrder">
             <div class="row p-0 m-0" v-if="invoicePreview.cartOrder.orderCustomer">
                 <div class="col-md-6 text-left form-group">
@@ -47,16 +47,15 @@
             </div>
             <hr/>
             <div v-if="invoicePreview.cartOrder && invoicePreview.cartOrder.orderLines">
+              <div class="row p-0 m-0">
+                <div class="col-md-7">{{ $t('labels.item') }}</div>
+                <div class="col-md-2 text-center">{{ $t('labels.orderQuantityShort') }}</div>
+                <div class="col-md-3 text-right">{{ $t('labels.price') }}</div>
+              </div>
                 <div class="row p-0 m-0" v-for="(item, index) in invoicePreview.cartOrder.orderLines" :key="index">
-                    <div class="col-md-9 small">
-                        <p>
-                            <span>[{{item.orderProduct.productId}}] {{item.orderProduct.productName}} (x{{item.quantity}})</span><br/>
-                            <span v-if="item.orderProduct.productDescription">{{item.orderProduct.productDescription}}</span>
-                            <span>
-                                <br/>
-                                <span class="font-weight-bold">{{$t('labels.basePrice')}}:</span>
-                                <span class="text-right">{{item.orderProduct.productPrice}}{{$props.order.currency}}</span>
-                            </span>
+                  <div class="col-md-7">
+                    [{{item.orderProduct.productId}}] {{item.orderProduct.productName}}<br/>
+                    <span v-if="item.orderProduct.productDescription">{{item.orderProduct.productDescription}}</span>
                             <br/>
                             <span v-for="(attre, ind) in item.orderProduct.orderProductAttributeValues" :key="ind">{{attre.attributeName}} {{attre.attributeValueName}} {{attre.attributeValuePrice}}{{$props.order.currency}}</span>
                             <span v-if="item.orderLineDeliveryMethod">{{$t('labels.shippingMethod')}}: {{getDeliveryMethodName(item)}}</span>
@@ -64,15 +63,16 @@
                             <span class="font-weight-bold">{{$t('labels.beneficiary')}}:</span><br/>
                             {{getBeneficiaries(item)}}
                         </span>
-                        </p>
 
                     </div>
-                    <div class="col-md-3 text-right small">
-                        <p>
-                            <span>{{item.totalAmount}}{{$props.order.currency}}</span>
-                        </p>
-                    </div>
-                </div>
+                  <div class="col-md-2 text-center">
+                    {{item.quantity}}
+                  </div>
+                  <div class="col-md-3 text-right">
+                    {{item.orderProduct.productPrice | formatAmount}}
+                    <!-- {{item.totalAmount | formatAmount}} -->
+                  </div>
+              </div>
             </div>
             <div v-if="invoicePreview.cartOrder && invoicePreview.cartOrder.orderDiscountLines">
                 <div class="row p-0 m-0" v-for="(item, index) in $props.order.orderDiscountLines" :key="index+'promo'">
@@ -90,6 +90,7 @@
                 </div>
             </div>
             <hr/>
+          <!--
           <div class="row p-0 m-0">
             <div class="col-md-6 text-left font-weight-bold">
               {{ $t('labels.totalProducts') }}
@@ -98,12 +99,13 @@
               {{ invoicePreview.totalProducts ? invoicePreview.totalProducts : 0 }}
             </div>
           </div>
+          -->
           <div class="row p-0 m-0">
             <div class="col-md-6 text-left font-weight-bold">
               {{ $t('labels.totalDiscount') }}
             </div>
             <div class="col-md-6 text-right">
-              {{ invoicePreview.totalDiscounts ? invoicePreview.totalDiscounts + ' ' + $props.order.currency : 0 }}
+              {{ invoicePreview.totalDiscounts | formatAmount}}
             </div>
           </div>
           <div class="row p-0 m-0">
@@ -111,21 +113,18 @@
               {{ $t('labels.totalNetto') }}
             </div>
             <div class="col-md-6 text-right">
-              {{
-                invoicePreview.totalProductsNetto ? invoicePreview.totalProductsNetto + ' ' + $props.order.currency : 0
-              }}
+              {{ invoicePreview.totalProductsNetto | formatAmount }}
             </div>
           </div>
           <div class="row p-0 m-0">
-            <div class="col-md-6 mt-2 text-left font-weight-bold">
+            <div class="col-md-6 mt-2 text-left">
               {{ $t('labels.paymentMethod') }}:
               <span v-if="$props.order.orderPaymentMethod">{{$props.order.orderPaymentMethod.name }}</span>
             </div>
-            <div class="col-md-6 text-right"
-                 v-if="$props.order.orderPaymentMethod">
-              {{
-                $props.order.orderPaymentMethod ? $props.order.orderPaymentMethod.administrativeCostsFixed ? $props.order.orderPaymentMethod.administrativeCostsFixed + ' ' + $props.order.currency : $props.order.orderPaymentMethod.administrativeCostsPercentage + '%' : ''
-              }}
+            <div class="col-md-6 mt-2 text-right" v-if="$props.order.orderPaymentMethod">
+              <span v-if="$props.order.orderPaymentMethod.administrativeCostsFixed">{{$props.order.orderPaymentMethod.administrativeCostsFixed | formatAmount}}</span>
+              <span v-else-if="$props.order.orderPaymentMethod.administrativeCostsFixed">{{$props.order.orderPaymentMethod.administrativeCostsPercentage}} %</span>
+              <span v-else>{{0 | formatAmount}}</span>
             </div>
           </div>
           <div class="row p-0 m-0 mb-3">
@@ -133,15 +132,26 @@
               {{ $t('labels.shippingMethodTotalCost') }}
             </div>
             <div class="col-md-6 text-right">
-              {{invoicePreview.shippingCostAmount}} {{$props.order.currency}}
+              {{invoicePreview.shippingCostAmount | formatAmount}}
             </div>
           </div>
+
+          <!-- TODO fix totalTaxesMap and add total taxes -->
+          <div class="row p-0 m-0 mb-3">
+            <div class="col-md-6 text-left font-weight-bold">
+              {{ $t('labels.productTax') }}
+            </div>
+            <div class="col-md-6 text-right">
+              {{invoicePreview.totalTaxesMap['21'] | formatAmount}}
+            </div>
+          </div>
+
           <div class="row p-0 m-0" v-for="(item, index) in allTaxes" :key="index + '_tax'">
             <div class="col-md-6 text-left font-weight-bold">
               {{ $t('labels.productTax') }} {{ item.taxName }} %
             </div>
             <div class="col-md-6 text-right">
-              {{ item.value }} {{ item.currency }}
+              {{ item.value | formatAmount}}
             </div>
           </div>
           <div class="row p-0 m-0">
@@ -149,7 +159,7 @@
               {{ $t('labels.grandTotal') }}
             </div>
             <div class="col-md-6 text-right">
-              {{ invoicePreview.grandTotal ? invoicePreview.grandTotal + ' ' + $props.order.currency : 0 }}
+              {{ invoicePreview.grandTotal | formatAmount}}
             </div>
           </div>
         </div>

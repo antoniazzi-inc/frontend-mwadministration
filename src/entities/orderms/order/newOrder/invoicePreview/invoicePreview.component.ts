@@ -48,8 +48,9 @@ export default class InvoicePreviewComponent extends mixins(CommonHelpers, Vue) 
 
   public mounted() {
   }
+
   public getCustomerRelationAddress() {
-    if(this.cartOrderCopy.customerBillingAddress) {
+    if (this.cartOrderCopy.customerBillingAddress) {
       let addr = this.cartOrderCopy.customerBillingAddress
       if(addr.countryId)
       this.customerCountry = this.getCountryById(addr.countryId).enName
@@ -57,6 +58,21 @@ export default class InvoicePreviewComponent extends mixins(CommonHelpers, Vue) 
       ${addr.postalCode ? addr.postalCode : ''} ${addr.countryId ? this.getCountryById(addr.countryId).enName : ''}`
     }
   }
+
+  public getCustomerRelationAddressPart1() {
+    if (this.cartOrderCopy.customerBillingAddress) {
+      let addr = this.cartOrderCopy.customerBillingAddress
+      return `${addr.street ? addr.street : ''} ${addr.houseNumber ? addr.houseNumber : ''}`
+    }
+  }
+
+  public getCustomerRelationAddressPart2() {
+    if (this.cartOrderCopy.customerBillingAddress) {
+      let addr = this.cartOrderCopy.customerBillingAddress
+      return `${addr.postalCode ? addr.postalCode : ''} ${addr.city ? addr.city : ''}`
+    }
+  }
+
   public getAttributesNames(orderLine:any){
     let names = '';
     let self = this;

@@ -73,8 +73,12 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public imageToDelete: any = {};
   public singleSelectConfig: ISearchableSelectConfig = new SearchableSelectConfig('name',
     'labels.chooseInvoiceTemplate', '', false,
-    false, true, true, false);
+    false, true, false, false);
+  public singleProductSelectConfig: ISearchableSelectConfig = new SearchableSelectConfig('label',
+    'labels.chooseProduct', '', false,
+    false, true, false, false);
   public allInvoiceTemplates: any[];
+  public allProducts: any[];
   public selectedInvoiceTemplate: any = null;
   public uploadConfigBranding: any;
 
@@ -83,6 +87,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     this.allMedia = [];
     this.allMediaFiles = [];
     this.allInvoiceTemplates = [];
+    this.allProducts = [];
     this.uploadConfigBranding = {};
     this.editFile = {
       blob: null,
@@ -183,6 +188,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public retrieve() {
     this.allCompanies = this.$store.state.lookups.companies;
     this.allInvoiceTemplates = this.$store.state.lookups.invoiceTemplates;
+    this.allProducts = this.$store.state.lookups.products; // TODO remove 'this' product
     this.getSelectedInvoiceTemplate()
   }
 

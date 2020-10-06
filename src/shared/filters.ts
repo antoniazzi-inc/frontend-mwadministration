@@ -11,6 +11,7 @@ export const DATE_TIME_LONG_FORMAT = "DD-MM-YYYY'T'HH:mm"
 export const INSTANT_FORMAT = "YYYY-MM-DDTHH:mm:ssZ"
 export const ZONED_DATE_TIME_FORMAT = "DD-MM-YYYY'T'HH:mm:ssXXXXX"
 
+
 export function initFilters () {
   Vue.filter('formatDate', function (value: string) {
     const date = moment(value)
@@ -50,7 +51,9 @@ export function initFilters () {
   })
   Vue.filter('formatAmount', function (value: any) {
     if (!value) return Store.state.currency + ' 0,00'
-    return Store.state.currency + ' ' + value // TODO use moneyconfig here...
+    //return Store.state.currency + ' ' + value // TODO use https://github.com/openexchangerates/accounting.js
+    let val = (value/1).toFixed(2).replace('.', ',')
+    return Store.state.currency + ' ' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
   })
   Vue.filter('lower', function (value: any) {
     if (!value) return ''

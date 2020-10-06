@@ -1,5 +1,5 @@
 <template>
-<div>affiliate</div>
+<div class="tab-form-panel">affiliate</div>
 </template>
 <script lang="ts" src="./affiliate.component.ts">
 </script>
