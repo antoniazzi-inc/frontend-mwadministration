@@ -1,5 +1,5 @@
-import Component, { mixins } from 'vue-class-component'
-import { Vue, Watch } from 'vue-property-decorator'
+import Component, {mixins} from 'vue-class-component'
+import {Vue, Watch} from 'vue-property-decorator'
 import * as Tables from '@/shared/tabelsDefinitions'
 import CommonHelpers from '@/shared/commonHelpers'
 
@@ -21,13 +21,15 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   public sequenceToDisplay: any[];
   public tables: any;
   public columnsConfig: [];
+  public actions: any[];
 
-  constructor (props: any) {
+  constructor(props: any) {
     super(props)
     this.currentPage = 0
     this.clickedIndex = 1
     this.itemsPerPage = 10
     this.columnsConfig = []
+    this.actions = []
     this.sequenceToDisplay = [1, 2, 3, 4, 5, 6]
     this.tables = Tables
   }
@@ -38,7 +40,7 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: calculate which item is showing
   * Author: Nick Dam
   */
-  get first () {
+  get first() {
     this.currentPage = this.$props.page
     const first = (this.currentPage) * this.itemsPerPage <= 0 ? 1 : (this.currentPage) * this.itemsPerPage
     return first
@@ -50,17 +52,67 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: calculate how many items are showing
   * Author: Nick Dam
   */
-  get second () {
+  get second() {
     const second = (this.currentPage + 1) * this.itemsPerPage < this.$props.total ? (this.currentPage + 1) * this.itemsPerPage : this.$props.total
     return second
   }
 
-  mounted () {
+  mounted() {
+    let self = this
     if (this.$props.totalPages - 1 <= 6) {
       this.sequenceToDisplay = []
       for (let i = 1; i <= this.$props.totalPages; i++) {
         this.sequenceToDisplay.push(i)
       }
+      if (this.$props.table === 'relation')
+        this.actions = [{
+          label: 'labels.addToGroup',
+          callback: function () {
+            self.$emit('updateAction','addToGroup')
+          }
+        },
+          {
+            label: 'labels.removeFromGroup',
+            callback: function () {
+              self.$emit('updateAction','removeFromGroup')
+            }
+          },
+          {
+            label: 'labels.exportToExcel',
+            callback: function () {
+              self.$emit('updateAction','exportToExcel')
+            }
+          },
+          {
+            label: 'labels.delete',
+            callback: function () {
+              self.$emit('updateAction','delete')
+            }
+          },
+          {
+            label: 'labels.sendMailing',
+            callback: function () {
+              self.$emit('updateAction','sendMailing')
+            }
+          },
+          {
+            label: 'labels.startWorkflow',
+            callback: function () {
+              self.$emit('updateAction','startWorkflow')
+            }
+          },
+          {
+            label: 'labels.startListManager',
+            callback: function () {
+              self.$emit('updateAction','startListManager')
+            }
+          },
+          {
+            label: 'labels.bulkChange',
+            callback: function () {
+              self.$emit('updateAction','bulkChange')
+            }
+          }]
     }
     this.fillTableConfig(this.$props.tableFields)
   }
@@ -71,8 +123,8 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: render list of table columns visibility
   * Author: Nick Dam
   */
-  @Watch('tableFields', { immediate: true, deep: true })
-  public fillTableConfig (config: any) {
+  @Watch('tableFields', {immediate: true, deep: true})
+  public fillTableConfig(config: any) {
     const columns: any = []
     if (config) {
       this.itemsPerPage = this.$props.perPage
@@ -94,8 +146,8 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: change specific column visibility
   * Author: Nick Dam
   */
-  public async changeVisibility (item: any) {
-    if(item){
+  public async changeVisibility(item: any) {
+    if (item) {
       await this.changeColumnVisibility(item, this.$props.table)
       this.$emit('update')
     }
@@ -107,8 +159,8 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: Change items per page displayed
   * Author: Nick Dam
   */
-  @Watch('totalPages', { immediate: true, deep: true })
-  public changeSequenceArray (newVal: any) {
+  @Watch('totalPages', {immediate: true, deep: true})
+  public changeSequenceArray(newVal: any) {
     if (newVal - 1 <= 6) {
       this.sequenceToDisplay = []
       for (let i = 1; i <= newVal; i++) {
@@ -123,14 +175,14 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: Change items per page displayed
   * Author: Nick Dam
   */
-  @Watch('perPage', { immediate: true, deep: true })
-  public changeItemsPerPage (e: any) {
+  @Watch('perPage', {immediate: true, deep: true})
+  public changeItemsPerPage(e: any) {
     let config: any = localStorage.getItem('tableColumns')
     if (config) config = JSON.parse(config)
     this.itemsPerPage = e.currentTarget ? parseInt(e.currentTarget.value) : this.$props.perPage
     config[this.$props.table].itemsPerPage = this.itemsPerPage
     localStorage.setItem('tableColumns', JSON.stringify(config))
-    this.changePage(0)
+    //this.changePage(0)
   }
 
   /*
@@ -139,7 +191,7 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: Reseting pagination to page 0
   * Author: Nick Dam
   */
-  public toFirstPage () {
+  public toFirstPage() {
     this.clickedIndex = 1
     if (this.$props.totalPages - 1 <= 6) {
       this.sequenceToDisplay = []
@@ -158,7 +210,7 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: go to previous page
   * Author: Nick Dam
   */
-  public backPage () {
+  public backPage() {
     if (this.clickedIndex > 1) {
       if (this.$props.totalPages - 1 <= 6) {
         this.sequenceToDisplay = []
@@ -166,7 +218,9 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
           this.sequenceToDisplay.push(i)
         }
       } else {
-        if (this.clickedIndex > this.sequenceToDisplay.length - 1) { this.sequenceToDisplay = [this.clickedIndex - 5, this.clickedIndex - 4, this.clickedIndex - 3, this.clickedIndex - 2, this.clickedIndex - 1, this.clickedIndex] }
+        if (this.clickedIndex > this.sequenceToDisplay.length - 1) {
+          this.sequenceToDisplay = [this.clickedIndex - 5, this.clickedIndex - 4, this.clickedIndex - 3, this.clickedIndex - 2, this.clickedIndex - 1, this.clickedIndex]
+        }
       }
       this.sequenceToDisplay.shift()
       this.sequenceToDisplay.unshift(this.sequenceToDisplay[0] - 1)
@@ -181,7 +235,7 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: go to last page
   * Author: Nick Dam
   */
-  public toLastPage () {
+  public toLastPage() {
     this.clickedIndex = this.$props.totalPages
     if (this.$props.totalPages - 1 <= 6) {
       this.sequenceToDisplay = []
@@ -189,7 +243,9 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
         this.sequenceToDisplay.push(i)
       }
     } else {
-      if (this.clickedIndex > this.sequenceToDisplay.length - 1) { this.sequenceToDisplay = [this.clickedIndex - 5, this.clickedIndex - 4, this.clickedIndex - 3, this.clickedIndex - 2, this.clickedIndex - 1, this.clickedIndex] }
+      if (this.clickedIndex > this.sequenceToDisplay.length - 1) {
+        this.sequenceToDisplay = [this.clickedIndex - 5, this.clickedIndex - 4, this.clickedIndex - 3, this.clickedIndex - 2, this.clickedIndex - 1, this.clickedIndex]
+      }
     }
     if (this.clickedIndex <= this.$props.totalPages) this.changePage(this.$props.totalPages - 1)
   }
@@ -200,14 +256,11 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: go to next page
   * Author: Nick Dam
   */
-  public nextPage () {
-    if ((this.clickedIndex) < this.$props.totalPages - 1) {
-      if (this.clickedIndex + this.sequenceToDisplay.length < this.$props.totalPages) {
-        this.sequenceToDisplay.shift()
-        this.sequenceToDisplay.push(this.sequenceToDisplay[this.sequenceToDisplay.length - 1] + 1)
-      }
+  public nextPage() {
+    debugger
+    if ((this.clickedIndex) < this.$props.totalPages) {
+      if (this.clickedIndex < this.$props.totalPages) this.changePage(this.clickedIndex)
       this.clickedIndex += 1
-      if (this.clickedIndex < this.$props.totalPages - 1) this.changePage(this.currentPage + 1)
     }
   }
 
@@ -217,7 +270,7 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * description: go to given page
   * Author: Nick Dam
   */
-  public changePage (page: any, clickedIndex?: number) {
+  public changePage(page: any, clickedIndex?: number) {
     const pagination = {
       page: clickedIndex ? this.currentPage + clickedIndex : this.currentPage + 1 <= this.$props.totalPages ? page : clickedIndex ? this.$props.totalPages - clickedIndex : this.$props.totalPages - 1,
       size: this.itemsPerPage,

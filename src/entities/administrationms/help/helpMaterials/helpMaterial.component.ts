@@ -15,13 +15,16 @@ export default class HelpMaterialComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
-
+  public active:boolean
   public helpMaterialService: any
   constructor () {
     super()
+    this.active = false
     this.helpMaterialService = HelpMaterialService.getInstance()
   }
-
+  public mounted(){
+    this.active = true
+  }
   public editHelp (help: any) {
     this.$router.push({ name: 'EditHelpMaterial', params: { id: help.id } })
   }

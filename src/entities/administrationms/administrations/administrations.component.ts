@@ -17,11 +17,15 @@ export default class AdministrationsComponent extends mixins(Vue, CommonHelpers)
   }
 
   public administrationService: any
+  public active: boolean
   constructor () {
     super()
+    this.active = false
     this.administrationService = AdministrationService.getInstance()
   }
-
+  public mounted(){
+    this.active = true
+  }
   public searchAdministration (q: any) {}
   public editAdministration (tax: any) {
     this.$router.push({ name: 'EditAdministration', params: { id: tax.id } })

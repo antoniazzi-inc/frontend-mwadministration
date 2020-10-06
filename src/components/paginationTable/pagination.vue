@@ -39,14 +39,36 @@
             </div>
           </div>
           <ul data-v-c588cb8e="" class="pagination">
-            <li class="page-item" @click.prevent="toFirstPage"><a class="page-link">&lt;&lt;</a></li>
-            <li class="page-item" @click.prevent="backPage"><a class="page-link">&lt;</a></li>
+            <li class="page-item" @click.prevent.stop="toFirstPage()"><a class="page-link">&lt;&lt;</a></li>
+            <li class="page-item" @click.prevent.stop="backPage()"><a class="page-link">&lt;</a></li>
             <li :class="{'page-item': true, 'active': true}">
               <a class="page-link">{{currentPage + 1}}</a>
             </li>
-            <li class="page-item" @click.prevent="nextPage"><a class="page-link">&gt;</a></li>
-            <li class="page-item" @click.prevent="toLastPage"><a class="page-link">&gt;&gt;</a></li>
+            <li class="page-item" @click.prevent.stop="nextPage()"><a class="page-link">&gt;</a></li>
+            <li class="page-item" @click.prevent.stop="toLastPage()"><a class="page-link">&gt;&gt;</a></li>
           </ul>
+          <div class="dropdown ml-2" v-if="actions.length && $props.location === 'top'">
+            <button
+              class="btn btn-primary dropdown-toggle"
+              type="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >{{$t('labels.actions')}}</button>
+
+            <div
+              class="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownMenuButton"
+            >
+              <a
+                v-for="(item, index) in actions"
+                :key="index"
+                @click.prevent.stop="item.callback()"
+                class="dropdown-item"
+                href="#"
+              >{{$t(item.label)}}</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

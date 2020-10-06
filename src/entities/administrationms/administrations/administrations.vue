@@ -11,7 +11,7 @@
     <simple-search @onSearch="searchAdministration"></simple-search>
     <PaginationTableComponent
       :ref="'paginationTable'"
-      :active="true"
+      :active="active"
       :noDataLabel="'labels.noData'"
       :table="'administration'"
       @onEdit="editAdministration"

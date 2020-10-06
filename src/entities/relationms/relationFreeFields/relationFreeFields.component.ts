@@ -17,9 +17,14 @@ import freeFieldService from '@/shared/services/freeFieldService'
 })
 export default class RelationFreeFieldsComponent extends mixins(CommonHelpers, Vue) {
   public relationFreeFieldService: any
+  public active:boolean
   constructor () {
     super()
+    this.active = false
     this.relationFreeFieldService = freeFieldService.getInstance()
+  }
+  public mounted(){
+    this.active = true
   }
 
   public searchFreeField (query: any) {

@@ -10,7 +10,7 @@
     <simple-search @onSearch="searchHelpTag"></simple-search>
     <PaginationTableComponent
       :ref="'paginationTable'"
-      :active="true"
+      :active="active"
       :noDataLabel="'labels.noData'"
       :table="'helpTag'"
       @onEdit="editHelpTag"

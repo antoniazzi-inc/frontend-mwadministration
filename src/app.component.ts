@@ -97,7 +97,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     }
 
     populateLookups () {
-      const pagination = {
+      const pagination:any = {
         page: 0,
         size: 100000,
         sort: 'id,asc'
@@ -191,7 +191,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.counter++
         this.$store.commit('invoiceTemplates', resp.data.content)
       })
-      this.relationGroupService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+      this.relationGroupService.getAll({...pagination, sort: ['label,asc']}, undefined).then((resp: AxiosResponse) => {
         this.counter++
         this.$store.commit('groups', resp.data.content)
       })

@@ -15,13 +15,16 @@ export default class RegionComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
-
+  public active:boolean
   public regionService: any
   constructor () {
     super()
+    this.active = false
     this.regionService = RegionService.getInstance()
   }
-
+public mounted(){
+    this.active = true
+}
   public searchRegion (q: any) {}
   public editRegion (tax: any) {
     this.$router.push({ name: 'EditRegion', params: { id: tax.id } })

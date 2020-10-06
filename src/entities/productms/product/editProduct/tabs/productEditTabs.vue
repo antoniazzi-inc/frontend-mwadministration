@@ -81,11 +81,11 @@
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'payBtn'}" id="payBtn" role="tabpanel"
              aria-labelledby="payBtn-tab">
-          <pay-btn-tab-component :product="product" @update="updateProduct"/>
+          <pay-btn-tab-component :product="product"  @update="updateProduct"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'followUp'}" id="followUp" role="tabpanel"
              aria-labelledby="followUp-tab">
-          <follow-up-tab-component :product="product" @update="updateProduct"/>
+          <follow-up-tab-component :product="product" @update="updateProduct" :clicked="currentTab === 'followUp'"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'affiliates'}" id="affiliates" role="tabpanel"
              aria-labelledby="affiliates-tab">

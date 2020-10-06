@@ -15,14 +15,16 @@ export default class HelpCategoryComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
-
+  public active:boolean
   public helpCategoryService = HelpCategoryService.getInstance()
   constructor () {
     super()
+    this.active = false
   }
 
   public mounted () {
     this.retrieveData()
+    this.active = true
   }
 
   public retrieveData () {

@@ -1,14 +1,10 @@
-import { Component, Vue, Watch } from 'vue-property-decorator'
-import { mixins } from 'vue-class-component'
+import {Component, Vue, Watch} from 'vue-property-decorator'
+import {mixins} from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import * as Tables from '@/shared/tabelsDefinitions'
 import Chrome from 'vue-color/src/components/Chrome'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationComponent from '@/components/paginationTable/pagination.vue'
-import { CustomField, CustomFieldType } from '@/shared/models/relationms/custom-field.model'
-import { Language } from '@/shared/models/language.model'
-import moment from 'moment'
-import { CustomFieldOption } from '@/shared/models/relationms/custom-field-option.model'
 
 @Component({
   components: {
@@ -33,26 +29,28 @@ import { CustomFieldOption } from '@/shared/models/relationms/custom-field-optio
   }
 })
 export default class PaginationTableComponent extends mixins(Vue, CommonHelpers) {
-  protected props ={
-    table: String,
-    active: Boolean
-  }
   $refs!: {
     deleteModal: HTMLElement;
   }
-
   public totalItems: number;
   public nextPage: number;
   public itemsPerPage: any;
   public currentPage: number;
   public totalPages: number;
+  public selectAll: boolean;
   public tables: any;
   public tableFields: any;
-  public itemToDelete: object|any;
+  public itemToDelete: object | any;
   public allData: any[];
+  public selectedRows: any[];
   public data: any[];
   public isLoading: boolean;
-  constructor () {
+  protected props = {
+    table: String,
+    active: Boolean
+  }
+
+  constructor() {
     super()
     this.totalItems = 1
     this.itemsPerPage = 10
@@ -61,15 +59,65 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
     this.nextPage = -1
     this.data = []
     this.allData = []
+    this.selectedRows = []
     this.tables = Tables
     this.itemToDelete = null
     this.isLoading = true
+    this.selectAll = false
     this.tableFields = {}
   }
 
-  @Watch('active', { immediate: true, deep: true })
-  public retrieveData (newVal: string|boolean, pagination: any, query?: string) {
-    if (this.$props.active) {
+  /*
+    * Name: selectAllVisible
+    * arg: selectAll -> checkbox event
+    * description: select all rows in order to take action over
+    * Author: Nick Dam
+    */
+  public selectAllVisible(e: any) {
+    this.selectAll = e.currentTarget.checked
+    if (e.currentTarget.checked) {
+      this.selectedRows = this.allData.map((row: any, ind: number) => {
+        return {id: row.id, index: ind}
+      })
+    } else {
+      this.selectedRows = []
+    }
+    console.log(this.selectedRows)
+  }
+
+  public checkSelectAllStatus() {
+    if (this.allData.length === this.selectedRows.length) {
+      this.selectAll = true
+    } else {
+      this.selectAll = false
+    }
+  }
+
+  public toggleSelectRow(rowItemId: any, rowIndex: any) {
+    let ind = this.selectedRows.findIndex((r: any) => r.id === rowItemId)
+    if (ind === -1) {
+      this.selectedRows.push({id: rowItemId, index: rowIndex})
+    } else {
+      this.selectedRows.splice(ind, 1)
+    }
+    this.checkSelectAllStatus()
+  }
+
+  public selectRow(e: any, rowItemId: any, rowIndex: any) {
+    let ind = this.selectedRows.findIndex((r: any) => r.id === rowItemId)
+    if (e.currentTarget.checked) {
+      this.selectedRows.push({id: rowItemId, index: rowIndex})
+    } else {
+      if (ind > -1) {
+        this.selectedRows.splice(ind, 1)
+      }
+    }
+    this.checkSelectAllStatus()
+  }
+
+  @Watch('active', {immediate: false, deep: true})
+  public retrieveData(newVal: string | boolean, pagination: any, query?: string) {
+    if (this.$props.active || this.$props.active === null) {
       if (!pagination) {
         pagination = {
           page: 0,
@@ -88,18 +136,21 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
         this.isLoading = false
         this.data = resp.data.content
         this.itemsPerPage = resp.data.pageable.pageSize
+        if(this.selectAll) {
+          this.selectAllVisible({currentTarget: {checked: true}})
+        }
       }).catch(() => {
         this.isLoading = false
       })
-      }
+    }
   }
 
-  public created () {
+  public created() {
     this.tableFields = this.getTableVisibilityFields(this.$props.table)
     this.itemsPerPage = (this.tableFields) ? this.tableFields.itemsPerPage : 10
   }
 
-  public itemAction (action: string, item: any) {
+  public itemAction(action: string, item: any) {
     switch (action) {
       case 'onEdit':
         this.$emit('onEdit', item)
@@ -121,25 +172,29 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
     }
   }
 
-  public async rerenderPage () {
+  public async rerenderPage() {
     this.tableFields = await this.getTableVisibilityFields(this.$props.table)
     this.$forceUpdate()
   }
 
-  public onChangePage (pagination: any) {
+  public onChangePage(pagination: any) {
     this.retrieveData('api/administrationms/api/categories', pagination)
   }
 
-  public prepareRemove (item: any) {
+  public updateTableAction(item: any) {
+    this.$emit('updateTableAction', item)
+  }
+
+  public prepareRemove(item: any) {
     this.itemToDelete = item
   }
 
-  public closeDeleteModal () {
+  public closeDeleteModal() {
     // @ts-ignore
     $(this.$refs.deleteModal).modal('hide')
   }
 
-  public checkVisibility (col: any) {
+  public checkVisibility(col: any) {
     const tableFields = this.getTableVisibilityFields(this.$props.table)
     return tableFields[col.field]
   }

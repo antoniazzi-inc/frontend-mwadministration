@@ -151,9 +151,13 @@ export default class CommonHelpers extends Vue {
         finalQuery += ' ('
       }
       query.children.forEach((children: any) => {
+        try {
         children.value = children.value.replace(/\*/g, '')
         children.value = children.value.replace(/%/g, '')
-        const valueToSearch = children.exactSearch || children.inBetweenOperator === '=in=' || children.inBetweenOperator === '=out=' || children.inBetweenOperator === '=null=' || children.inBetweenOperator === '=empty=' ? `"${children.value}"` : '"*' + children.value + '*"'
+        }catch (e) {
+
+        }
+        const valueToSearch = children.exactSearch || children.inBetweenOperator === '=in=' || children.inBetweenOperator === '=out=' || children.inBetweenOperator === '=null=' || children.inBetweenOperator === '=empty=' ? `${children.value}` : '"*' + children.value + '*"'
         finalQuery += children.key + children.inBetweenOperator + (children.inBetweenOperator === '=in=' ? ('(' + valueToSearch + ')') : valueToSearch) + (index < query.children.length - 1 ? (' ' + children.afterOperator + ' ') : '')
       })
       if (index === queryArray.length - 1) {
@@ -814,5 +818,61 @@ export default class CommonHelpers extends Vue {
       }
     }
     return result
+  }
+
+
+  /*
+   * Name: updateSimpleSearchQuery
+   * arg: entity -> (relation, order, product, promotion...), queryArray -> actual simpleSearch values
+   * description: Update SimpleSearch query and save to localStorage
+   * Author: Nick Dam
+   */
+  public updateSimpleSearchQuery(entity: any, queryArray:any[]){
+    let queryLocalStorage = localStorage.getItem('simpleSearchQueries')
+    if(queryLocalStorage) {
+      let simpleSearchQuery = JSON.parse(queryLocalStorage)
+      simpleSearchQuery[entity] = queryArray
+      localStorage.setItem('simpleSearchQueries', JSON.stringify(simpleSearchQuery))
+    } else {
+      let simpleSearchQuery:any = {}
+      simpleSearchQuery[entity] = queryArray
+      localStorage.setItem('simpleSearchQueries', JSON.stringify(simpleSearchQuery))
+    }
+  }
+
+  /*
+  * Name: reverseSimpleSearchQuery
+  * arg: entity -> (relation, order, product, promotion...)
+  * description: Read from localStorage and return the values in order to populate the search
+  * Author: Nick Dam
+  */
+  public reverseSimpleSearchQuery(entity: any){
+    let queryLocalStorage = localStorage.getItem('simpleSearchQueries')
+    if(queryLocalStorage) {
+      let simpleSearchQuery = JSON.parse(queryLocalStorage)
+      if(simpleSearchQuery[entity]){
+        return simpleSearchQuery[entity]
+      }
+      return []
+    } else {
+      return []
+    }
+  }
+
+  /*
+  * Name: removeSimpleSearchQuery
+  * arg: entity -> (relation, order, product, promotion...)
+  * description: Remove simpleSearch query from localStorage (when user clicks on clear button on simple search)
+  * Author: Nick Dam
+  */
+  public removeSimpleSearchQuery(entity: any){
+    let queryLocalStorage = localStorage.getItem('simpleSearchQueries')
+    if(queryLocalStorage) {
+      let simpleSearchQuery = JSON.parse(queryLocalStorage)
+      if(simpleSearchQuery[entity]){
+        simpleSearchQuery[entity] = undefined
+        localStorage.setItem('simpleSearchQueries', JSON.stringify(simpleSearchQuery))
+      }
+    }
   }
 }

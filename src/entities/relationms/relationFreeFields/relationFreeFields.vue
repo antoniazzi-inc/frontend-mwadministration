@@ -20,7 +20,7 @@
 
     <PaginationTableComponent
       :ref="'paginationTable'"
-      :active="true"
+      :active="active"
       :table="'customField'"
       :noDataLabel="'labels.noData'"
       @onEdit="editFreeField"

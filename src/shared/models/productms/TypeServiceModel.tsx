@@ -19,5 +19,6 @@ constructor(
     public administrationId?: number,
     public priceType?: string,
   ){
+  this.priceType = priceType ? priceType : 'fixed'
   }
 };

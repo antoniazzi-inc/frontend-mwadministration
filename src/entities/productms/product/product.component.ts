@@ -65,7 +65,7 @@ export default class ProductComponent extends mixins(CommonHelpers, Vue) {
     this.selectedGroups = []
     this.selectedCategories = null
     this.selectedPromotion = null
-    this.active = true
+    this.active = false
     this.showQueryPopupForSimpleQueries = false
     this.showSearchQueries = false
     this.productService = ProductService.getInstance()
@@ -88,7 +88,7 @@ export default class ProductComponent extends mixins(CommonHelpers, Vue) {
       label: this.$t('labels.voucher'),
       value: productType.VOUCHER
     }]
-
+    this.active = true
   }
 
   public simpleSearch () {

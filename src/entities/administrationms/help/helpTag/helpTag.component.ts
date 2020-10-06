@@ -15,13 +15,16 @@ export default class HelpTagComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
-
+  public active:boolean
   public helpTagService: any
   constructor () {
     super()
+    this.active=false
     this.helpTagService = HelpTagService.getInstance()
   }
-
+  public mounted(){
+    this.active = true
+  }
   public searchHelpTag (query: string) {
     const fields: string[] = ['helpTagLanguages.name']
     const q: string = this.makeSimpleSearchQuery(fields, query)

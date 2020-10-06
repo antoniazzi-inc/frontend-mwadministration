@@ -13,7 +13,7 @@
       <div class="col-md-10">
         <PaginationTableComponent
           :ref="'paginationTable'"
-          :active="true"
+          :active="active"
           :table="'helpMaterials'"
           :noDataLabel="'labels.noData'"
           @onEdit="editHelp"

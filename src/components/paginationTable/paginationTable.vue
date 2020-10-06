@@ -4,7 +4,7 @@
     <div class="row m-3 mt-4 pagination-v">
       <div class="col-md-12" v-if="!isLoading">
         <pagination @update="rerenderPage" :totalPages="totalPages" :table="$props.table" :page="currentPage"
-                    @changePage="onChangePage" :total="totalItems"  :key="'pagination'" :perPage="itemsPerPage"
+                    @changePage="onChangePage" :total="totalItems"  :key="'pagination-top'" :perPage="itemsPerPage"
                     location="top" :tableFields="tableFields"></pagination>
       </div>
     </div>
@@ -20,6 +20,9 @@
         <table v-else class="table table-striped" style="margin-top:1em;">
           <thead>
           <tr>
+            <th v-if="$props.table === 'relation'">
+              <input type="checkbox" class="form-control" @input="selectAllVisible" v-model="selectAll"/>
+            </th>
             <template v-for="(item, index) in tables[$props.table].cols">
               <th v-if="hasAuthority(item.authorities)" :key="index" v-show="checkVisibility(item)">
                 <span>{{$t(item.name)}}</span>
@@ -31,7 +34,10 @@
           </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, ind) in allData" :key="ind">
+            <tr v-for="(item, ind) in allData" :key="ind" @click="toggleSelectRow(item.id, ind)" :class="{selected: selectedRows.findIndex(e=> e.id === item.id) > -1}">
+              <td v-if="$props.table === 'relation'">
+                <input type="checkbox" class="form-control" :checked="selectedRows.findIndex(e=> e.id === item.id) > -1" @input="selectRow($event, item.id, ind)"/>
+              </td>
               <template v-for="(col, index) in tables[$props.table].cols">
                 <td :key="index" v-if="hasAuthority(col.authorities)" v-show="checkVisibility(col)">
                   <span class="colorField" v-if="col.type === 'color'" :style="{'width':'50px', 'border-radius': '50%', 'background': item[col.field]}">&nbsp;</span>
@@ -85,11 +91,11 @@
     <div class="row m-3 mt-4 pagination-v">
       <div class="col-md-12" v-if="!isLoading">
         <pagination @update="rerenderPage" :totalPages="totalPages" :table="$props.table" :page="currentPage"
-                    @changePage="onChangePage" :total="totalItems" :key="'pagination'" :perPage="itemsPerPage"
+                    @changePage="onChangePage" :total="totalItems" :key="'pagination-bottom'" :perPage="itemsPerPage"
                     location="bottom" :tableFields="tableFields"></pagination>
       </div>
     </div>
-    <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteModal_'+$props.table" tabindex="-1" role="dialog" ref="deleteModal">
+    <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteModal_' + $props.table" tabindex="-1" role="dialog" ref="deleteModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -146,5 +152,8 @@
   .table td {
     font-size: 1.1em;
     text-align: left;
+  }
+  .selected{
+    background-color: rgba(109, 221, 0, 0.1) !important;
   }
 </style>

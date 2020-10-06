@@ -17,7 +17,7 @@
 
     <PaginationTableComponent
       :ref="'paginationTable'"
-      :active="true"
+      :active="active"
       :table="'group'"
       :noDataLabel="'labels.noData'"
       @onEdit="editGroup"

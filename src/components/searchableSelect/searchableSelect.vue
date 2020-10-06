@@ -1,7 +1,6 @@
 <template>
   <div class="input-group">
     <div class="pull-left my-multiselect">
-
       <multiselect v-if="config.hasGroups"
                    v-model="val"
                    :options="options"
@@ -23,7 +22,6 @@
           <span v-if="props.option.$isLabel">{{ props.option.$groupLabel }}</span>
           <span v-else>{{ props.option.label }}</span>
         </template>
-
       </multiselect>
 
       <multiselect v-else

@@ -275,7 +275,7 @@ export const product = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        return item.price + Store.state.currency
+        return `${Store.state.currency} ${item.price}`
       }
     }, {
       name: 'labels.name',

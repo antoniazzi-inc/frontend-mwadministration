@@ -9,11 +9,6 @@ import IntegrationsComponent from '@/entities/home/homeSettings/integrations/int
 import InvoiceTemplate from "@/entities/home/homeSettings/invoiceTemplate/invoiceTemplate.vue";
 
 @Component({
-  props: {
-    active: {
-      type: Boolean
-    }
-  },
   components: {
     CategoriesComponent,
     TagsComponent,
@@ -28,6 +23,9 @@ export default class HomeSettingsComponent extends mixins(Vue) {
   public currentTab: string;
   constructor () {
     super()
+    this.currentTab = ''
+  }
+  public mounted(){
     this.currentTab = 'cat'
   }
 }

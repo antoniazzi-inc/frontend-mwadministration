@@ -11,7 +11,8 @@ import SearchableSelectComponent from '@/components/searchableSelect/searchableS
 
 @Component({
   props: {
-    product: Object
+    product: Object,
+    clicked: Boolean
   },
   components: {
     SearchableSelectComponent,
@@ -20,7 +21,7 @@ import SearchableSelectComponent from '@/components/searchableSelect/searchableS
 })
 export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     public followupActionService: any = followupactionsService.getInstance()
-    public followupAction: any = new FollowupAction(undefined, undefined, 0, undefined, undefined, undefined, undefined);
+    public followupAction: any = new FollowupAction(undefined, undefined, undefined, undefined, undefined, undefined, undefined)
     public productCopy: IProduct = new Product();
     public allListManagers: any = [];
     public selectedTags: any = [];
@@ -39,13 +40,18 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
       'labels.chooseOption', '', false,
       false, true, true, false)
 
-    @Watch('product', { immediate: true, deep: true })
-    public updateProd (newVal: any) {
-      this.productCopy = newVal
-      this.followupAction = newVal.followupAction && newVal.followupAction.id ? newVal.followupAction : new FollowupAction(undefined, undefined, undefined, undefined, undefined, undefined, undefined)
-      this.fillInObject()
-    }
-
+  @Watch('clicked', {immediate: true, deep: true})
+  public updateProduct(newVal:any){
+      if(newVal) {
+        this.productCopy = this.$props.product
+        if(this.$props.product && this.$props.product.followupAction && this.$props.product.followupAction.id){
+          this.followupAction = this.$props.product.followupAction
+        } else {
+          this.followupAction = new FollowupAction(undefined, undefined, undefined, undefined, undefined, undefined, undefined)
+        }
+        this.fillInObject()
+      }
+  }
     public mounted () {
       this.retrieve()
     }
@@ -93,7 +99,7 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
             })
           }
           if (self.followupAction && self.followupAction.removeCustomerFromGroupIdsJson) {
-            $.each(self.followupAction.removeCustomerFromGroupIdsJson, function (key, val) {
+            $.each(self.followupAction.removeBeneficiaryFromGroupIdsJson, function (key, val) {
               if (v.id === val) {
                 self.beneficiaryRemoveFromGroup.push(v)
               }
@@ -149,15 +155,7 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public removeListManagerid (listMgr: any) {
-      let index = null
-      $.each(this.selectedListManagers, function (k, v) {
-        if (v === listMgr.id) {
-          index = k
-        }
-      })
-      if (index !== null) {
-        this.selectedListManagers.splice(index, 1)
-      }
+      this.selectedListManagers = listMgr
     }
 
     public addListManagerId (listMgr: any) {
@@ -165,15 +163,7 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public removeGroupsid (group: any) {
-      let index = null
-      $.each(this.customerAddToGroup, function (k, v) {
-        if (v === group.id) {
-          index = k
-        }
-      })
-      if (index !== null) {
-        this.customerAddToGroup.splice(index, 1)
-      }
+      this.customerAddToGroup = group
     }
 
     public addGroupsId (group: any) {
@@ -181,15 +171,7 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public removeBeneficiaryGroupid (group: any) {
-      let index = null
-      $.each(this.beneficiaryAddToGroup, function (k, v) {
-        if (v === group.id) {
-          index = k
-        }
-      })
-      if (index !== null) {
-        this.beneficiaryAddToGroup.splice(index, 1)
-      }
+      this.beneficiaryAddToGroup = group
     }
 
     public addBeneficiaryGroupId (group: any) {
@@ -197,15 +179,7 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public removeBeneficiaryFromGroup (group: any) {
-      let index = null
-      $.each(this.beneficiaryAddToGroup, function (k, v) {
-        if (v === group.id) {
-          index = k
-        }
-      })
-      if (index !== null) {
-        this.beneficiaryAddToGroup.splice(index, 1)
-      }
+      this.beneficiaryRemoveFromGroup = group
     }
 
     public addBeneficiaryGroupsFromGroup (group: any) {
@@ -213,16 +187,7 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public removeCustomerFromGroup (group: any) {
-      let index = null
-      $.each(this.customerRemoveFromGroup, function (k, v) {
-        if (v === group.id) {
-          index = k
-        }
-      })
-
-      if (index !== null) {
-        this.customerRemoveFromGroup.splice(index, 1)
-      }
+      this.customerRemoveFromGroup = group
     }
 
     public addCustomerToGroup (group: any) {
@@ -230,15 +195,7 @@ export default class FollowUpTabComponent extends mixins(CommonHelpers, Vue) {
     }
 
     public removeTags (tag: any) {
-      let index = null
-      $.each(this.selectedTags, function (k, v) {
-        if (v === tag.id) {
-          index = k
-        }
-      })
-      if (index !== null) {
-        this.selectedTags.splice(index, 1)
-      }
+      this.selectedTags = tag
     }
 
     public addTags (tag: any) {

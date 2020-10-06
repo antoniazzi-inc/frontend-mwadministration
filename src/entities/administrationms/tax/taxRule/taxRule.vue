@@ -11,7 +11,7 @@
     <simple-search @onSearch="searchTaxRule"></simple-search>
     <PaginationTableComponent
       :ref="'paginationTable'"
-      :active="true"
+      :active="active"
       :table="'taxRule'"
       :noDataLabel="'labels.noData'"
       @onEdit="editTaxRule"

@@ -76,7 +76,8 @@
       <div class="example-foorer">
         <div class="btn-group">
           <file-upload
-            class="btn btn-primary dropdown-toggle"
+            class="btn btn-primary"
+            :class="{'dropdown-toggle': directory ? true : false}"
             :post-action="postAction"
             :put-action="putAction"
             :extensions="extensions"
@@ -97,8 +98,8 @@
             <i class="fa fa-plus"></i>
             Select
           </file-upload>
-          <div class="dropdown-menu">
-            <label class="dropdown-item" :for="name">{{$t('buttons.add')}}</label>
+          <div :class="{'dropdown-menu': directory ? true : false}">
+            <label class="dropdown-item" v-if="directory" :for="name">{{$t('buttons.add')}}</label>
             <a class="dropdown-item" href="#" v-if="directory" @click="onAddFolader">{{$t('labels.addFolder')}}</a>
             <a class="dropdown-item" href="#" v-if="directory" @click.prevent="addData.show = true">{{$t('labels.addData')}}</a>
           </div>

@@ -43,7 +43,7 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
 
   constructor() {
     super()
-    this.active = true
+    this.active = false
     this.availableFrom = null
     this.availableTo = null
     this.selectedPromoType = null
@@ -121,6 +121,7 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
       name: 'freeItems',
       label: this.$t('labels.freeItems')
     }]
+    this.active = true
   }
 
   public editPromotion(promo: any) {

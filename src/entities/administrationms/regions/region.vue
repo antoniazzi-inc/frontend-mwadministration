@@ -11,7 +11,7 @@
     <simple-search @onSearch="searchRegion"></simple-search>
     <PaginationTableComponent
       :ref="'paginationTable'"
-      :active="true"
+      :active="active"
       :noDataLabel="'labels.noData'"
       :table="'regions'"
       @onEdit="editRegion"

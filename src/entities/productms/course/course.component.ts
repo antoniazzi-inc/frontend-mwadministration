@@ -36,7 +36,7 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
   public dateConfigStart: any
   constructor () {
     super()
-    this.active = true
+    this.active = false
     this.nameSearch = ''
     this.courseService = coursesService.getInstance()
     this.eventStart =null
@@ -61,6 +61,7 @@ export default class CourseComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public mounted () {
+    this.active = true
   }
 
   public search () {

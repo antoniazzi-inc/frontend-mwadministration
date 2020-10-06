@@ -14,7 +14,7 @@
          :subtitle="''"
          shape="circle"
          @on-change="changeTab"
-         :start-index="step"
+         :start-index="startIndex"
          color="#0a7cf8"
          error-color="#ff4949">
       <tab-content @click="step = 0" :title="product.productType.toLowerCase() + ' ' + $t('labels.product')" icon="fas fa-user-tie">
@@ -71,7 +71,7 @@
           </div>
         </div>
       </tab-content>
-      <tab-content  @click="step = 1" :title="$t('labels.productDetails')" icon="fas fa-tags">
+      <tab-content  @click="step = 1" :title="$t('labels.productDetails')" icon="fas fa-tags" :before-change="validateStep">
         <form>
 
           <div class="form-group">
@@ -130,13 +130,13 @@
           </div>
 
           <div class="form-row align-items-left">
-            <div class="col-auto">
+            <div class="form-group col-auto">
               <label>{{$t('labels.validFrom')}}</label>
               <div class="dateHolder date-input">
                 <flat-pickr :config="validFromConfig" class="single-daterange form-control" id="validFromDate" v-model="availableFrom"/>
               </div>
             </div>
-            <div class="col-auto">
+            <div class="form-group col-auto">
               <label>{{$t('labels.validTo')}}</label>
               <div class="dateHolder date-input">
                 <flat-pickr :config="validToConfig" v-model="availableTo" class="single-daterange form-control" id="validToDate"/>
@@ -193,7 +193,7 @@
             </div>
             <div class="form-group col-auto" v-if="isSubscription && product.productSubscription">
               <label class="form-control-label">{{$t('labels.subscriptionMaxTerms')}}</label>
-              <input :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required|min_value:0'"
+              <input :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required|min_value:1'"
                      type="number" name="Subscription Max Terms" style="max-width:100px" v-model="product.productSubscription.maxTimes"/>
               <span class="small text-danger">{{errors.first('Subscription Max Terms')}}</span>
             </div>
@@ -206,7 +206,7 @@
         <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove" v-if="step === 2"/>
       </tab-content>
 
-      <tab-content  @click="step = 3" :title="$t('labels.finalStep')" icon="fas fa-receipt">
+      <tab-content  @click="step = 3" :title="$t('labels.finalStep')" icon="fas fa-receipt" :before-change="validateStep">
         <h5 class="text-danger" v-if="product.productType === 'DIGITAL'">{{$t('labels.pleaseUploadAfileOrProvideALink')}}</h5>
         <div class="row m-5" v-if="isSaving">
           <div class="col-md-12 m-5 p-5 text-center">

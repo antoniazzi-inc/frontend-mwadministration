@@ -22,7 +22,7 @@ export default class RelationGroupsComponent extends mixins(CommonHelpers, Vue) 
     paginationTable: PaginationTableComponent;
     groupModal: HTMLElement;
   }
-
+  public active:boolean
   public searchableConfigCat: ISearchableSelectConfig
   public selectedCategory: ICategoryEntity | null
   public relationGroupService: any
@@ -32,6 +32,7 @@ export default class RelationGroupsComponent extends mixins(CommonHelpers, Vue) 
   constructor () {
     super()
     this.selectedCategory = null
+    this.active = false
     this.searchableConfigCat = new SearchableSelectConfig('code',
       'labels.category', '', false,
       false, true, false, false)
@@ -41,16 +42,8 @@ export default class RelationGroupsComponent extends mixins(CommonHelpers, Vue) 
   }
 
   public mounted () {
-    const pagination = {
-      page: 0,
-      size: 100000,
-      sort: ['id,desc']
-    }
-    this.relationGroupService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
-      if (resp) {
-        this.allGroups = resp.data.content
-      }
-    })
+    this.allGroups = this.$store.state.lookups.groups
+    this.active = true
   }
 
   public doFocus () {

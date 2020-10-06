@@ -94,7 +94,7 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
     this.selectedAffiliates = []
     this.selectedProducts = []
     this.selectedPromotion = []
-    this.active = true
+    this.active = false
     this.showQueryPopupForSimpleQueries = false
     this.showSearchQueries = false
     this.orderService = CartOrdersService.getInstance()
@@ -117,7 +117,7 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
       label: this.$t('labels.voucher'),
       value: productType.VOUCHER
     }]
-
+    this.active = true
   }
 
   public simpleSearch() {

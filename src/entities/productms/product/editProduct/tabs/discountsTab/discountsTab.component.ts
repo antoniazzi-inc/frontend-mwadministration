@@ -31,7 +31,7 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
   public productCopy: IProduct = new Product();
   public productCopyBackup: any = null;
 
-  @Watch('product', { immediate: true, deep: true })
+  @Watch('product', { immediate: true, deep: false })
   public updateProd (newVal: any) {
     this.productCopy = newVal
     if (this.productCopyBackup === null) {
@@ -73,15 +73,7 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
     this.$router.push('/products')
   }
   public removeDiscount (discount: any) {
-    let index = null
-    $.each(this.selectedDiscounts, function (k: any, v: any) {
-      if (v.id === discount.id) {
-        index = k
-      }
-    })
-    if (index !== null) {
-      this.selectedDiscounts.splice(index, 1)
-    }
+    this.selectedDiscounts = discount
   }
 
   public preselectPromotion () {

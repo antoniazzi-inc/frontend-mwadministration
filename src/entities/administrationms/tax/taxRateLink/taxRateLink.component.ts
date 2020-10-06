@@ -15,13 +15,17 @@ export default class TaxRateLinkComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
-
+  public active:boolean
   public taxRateLinkService: any
   constructor () {
     super()
+    this.active =false
     this.taxRateLinkService = TaxRateLinkService.getInstance()
   }
 
+  public mounted () {
+    this.active = true
+  }
   public searchTaxRateLink (q: any) {}
   public editTaxRateLink (taxLink: any) {
     this.$router.push({ name: 'EditTaxRateLink', params: { id: taxLink.id } })

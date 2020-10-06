@@ -21,7 +21,9 @@
     cursor: pointer;
 }
 .date-input:before{
-    content: '';
+    content: "\e972";
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'osfont' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;

@@ -15,13 +15,17 @@ export default class TaxRuleComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
   }
-
+  public active:boolean
   public taxRuleService: any
   constructor () {
     super()
+    this.active = false
     this.taxRuleService = TaxRuleService.getInstance()
   }
 
+  public mounted () {
+    this.active = true
+  }
   public searchTaxRule (q: any) {}
   public editTaxRule (tax: any) {
     this.$router.push({ name: 'EditTaxRule', params: { id: tax.id } })

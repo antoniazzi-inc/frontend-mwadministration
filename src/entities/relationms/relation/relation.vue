@@ -80,7 +80,38 @@
           :noDataLabel="'labels.noRelations'"
           @onEdit="editRelation"
           @onDelete="deleteRelation"
+          @updateTableAction="updateAction"
           :service="relationService"/>
+      </div>
+    </div>
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="actionModal" tabindex="-1" role="dialog" ref="actionModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>{{$t('labels.' + selectedAction)}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="mt-4">
+              <add-to-group-component @updateCurrentAction="updateCurrentAction" v-if="selectedAction==='addToGroup'"/>
+              <remove-from-group-component @updateCurrentAction="updateCurrentAction" v-else-if="selectedAction==='removeFromGroup'"/>
+              <export-to-excel-component @updateCurrentAction="updateCurrentAction" v-else-if="selectedAction==='exportToExcel'"/>
+              <delete-relations-component @updateCurrentAction="updateCurrentAction" v-else-if="selectedAction==='delete'"/>
+              <send-mailing-component @updateCurrentAction="updateCurrentAction" v-else-if="selectedAction==='sendMailing'"/>
+              <start-workflow-component @updateCurrentAction="updateCurrentAction" v-else-if="selectedAction==='startWorkflow'"/>
+              <start-list-manager-component @updateCurrentAction="updateCurrentAction" v-else-if="selectedAction==='startListManager'"/>
+              <bulk-change-component @updateCurrentAction="updateCurrentAction" v-else-if="selectedAction==='bulkChange'"/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!--<button type="button" class="btn btn-primary" @click="removeShipping">
+              {{$t('buttons.confirm')}}
+            </button>-->
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

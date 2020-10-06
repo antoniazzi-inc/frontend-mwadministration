@@ -127,7 +127,12 @@ export default class GroupsSubTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public search () {
+    let self = this
     const search = this.groupSearch
-    this.allGroups = this.$store.state.lookups.groups.filter(function (e: any) { return e.label.indexOf(search) !== -1 })
+    if(search === '') {
+      this.allGroups = this.excludeGroups()
+    } else
+    this.allGroups = this.$store.state.lookups.groups.filter(function (e: any) { return (e.label.indexOf(search) !== -1 && self.relationCopy.relationGroups && self.relationCopy.relationGroups.length === 0) ||
+      (e.label.indexOf(search) !== -1 && self.relationCopy.relationGroups && self.relationCopy.relationGroups.findIndex((g:any) => g.id !== e.id) !== -1)})
   }
 }

@@ -58,6 +58,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   public availableTo: Date | any;
   public isSubscription: boolean;
   public step: number;
+  public startIndex: number;
   public progress: any;
   public validToConfig: any;
   public allTaxRates: ITaxRate[];
@@ -73,6 +74,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     super()
     this.step = 0
     this.progress = 0
+    this.startIndex = 0
     this.selectedType = 'typeDigital'
     this.availableFrom = new Date()
     this.availableTo = null
@@ -314,6 +316,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
           'Subscription Max Terms': this.product.productSubscription.maxTimes,
           tax: this.product.tax
         }).then(valid => {
+          debugger
           if (valid) {
             self.isValidatingStep2 = true
             if (self.product.productLanguages && self.product.productLanguages.length && self.product.productLanguages[0].name) {
@@ -576,6 +579,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     const self = this
     const prod: any = sessionStorage.getItem('tempProduct')
     const step: any = sessionStorage.getItem('tempProductStep')
+    this.startIndex = parseInt(step)
     let product: any = null
     if (prod) {
      product = JSON.parse(prod)
@@ -597,9 +601,6 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
         self.selectedCourse = self.$store.state.lookups.courses[self.$store.state.lookups.courses.length - 1]
         sessionStorage.setItem('tempProduct', '')
         sessionStorage.removeItem('tempProduct')
-    }
-    if (step >= 0) {
-      self.step = parseInt(step) ? parseInt(step) : 0
     }
   }
 
