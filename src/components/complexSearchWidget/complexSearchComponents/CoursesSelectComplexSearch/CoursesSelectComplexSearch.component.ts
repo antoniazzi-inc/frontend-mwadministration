@@ -26,6 +26,8 @@ export default class CoursesSelectComplexSearchComponent extends mixins(CommonHe
   public courseService: any
   public dateConfig: any
   public dateValue: any
+  public searchQuery: any
+  public msName: any
   constructor() {
     super();
     this.courseSingleSelectConfig = new SearchableSelectConfig('label',
@@ -49,6 +51,8 @@ export default class CoursesSelectComplexSearchComponent extends mixins(CommonHe
       dateFormat: 'd-m-Y'
     }
     this.dateValue = null
+    this.searchQuery = 'TODO'
+    this.msName = 'PRODUCTMS'
   }
   @Watch('dateValue', {immediate: true, deep: true})
   public updateSearchValue(newVal:any){

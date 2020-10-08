@@ -14,7 +14,7 @@
                                    @onSelected="addOperator"
                                    @onDelete="removeOperator"/>
     </div>
-    <div class="form-group" v-if="outputElement === 'text'">
+    <div class="form-group" v-if="outputElement === 'text' && !selectedOperator.labelValue.match('empty')">
       <input type="text" class="form-control" v-model="searchValue"/>
     </div>
     <div class="form-group" v-else-if="outputElement === 'date'">

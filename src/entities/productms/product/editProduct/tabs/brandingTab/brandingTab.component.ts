@@ -454,7 +454,6 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public resizeImages() {
     const self = this;
     return new Promise(async resolve => {
-      debugger
       let index:any = 0
       let resizedImgs:any = []
       await $.each(self.allMediaFiles, async function (k, v) {

@@ -257,7 +257,6 @@ export default class PaginationComponent extends mixins(CommonHelpers, Vue) {
   * Author: Nick Dam
   */
   public nextPage() {
-    debugger
     if ((this.clickedIndex) < this.$props.totalPages) {
       if (this.clickedIndex < this.$props.totalPages) this.changePage(this.clickedIndex)
       this.clickedIndex += 1

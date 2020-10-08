@@ -5,6 +5,8 @@ import * as Tables from '@/shared/tabelsDefinitions'
 import Chrome from 'vue-color/src/components/Chrome'
 import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationComponent from '@/components/paginationTable/pagination.vue'
+import {AxiosResponse} from "axios";
+import axios from "axios";
 
 @Component({
   components: {
@@ -179,6 +181,28 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
 
   public onChangePage(pagination: any) {
     this.retrieveData('api/administrationms/api/categories', pagination)
+  }
+  public complexSearch(url:any, query: any) {
+    query = {
+      ...query,
+      page: this.currentPage,
+      size: this.itemsPerPage,
+      sort: ['id,desc']
+    }
+    axios.post(url, query).then((resp:AxiosResponse) => {
+      if(resp && resp.data) {
+        this.totalItems = resp.data.totalElements
+        this.currentPage = resp.data.pageable.pageNumber
+        this.allData = resp.data.content
+        this.totalPages = resp.data.totalPages
+        this.isLoading = false
+        this.data = resp.data.content
+        this.itemsPerPage = resp.data.pageable.pageSize
+        if(this.selectAll) {
+          this.selectAllVisible({currentTarget: {checked: true}})
+        }
+      }
+    })
   }
 
   public updateTableAction(item: any) {

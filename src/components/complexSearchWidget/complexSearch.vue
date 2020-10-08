@@ -13,6 +13,11 @@
         <rule-slot :rules="config.rules" :ruleCtrl="props"/>
       </template>
     </query-builder>
+    <div class="justify-content-center mt-5">
+      <button @click="loadQueries" class="btn btn-outline-primary" v-if="!saving">{{$t('buttons.savedQueries')}}</button>
+      <button @click="dosave" v-if="showsave && !saving" class="btn btn-outline-primary ml-2" v-html="$t('buttons.saveSearch')">Save Search</button>
+      <button @click="doSearch" class="btn btn-primary ml-2" v-if="!saving" v-html="$t('buttons.search')">Search</button>
+    </div>
   </div>
 </template>
 <script src="./complexSearch.component.ts"/>

@@ -34,9 +34,15 @@ import SearchableSelectComplexSearchComponent
 export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
   public query:any
   public secondLvl:number
+  public saving:boolean
+  public newQueryName:string
+  public newQueryDesc:string
   constructor() {
     super();
     this.secondLvl = 0
+    this.saving = false
+    this.newQueryName = ''
+    this.newQueryDesc = ''
     this.query = {
       operatorIdentifier: 'AND',
       children: []
@@ -44,16 +50,10 @@ export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
   }
   @Watch('query', {immediate: true, deep: true})
   public updateQuery(newVal:any){
-    console.log('**********COMPLEX SEARCH QUERY**************')
-    console.log(JSON.stringify(newVal))
-    console.log('**********COMPLEX SEARCH QUERY**************')
-    if(newVal && newVal.children && newVal.children.length) {
-      newVal.children.forEach((child:any)=>{
-        if(child.children && child.children.length){
-          this.secondLvl++
-        }
-      })
-    }
+
+  }
+  get showsave () {
+    return this.query != null && this.query.children && this.query.children.length > 0
   }
   get config() {
     return {
@@ -84,5 +84,23 @@ export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
       default:
         return CommonRules
     }
+  }
+  public loadQueries () {
+    this.$emit('show-queries')
+  }
+
+  public validated () {
+    return true
+  }
+  public dosave () {
+    if (this.validated()) {
+      this.newQueryName = this.$props.queryName
+      if (this.newQueryName === 'current') this.newQueryName = ''
+      this.newQueryDesc = ''
+      this.saving = true
+    }
+  }
+  public doSearch(){
+    this.$emit('search', this.query)
   }
 }

@@ -1,7 +1,7 @@
 import { IRelationEntity } from './relationModel'
 import { Moment } from 'moment'
 import { IBaseEntity } from '@/shared/models/baseModel'
-export interface IRelationProfile extends IBaseEntity{
+export interface  IRelationProfile extends IBaseEntity{
     firstName?: string;
     lastName?: string;
     middleName?: string;

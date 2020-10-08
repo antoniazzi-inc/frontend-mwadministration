@@ -24,6 +24,9 @@ import StartListManagerComponent
   from "@/entities/relationms/relation/relationListActions/startListManagerComponent/startListManager.vue";
 import StartWorkflowComponent
   from "@/entities/relationms/relation/relationListActions/startWorkflowComponent/startWorkflow.vue";
+import {ComplexSearch} from "@/shared/models/complexSearchModel";
+import {ComplexSearchGroup, IComplexSearchGroup} from "@/shared/models/complexSearchGroupModel";
+import {ComplexSearchQuery, IComplexSearchQuery} from "@/shared/models/complexSearchQueryModel";
 
 @Component({
   components: {
@@ -326,8 +329,26 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
 
   public startComplexSearch(query: any) {
     if (!query) return
+    let complexQueryDto = new ComplexSearch(undefined, undefined, 'id,asc', query.operatorIdentifier, [])
+    let groups:IComplexSearchGroup[] = []
+    query.children.forEach((child:any) => {
+      if(child.children) {
+        let group:IComplexSearchGroup = new ComplexSearchGroup()
+        let queries:IComplexSearchQuery[]=[]
+        child.children.forEach((groupChild:any) => {
+          queries.push(new ComplexSearchQuery(groupChild.value.msName, groupChild.value.searchQuery))
+        })
+        group.operator = child.operatorIdentifier
+        group.queries = queries
+        groups.push(group)
+      } else {
+        groups.push(new ComplexSearchGroup(query.operatorIdentifier, [new ComplexSearchQuery(child.value.msName, child.value.searchQuery)]))
+      }
+    })
+    complexQueryDto.groups = groups
+    console.log(complexQueryDto)
     // @ts-ignore
-    this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, query)
+    this.$refs.paginationTable.complexSearch('api/relation-search', undefined, query)
   }
 
   public openSearchQueries(isForSimpleQueries: any) {

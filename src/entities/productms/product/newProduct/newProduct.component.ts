@@ -316,7 +316,6 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
           'Subscription Max Terms': this.product.productSubscription.maxTimes,
           tax: this.product.tax
         }).then(valid => {
-          debugger
           if (valid) {
             self.isValidatingStep2 = true
             if (self.product.productLanguages && self.product.productLanguages.length && self.product.productLanguages[0].name) {

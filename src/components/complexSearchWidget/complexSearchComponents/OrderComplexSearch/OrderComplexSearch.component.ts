@@ -26,6 +26,11 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
   public selectedProductAttribute: any
   public dateConfig: any
   public dateValue: any
+  public searchQuery: any
+  public subSearchQuery: any
+  public dateSearchQuery: any
+  public msName: any
+  public appliedQuery: any
   constructor() {
     super();
     this.initialValue = null
@@ -40,15 +45,23 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
       false, false, false, false, false, true)
     this.productAttributeSingleSelectConfig = new SearchableSelectConfig('label',
       'labels.selectProductAttribute', '', false,
-      false, false, false, false, false, true)
+      false, true, false, false, false, true)
     this.productSingleSelectConfig = new SearchableSelectConfig('label',
       'labels.selectProduct', '', false,
-      false, false, false, false, false, true)
+      false, true, false, false, false, true)
     this.dateConfig = {
       wrap: false,
       altInput: false,
       dateFormat: 'd-m-Y'
     }
+    this.searchQuery = 'orderLines.product.productId=={productId}'
+    this.subSearchQuery = 'orderLines.product.orderProductAttributeValues.attributeValueId=={attributeValueId}'
+    this.dateSearchQuery = 'createdOn'
+    this.appliedQuery = ''
+    this.msName = 'ORDERMS'
+  }
+  public mounted(){
+    this.updateQuery()
   }
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){
@@ -56,15 +69,18 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
   }
   @Watch('dateValue', {immediate: true, deep: true})
   public updateInitialValue(newVal:any){
-    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: newVal})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: newVal, msName: this.msName, searchQuery:this.appliedQuery})
   }
   public addOperator(e:any){
     this.selectedOperator = e
-    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue, msName: this.msName, searchQuery:this.appliedQuery})
   }
   public removeOperator(e:any){
     this.selectedOperator = null
-    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue, msName: this.msName, searchQuery:this.appliedQuery})
   }
   public addProduct(e:any){
     const ind = this.$store.state.lookups.products.findIndex((prod:any) => prod.value.id === e.value.id)
@@ -83,18 +99,47 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
       this.$set(this, 'allProductAttributes', [])
     }
     this.selectedProduct = e
-    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue, msName: this.msName, searchQuery:this.appliedQuery})
   }
   public removeProduct(e:any){
     this.selectedProduct = null
-    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue, msName: this.msName, searchQuery:this.appliedQuery})
   }
   public addProductAttribute(e:any){
     this.selectedProductAttribute = e
-    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue, msName: this.msName, searchQuery:this.appliedQuery})
   }
   public removeProductAttribute(e:any){
     this.selectedProductAttribute = null
-    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: this.dateValue, msName: this.msName, searchQuery:this.appliedQuery})
+  }
+
+  public updateQuery(){
+    let operator = this.selectedOperator ? this.selectedOperator.id : null
+    let productId = this.selectedProduct && this.selectedProduct.value ? this.selectedProduct.value.id : null
+    let productAttrId = this.selectedProductAttribute && this.selectedProductAttribute.value ? this.selectedProductAttribute.value.id : null
+    let query = ''
+    if(productAttrId) {
+      query = this.subSearchQuery.replace('{attributeValueId}', productAttrId)
+    } else {
+      query = this.searchQuery.replace('{productId}', productId)
+    }
+    let value = this.dateValue ? this.dateValue : null
+    if (operator && (this.selectedOperator.labelValue.match('before') || this.selectedOperator.labelValue.match('after')) && query && value) {
+      this.appliedQuery = query + ' AND createdOn' + operator.replace('{k}', value)
+    } else {
+      if(operator) {
+        if(this.selectedOperator.labelValue.match('ordered')){
+          this.appliedQuery = query + ' AND createdOn=empty=false'
+        } else {
+          this.appliedQuery = query + ' AND createdOn' + operator
+        }
+      }else
+      this.appliedQuery = ''
+    }
   }
 }

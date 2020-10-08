@@ -18,6 +18,8 @@ export default class OrderAmountComplexSearchComponent extends mixins(CommonHelp
   public selectedOperator: any
   public operatorsSingleSelectConfig: ISearchableSelectConfig
   public allOperators: any
+  public searchQuery: any
+  public msName: any
   constructor() {
     super();
     this.initialValue = null
@@ -27,6 +29,8 @@ export default class OrderAmountComplexSearchComponent extends mixins(CommonHelp
     this.operatorsSingleSelectConfig = new SearchableSelectConfig('label',
       'labels.selectOperator', '', false,
       false, false, false, false, false, true)
+    this.searchQuery = 'totalAmount'
+    this.msName = 'ORDERMS'
   }
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){
@@ -34,14 +38,21 @@ export default class OrderAmountComplexSearchComponent extends mixins(CommonHelp
   }
   @Watch('initialValue', {immediate: true, deep: true})
   public updateInitialValue(newVal:any){
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: newVal})
+    this.updateQuery()
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: newVal, msName: this.msName, searchQuery: this.searchQuery})
   }
   public addOperator(e:any){
     this.selectedOperator = e
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.initialValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.initialValue, msName: this.msName, searchQuery: this.searchQuery})
   }
   public removeOperator(e:any){
     this.selectedOperator = null
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.initialValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.initialValue, msName: this.msName, searchQuery: this.searchQuery})
+  }
+
+  public updateQuery(){
+    this.searchQuery = this.selectedOperator ? 'totalAmount' + this.selectedOperator.id.replace('{k}', this.initialValue) : ''
   }
 }

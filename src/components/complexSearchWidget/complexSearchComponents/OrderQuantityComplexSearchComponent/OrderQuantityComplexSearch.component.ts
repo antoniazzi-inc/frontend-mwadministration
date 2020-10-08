@@ -14,6 +14,8 @@ export default class OrderQuantityComplexSearchComponent extends mixins(CommonHe
   public selectedOperator: any
   public operatorsSingleSelectConfig: ISearchableSelectConfig
   public allOperators: any
+  public appliedQuery: any
+  public msName: any
   constructor() {
     super();
     this.initialValue = null
@@ -22,6 +24,8 @@ export default class OrderQuantityComplexSearchComponent extends mixins(CommonHe
     this.operatorsSingleSelectConfig = new SearchableSelectConfig('label',
       'labels.selectOperator', '', false,
       false, false, false, false, false, true)
+    this.appliedQuery = ''
+    this.msName = 'ORDERMS'
   }
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){
@@ -29,14 +33,21 @@ export default class OrderQuantityComplexSearchComponent extends mixins(CommonHe
   }
   @Watch('initialValue', {immediate: true, deep: true})
   public updateInitialValue(newVal:any){
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: newVal})
+    this.updateQuery()
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: newVal, msName: this.msName, searchQuery: this.appliedQuery})
   }
   public addOperator(e:any){
     this.selectedOperator = e
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.initialValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.initialValue, msName: this.msName, searchQuery: this.appliedQuery})
   }
   public removeOperator(e:any){
     this.selectedOperator = null
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.initialValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.initialValue, msName: this.msName, searchQuery: this.appliedQuery})
+  }
+
+  public updateQuery(){
+    this.appliedQuery = this.selectedOperator ? 'orderLines.quantity' + this.selectedOperator.id.replace('{k}', this.initialValue) : ''
   }
 }

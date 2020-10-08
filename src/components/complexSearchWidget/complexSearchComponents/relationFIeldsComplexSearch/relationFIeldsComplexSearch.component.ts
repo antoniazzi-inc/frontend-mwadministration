@@ -6,8 +6,9 @@ import {dateOperators, equalOperators, genderOperators, textOperators} from "@/s
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
+
 @Component({
-  components:{
+  components: {
     SearchableSelectComponent,
     flatPickr
   }
@@ -17,17 +18,21 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
   public operatorsSingleSelectConfig: ISearchableSelectConfig
   public genderSingleSelectConfig: ISearchableSelectConfig
   public allOperators: any[]
-  public allRelationFields:any[]
-  public outputElementOptions:any[]
+  public allRelationFields: any[]
+  public outputElementOptions: any[]
   public selectedOperator: any
   public selectedRelationField: any
   public selectedGeneder: any
   public dateConfig: any
   public searchValue: string
   public outputElement: string
+  public appliedQuery: string
+  public msName: string
+  public finalQuery: string
+
   constructor() {
     super();
-    this.relationFieldSingleSelectConfig =  new SearchableSelectConfig('label',
+    this.relationFieldSingleSelectConfig = new SearchableSelectConfig('label',
       'labels.selectRelationField', '', false,
       false, false, false, false, false, true)
     this.operatorsSingleSelectConfig = new SearchableSelectConfig('label',
@@ -49,135 +54,216 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
     this.searchValue = ''
     this.outputElementOptions = []
     this.allRelationFields = []
+    this.appliedQuery = ''
+    this.finalQuery = ''
+    this.msName = 'RELATIONMS'
   }
 
-  public mounted(){
+  public mounted() {
     this.allRelationFields = [
       {
         id: 'firstName',
         label: this.$t('labels.firstName'),
-        outputElement: { type: 'text', options: null },
+        outputElement: {type: 'text', options: null},
         operators: textOperators,
         searchQuery: 'relationProfile.firstName'
       },
       {
         id: 'LastName',
         label: this.$t('labels.lastName'),
-        outputElement: { type: 'text', options: null },
+        outputElement: {type: 'text', options: null},
         operators: textOperators,
         searchQuery: 'relationProfile.lastName'
       },
       {
         id: 'company',
         label: this.$t('labels.company'),
-        outputElement: { type: 'text', options: null },
+        outputElement: {type: 'text', options: null},
         operators: textOperators,
         searchQuery: 'companies.name'
       },
       {
         id: 'email',
         label: this.$t('labels.email'),
-        outputElement: { type: 'text', options: null },
+        outputElement: {type: 'text', options: null},
         operators: textOperators,
         searchQuery: 'email'
       },
       {
         id: 'created',
         label: this.$t('labels.createdOn'),
-        outputElement: { type: 'date', options: null },
+        outputElement: {type: 'date', options: null},
         operators: dateOperators,
         searchQuery: 'createdOn'
       },
       {
         id: 'gender',
         label: this.$t('labels.gender'),
-        outputElement: { type: 'singleSelect', options: genderOperators },
+        outputElement: {type: 'singleSelect', options: genderOperators},
         operators: equalOperators,
         searchQuery: 'relationProfile.gender'
       },
       {
         id: 'postalCode',
         label: this.$t('labels.postalCode'),
-        outputElement: { type: 'text', options: null },
+        outputElement: {type: 'text', options: null},
         operators: textOperators,
         searchQuery: 'relationAddress.postalCode'
       },
       {
         id: 'city',
         label: this.$t('labels.city'),
-        outputElement: { type: 'text', options: null },
+        outputElement: {type: 'text', options: null},
         operators: textOperators,
         searchQuery: 'relationAddress.city'
       },
       {
         id: 'phone',
         label: this.$t('labels.phone'),
-        outputElement: { type: 'text', options: null },
+        outputElement: {type: 'text', options: null},
         operators: textOperators,
         searchQuery: 'relationPhone.number'
       },
       {
         id: 'website',
         label: this.$t('labels.website'),
-        outputElement: { type: 'text', options: null },
+        outputElement: {type: 'text', options: null},
         operators: textOperators,
         searchQuery: 'relationProfile.website'
       },
       {
         id: 'birthDate',
         label: this.$t('labels.birthDate'),
-        outputElement: { type: 'date', options: null },
+        outputElement: {type: 'date', options: null},
         operators: dateOperators,
         searchQuery: 'relationProfile.birthDate'
       }
 
     ]
   }
+
   @Watch('searchValue', {immediate: true, deep: true})
-  public updateSearchValue(newVal:any){
-    this.$emit('input', {attribute: this.selectedRelationField, subAttribute: null, operator: this.selectedOperator, value: newVal})
+  public updateSearchValue(newVal: any) {
+    this.updateQuery(this.selectedOperator ? this.selectedOperator.id : null, this.selectedRelationField ? this.selectedRelationField.searchQuery : null, newVal)
+    this.$emit('input', {
+      attribute: this.selectedRelationField,
+      subAttribute: null,
+      operator: this.selectedOperator,
+      value: newVal,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
   }
+
   @Watch('selectedGender', {immediate: true, deep: true})
-  public updateGender(newVal:any){
-    this.$emit('input', {attribute: this.selectedRelationField, subAttribute: null, operator: this.selectedOperator, value: newVal})
+  public updateGender(newVal: any) {
+    this.updateQuery(this.selectedOperator ? this.selectedOperator.id : null, this.selectedRelationField ? this.selectedRelationField.searchQuery : null, newVal && newVal.id ? newVal.id : null)
+    this.$emit('input', {
+      attribute: this.selectedRelationField,
+      subAttribute: null,
+      operator: this.selectedOperator,
+      value: newVal,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
   }
-  public addRelationField(e:any){
-    if(!e) return
+
+  public addRelationField(e: any) {
+    if (!e) return
     this.selectedRelationField = e
     this.outputElement = e.outputElement.type
     this.outputElementOptions = e.outputElement.options
     this.$set(this, 'allOperators', e.operators)
     this.selectedOperator = e.operators[0]
-    this.$emit('input', {attribute: this.selectedRelationField, subAttribute: null, operator: this.selectedOperator, value: this.searchValue})
+    this.updateQuery(this.selectedOperator.id, this.selectedRelationField.searchQuery, this.searchValue)
+    this.$emit('input', {
+      attribute: this.selectedRelationField,
+      subAttribute: null,
+      operator: this.selectedOperator,
+      value: this.searchValue,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
   }
-  public removeRelationField(e:any){
-    if(!e) return
+
+  public removeRelationField(e: any) {
+    if (!e) return
     this.selectedRelationField = null
     this.selectedOperator = null
     this.allOperators = []
     this.selectedRelationField = null
-    this.$emit('input', {attribute: null, subAttribute: null, operator: null, value: null})
+    this.updateQuery(this.selectedOperator.id, this.selectedRelationField.searchQuery, null)
+    this.$emit('input', {
+      attribute: null,
+      subAttribute: null,
+      operator: null,
+      value: null,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
   }
 
-  public addGender(e:any){
-    if(!e) return
+  public addGender(e: any) {
+    if (!e) return
     this.selectedGeneder = e
-    this.$emit('input', {attribute: this.selectedRelationField, subAttribute: null, operator: this.selectedOperator, value: this.selectedGeneder})
-  }
-  public removeGender(e:any){
-    if(!e) return
-    this.selectedGeneder = null
-    this.$emit('input', {attribute: this.selectedRelationField, subAttribute: null, operator: this.selectedOperator, value: null})
+    this.updateQuery(this.selectedOperator ? this.selectedOperator.id : null, this.selectedRelationField.searchQuery, this.selectedGeneder.id)
+    this.$emit('input', {
+      attribute: this.selectedRelationField,
+      subAttribute: null,
+      operator: this.selectedOperator,
+      value: this.selectedGeneder,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
   }
 
-  public addOperator(e:any){
-    if(!e) return
-    this.selectedOperator = e
-    this.$emit('input', {attribute: this.selectedRelationField, subAttribute: null, operator: this.selectedOperator, value: this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder : null})
+  public removeGender(e: any) {
+    if (!e) return
+    this.selectedGeneder = null
+    this.updateQuery(this.selectedOperator.id, this.selectedRelationField.searchQuery, null)
+    this.$emit('input', {
+      attribute: this.selectedRelationField,
+      subAttribute: null,
+      operator: this.selectedOperator,
+      value: null,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
   }
-  public removeOperator(e:any){
-    if(!e) return
+
+  public addOperator(e: any) {
+    if (!e) return
+    this.selectedOperator = e
+    this.updateQuery(this.selectedOperator.id, this.selectedRelationField ? this.selectedRelationField.searchQuery : '', this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder.id : null)
+    this.$emit('input', {
+      attribute: this.selectedRelationField,
+      subAttribute: null,
+      operator: this.selectedOperator,
+      value: this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder : null,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
+  }
+
+  public removeOperator(e: any) {
+    if (!e) return
     this.selectedOperator = null
-    this.$emit('input', {attribute: this.selectedRelationField, subAttribute: null, operator: null, value: this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder : null})
+    this.updateQuery(null, this.selectedRelationField.searchQuery, this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder.id : null)
+    this.$emit('input', {
+      attribute: this.selectedRelationField,
+      subAttribute: null,
+      operator: null,
+      value: this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder : null,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
+  }
+
+  public updateQuery(operator: any, query: any, value: any) {
+    if (operator && query && value) {
+      this.finalQuery = query + operator.replace('{k}', value)
+    } else {
+      this.finalQuery = ''
+    }
   }
 }

@@ -22,6 +22,10 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
   public selectedOperator: any
   public selectedFreeField: any
   public searchValue: any
+  public appliedQuery: any
+  public appliedSubQuery: any
+  public msName: any
+  public currentQuery: any
   constructor() {
     super();
     this.freeFieldSingleSelectConfig =  new SearchableSelectConfig('label',
@@ -40,11 +44,18 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
     this.allFreeFieldOptions = []
     this.searchValue = null
     this.selectedFieldType = ''
+    this.appliedQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.value'
+    this.appliedSubQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.customFieldOption.id=={conditionOptionId} AND relationCustomFields.value'
+    this.currentQuery = ''
+    this.msName = 'RELATIONMS'
+
   }
 
   @Watch('searchValue', {immediate: true, deep: true})
   public updateSearchValue(newVal:any){
-    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: newVal})
+    this.searchValue = newVal
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: newVal, msName: this.msName, searchQuery: this.currentQuery})
   }
 
   public addFreeField(e:any){
@@ -52,7 +63,7 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
       case 'BOOLEAN':
         this.selectedFieldType = 'boolean'
         this.allOperators = []
-        this.selectedOperator = null
+        this.selectedOperator = {id: '==', label: 'Equals'}
         this.searchValue = true
         break;
       case 'TEXT':
@@ -71,27 +82,44 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
         break;
     }
     this.selectedFreeField = e
-    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: this.searchValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: this.searchValue, msName: this.msName, searchQuery: this.currentQuery})
   }
   public removeFreeField(e:any){
     this.selectedFreeField = null
     this.selectedFreeFieldOption = null
-    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: this.searchValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: this.searchValue, msName: this.msName, searchQuery: this.currentQuery})
   }
   public addOperator(e:any){
     this.selectedOperator = e
-    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: this.searchValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: this.searchValue, msName: this.msName, searchQuery: this.currentQuery})
   }
   public removeOperator(e:any){
     this.selectedOperator = null
-    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: null, value: this.searchValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: null, value: this.searchValue, msName: this.msName, searchQuery: this.currentQuery})
   }
   public addFreeFieldOption(e:any){
     this.selectedFreeFieldOption = e
-    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: this.searchValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: this.selectedFreeFieldOption, operator: this.selectedOperator, value: this.searchValue, msName: this.msName, searchQuery: this.currentQuery})
   }
   public removeFreeFieldOption(e:any){
     this.selectedFreeFieldOption = null
-    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: null, operator: this.selectedOperator, value: this.searchValue})
+    this.updateQuery()
+    this.$emit('input', {attribute: this.selectedFreeField, subAttribute: null, operator: this.selectedOperator, value: this.searchValue, msName: this.msName, searchQuery: this.currentQuery})
+  }
+
+  public updateQuery(){
+    let operator = this.selectedOperator ? this.selectedOperator.id : null
+    let customField = this.selectedFreeField && this.selectedFreeField.value ? this.selectedFreeField.value.id : null
+    let customFieldOption = this.selectedFreeFieldOption && this.selectedFreeFieldOption.value ? this.selectedFreeFieldOption.value.id : null
+    if(customFieldOption) {
+      this.currentQuery = this.appliedSubQuery.replace('{conditionId}', customField).replace('{conditionOptionId}', customFieldOption) + operator.replace('{k}', this.searchValue)
+    } else {
+      this.currentQuery = this.appliedQuery.replace('{conditionId}', customField) +  operator.replace('{k}', this.searchValue)
+    }
   }
 }

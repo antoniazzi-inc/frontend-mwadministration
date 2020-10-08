@@ -15,6 +15,8 @@ export default class TagsComplexSearchComponent extends mixins(CommonHelpers, Vu
   public allOperators: any[]
   public selectedOperator: any
   public selectedTag: any
+  public currentQuery: any
+  public msName: any
   constructor() {
     super();
     this.tagsSingleSelectConfig =  new SearchableSelectConfig('code',
@@ -26,22 +28,36 @@ export default class TagsComplexSearchComponent extends mixins(CommonHelpers, Vu
     this.allOperators = tagOperators
     this.selectedOperator = null
     this.selectedTag = null
+    this.currentQuery = 'relationTags.id'
+    this.msName = 'RELATIONMS'
   }
 
   public addTag(e:any){
     this.selectedTag = e
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedTag})
+    let operator = this.selectedOperator ? this.selectedOperator.id : null
+    let value = this.selectedTag ? this.selectedTag.id : null
+    this.currentQuery = 'relationTags.id' + operator.replace('{k}', value)
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedTag, msName: this.msName, searchQuery: this.currentQuery})
   }
   public removeTag(e:any){
     this.selectedTag = null
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedTag})
+    let operator = this.selectedOperator ? this.selectedOperator.id : null
+    let value = this.selectedTag ? this.selectedTag.id : null
+    this.currentQuery = 'relationTags.id' + operator.replace('{k}', value)
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedTag, msName: this.msName, searchQuery: this.currentQuery})
   }
   public addOperator(e:any){
     this.selectedOperator = e
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedTag})
+    let operator = this.selectedOperator ? this.selectedOperator.id : null
+    let value = this.selectedTag ? this.selectedTag.id : null
+    this.currentQuery = 'relationTags.id' + operator.replace('{k}', value)
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedTag, msName: this.msName, searchQuery: this.currentQuery})
   }
   public removeOperator(e:any){
     this.selectedOperator = null
-    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedTag})
+    let operator = this.selectedOperator ? this.selectedOperator.id : null
+    let value = this.selectedTag ? this.selectedTag.id : null
+    this.currentQuery = 'relationTags.id' + operator.replace('{k}', value)
+    this.$emit('input', {attribute: null, subAttribute: null, operator: this.selectedOperator, value: this.selectedTag, msName: this.msName, searchQuery: this.currentQuery})
   }
 }
