@@ -25,7 +25,7 @@
       <div class="form-row price-row" style="margin-bottom: 2em">
         <div class="form-group col-auto">
           <label class="control-label">{{$t('labels.isSubscription')}}</label>
-          <toggle-switch id="repeatSubscription"
+          <toggle-switch id="repeatSubscription1"
              :on-text="$t('labels.yes')"
              :off-text="$t('labels.no')"
              :value.sync="isSubscription"/>
@@ -135,15 +135,15 @@
         </div>
         <div class="form-group col-auto" v-if="productCopy.paymentSchedules && productCopy.paymentSchedules.length">
           <label class="control-label">{{$t('labels.sentAnnouncementMail')}}</label>
-          <toggle-switch id="sentAnnouncementMail"
+          <toggle-switch id="sentAnnouncementMail1"
              :on-text="$t('labels.yes')"
              :off-text="$t('labels.no')"
              :value.sync="sentAnnouncement"/>
         </div>
         <div class="form-group col-auto" style="padding-top:1.9em; margin-left:-70px;" v-if="productCopy.paymentSchedules && productCopy.paymentSchedules.length && sentAnnouncement">
-          <button tag="button" data-toggle="modal" data-target="#announcementModal" class="btn btn-link">
+          <a tag="button" data-toggle="modal" data-target="#announcementModal" class="btn btn-link text-primary">
             <small style="text-decoration: none">{{$t('labels.editor')}}</small>
-          </button>
+          </a>
         </div>
       </div>
       <div class="form-row" v-if="!isSubscription && isUsePaymentSchedules">

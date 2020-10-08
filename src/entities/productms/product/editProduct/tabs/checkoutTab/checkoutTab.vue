@@ -257,18 +257,23 @@
           <div class="row">
             <div class="form-group col-md-6">
               <label class="form-control-label">{{$t('labels.linkToConditions')}}</label>
-              <input type="text" class="form-control" @blur="checkForHttps"
+              <input type="text" class="form-control" @blur="checkForHttps($event, 'linkToConditions')"
                      v-model="termsAndConditions.linkToConditions"/>
             </div>
             <div class="form-group col-md-6">
-              <label class="form-control-label">{{$t('labels.privacyStatement')}}</label>
-              <textarea cols="2" class="form-control" v-model="termsAndConditions.privacyStatement"/>
+              <label class="form-control-label">{{$t('labels.linkToPrivacyStatement')}}</label>
+              <input type="text" class="form-control" @blur="checkForHttps($event, 'privacyStatement')"
+                     v-model="termsAndConditions.privacyStatement"/>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-6">
               <label class="form-control-label">{{$t('labels.linkText')}}</label>
-              <input type="text" class="form-control" v-model="termsAndConditions.linkText"/>
+              <input type="text" class="form-control" v-model="termsAndConditions.conditionsLinkText"/>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-control-label">{{$t('labels.linkText')}}</label>
+              <input type="text" class="form-control" v-model="termsAndConditions.privacyStatementLinkText"/>
             </div>
           </div>
           <div class="form-buttons-w text-right mt-3">

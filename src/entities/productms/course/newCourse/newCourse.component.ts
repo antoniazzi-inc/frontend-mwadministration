@@ -46,6 +46,7 @@ import eventReservationService from "@/shared/services/eventReservation";
         vm.backToProducts = true
       }
       if (to.params.id) {
+        vm.fromProducts = true
         vm.populateCourse(to.params.id)
       }
     })
@@ -58,6 +59,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public totalReservedSeats: number
   public selectedRowIndex: number | null
   public showHtmlEditor: boolean
+  public fromProducts: boolean
   public isSaving: boolean
   public editReservations: boolean
   public unlimitedSeats: boolean
@@ -173,6 +175,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     this.isReservationPaid = true
     this.unlimitedSeats = false
     this.backToProducts = false
+    this.fromProducts = false
     this.editWaitingList = false
     this.eventReservationService = eventReservationService.getInstance()
     this.editEvent = false
@@ -188,6 +191,10 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public mounted() {
     this.selectedEvent.eventLanguages = []
     this.populateRelations()
+    if(this.$router.currentRoute.params && this.$router.currentRoute.params.id){
+      this.fromProducts = true
+      this.populateCourse(this.$router.currentRoute.params.id)
+    }
   }
 
   @Watch('courseId', {immediate: true, deep: true})
@@ -251,7 +258,10 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
         if (resp && resp.data) {
           this.isSaving = false
           this.setAlert('courseEdited', 'success')
-          this.$router.push('/courses')
+          if(this.fromProducts){
+           return  this.$emit('onSave')
+          }
+          this.$router.go(-1)
         } else {
           this.setAlert('courseEditError', 'error')
         }
@@ -264,7 +274,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
           if (this.backToProducts) {
             this.$router.push('/products/new?local=true')
           } else {
-            this.$router.push('/courses')
+            this.$router.go(-1)
           }
         } else {
           this.setAlert('courseCreateError', 'error')
@@ -456,13 +466,14 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
             this.setAlert('eventEditError', 'error')
           }
         })
-      }
+      } else
       if (this.course && this.course.events && this.course.events.length) {
         this.course.events.push(this.selectedEvent);
+        this.setAlert('eventAdded', 'success')
       } else {
         this.course.events = [this.selectedEvent];
+        this.setAlert('eventAdded', 'success')
       }
-      this.setAlert('eventAdded', 'success')
     }
   }
 

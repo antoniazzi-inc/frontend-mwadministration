@@ -71,7 +71,9 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         agreePrivacyStatement: false,
         linkToConditions: '',
         linkText: '',
-        privacyStatement: ''
+        privacyStatement: '',
+        privacyStatementLinkText: '',
+        conditionsLinkText: ''
       }
     }
 
@@ -82,7 +84,9 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         agreePrivacyStatement: false,
         linkToConditions: '',
         linkText: '',
-        privacyStatement: ''
+        privacyStatement: '',
+        privacyStatementLinkText: '',
+        conditionsLinkText: ''
       }
       this.productCopy = newVal
       this.registrationSettingsJson = newVal.registrationSettingsJson ? JSON.parse(newVal.registrationSettingsJson) : {
@@ -128,6 +132,7 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
     }
 
     public mounted () {
+      this.registrationSettingsJson.freeFields = this.$store.state.lookups.freeFields
       this.retrieve()
     }
 
@@ -175,8 +180,8 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
     public goBack() {
       this.$router.push('/products')
     }
-    public checkForHttps () {
-      this.termsAndConditions.linkToConditions = this.checkForUrlHttps(this.termsAndConditions.linkToConditions)
+    public checkForHttps (e:any, forValue:string) {
+      this.termsAndConditions[forValue] = this.checkForUrlHttps(e.currentTarget.value)
     }
     public saveTermsAndConditions () {
       this.productCopy.termsAndConditionsJson = this.termsAndConditions

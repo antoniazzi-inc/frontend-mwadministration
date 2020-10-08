@@ -104,6 +104,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
 
   @Watch('product', {immediate: true, deep: true})
   public populateProduct(newVal: any) {
+    let self= this
     this.productCopy = newVal;
     if (newVal.upsellSettingsJson && JSON.parse(newVal.upsellSettingsJson)) {
       const upsell = JSON.parse(newVal.upsellSettingsJson);
@@ -122,13 +123,14 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       this.thankYouRedirect = thankyou.thankYouRedirect
     }
     if (newVal.media && newVal.media.length) {
-      let currMedia:any = [];
-      this.allMediaFiles = []
+      let currMedia:any = {};
       newVal.media.forEach((media: IMedia, k: any) => {
+        let alreadyLoaded = self.allMediaFiles.findIndex((e:any)=>e.mediaId === media.id)
+        if(alreadyLoaded === -1)
         this.loadProperImage(media).then(resp=>{
           let blobEl = this.b64toBlob(resp, media.bodyContentType)
-          currMedia.push({
-            "mediaId": media.id,
+          currMedia = {
+            "mediaId": media && media.id ? media.id : undefined,
             "fileObject": true,
             "size": 38252,
             "name": media.name,
@@ -136,7 +138,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
             "active": false,
             "error": "",
             "success": false,
-            "isFeatured": this.productCopy.featuredImageId === media.id ? true : false,
+            "isFeatured": this.productCopy.featuredImageId === media && media.id ? true : false,
             "putAction": "/upload/put",
             "postAction": "/upload/post",
             "timeout": 0,
@@ -149,10 +151,10 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
             "id": "ngpbwnosreb" + k,
             "blob": URL.createObjectURL(blobEl),
             "thumb": URL.createObjectURL(blobEl)
-          })
+          }
+          self.allMediaFiles.push(currMedia)
         })
       })
-      this.allMediaFiles = currMedia
     }
     this.salesPageUrl = newVal.salesPageUrl;
     this.uploadConfigBranding = {
@@ -228,7 +230,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public updateProduct() {
     if (this.productCopy.id) {
       this.productService.get(this.productCopy.id).then(resp => {
-        this.$emit('update', resp);
+        this.$emit('update', resp.data);
         this.imagesToResize = []
       })
     }
@@ -243,6 +245,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     const dtoCreate: any = [];
     const dtoEdit: any = [];
     this.isSaving = true;
+
     this.resizeImages().then(resp => {
       $.each(resp, function (k, v: any) {
         // @ts-ignore
@@ -258,7 +261,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
         }
       });
       const toSend = {
-        id: this.productCopy.id,
+        id: self.productCopy.id,
         params: dtoCreate
       };
       if (dtoEdit.length > 0) {
@@ -282,10 +285,9 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       }
       if (dtoCreate.length > 0) {
         this.productService.createOnBucket(toSend).then((resp: AxiosResponse) => {
-          this.setAlert('productImagesUpdated', 'success');
-          this.isSaving = false;
-          this.closeDialog();
-          this.updateProduct()
+              this.setAlert('productImagesUpdated', 'success');
+              this.isSaving = false;
+              this.updateProduct()
         })
       }
     })
@@ -452,6 +454,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public resizeImages() {
     const self = this;
     return new Promise(async resolve => {
+      debugger
       let index:any = 0
       let resizedImgs:any = []
       await $.each(self.allMediaFiles, async function (k, v) {
@@ -468,12 +471,12 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
         } else {
           index = k
           resizedImgs.push({id: v.mediaId})
+          if(index === self.allMediaFiles.length - 1)  {
+            self.resizedImages = resizedImgs
+            resolve(resizedImgs)
+          }
         }
       });
-      if(index === self.allMediaFiles.length - 1)  {
-        self.resizedImages = resizedImgs
-        resolve(resizedImgs)
-      }
     })
   }
 
@@ -531,8 +534,14 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     let self = this
     if(e.isFeatured){
       this.resetFeatureImage().then(()=>{
-          self.productCopy.featuredImageId = self.allMediaFiles[e.index].id
-          self.$set(self.allMediaFiles[e.index], "isFeatured", true)
+        let dto = self.productCopy
+        dto.featuredImageId = self.allMediaFiles[e.index].mediaId
+        this.productService.put(dto).then((resp2:AxiosResponse)=>{
+          if(resp2 && resp2.data){
+            self.$set(self.allMediaFiles[e.index], "isFeatured", true)
+            this.$emit('update', resp2.data)
+          }
+        })
       })
     } else {
       this.resetFeatureImage().then(()=>{
@@ -546,7 +555,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public imageLoaded(e: any) {
     let index = null
     this.allMediaFiles.forEach((media:any, ind:number)=>{
-      if(media.id === e.id){
+      if(media && media.id && media.id === e.id){
         index = ind
       }
     })

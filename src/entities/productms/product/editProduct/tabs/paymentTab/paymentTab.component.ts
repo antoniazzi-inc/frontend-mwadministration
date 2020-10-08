@@ -228,11 +228,14 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       paymentMethodId: method.value.id,
       paymentMethodType: method.value.paymentMethodType
     };
+
     this.productPaymentMethodService.post(dto).then((resp: AxiosResponse) => {
       this.setAlert('paymentCreated', 'success');
       this.productCopy.productPaymentMethods ? this.productCopy.productPaymentMethods.push(resp.data) : this.productCopy.productPaymentMethods = [resp.data];
-      this.$emit('update', this.productCopy)
-    })
+        if(resp && resp.data){
+          this.$emit('update', this.productCopy)
+        }
+      })
   }
 
   public goBack() {

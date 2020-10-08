@@ -36,5 +36,7 @@ export default class CourseTabComponent extends Vue {
         }
       }
     }
+  public courseSaved(){
 
+  }
 }

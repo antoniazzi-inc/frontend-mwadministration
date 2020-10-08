@@ -93,7 +93,9 @@
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'payments'}" id="payments" role="tabpanel"
              aria-labelledby="payments-tab">
+          <keep-alive>
           <payment-tab-component :clicked="currentTab === 'payments'" :product="product" @update="updateProduct"/>
+          </keep-alive>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'checkout'}" id="checkout" role="tabpanel"
              aria-labelledby="checkout-tab">

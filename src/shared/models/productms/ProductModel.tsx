@@ -41,7 +41,7 @@ export interface IProduct extends IBaseEntity {
     termsAndConditionsJson?: ITermsAndConditions;
     comingSoon?: boolean;
     forceDirectPayment?: boolean;
-    featuredImageId?: number;
+    featuredImageId?: any;
     announcementMailJson?: string;
     ledgerAccountName?: string;
     payButtonJson?: IPayButton;
@@ -95,7 +95,7 @@ constructor(
     public termsAndConditionsJson?: ITermsAndConditions,
     public comingSoon?: boolean,
     public forceDirectPayment?: boolean,
-    public featuredImageId?: number,
+    public featuredImageId?: any,
     public announcementMailJson?: string,
     public ledgerAccountName?: string,
     public payButtonJson?: IPayButton,

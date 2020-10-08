@@ -186,6 +186,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
     const oldIndex = JSON.parse(JSON.stringify(this.allOptions[event.oldDraggableIndex].orderIndex))
     this.allOptions[event.newDraggableIndex].orderIndex = oldIndex
     this.allOptions[event.oldDraggableIndex].orderIndex = newIndex
+    if(this.selectedProductFeature.id)
     this.attributeValueService.updateMultiple(this.allOptions).then((resp: AxiosResponse) => {
       if (resp) {
         let options:any = []
