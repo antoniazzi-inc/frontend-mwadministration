@@ -45,7 +45,7 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
     this.searchValue = null
     this.selectedFieldType = ''
     this.appliedQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.value'
-    this.appliedSubQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.customFieldOption.id=={conditionOptionId} AND relationCustomFields.value'
+    this.appliedSubQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.customFieldOption.id=={conditionOptionId}'
     this.currentQuery = ''
     this.msName = 'RELATIONMS'
 

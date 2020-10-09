@@ -89,11 +89,10 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   @Watch('isSubscription', {immediate: true, deep: true})
   public updateIsSubscription(newVal: any) {
     if (newVal) {
-      this.productCopy.productSubscription = this.$props.product.productSubscription !== null ? this.$props.product.productSubscription : new ProductSubscription();
+      this.productCopy.productSubscription = this.$props.product.productSubscription ? this.$props.product.productSubscription : new ProductSubscription();
       this.announcementJson = this.productCopy.productSubscription && this.productCopy.productSubscription.announcementJson ? this.productCopy.productSubscription.announcementJson.email : this.announcementJson
     } else {
       this.sentAnnouncement = false
-      this.productCopy.productSubscription = undefined;
       this.announcementJson = this.productCopy.paymentSchedules && this.productCopy.paymentSchedules[0] && this.productCopy.paymentSchedules[0].announcementJson ? this.productCopy.paymentSchedules[0].announcementJson.email : this.announcementJson
     }
     if (this.announcementJson.subject !== null) {
@@ -104,8 +103,14 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   @Watch('clicked', {immediate: true, deep: true})
   public updateClicked(newVal: any) {
     if (newVal) {
+      this.forceDirectPayment = newVal.forceDirectPayment ? newVal.forceDirectPayment : false
       this.retrieve()
     }
+  }
+
+  @Watch('forceDirectPayment', {immediate: true, deep: true})
+  public updateForceDirectPayment(newVal: any) {
+    this.productCopy.forceDirectPayment = newVal
   }
 
   public retrieve() {
@@ -253,7 +258,6 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   public save() {
     if(this.announcementJson) this.productCopy.announcementMailJson = JSON.stringify(this.announcementJson)
     if (this.isSubscription) {
-      this.productCopy.productSubscription ? this.productCopy.productSubscription.startDate = this.startDate : undefined;
       if (this.productCopy.productSubscription) {
         this.productCopy.productSubscription.product = {
           id: this.productCopy.id,
@@ -278,17 +282,12 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
         })
       } else {
         if (this.productCopy && this.productCopy.productSubscription) {
-          this.productCopy.productSubscription.administrationId = this.$store.state.userIdentity.administrationId;
-          this.productCopy.productSubscription.version = this.$store.state.userIdentity.version;
           this.productCopy.productSubscription.product = {
             id: this.productCopy.id,
             version: this.productCopy.version
           }
         }
-        const dto = {
-          id: this.productCopy.id,
-          productSubscription: this.productCopy.productSubscription
-        };
+        const dto = this.productCopy.productSubscription
         this.productSubscriptionService.post(dto).then((resp: AxiosResponse) => {
           this.productCopy.productSubscription = resp.data;
           this.productService.put(this.productCopy).then((resp1: AxiosResponse) => {
@@ -299,13 +298,26 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
         })
       }
     } else {
-      this.productService.put(this.productCopy).then((resp:AxiosResponse) => {
-        if(resp && resp.data){
-          this.productCopy = resp.data
-          this.setAlert('productUpdated', 'success');
-          this.$emit('update', this.productCopy)
-        }
-      })
+      if(this.productCopy.productSubscription && this.productCopy.productSubscription.id) {
+        this.productSubscriptionService.delete(this.productCopy.productSubscription.id).then((resp:AxiosResponse) =>{
+          this.productCopy.productSubscription = undefined
+          this.productService.put(this.productCopy).then((resp:AxiosResponse) => {
+            if(resp && resp.data){
+              this.productCopy = resp.data
+              this.setAlert('productUpdated', 'success');
+              this.$emit('update', this.productCopy)
+            }
+          })
+        })
+      } else {
+        this.productService.put(this.productCopy).then((resp:AxiosResponse) => {
+          if(resp && resp.data){
+            this.productCopy = resp.data
+            this.setAlert('productUpdated', 'success');
+            this.$emit('update', this.productCopy)
+          }
+        })
+      }
     }
   }
 }

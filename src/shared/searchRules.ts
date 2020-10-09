@@ -38,6 +38,8 @@ import GroupsComplexSearchComponent
   from "@/components/complexSearchWidget/complexSearchComponents/GroupsComplexSearchComponent/GroupsComplexSearch.vue";
 import CoursesSelectComplexSearchComponent
   from "@/components/complexSearchWidget/complexSearchComponents/CoursesSelectComplexSearch/CoursesSelectComplexSearch.vue";
+import SummedSpentAmountComplexSearchComponent
+  from "@/components/complexSearchWidget/complexSearchComponents/SummedSpentAmmountComponent/SummedSpentAmountComplexSearch.vue";
 export const CommonRules:any = [{
   identifier: 'relFields',
   name: 'relationField',
@@ -116,6 +118,11 @@ export const ShopRules:any = [{
   identifier: 'orderAmount',
   name: 'orderAmount',
   component: OrderAmountComplexSearchComponent,
+  initialValue: () => 0,
+},{
+  identifier: 'summedOrderAmount',
+  name: 'summedOrderAmount',
+  component: SummedSpentAmountComplexSearchComponent,
   initialValue: () => 0,
 },{
   identifier: 'orderQuantity',

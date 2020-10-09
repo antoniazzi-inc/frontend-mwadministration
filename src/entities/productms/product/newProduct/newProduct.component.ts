@@ -563,14 +563,14 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
 
   public updateCourse(course: any) {
     this.selectedCourse = course
-    this.product.typeCourse.courses = [{
+    this.product.typeCourse.course = {
       id: course.value.id,
       version: course.value.version,
-    }]
+    }
   }
 
   public removeCourse() {
-    this.product.typeCourse.courses = []
+    this.product.typeCourse.course = undefined
     this.selectedCourse = null
   }
 

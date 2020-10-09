@@ -7,7 +7,7 @@
           <toggle-switch
             :on-text="$t('labels.yes')"
             :off-text="$t('labels.no')"
-            :value.sync="productCopy.forceDirectPayment"/>
+            :value.sync="forceDirectPayment"/>
         </div>
         <div class="form-group col-auto" style="width:80%">
           <label class="form-control-label">{{$t('labels.availablePaymentMethods')}}</label>
@@ -33,12 +33,13 @@
         <div class="form-group col-auto" v-if="isSubscription">
           <label class="control-label">{{$t('labels.subscriptionMaxTerms')}}</label>
           <input :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required|min_value:0'"
-                 type="number" name="Subscription Max Terms" style="max-width:100px" />
+                 type="number" name="Subscription Max Terms" style="max-width:100px" v-model="productCopy.productSubscription.maxTimes"/>
           <span class="small text-danger">{{errors.first('Subscription Max Terms')}}</span>
         </div>
         <div class="form-group col-auto" v-if="isSubscription">
           <label class="control-label">{{$t('labels.startDate')}}</label>
-          <select :class="{'form-control':true, invalid: errors.has('Start Date')}" v-validate="'required'" name="Start Date">
+          <select :class="{'form-control':true, invalid: errors.has('Start Date')}" v-validate="'required'" name="Start Date"
+                  v-model="productCopy.productSubscription.startDate">
             <option value="firstOfCurrentMonth">{{$t('labels.startAtBeginningOfCurrentMonth')}}</option>
             <option value="firstOfNextMonth">{{$t('labels.beginningOfNextMonth')}}</option>
             <option value="now">{{$t('labels.atThisMoment')}}</option>
@@ -48,7 +49,8 @@
         </div>
         <div class="form-group col-auto" v-if="isSubscription">
           <label class="control-label">{{$t('labels.period')}}</label>
-          <select :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required'" name="period">
+          <select :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required'" name="period"
+                  v-model="productCopy.productSubscription.period">
             <option value="weekly">{{$t('labels.weekly')}}</option>
             <option value="bi-weekly">{{$t('labels.bi-weekly')}}</option>
             <option value="month">{{$t('labels.month')}}</option>

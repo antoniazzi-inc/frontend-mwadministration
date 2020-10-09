@@ -116,7 +116,6 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       this.affiliateSalesInfo = upsell.affiliateSalesInfo;
       this.backToCallingPage = upsell.backToCallingPage
     }
-    this.productCopy.featuredImageId = 118
     if (newVal.thankYouPageSettingsJson && JSON.parse(newVal.thankYouPageSettingsJson)) {
       const thankyou = JSON.parse(newVal.thankYouPageSettingsJson);
       this.thankYouContent = thankyou.thankYouContent;
@@ -126,9 +125,11 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       let currMedia:any = {};
       newVal.media.forEach((media: IMedia, k: any) => {
         let alreadyLoaded = self.allMediaFiles.findIndex((e:any)=>e.mediaId === media.id)
-        if(alreadyLoaded === -1)
+        if(alreadyLoaded === -1 && self.allMediaFiles.length !== newVal.media.length)
         this.loadProperImage(media).then(resp=>{
           let blobEl = this.b64toBlob(resp, media.bodyContentType)
+          let mediaId = media && media.id ? media.id : null
+          let isFeatured = self.productCopy.featuredImageId === mediaId ? true : false
           currMedia = {
             "mediaId": media && media.id ? media.id : undefined,
             "fileObject": true,
@@ -138,7 +139,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
             "active": false,
             "error": "",
             "success": false,
-            "isFeatured": this.productCopy.featuredImageId === media && media.id ? true : false,
+            "isFeatured": isFeatured,
             "putAction": "/upload/put",
             "postAction": "/upload/post",
             "timeout": 0,
@@ -508,6 +509,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   }
 
   public loadImageGallery(toAvoid?: any) {
+    debugger
     const self = this;
     this.isMediaLoading = true;
     this.productService.loadAllMedia({page: 0, size: 100000, sort: {}}).then((resp: any) => {

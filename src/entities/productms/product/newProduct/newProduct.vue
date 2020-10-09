@@ -252,6 +252,7 @@
           </div>
         </form>
       </tab-content>
+        <span class="small text-danger pull-right" v-if="errors.all().length">{{$t('labels.thereAreSomeErrors')}}</span>
       <button @click="stepBack" slot="prev" class="btn btn-primary btn-lg" :disabled="isSaving" style="min-width:140px;">{{$t('buttons.back')}}</button>
       <button @click="stepForward" slot="next" class="btn btn-primary" style="min-width:140px;" :disabled="isSaving">{{$t('buttons.next')}}</button>
       <button slot="finish" class="btn btn-primary btn-lg" style="min-width:140px;" :disabled="isSaving">{{$t('buttons.finish')}}</button>

@@ -191,7 +191,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public mounted() {
     this.selectedEvent.eventLanguages = []
     this.populateRelations()
-    if(this.$router.currentRoute.params && this.$router.currentRoute.params.id){
+    if(this.$router.currentRoute.params && this.$router.currentRoute.params.id && this.$props.courseId !== null){
       this.fromProducts = true
       this.populateCourse(this.$router.currentRoute.params.id)
     }

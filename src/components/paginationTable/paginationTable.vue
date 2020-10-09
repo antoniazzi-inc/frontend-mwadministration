@@ -41,7 +41,8 @@
               <template v-for="(col, index) in tables[$props.table].cols">
                 <td :key="index" v-if="hasAuthority(col.authorities)" v-show="checkVisibility(col)">
                   <span class="colorField" v-if="col.type === 'color'" :style="{'width':'50px', 'border-radius': '50%', 'background': item[col.field]}">&nbsp;</span>
-                  <span v-else-if="col.method != null"> {{col.method(item)}}</span>
+                  <div v-else-if="col.type === 'html'" v-html="col.method(item)"></div>
+                  <span v-else-if="col.method != null && col.type !== 'html'"> {{col.method(item)}}</span>
                   <span v-else-if="col.type === 'date'">{{item[col.field] | formatDate}}</span>
                   <span v-else-if="col.type === 'boolean'">
                     {{item[col.field] === true ? $t('labels.yes') : $t('labels.no')}}

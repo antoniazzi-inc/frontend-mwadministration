@@ -277,7 +277,18 @@ export const product = {
       method: function (item: any) {
         return `${Store.state.currency} ${item.price}`
       }
-    }, {
+    },
+    /*{ TODO: RETURNS AND HTML CODE to the table
+      name: 'labels.price',
+      field: 'price',
+      subField: null,
+      type: 'html',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        return '<h1>HELLOOWW</h1>'
+      }
+    },*/ {
       name: 'labels.name',
       field: 'name',
       subField: null,
