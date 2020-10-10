@@ -7,6 +7,7 @@ import SimpleSearchComponent from '@/components/simpleSearch/simpleSearch.vue'
 import PaginationComponent from '@/components/paginationTable/pagination.vue'
 import {AxiosResponse} from "axios";
 import axios from "axios";
+import ComplexSearchService from "@/shared/services/complexSearchService";
 
 @Component({
   components: {
@@ -42,6 +43,7 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
   public selectAll: boolean;
   public tables: any;
   public tableFields: any;
+  public complexSearchService: any;
   public itemToDelete: object | any;
   public allData: any[];
   public selectedRows: any[];
@@ -67,6 +69,7 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
     this.isLoading = true
     this.selectAll = false
     this.tableFields = {}
+    this.complexSearchService = ComplexSearchService.getInstance()
   }
 
   /*
@@ -187,9 +190,9 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
       ...query,
       page: this.currentPage,
       size: this.itemsPerPage,
-      sort: ['id,desc']
+      sort: 'id,desc'
     }
-    axios.post(url, query).then((resp:AxiosResponse) => {
+    this.complexSearchService.searchRelations(url, query).then((resp:AxiosResponse) => {
       if(resp && resp.data) {
         this.totalItems = resp.data.totalElements
         this.currentPage = resp.data.pageable.pageNumber

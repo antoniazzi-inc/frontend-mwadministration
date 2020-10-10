@@ -348,7 +348,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
     complexQueryDto.groups = groups
     console.log(complexQueryDto)
     // @ts-ignore
-    this.$refs.paginationTable.complexSearch('api/relation-search', undefined, query)
+    this.$refs.paginationTable.complexSearch('api/relation-search', complexQueryDto)
   }
 
   public openSearchQueries(isForSimpleQueries: any) {
