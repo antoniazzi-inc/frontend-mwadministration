@@ -238,7 +238,8 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public createCart() {
-    this.cartOrderService.post(this.cartOrder).then((resp: AxiosResponse) => {
+    this.cartOrder.relationId = this.cartOrder.orderCustomer.relationId
+    this.cartOrderService.createCart(this.cartOrder).then((resp: AxiosResponse) => {
       if (resp) {
         this.setAlert('orderCreated', 'success')
         this.$router.push('/orders')

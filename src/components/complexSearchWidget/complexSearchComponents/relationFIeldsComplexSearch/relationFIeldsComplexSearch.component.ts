@@ -6,7 +6,8 @@ import {dateOperators, equalOperators, genderOperators, textOperators} from "@/s
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
-
+import moment from "moment";
+import {INSTANT_FORMAT} from "@/shared/filters";
 @Component({
   components: {
     SearchableSelectComponent,
@@ -80,7 +81,7 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
         label: this.$t('labels.company'),
         outputElement: {type: 'text', options: null},
         operators: textOperators,
-        searchQuery: 'companies.name'
+        searchQuery: 'relationProfile.companyName'
       },
       {
         id: 'email',
@@ -108,21 +109,21 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
         label: this.$t('labels.postalCode'),
         outputElement: {type: 'text', options: null},
         operators: textOperators,
-        searchQuery: 'relationAddress.postalCode'
+        searchQuery: 'relationAddresses.postalCode'
       },
       {
         id: 'city',
         label: this.$t('labels.city'),
         outputElement: {type: 'text', options: null},
         operators: textOperators,
-        searchQuery: 'relationAddress.city'
+        searchQuery: 'relationAddresses.city'
       },
       {
         id: 'phone',
         label: this.$t('labels.phone'),
         outputElement: {type: 'text', options: null},
         operators: textOperators,
-        searchQuery: 'relationPhone.number'
+        searchQuery: 'relationPhones.number'
       },
       {
         id: 'website',
@@ -144,6 +145,12 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
 
   @Watch('searchValue', {immediate: true, deep: true})
   public updateSearchValue(newVal: any) {
+    if(this.selectedRelationField.outputElement.type === 'date' && newVal){
+      if(this.selectedRelationField.id === 'birthDate') {
+        newVal = moment(newVal, 'DD-MM-YYYY').format('YYYY-MM-DD')
+      } else
+        newVal = moment(newVal, 'DD-MM-YYYY').format(INSTANT_FORMAT)
+    }
     this.updateQuery(this.selectedOperator ? this.selectedOperator.id : null, this.selectedRelationField ? this.selectedRelationField.searchQuery : null, newVal)
     this.$emit('input', {
       attribute: this.selectedRelationField,
@@ -206,7 +213,7 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
   public addGender(e: any) {
     if (!e) return
     this.selectedGeneder = e
-    this.updateQuery(this.selectedOperator ? this.selectedOperator.id : null, this.selectedRelationField.searchQuery, this.selectedGeneder.id)
+    this.updateQuery(this.selectedOperator ? this.selectedOperator.id : null, this.selectedRelationField.searchQuery, this.selectedGeneder.labelValue)
     this.$emit('input', {
       attribute: this.selectedRelationField,
       subAttribute: null,
@@ -234,7 +241,7 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
   public addOperator(e: any) {
     if (!e) return
     this.selectedOperator = e
-    this.updateQuery(this.selectedOperator.id, this.selectedRelationField ? this.selectedRelationField.searchQuery : '', this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder.id : null)
+    this.updateQuery(this.selectedOperator.id, this.selectedRelationField ? this.selectedRelationField.searchQuery : '', this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder.labelValue : null)
     this.$emit('input', {
       attribute: this.selectedRelationField,
       subAttribute: null,
@@ -248,7 +255,7 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
   public removeOperator(e: any) {
     if (!e) return
     this.selectedOperator = null
-    this.updateQuery(null, this.selectedRelationField.searchQuery, this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder.id : null)
+    this.updateQuery(null, this.selectedRelationField.searchQuery, this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder.labelValue : null)
     this.$emit('input', {
       attribute: this.selectedRelationField,
       subAttribute: null,

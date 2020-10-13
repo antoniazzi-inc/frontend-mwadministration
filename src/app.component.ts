@@ -182,10 +182,6 @@ export default class App extends mixins(Vue, CommonHelpers) {
         })
         this.$store.commit('courses', courses)
       })
-      this.companyService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
-        this.counter++
-        this.$store.commit('companies', resp.data.content)
-      })
 
       this.invoiceTemplateService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
@@ -224,23 +220,6 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.counter++
         this.$store.commit('permissions', resp.data.content)
       })
-      this.businessService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
-        this.counter++
-        if (resp && resp.data.content.length > 0) {
-          this.$store.commit('administrationBusiness', resp.data.content)
-        } else {
-          const createBussinessDto = {
-            name: 'DefaultBusiness' + this.$store.state.userIdentity.id,
-            description: 'default Business',
-            website: 'default.com'
-          }
-          this.businessService.post(createBussinessDto).then((resp: AxiosResponse) => {
-            if (resp) {
-              this.$store.commit('administrationBusiness', resp.data)
-            }
-          })
-        }
-      })
     }
 
     @Watch('$store.state.authenticated', { immediate: true, deep: true })
@@ -254,7 +233,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
 
     @Watch('counter', { immediate: true, deep: true })
     public changeReady (newVal: any) {
-      if (newVal > 17) {
+      if (newVal > 15) {
         this.isReady = true
       }
     }

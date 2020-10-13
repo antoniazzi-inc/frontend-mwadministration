@@ -54,8 +54,8 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
       altInput: false,
       dateFormat: 'd-m-Y'
     }
-    this.searchQuery = 'orderLines.product.productId=={productId}'
-    this.subSearchQuery = 'orderLines.product.orderProductAttributeValues.attributeValueId=={attributeValueId}'
+    this.searchQuery = 'cartOrders.orderLines.product.productId=={productId}'
+    this.subSearchQuery = 'cartOrders.orderLines.product.orderProductAttributeValues.attributeValueId=={attributeValueId}'
     this.dateSearchQuery = 'createdOn'
     this.appliedQuery = ''
     this.msName = 'ORDERMS'

@@ -48,6 +48,6 @@ export default class OrderQuantityComplexSearchComponent extends mixins(CommonHe
   }
 
   public updateQuery(){
-    this.appliedQuery = this.selectedOperator ? 'orderLines.quantity' + this.selectedOperator.id.replace('{k}', this.initialValue) : ''
+    this.appliedQuery = this.selectedOperator ? 'cartOrders.orderLines.quantity' + this.selectedOperator.id.replace('{k}', this.initialValue) : ''
   }
 }

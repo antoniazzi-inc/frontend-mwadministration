@@ -18,4 +18,8 @@ export default class  CartOrdersService extends BaseEntityService<ICartOrder> {
       return this.postRequest(`api/cart-wizard-2-prices`, cartOrder)
 
     }
+    public createCart(cartOrder:ICartOrder) {
+      return this.postRequest(`api/cart-orders`, cartOrder)
+
+    }
 }

@@ -19,7 +19,7 @@ export default class ComplexSearchService extends BaseEntityService<IComplexSear
   public searchRelations(url:any, query:any){
     return new Promise(resolve => {
       axios.post(url, query).then(function (res) {
-        resolve(res.data)
+        resolve(res)
       })
     })
   }

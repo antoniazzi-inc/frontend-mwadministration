@@ -29,7 +29,7 @@ export default class OrderAmountComplexSearchComponent extends mixins(CommonHelp
     this.operatorsSingleSelectConfig = new SearchableSelectConfig('label',
       'labels.selectOperator', '', false,
       false, false, false, false, false, true)
-    this.searchQuery = 'nettoAmount'
+    this.searchQuery = 'cartOrders.nettoAmount'
     this.msName = 'ORDERMS'
   }
   @Watch('value', {immediate: true, deep: true})
@@ -53,6 +53,6 @@ export default class OrderAmountComplexSearchComponent extends mixins(CommonHelp
   }
 
   public updateQuery(){
-    this.searchQuery = this.selectedOperator ? 'nettoAmount' + this.selectedOperator.id.replace('{k}', this.initialValue) : ''
+    this.searchQuery = this.selectedOperator ? 'cartOrders.nettoAmount' + this.selectedOperator.id.replace('{k}', this.initialValue) : ''
   }
 }

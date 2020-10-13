@@ -45,7 +45,7 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
     this.searchValue = null
     this.selectedFieldType = ''
     this.appliedQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.value'
-    this.appliedSubQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.customFieldOption.id=={conditionOptionId}'
+    this.appliedSubQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.customFieldOption.id'
     this.currentQuery = ''
     this.msName = 'RELATIONMS'
 
@@ -63,7 +63,7 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
       case 'BOOLEAN':
         this.selectedFieldType = 'boolean'
         this.allOperators = []
-        this.selectedOperator = {id: '==', label: 'Equals'}
+        this.selectedOperator = {id: '=={k}', label: 'Equals'}
         this.searchValue = true
         break;
       case 'TEXT':
@@ -117,8 +117,9 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
     let customField = this.selectedFreeField && this.selectedFreeField.value ? this.selectedFreeField.value.id : null
     let customFieldOption = this.selectedFreeFieldOption && this.selectedFreeFieldOption.value ? this.selectedFreeFieldOption.value.id : null
     if(customFieldOption) {
-      this.currentQuery = this.appliedSubQuery.replace('{conditionId}', customField).replace('{conditionOptionId}', customFieldOption) + operator.replace('{k}', this.searchValue)
+      this.currentQuery = this.appliedSubQuery.replace('{conditionId}', customField) + operator.replace('{k}', customFieldOption)
     } else {
+      debugger
       this.currentQuery = this.appliedQuery.replace('{conditionId}', customField) +  operator.replace('{k}', this.searchValue)
     }
   }

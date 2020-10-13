@@ -29,7 +29,7 @@ export default class SummedSpentAmountComplexSearchComponent extends mixins(Comm
     this.operatorsSingleSelectConfig = new SearchableSelectConfig('label',
       'labels.selectOperator', '', false,
       false, false, false, false, false, true)
-    this.searchQuery = 'nettoAmount' /*TODO CHANGE TO totalAmount TBD Kristijan Should return summed value from all invoices*/
+    this.searchQuery = 'sum|orderRelation|cartOrders.totalAmount' /*TODO CHANGE TO totalAmount TBD Kristijan Should return summed value from all invoices*/
     this.msName = 'ORDERMS'
   }
   @Watch('value', {immediate: true, deep: true})
@@ -53,6 +53,6 @@ export default class SummedSpentAmountComplexSearchComponent extends mixins(Comm
   }
 
   public updateQuery(){
-    this.searchQuery = this.selectedOperator ? 'totalAmount' + this.selectedOperator.id.replace('{k}', this.initialValue) : ''
+    this.searchQuery = this.selectedOperator ? '(sum|orderRelation|cartOrders.totalAmount' + this.selectedOperator.id.replace('{k}', this.initialValue) + ')' : ''
   }
 }
