@@ -14,6 +14,7 @@ npm run serve
 ```
 npm run build
 ```
+Don't forget to commit & push the dist files so that dse server can use these files
 
 ### Lints and fixes files
 ```

@@ -64,6 +64,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public searchProductInit: any;
   public selectedProductFeature: any;
   public selectedPaymentSchedule: any;
+  public selectedPaymentMethod: any;
   public moneyFixed: any;
   public productQuantity: any;
   public allProductFeatures: any[];
@@ -78,6 +79,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public singleSelectConfigAttribute: ISearchableSelectConfig;
   public singleSelectConfigAffiliate: ISearchableSelectConfig;
   public singleSelectConfigDeliveryMethod: ISearchableSelectConfig;
+  public singleSelectPaymentMethod: ISearchableSelectConfig;
   public productService: any;
   public cartOrderService: any;
   public attributeService: any;
@@ -104,6 +106,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.allRelations = [];
     this.allShippingMethodsBackup = [];
     this.selectedShippingMethods = null;
+    this.selectedPaymentMethod = null;
     this.timer = null;
     this.selectedAffiliate = null;
     this.orderCopy = null;
@@ -122,6 +125,9 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.multiSelectConfig = new SearchableSelectConfig('email',
       'labels.chooseBeneficiary', '', false,
       false, true, true, false, false, true)
+    this.singleSelectPaymentMethod = new SearchableSelectConfig('email',
+      'labels.choosePaymentMethod', '', false,
+      false, false, false, false, true)
     this.isProductSelected = false;
     this.usePaymentSchedule = false;
     this.addNewPromotion = false;

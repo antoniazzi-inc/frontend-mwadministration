@@ -22,13 +22,13 @@
                                         <td>{{item.quantity}}</td>
                                         <td class="text-center">
                                             <div class="btn-group flex-btn-group-container">
-                                                <div @click.prevent="editBeneficiary(item)" data-target="#editBeneficiary" data-toggle="modal"  class="ml-3 text-primary cursor-pointer">
+                                                <div @click.prevent="editBeneficiary(item)" data-target="#editBeneficiary" data-toggle="modal"  class="ml-3 text-success cursor-pointer">
                                                     <i class="fas fa-edit"></i>
                                                 </div>
                                                 <div class="text-danger ml-3 cursor-pointer" data-target="#removeBeneficiary" data-toggle="modal" @click.prevent="prepareRemove(item, index)">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </div>
-                                                <div class="ml-3 cursor-pointer text-warning" data-target="#copyBeneficiary" data-toggle="modal" @click.prevent="copyBeneficiary(item, index)">
+                                                <div class="ml-3 cursor-pointer text-primary" data-target="#copyBeneficiary" data-toggle="modal" @click.prevent="copyBeneficiary(item, index)">
                                                     <i class="os-icon os-icon-grid-10"></i>
                                                 </div>
                                             </div>
@@ -106,7 +106,7 @@
             </div>
             <div class="modal-body">
               <form>
-                <div class="row" v-if="selectedBeneficiary">
+                <div class="row mt-3" v-if="selectedBeneficiary">
                   <div class="col-md-3">
                     <div class="form-group">
                       <label class="form-control-label">{{$t('labels.title')}}</label>
@@ -143,12 +143,12 @@
                                                    :options="$store.state.allCountries"
                                                    :value="selectedCountry"
                                                    @onChange="addCountry"
-                                                   @onDelete="removeCountry"/>
+                                                   @onDelete="removeCountry" style="margin-top:1em;"/>
                     </form>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-md-12">
+                  <div class="col-md-12 mt-3">
                     <label class="form-control-label">{{$t('labels.quantity')}}</label>
                     <input type="number" min="0" class="form-control" v-model="selectedOrderLine.quantity"/>
                   </div>

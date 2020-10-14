@@ -38,11 +38,10 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
   public vatNumber: any;
   public vatSettings: any;
   public affiliateCode: any;
-  public multiSelectConfigCountry: ISearchableSelectConfig;
+  public singleSelectConfigCountry: ISearchableSelectConfig;
   public selectedCountry: any;
   public invoiceEmailContent: any;
   public invoiceEmailSubject: any;
-  public multiSelectConfigCompany: any;
   public allCompanies: any;
   public cartOrderService: any;
   public relationService: any;
@@ -62,7 +61,7 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     this.customerBillingAddressService = CustomerBillingAddressesService.getInstance()
     this.vatSettings = null;
     this.selectedCountry = null;
-    this.selectedCompany = null;
+    this.selectedCompany = '';
     this.affiliateCode = '';
     this.vatNumber = '';
     this.startDate = '';
@@ -77,13 +76,10 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     };
     this.orderCopy = new CartOrder(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
       this.$store.state.currentLanguage, undefined, undefined, undefined, undefined, undefined, new CustomerBillingAddress(), new CustomerDeliveryAddress(), undefined, new OrderCustomer(), [], []);
-    this.multiSelectConfigCountry = new SearchableSelectConfig('enName',
-      'labels.country', '', false,
-      false, true, true, false)
-
-    this.multiSelectConfigCompany = new SearchableSelectConfig('name',
-      'labels.createNewCompany', '', false,
+    this.singleSelectConfigCountry = new SearchableSelectConfig('enName',
+      'labels.country', '', true,
       false, true, false, false)
+
   }
 
   @Watch('order', {immediate: true, deep: true})
@@ -127,12 +123,12 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     });
   }
 
-  public changeLangauge(e: any) {
+  public changeLanguage(e: any) {
     this.selectedLang = e.currentTarget.value;
   }
 
   public changeVat(e: any) {
-    this.vatSettings = e.value;
+    this.vatSettings = e.currentTarget.value;
   }
 
   public countryChanged(country: any) {
@@ -220,11 +216,4 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     this.invoiceEmailContent = content;
   }
 
-  public addCompany(company: any) {
-    this.selectedCompany = company;
-  }
-
-  public removeCompany() {
-    this.selectedCompany = null;
-  }
 }

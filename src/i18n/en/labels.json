@@ -629,6 +629,7 @@
   "matchType" : "Match type",
   "searchQueries" : "Available Searches Select an existing filter to search for relations",
   "children": "Children",
+  "recentItems": "Recent Items",
   "parent": "Parent",
   "Physical": "Voucher",
   "selectProductType": "Select Product Type",

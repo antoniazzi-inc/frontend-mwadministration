@@ -1,6 +1,7 @@
 <template>
-  <div class="row p-3 text-left tab-form-panel">
-    <div class="col-md-6">
+  <div class="tab-form-panel">
+    <div class="row p-3 text-left">
+      <div class="col-md-6">
       <div class="row">
         <!--<div class="col-md-12">
             <div class="form-group">
@@ -38,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6">
+      <div class="col-md-6">
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
@@ -76,16 +77,16 @@
         </div>
       </div>
     </div>
+    </div>
     <div class="form-group">
+      <hr/>
       <div class="row">
-        <div class=" col-md-12 text-right">
-          <hr/>
+        <div class="col-md-12 text-right">
           <button type="submit" @click.prevent="save" class="btn btn-primary">{{ $t('buttons.save') }}</button>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 <script lang="ts" src="./invoice.component.ts">
 </script>

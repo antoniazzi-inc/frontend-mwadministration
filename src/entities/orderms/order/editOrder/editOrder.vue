@@ -40,7 +40,7 @@
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item tab-nav" @click="currentTab = 'customers'">
               <a :class="{'nav-link': true, 'active': currentTab === 'customers'}" id="customers-tab" data-toggle="tab"
-                 href="#customers" role="tab" aria-controls="customers" aria-selected="true">{{ $t('labels.customers') }}</a>
+                 href="#customers" role="tab" aria-controls="customers" aria-selected="true">{{ $t('labels.customer') }}</a>
             </li>
             <li class="nav-item tab-nav" @click="currentTab = 'beneficiaries'">
               <a :class="{'nav-link': true, 'active': currentTab === 'beneficiaries'}" id="beneficiaries-tab"
@@ -60,10 +60,12 @@
               <a :class="{'nav-link': true, 'active': currentTab === 'payment'}" id="payment-tab" data-toggle="tab"
                  href="#payment" role="tab" aria-controls="payment" aria-selected="true">{{ $t('labels.invoiceList') }}</a>
             </li>
+            <!--
             <li class="nav-item tab-nav" @click="currentTab = 'affiliate'">
               <a :class="{'nav-link': true, 'active': currentTab === 'affiliate'}" id="affiliate-tab" data-toggle="tab"
                  href="#affiliate" role="tab" aria-controls="affiliate" aria-selected="true">{{ $t('labels.affiliate') }}</a>
             </li>
+            -->
             <li class="nav-item tab-nav" @click="currentTab = 'delivery'">
               <a :class="{'nav-link': true, 'active': currentTab === 'delivery'}" id="delivery-tab" data-toggle="tab"
                  href="#delivery" role="tab" aria-controls="delivery" aria-selected="true">{{ $t('labels.delivery') }}</a>
@@ -90,10 +92,12 @@
                  aria-labelledby="payment-tab">
               <payment-component :order="cartOrder" @update="updateCart"/>
             </div>
+            <!--
             <div :class="{'tab-pane': true, active: currentTab === 'affiliate'}" id="affiliate" role="tabpanel"
                  aria-labelledby="affiliate-tab">
               <affiliate-component :order="cartOrder" @update="updateCart"/>
             </div>
+            -->
             <div :class="{'tab-pane': true, active: currentTab === 'delivery'}" id="delivery" role="tabpanel"
                  aria-labelledby="delivery-tab">
               <delivery-component :order="cartOrder" @update="updateCart"/>

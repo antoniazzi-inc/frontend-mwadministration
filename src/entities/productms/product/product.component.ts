@@ -168,6 +168,7 @@ export default class ProductComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public editProduct (prod: any) {
+    this.updateRecentItemsAfterRead(prod.id, prod.productLanguages[0].name, 'product')
     this.$router.push({ name: 'EditProduct', params: { id: prod.id } })
   }
 

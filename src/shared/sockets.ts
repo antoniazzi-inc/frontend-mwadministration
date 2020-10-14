@@ -278,7 +278,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
     }
     else {
       // CREATE or UPDATE: add to list (if len < 3)
-      if (items.length > 3) items.shift()
+      if (items.length >= 20) items.shift()
       items.push(item)
       this.store.commit('recentItems', items)
     }

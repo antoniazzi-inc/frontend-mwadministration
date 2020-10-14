@@ -99,8 +99,8 @@
           @onInfo="orderInfo"
           :service="orderService"/>
       </div>
-      <div class="modal" data-backdrop="static" data-keyboard="false" id="orderInfoModal" tabindex="-1" role="dialog"
-           ref="orderInfoModal">
+
+      <div class="modal" data-backdrop="static" data-keyboard="false" id="orderInfoModal" tabindex="-1" role="dialog" ref="orderInfoModal">
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -113,11 +113,13 @@
               <order-info-component :order="selectedOrder"/>
             </div>
             <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" @click="editOrder(selectedOrder)">{{ $t('buttons.edit') }}</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ $t('buttons.close') }}</button>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>

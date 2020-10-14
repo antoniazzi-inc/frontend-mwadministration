@@ -206,8 +206,9 @@ export default class OrderComponent extends mixins(CommonHelpers, Vue) {
     this.$refs.paginationTable.retrieveData('api/orderms/api/cart-orders', undefined, undefined)
   }
 
-  public editOrder(prod: any) {
-    this.$router.push({name: 'EditOrder', params: {id: prod.id}})
+  public editOrder(order: any) {
+    this.updateRecentItemsAfterRead(order.id, 'order ' + order.id, 'order')
+    this.$router.push({name: 'EditOrder', params: {id: order.id}})
   }
 
   public deleteOrder(order: any) {

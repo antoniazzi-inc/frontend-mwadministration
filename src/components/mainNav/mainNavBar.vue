@@ -94,7 +94,7 @@
             <i class="main-menu-icon os-icon os-icon-mail-14"></i>
           </router-link>
           <div class="dropdown-menu" style="left:-18em;" aria-labelledby="recentedits">
-            <h3 class="menu-title">Recent Items</h3>
+            <h3 class="menu-title">{{$t('labels.recentItems')}}</h3>
             <template v-for="(item, ind) in $store.state.recentItems">
               <router-link :key="ind" :to="recentItemPath(item)" class="child-link recentlink">
                 <i class="os-icon os-icon-ui-54" v-if="item.type === 'tag' || item.type === 'category'"/>

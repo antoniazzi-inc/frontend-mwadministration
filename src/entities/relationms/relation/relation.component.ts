@@ -268,6 +268,7 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public editRelation(rel: any) {
+    this.updateRecentItemsAfterRead(rel.id, rel.email, 'relation')
     this.$router.push({name: 'EditRelations', params: {id: rel.id}})
   }
 

@@ -22,6 +22,11 @@ function getCountryById (id: number) {
   })
   return result
 }
+function getAmount(value: any) {
+  if (!value) return Store.state.currency + ' 0,00'
+  let val = (value/1).toFixed(2).replace('.', ',')
+  return Store.state.currency + ' ' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+}
 /*
    * Name: getDiscount
    * arg: discount -> IDiscount
@@ -36,7 +41,7 @@ function getDiscount (promotionType: any) {
   if(promotionType.discount.percentage !== undefined && promotionType.discount.percentage !== null){
     result = `${promotionType.discount.percentage}%`
   } else if(promotionType.discount.fixed !== undefined && promotionType.discount.fixed !== null){
-    result = `${promotionType.discount.fixed}${Store.state.currency}`
+    result = getAmount(promotionType.discount.fixed)
   } else if(promotionType.discount.noShipping){
     result = 'noShipping'
   } else {
@@ -275,7 +280,7 @@ export const product = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        return `${Store.state.currency} ${item.price}`
+        return getAmount(item.price)
       }
     },
     /*{ TODO: RETURNS AND HTML CODE to the table
@@ -542,7 +547,8 @@ export const promotion = {
       authorities: ['*'],
       sort: false,
       method: null
-    }, {
+    },
+    {
       name: 'labels.discount',
       field: 'discount',
       subField: null,

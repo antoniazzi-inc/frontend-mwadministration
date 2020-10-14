@@ -61,6 +61,7 @@
                             <span v-if="item.orderLineDeliveryMethod">{{$t('labels.shippingMethod')}}: {{getDeliveryMethodName(item)}}</span>
                             <span v-if="item.orderLineBeneficiary && item.orderLineBeneficiary.email">
                             <span class="font-weight-bold">{{$t('labels.beneficiary')}}:</span><br/>
+                              <!-- only show beneficiary info if num beneficiaries > 1 or benefic != customer -->
                             {{getBeneficiaries(item)}}
                         </span>
 

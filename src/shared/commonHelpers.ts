@@ -875,4 +875,17 @@ export default class CommonHelpers extends Vue {
       }
     }
   }
+
+  public updateRecentItemsAfterRead(an_id: number, a_label: string, a_type: string,) {
+    let item = {
+      label: a_label,
+      id: an_id,
+      type: a_type,
+    }
+    let items = this.$store.state.recentItems
+      if (items.length >= 20) items.shift()
+      items.push(item)
+      this.$store.commit('recentItems', items)
+    }
+
 }

@@ -21,7 +21,7 @@
           <thead>
           <tr>
             <th v-if="$props.table === 'relation'">
-              <input type="checkbox" class="form-control" @input="selectAllVisible" v-model="selectAll"/>
+              <input type="checkbox" class="form-control rel-select" @input="selectAllVisible" v-model="selectAll"/>
             </th>
             <template v-for="(item, index) in tables[$props.table].cols">
               <th v-if="hasAuthority(item.authorities)" :key="index" v-show="checkVisibility(item)">
@@ -36,7 +36,7 @@
           <tbody>
             <tr v-for="(item, ind) in allData" :key="ind" @click="toggleSelectRow(item.id, ind)" :class="{selected: selectedRows.findIndex(e=> e.id === item.id) > -1}">
               <td v-if="$props.table === 'relation'">
-                <input type="checkbox" class="form-control" :checked="selectedRows.findIndex(e=> e.id === item.id) > -1" @input="selectRow($event, item.id, ind)"/>
+                <input type="checkbox" class="form-control rel-select" :checked="selectedRows.findIndex(e=> e.id === item.id) > -1" @input="selectRow($event, item.id, ind)"/>
               </td>
               <template v-for="(col, index) in tables[$props.table].cols">
                 <td :key="index" v-if="hasAuthority(col.authorities)" v-show="checkVisibility(col)">
@@ -153,6 +153,11 @@
   .table td {
     font-size: 1.1em;
     text-align: left;
+  }
+  .rel-select {
+    padding:0px;
+    margin:0px;
+    margin-left: 1em;
   }
   .selected{
     background-color: rgba(109, 221, 0, 0.1) !important;
