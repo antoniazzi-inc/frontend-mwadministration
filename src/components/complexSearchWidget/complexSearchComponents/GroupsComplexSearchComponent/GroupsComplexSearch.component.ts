@@ -7,6 +7,9 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
 @Component({
   components:{
     SearchableSelectComponent
+  },
+  props:{
+    query: [Object,Array,String]
   }
 })
 export default class GroupsComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -32,6 +35,15 @@ export default class GroupsComplexSearchComponent extends mixins(CommonHelpers, 
     this.msName = 'RELATIONMS'
   }
 
+  public mounted(){
+    if(this.$props.query){
+      const preFillData = this.checkIfRuleExists('groups', this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedGroup = preFillData.value.value
+        this.selectedOperator = preFillData.value.operator
+      }
+    }
+  }
   public addGroup(e:any){
     this.selectedGroup = e
     this.updateQuery()

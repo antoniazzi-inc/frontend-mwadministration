@@ -17,7 +17,8 @@ import SearchableSelectComplexSearchComponent
   from "@/components/complexSearchWidget/complexSearchComponents/RegionsComplexSearchComponent/RegionsComplexSearch.vue";
 @Component({
   props:{
-    location: String
+    location: String,
+    complexSearchQuery: [Object,Array,String]
   },
   components: {
     RelationFIeldsComplexSearchComponent,
@@ -44,13 +45,14 @@ export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
     this.newQueryName = ''
     this.newQueryDesc = ''
     this.query = {
-      operatorIdentifier: 'AND',
+      operatorIdentifier: 'and',
       children: []
     }
   }
-  @Watch('query', {immediate: true, deep: true})
+  @Watch('complexSearchQuery', {immediate: true, deep: true})
   public updateQuery(newVal:any){
-
+    if(newVal)
+      this.query = newVal
   }
   get showsave () {
     return this.query != null && this.query.children && this.query.children.length > 0
@@ -60,11 +62,11 @@ export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
       operators: [
         {
           name: 'labels.AND',
-          identifier: 'AND',
+          identifier: 'and',
         },
         {
           name: 'labels.OR',
-          identifier: 'OR',
+          identifier: 'or',
         },
       ],
       rules: this.getRules(),
@@ -101,6 +103,14 @@ export default class ComplexSearchComponent extends mixins(CommonHelpers, Vue){
     }
   }
   public doSearch(){
+    this.$emit('search', this.query)
+  }
+  public clear(){
+    this.query = {
+      operatorIdentifier: 'and',
+      children: []
+    }
+    localStorage.setItem('activeSearch', '')
     this.$emit('search', this.query)
   }
 }

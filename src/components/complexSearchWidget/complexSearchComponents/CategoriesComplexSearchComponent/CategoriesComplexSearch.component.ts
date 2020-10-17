@@ -7,6 +7,9 @@ import {equalOperators} from "@/shared/complexSearchOperators";
 @Component({
   components:{
     SearchableSelectComponent
+  },
+  props:{
+    query: [Object,Array,String]
   }
 })
 export default class CategoriesComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -32,6 +35,15 @@ export default class CategoriesComplexSearchComponent extends mixins(CommonHelpe
     this.msName = 'RELATIONMS'
   }
 
+  public mounted(){
+    if(this.$props.query){
+      const preFillData = this.checkIfRuleExists('categories', this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedCategory = preFillData.value.value
+        this.selectedOperator = preFillData.value.operator
+      }
+    }
+  }
   public addCategory(e:any){
     if(!e) return
     this.selectedCategory = e
@@ -62,7 +74,7 @@ export default class CategoriesComplexSearchComponent extends mixins(CommonHelpe
     let operator = this.selectedOperator ? this.selectedOperator.id : null
     let value = this.selectedCategory ? this.selectedCategory.id : null
     if(operator && value) {
-      this.searchQuery = 'relationProfile.categoryId' + operator.replace('{k}', value)
+      this.searchQuery = operator.match('!') ? 'relationProfile.categoryId=null=true or relationProfile.categoryId' + operator.replace('{k}', value) : 'relationProfile.categoryId' + operator.replace('{k}', value)
     } else {
       this.searchQuery = ''
     }

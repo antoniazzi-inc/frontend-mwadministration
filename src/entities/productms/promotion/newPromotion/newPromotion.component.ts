@@ -51,11 +51,12 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   public step4Error: any;
   public isSaving: boolean;
   public isValidatingStep2: boolean;
+  public isStep4Validation: boolean;
   public couponMaxTimesUsed: boolean;
   public forAllAffiliates: boolean;
   public notUrl: boolean;
   public validDays: boolean;
-  public availableFrom: Date;
+  public availableFrom: any;
   public availableTo: Date | any;
   public isSubscription: boolean;
   public step: number;
@@ -122,6 +123,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
     this.selectedProduct = null
     this.selectedBundleProduct = null
     this.couponMaxTimesUsed = false
+    this.isStep4Validation = false
     this.validDays = false
     this.forAllAffiliates = false
     this.step4Error = ''
@@ -144,7 +146,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
     this.discountPriceAmount = 0.0;
     this.discountQuantityAmount = 0.0;
     this.promotionService = promotionsService.getInstance()
-    this.availableFrom = new Date()
+    this.availableFrom = moment().format(DATE_FORMAT)
     this.availableTo = null
     this.promotion = new Promotion(undefined, undefined, undefined, undefined,
       undefined, promotionType.AFFILIATE, undefined, undefined, undefined
@@ -191,6 +193,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public created() {
+    //this.$validator.pause()
     this.promotion.typeTimeBased = new TypeTimeBased()
   }
 
@@ -598,8 +601,9 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
             if (this.couponMaxTimesUsed) {
               resolve(true)
             } else {
+              this.isStep4Validation = true
               this.$validator.validateAll({
-                couponMaxTimesUsed: this.maxTimesUsed
+                couponMaxTimesUsed: self.maxTimesUsed
               }).then(resp => {
                 resolve(resp)
               })

@@ -20,7 +20,8 @@ import ToggleSwitchComplexSearchComponent
 @Component({
   props:{
     rules: [Array],
-    ruleCtrl: [Array, Object]
+    ruleCtrl: [Array, Object],
+    query: [Object,Array,String]
   },
   components: {
     RelationFIeldsComplexSearchComponent,

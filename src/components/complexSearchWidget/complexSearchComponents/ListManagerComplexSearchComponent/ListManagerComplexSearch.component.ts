@@ -10,6 +10,8 @@ import 'flatpickr/dist/flatpickr.css'
   components:{
     SearchableSelectComponent,
     flatPickr
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class ListManagerComplexSearchComponent extends mixins(CommonHelpers, Vue) {

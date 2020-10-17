@@ -7,6 +7,8 @@ import {mailingOperators} from "@/shared/complexSearchOperators";
 @Component({
   components:{
     SearchableSelectComponent
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class MailingComplexSearchComponent extends mixins(CommonHelpers, Vue) {

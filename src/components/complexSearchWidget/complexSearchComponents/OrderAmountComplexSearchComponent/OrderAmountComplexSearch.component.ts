@@ -10,6 +10,8 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
   components:{
     Money,
     SearchableSelectComponent
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class OrderAmountComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -31,6 +33,15 @@ export default class OrderAmountComplexSearchComponent extends mixins(CommonHelp
       false, false, false, false, false, true)
     this.searchQuery = 'cartOrders.nettoAmount'
     this.msName = 'ORDERMS'
+  }
+  public mounted(){
+    if(this.$props.query){
+      const preFillData = this.checkIfRuleExists('orderAmount', this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedOperator = preFillData.value.operator
+        this.initialValue = preFillData.value.value
+      }
+    }
   }
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){

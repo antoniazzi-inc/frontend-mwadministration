@@ -5,7 +5,8 @@ import {Component, Vue} from "vue-property-decorator";
 @Component({
   props: {
     groupCtrl: [Object, Array],
-    depth: Number
+    depth: Number,
+    query: [Object,Array,String]
   },
   components: {}
 })

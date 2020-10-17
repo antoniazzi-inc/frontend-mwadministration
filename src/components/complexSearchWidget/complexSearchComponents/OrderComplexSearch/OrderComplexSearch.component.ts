@@ -7,11 +7,13 @@ import {orderOperators} from "@/shared/complexSearchOperators";
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import moment from "moment";
-import {DATE_FORMAT} from "@/shared/filters";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 @Component({
   components:{
     SearchableSelectComponent,
     flatPickr
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class OrderComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -27,6 +29,7 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
   public dateConfig: any
   public dateValue: any
   public searchQuery: any
+  public dateValueForQuery: any
   public subSearchQuery: any
   public dateSearchQuery: any
   public msName: any
@@ -54,14 +57,26 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
       altInput: false,
       dateFormat: 'd-m-Y'
     }
-    this.searchQuery = 'cartOrders.orderLines.product.productId=={productId}'
-    this.subSearchQuery = 'cartOrders.orderLines.product.orderProductAttributeValues.attributeValueId=={attributeValueId}'
-    this.dateSearchQuery = 'createdOn'
+    this.searchQuery = 'cartOrders.orderLines.orderProduct.productId=={productId}'
+    this.subSearchQuery = 'cartOrders.orderLines.orderProduct.orderProductAttributeValues.attributeValueId=in={attributeValueId}'
+    this.dateSearchQuery = 'cartOrders.createdOn'
     this.appliedQuery = ''
+    this.dateValueForQuery = ''
     this.msName = 'ORDERMS'
   }
   public mounted(){
-    this.updateQuery()
+    if(this.$props.query){
+      const preFillData = this.checkIfRuleExists('orders', this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedOperator = preFillData.value.operator
+        this.selectedProduct = preFillData.value.attribute
+        this.selectedProductAttribute = preFillData.value.subAttribute
+        if(!this.selectedProductAttribute){
+          this.allProductAttributes = []
+        }
+        this.dateValue = preFillData.value.value
+      }
+    }
   }
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){
@@ -69,8 +84,13 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
   }
   @Watch('dateValue', {immediate: true, deep: true})
   public updateInitialValue(newVal:any){
-    this.updateQuery()
-    this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: newVal, msName: this.msName, searchQuery:this.appliedQuery})
+    if(newVal) {
+      if (this.selectedOperator && (this.selectedOperator.labelValue.match('before') || this.selectedOperator.labelValue.match('after'))) {
+        this.dateValueForQuery = moment(this.dateValue, 'DD-MM-YYYY').format(INSTANT_FORMAT)
+      }
+    }
+      this.updateQuery()
+      this.$emit('input', {attribute: this.selectedProduct, subAttribute: this.selectedProductAttribute, operator: this.selectedOperator, value: newVal, msName: this.msName, searchQuery:this.appliedQuery})
   }
   public addOperator(e:any){
     this.selectedOperator = e
@@ -97,6 +117,7 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
       this.$set(this, 'allProductAttributes', allAttrs)
     } else {
       this.$set(this, 'allProductAttributes', [])
+      this.selectedProductAttribute = null
     }
     this.selectedProduct = e
     this.updateQuery()
@@ -124,19 +145,19 @@ export default class OrderComplexSearchComponent extends mixins(CommonHelpers, V
     let productAttrId = this.selectedProductAttribute && this.selectedProductAttribute.value ? this.selectedProductAttribute.value.id : null
     let query = ''
     if(productAttrId) {
-      query = this.subSearchQuery.replace('{attributeValueId}', productAttrId)
+      query = this.subSearchQuery.replace('{attributeValueId}', '(' + productAttrId + ')')
     } else {
       query = this.searchQuery.replace('{productId}', productId)
     }
-    let value = this.dateValue ? this.dateValue : null
+    let value = this.dateValueForQuery ? this.dateValueForQuery : null
     if (operator && (this.selectedOperator.labelValue.match('before') || this.selectedOperator.labelValue.match('after')) && query && value) {
-      this.appliedQuery = query + ' AND createdOn' + operator.replace('{k}', value)
+      this.appliedQuery = query + ' and cartOrders.createdOn' + operator.replace('{k}', value)
     } else {
       if(operator) {
         if(this.selectedOperator.labelValue.match('ordered')){
-          this.appliedQuery = query + ' AND createdOn=empty=false'
+          this.appliedQuery = query
         } else {
-          this.appliedQuery = query + ' AND createdOn' + operator
+          this.appliedQuery = query + ' and cartOrders.createdOn' + operator
         }
       }else
       this.appliedQuery = ''

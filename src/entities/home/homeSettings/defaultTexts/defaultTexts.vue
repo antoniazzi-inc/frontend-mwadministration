@@ -16,7 +16,7 @@
                 <div class="panel-body">
                   <ul class="sub-menu">
                     <template v-for="(text, index) in item.texts">
-                      <li>
+                      <li :key="index">
                         <a class="text-entry-link" @click="chooseText(text)" :key="index"><span>{{$t(text.name)}}</span></a>
                       </li>
                     </template>
@@ -110,7 +110,8 @@
               <default-texts-social-component v-if="selectedEmailTemplate && selectedEmailTemplate.id === 'mjml-fa' ||
               selectedEmailTemplate && selectedEmailTemplate.id === 'mjml-fm'" @onUpdate="updateSocialMedia" :value="emailText"/>
               <default-texts-social-component v-if="selectedHtmlPageTemplate
-              && selectedHtmlPageTemplate.id === 'mjml-page-f'" @onUpdate="updateHtmlSocialMedia" :value="htmlPage"/>
+              && selectedHtmlPageTemplate.id === 'mjml-page-f' && !(selectedEmailTemplate && selectedEmailTemplate.id === 'mjml-fa' ||
+              selectedEmailTemplate && selectedEmailTemplate.id === 'mjml-fm')" @onUpdate="updateHtmlSocialMedia" :value="htmlPage"/>
             </div>
             <div :class="{'tab-pane': true, active: currentTab === 'settings'}" id="settings" role="tabpanel"
                  aria-labelledby="settings-tab">

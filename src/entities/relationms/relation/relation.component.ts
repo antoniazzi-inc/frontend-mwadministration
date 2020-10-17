@@ -69,6 +69,8 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   public selectedGroups: any
   public selectedCategories: any
   public currentSearchCategory: string
+  public complexSearchQuery: string
+  public activeSearch: string
   public active: any
   public selectedAction: any
   public showQueryPopupForSimpleQueries: boolean
@@ -99,9 +101,11 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
     this.currentSearchGroups = null
     this.selectedTags = []
     this.currentSearchCategory = ''
+    this.activeSearch = 'simple'
     this.selectedAction = ''
     this.selectedGroups = []
     this.selectedCategories = null
+    this.complexSearchQuery = ''
     this.active = null
     this.showQueryPopupForSimpleQueries = false
     this.showSearchQueries = false
@@ -117,18 +121,27 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
         this.setAlert('relationsImported', 'success')
       }
     })
-    let simpleSearchQuery = this.reverseSimpleSearchQuery('relation')
-    if (simpleSearchQuery.length && !this.groupsSeach) {
-      this.currentSearchName = simpleSearchQuery.find((e: any) => e.id === 'currentSearchName') ? simpleSearchQuery.find((e: any) => e.id === 'currentSearchName').value : ''
-      this.currentSearchEmail = simpleSearchQuery.find((e: any) => e.id === 'currentSearchEmail') ? simpleSearchQuery.find((e: any) => e.id === 'currentSearchEmail').value : ''
-      this.selectedGroups = simpleSearchQuery.find((e: any) => e.id === 'selectedGroups') ? simpleSearchQuery.find((e: any) => e.id === 'selectedGroups').value : null
-      this.selectedCategories = simpleSearchQuery.find((e: any) => e.id === 'selectedCategories') ? simpleSearchQuery.find((e: any) => e.id === 'selectedCategories').value : null
-      this.selectedTags = simpleSearchQuery.find((e: any) => e.id === 'selectedTags') ? simpleSearchQuery.find((e: any) => e.id === 'selectedTags').value : []
-      this.simpleSearch()
+    let searchType = localStorage.getItem('activeSearch')
+    this.activeSearch = searchType ? searchType : 'simple'
+    if(searchType && searchType === 'simple'){
+      let simpleSearchQuery = this.reverseSimpleSearchQuery('relation')
+      if (simpleSearchQuery.length && !this.groupsSeach) {
+        this.currentSearchName = simpleSearchQuery.find((e: any) => e.id === 'currentSearchName') ? simpleSearchQuery.find((e: any) => e.id === 'currentSearchName').value : ''
+        this.currentSearchEmail = simpleSearchQuery.find((e: any) => e.id === 'currentSearchEmail') ? simpleSearchQuery.find((e: any) => e.id === 'currentSearchEmail').value : ''
+        this.selectedGroups = simpleSearchQuery.find((e: any) => e.id === 'selectedGroups') ? simpleSearchQuery.find((e: any) => e.id === 'selectedGroups').value : null
+        this.selectedCategories = simpleSearchQuery.find((e: any) => e.id === 'selectedCategories') ? simpleSearchQuery.find((e: any) => e.id === 'selectedCategories').value : null
+        this.selectedTags = simpleSearchQuery.find((e: any) => e.id === 'selectedTags') ? simpleSearchQuery.find((e: any) => e.id === 'selectedTags').value : []
+        this.simpleSearch()
     } else {
       if(!this.groupsSeach)
         this.active = true
     }
+  } else if(searchType && searchType === 'complex') {
+    this.complexSearchQuery = this.reverseComplexSearchQuery('relation')
+    this.startComplexSearch(this.complexSearchQuery)
+  } else {
+    if(!this.groupsSeach) this.active = true
+  }
   }
 
   public populateSearch(groupId: any) {
@@ -329,7 +342,12 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public startComplexSearch(query: any) {
-    if (!query) return
+    this.active = true
+    if (!query || !query.children || query.children.length === 0) {
+      // @ts-ignore
+      this.$refs.paginationTable.retrieveData('api/relationms/api/relations', undefined, undefined)
+      return
+    }
     let complexQueryDto = new ComplexSearch(undefined, undefined, 'id,asc', query.operatorIdentifier, [])
     let groups:IComplexSearchGroup[] = []
     query.children.forEach((child:any) => {
@@ -347,7 +365,8 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
       }
     })
     complexQueryDto.groups = groups
-    console.log(complexQueryDto)
+    this.updateComplexSearchQuery('relation', query)
+    this.active = false
     // @ts-ignore
     this.$refs.paginationTable.complexSearch('api/relation-search', complexQueryDto)
   }

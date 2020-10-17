@@ -159,34 +159,30 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
       switch (type) {
         case 'DIGITAL':
           this.product.typeDigital = new TypeDigital()
-          this.product.productSubscription = new ProductSubscription()
           this.selectedType = 'typeDigital'
           this.product.typeDigital.url = ''
           break
         case 'COURSE':
           this.product.typeCourse = new TypeCourse()
-          this.product.productSubscription = new ProductSubscription()
           this.selectedType = 'typeCourse'
           break
         case 'PHYSICAL':
           this.product.typePhysical = new TypePhysical()
-          this.product.productSubscription = new ProductSubscription()
           this.selectedType = 'typePhysical'
           break
         case 'SERVICE':
           this.product.typeService = new TypeService()
-          this.product.productSubscription = new ProductSubscription()
           this.selectedType = 'typeService'
           break
         case 'VOUCHER':
-          // this.product. = new TypeVoucher();
+          this.selectedType = 'typeVoucher'
           break
         case 'default':
           this.product.typeDigital = new TypeDigital()
-          this.product.productSubscription = new ProductSubscription()
           this.selectedType = 'typeDigital'
           break
       }
+      this.product.productSubscription = new ProductSubscription()
     })
   }
 
@@ -313,7 +309,6 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
         this.$validator.validateAll({
           'Start Date': this.product.productSubscription.startDate,
           period: this.product.productSubscription.period,
-          'Subscription Max Terms': this.product.productSubscription.maxTimes,
           tax: this.product.tax
         }).then(valid => {
           if (valid) {

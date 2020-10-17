@@ -10,6 +10,8 @@ import {linkOperators} from "@/shared/complexSearchOperators";
   components:{
     SearchableSelectComponent,
     flatPickr
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class LinkComplexSearchComponent extends mixins(CommonHelpers, Vue) {

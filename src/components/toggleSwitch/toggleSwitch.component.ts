@@ -14,7 +14,8 @@ import { Vue, Watch } from 'vue-property-decorator'
     offText: {
       type: String,
       default: ''
-    }
+    },
+    disabled: Boolean
   }
 })
 export default class ToggleSwitch extends Vue {

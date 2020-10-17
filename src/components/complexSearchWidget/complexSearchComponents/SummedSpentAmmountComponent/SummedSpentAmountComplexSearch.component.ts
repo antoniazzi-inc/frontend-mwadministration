@@ -10,6 +10,8 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
   components:{
     Money,
     SearchableSelectComponent
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class SummedSpentAmountComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -32,9 +34,15 @@ export default class SummedSpentAmountComplexSearchComponent extends mixins(Comm
     this.searchQuery = 'sum|orderRelation|cartOrders.totalAmount' /*TODO CHANGE TO totalAmount TBD Kristijan Should return summed value from all invoices*/
     this.msName = 'ORDERMS'
   }
-  @Watch('value', {immediate: true, deep: true})
-  public updateVal(newVal:any){
-    this.initialValue = newVal
+  @Watch('query', {immediate: true, deep: true})
+  public queryWatcher(newVal:any){
+    if(newVal){
+      const preFillData = this.checkIfRuleExists('summedOrderAmount',this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedOperator = preFillData.value.operator
+        this.initialValue = preFillData.value.value
+      }
+    }
   }
   @Watch('initialValue', {immediate: true, deep: true})
   public updateInitialValue(newVal:any){

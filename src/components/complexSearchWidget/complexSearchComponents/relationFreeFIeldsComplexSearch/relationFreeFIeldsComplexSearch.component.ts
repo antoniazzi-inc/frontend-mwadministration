@@ -9,6 +9,9 @@ import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
   components:{
     SearchableSelectComponent,
     ToggleSwitch
+  },
+  props:{
+    query: [Object, Array, String]
   }
 })
 export default class RelationFreeFIeldsComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -44,13 +47,33 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
     this.allFreeFieldOptions = []
     this.searchValue = null
     this.selectedFieldType = ''
-    this.appliedQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.value'
-    this.appliedSubQuery = 'relationCustomFields.customField.id=={conditionId} AND relationCustomFields.customFieldOption.id'
+    this.appliedQuery = 'relationCustomFields.customField.id=={conditionId} and relationCustomFields.value'
+    this.appliedSubQuery = 'relationCustomFields.customField.id=={conditionId} and relationCustomFields.customField.customFieldOptions.id'
     this.currentQuery = ''
     this.msName = 'RELATIONMS'
 
   }
-
+  @Watch('query', {immediate: true, deep: true})
+  public queryWatcher(newVal:any){
+    if(newVal){
+      const preFillData = this.checkIfRuleExists('freeFields',this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedOperator = preFillData.value.operator
+        this.selectedFreeField = preFillData.value.attribute
+        this.selectedFreeFieldOption = preFillData.value.attributeValue
+        if(this.selectedFreeField && this.selectedFreeField.value && this.selectedFreeField.value.customFieldType === 'BOOLEAN') {
+          this.selectedFieldType = 'boolean'
+          this.searchValue = preFillData.value.value
+        } else if(this.selectedFreeField && this.selectedFreeField.value && this.selectedFreeField.value.customFieldType === 'TEXT') {
+          this.selectedFieldType = 'text'
+          this.searchValue = preFillData.value.value
+        } else if(this.selectedFreeField && this.selectedFreeField.value && this.selectedFreeField.value.customFieldType === 'OPTION_LIST') {
+          this.selectedFieldType = 'optionList'
+          this.searchValue = preFillData.value.value
+        }
+      }
+    }
+  }
   @Watch('searchValue', {immediate: true, deep: true})
   public updateSearchValue(newVal:any){
     this.searchValue = newVal
@@ -119,8 +142,8 @@ export default class RelationFreeFIeldsComplexSearchComponent extends mixins(Com
     if(customFieldOption) {
       this.currentQuery = this.appliedSubQuery.replace('{conditionId}', customField) + operator.replace('{k}', customFieldOption)
     } else {
-      debugger
-      this.currentQuery = this.appliedQuery.replace('{conditionId}', customField) +  operator.replace('{k}', this.searchValue)
+      if(operator)
+        this.currentQuery = this.appliedQuery.replace('{conditionId}', customField) +  operator.replace('{k}', this.searchValue)
     }
   }
 }

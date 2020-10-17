@@ -12,16 +12,16 @@
       <div class="col-md-3">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item">
-            <a class="tab-nav nav-link active" id="simpleSearch-tab" data-toggle="tab" href="#simpleSearch" role="tab"
+            <a :class="{'tab-nav nav-link': true, active: activeSearch === 'simple' || !activeSearch}" id="simpleSearch-tab" data-toggle="tab" href="#simpleSearch" role="tab"
                aria-controls="simpleSearch" aria-selected="true">{{$t('labels.simpleSearch')}}</a>
           </li>
           <li class="nav-item">
-            <a class="tab-nav nav-link" id="complexSearch-tab" data-toggle="tab" href="#complexSearch" role="tab"
+            <a :class="{'tab-nav nav-link': true, active: activeSearch === 'complex'}" id="complexSearch-tab" data-toggle="tab" href="#complexSearch" role="tab"
                aria-controls="complexSearch" aria-selected="false">{{$t('labels.complexSearch')}}</a>
           </li>
         </ul>
         <div class="tab-content" id="myTabContent">
-          <div class="tab-pane fade show active" id="simpleSearch" role="tabpanel" aria-labelledby="simpleSearch-tab">
+          <div class="tab-pane fade" :class="{'show active': activeSearch === 'simple' || !activeSearch}" id="simpleSearch" role="tabpanel" aria-labelledby="simpleSearch-tab">
             <form name="searchForm" class="form text-left" @submit.prevent.stop="simpleSearch">
               <div class="form-group mt-3">
                 <label class="form-control-label">{{$t('labels.searchByName')}}</label>
@@ -62,8 +62,8 @@
               </div>
             </form>
           </div>
-          <div class="tab-pane fade" id="complexSearch" role="tabpanel" aria-labelledby="complexSearch-tab">
-            <complex-search-component :location="'relations'" @search="startComplexSearch"/>
+          <div class="tab-pane fade" :class="{'show active': activeSearch === 'complex'}" id="complexSearch" role="tabpanel" aria-labelledby="complexSearch-tab">
+            <complex-search-component :location="'relations'" :complexSearchQuery="complexSearchQuery" @search="startComplexSearch"/>
             <!--<complex-search
               :query-name="queryName"
               :query-id="complexId"

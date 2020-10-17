@@ -509,7 +509,6 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   }
 
   public loadImageGallery(toAvoid?: any) {
-    debugger
     const self = this;
     this.isMediaLoading = true;
     this.productService.loadAllMedia({page: 0, size: 100000, sort: {}}).then((resp: any) => {

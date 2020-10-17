@@ -7,6 +7,8 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
 @Component({
   components:{
     SearchableSelectComponent
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class OrderQuantityComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -26,6 +28,15 @@ export default class OrderQuantityComplexSearchComponent extends mixins(CommonHe
       false, false, false, false, false, true)
     this.appliedQuery = ''
     this.msName = 'ORDERMS'
+  }
+  public mounted(){
+    if(this.$props.query) {
+      const preFillData = this.checkIfRuleExists('orderQuantity', this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedOperator = preFillData.value.operator
+        this.initialValue = preFillData.value.value
+      }
+    }
   }
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){

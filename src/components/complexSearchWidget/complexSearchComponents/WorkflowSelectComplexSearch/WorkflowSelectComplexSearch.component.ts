@@ -11,6 +11,8 @@ import {workflowOperators} from "@/shared/complexSearchOperators";
   components:{
     SearchableSelectComponent,
     flatPickr
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class WorkflowSelectComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -50,6 +52,10 @@ export default class WorkflowSelectComplexSearchComponent extends mixins(CommonH
     this.dateValue = null
   }
 
+  @Watch('query', {immediate: true, deep: true})
+  public queryWatcher(newVal:any){
+
+  }
   @Watch('dateValue', {immediate: true, deep: true})
   public updateSearchValue(newVal:any){
     this.$emit('input', {attribute: this.selectedWorkflow, subAttribute: this.selectedWorkflowStep, operator: this.selectedOperator, value: this.dateValue})

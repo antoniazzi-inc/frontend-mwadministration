@@ -19,8 +19,8 @@
     </div>
     <div class="form-group" v-else-if="outputElement === 'date'">
       <div class="dateHolder date-input">
-        <flat-pickr :config="dateConfig" class="single-daterange form-control" v-model="searchValue"/>
-        <i class="fa fa-times clearDate cursor-pointer" @click="searchValue=null">
+        <flat-pickr :config="dateConfig" class="single-daterange form-control" v-model="dateValue"/>
+        <i class="fa fa-times clearDate cursor-pointer" @click="dateValue=null">
           <span aria-hidden="true" class="sr-only">X</span>
         </i>
       </div>

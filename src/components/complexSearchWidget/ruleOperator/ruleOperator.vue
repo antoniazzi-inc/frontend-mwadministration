@@ -10,6 +10,7 @@
         <component
           :is="$props.ruleCtrl.ruleComponent"
           :value="$props.ruleCtrl.ruleData"
+          :query="$props.query"
           @input="$props.ruleCtrl.updateRuleData"
         />
         </keep-alive>

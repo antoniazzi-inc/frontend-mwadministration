@@ -7,6 +7,9 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
 @Component({
   components:{
     SearchableSelectComponent
+  },
+  props:{
+    query: [Object,Array,String]
   }
 })
 export default class EmailComplexSearchComponent extends mixins(CommonHelpers, Vue) {

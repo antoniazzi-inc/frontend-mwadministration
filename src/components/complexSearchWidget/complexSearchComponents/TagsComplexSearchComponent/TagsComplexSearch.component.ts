@@ -1,12 +1,14 @@
 import {mixins} from "vue-class-component";
 import CommonHelpers from "@/shared/commonHelpers";
-import {Component, Vue} from "vue-property-decorator";
+import {Component, Vue, Watch} from "vue-property-decorator";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
 import {tagOperators} from "@/shared/complexSearchOperators";
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
 @Component({
   components:{
     SearchableSelectComponent
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class TagsComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -31,7 +33,16 @@ export default class TagsComplexSearchComponent extends mixins(CommonHelpers, Vu
     this.currentQuery = 'relationTags.id'
     this.msName = 'RELATIONMS'
   }
-
+  @Watch('query', {immediate: true, deep: true})
+  public queryWatcher(newVal:any){
+    if(newVal){
+      const preFillData = this.checkIfRuleExists('tags',this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedTag = preFillData.value.value
+        this.selectedOperator = preFillData.value.operator
+      }
+    }
+  }
   public addTag(e:any){
     this.selectedTag = e
     let operator = this.selectedOperator ? this.selectedOperator.id : null

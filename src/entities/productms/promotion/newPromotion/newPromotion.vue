@@ -2,7 +2,7 @@
   <div class="container-fluid text-left">
 
     <h2 id="page-heading" class="text-left mt-3">
-      <span id="tag-heading">{{$t('labels.newPromotion')}}</span>
+      <span id="tag-heading">{{$t('labels.new')}} {{promotion.promotionType.toLowerCase().replace('_',' ')}} {{$t('labels.promotion')}}</span>
       <router-link to="/promotions" class="text-decoration-none text-white">
         <button tag="button" class="btn btn-secondary float-right create-tag">
           <span>{{$t('labels.backToPromotions')}}</span>
@@ -178,6 +178,7 @@
           <label class="control-label">{{$t('labels.repeatInCaseOfSubscription')}}</label>
           <toggle-switch
             id="repeat"
+            :disabled="discountTypeId === 4"
             :on-text="$t('labels.yes')"
             :off-text="$t('labels.no')"
             :value.sync="promotion.recurrent"/>
@@ -215,14 +216,15 @@
                          :on-text="$t('labels.infinite')"
                          :off-text="$t('labels.limited')"
                          :value.sync="couponMaxTimesUsed"></toggle-switch>
-          <input  v-validate="'numeric|min_value:1'"  :class="{'form-control mt-3': true, invalid: errors.has('couponMaxTimesUsed')}" type="number" name="couponMaxTimesUsed" v-if="!couponMaxTimesUsed" v-model="maxTimesUsed"/>
-          <span class="text-danger small">{{errors.first('couponMaxTimesUsed')}}</span>
+          <input  v-validate="'numeric|min_value:1'" :class="{'form-control mt-3': true, invalid: errors.has('couponMaxTimesUsed')}" type="number" name="couponMaxTimesUsed" v-show="!couponMaxTimesUsed" v-model="maxTimesUsed"/>
+          <span v-if="isStep4Validation" class="text-danger small">{{errors.first('couponMaxTimesUsed')}}</span>
         </div>
         <div class="form-group mt-3" v-if="promotion.promotionType === 'TEMPORARY_COUPON'">
           <label class="control-label">{{$t('labels.valid')}}</label>
-          <toggle-switch :on-text="$t('labels.hours')"
-                         :off-text="$t('labels.days')"
-                         :value.sync="validDays"></toggle-switch>
+          <select class="form-control" v-model="validDays">
+            <option value="false">{{$t('labels.days')}}</option>
+            <option value="true">{{$t('labels.hours')}}</option>
+          </select>
           <input v-validate="'numeric|min_value:1'" :class="{'form-control mt-3': true, invalid: errors.has('temporaryValid')}" type="number" name="temporaryValid"  v-model="temporaryValid"/>
           <span class="text-danger small">{{errors.first('temporaryValid')}}</span>
         </div>

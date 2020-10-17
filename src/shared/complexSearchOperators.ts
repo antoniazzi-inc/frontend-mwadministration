@@ -20,59 +20,59 @@ const i18n = new VueI18n({
   }
 })
 export const pointOperators = [
-  { id: '=={k}', labelValue: '=', label: i18n.tc('labels.equals') },
-  { id: '<={k}', labelValue: '<=', label: i18n.tc('labels.smallerOrEqual') },
-  { id: '>{k}', labelValue: '>', label: i18n.tc('labels.bigger') }
+  { id: '=="{k}"', labelValue: '=', label: i18n.tc('labels.equals') },
+  { id: '<="{k}"', labelValue: '<=', label: i18n.tc('labels.smallerOrEqual') },
+  { id: '>"{k}"', labelValue: '>', label: i18n.tc('labels.bigger') }
 ]
 export const numberOperators = [
-  { id: '=={k}', labelValue: '=', label: i18n.tc('labels.equals') },
-  { id: '!={k}', labelValue: '!=', label: i18n.tc('labels.notEqual') },
-  { id: '<{k}', labelValue: '<', label: i18n.tc('labels.smaller') },
-  { id: '<={k}', labelValue: '<=', label: i18n.tc('labels.smallerOrEqual') },
-  { id: '>{k}', labelValue: '>', label: i18n.tc('labels.bigger') },
-  { id: '>={k}', labelValue: '>=', label: i18n.tc('labels.biggerOrEqual') }
+  { id: '=="{k}"', labelValue: '=', label: i18n.tc('labels.equals') },
+  { id: '!="{k}"', labelValue: '!=', label: i18n.tc('labels.notEqual') },
+  { id: '<"{k}"', labelValue: '<', label: i18n.tc('labels.smaller') },
+  { id: '<="{k}"', labelValue: '<=', label: i18n.tc('labels.smallerOrEqual') },
+  { id: '>"{k}"', labelValue: '>', label: i18n.tc('labels.bigger') },
+  { id: '>="{k}"', labelValue: '>=', label: i18n.tc('labels.biggerOrEqual') }
 ]
 export const dateOperators = [
-  { id: '<{k}', labelValue: '<', label: i18n.tc('labels.smaller') },
-  { id: '<={k}', labelValue: '<=', label: i18n.tc('labels.smallerOrEqual') },
-  { id: '>{k}', labelValue: '>', label: i18n.tc('labels.bigger') },
-  { id: '>={k}', labelValue: '>=', label: i18n.tc('labels.biggerOrEqual') }
+  { id: '<"{k}"', labelValue: '<', label: i18n.tc('labels.smaller') },
+  { id: '<="{k}"', labelValue: '<=', label: i18n.tc('labels.smallerOrEqual') },
+  { id: '>"{k}"', labelValue: '>', label: i18n.tc('labels.bigger') },
+  { id: '>="{k}"', labelValue: '>=', label: i18n.tc('labels.biggerOrEqual') }
 ]
 export const textOperators = [
-  { id: '=={k}', labelValue: 'equals', label: i18n.tc('labels.equals') },
-  { id: '==*{k}*', labelValue: 'contains', label: i18n.tc('labels.contains') },
-  { id: '!=*{k}*', labelValue: 'notcontains', label: i18n.tc('labels.notContains') },
+  { id: '=="{k}"', labelValue: 'equals', label: i18n.tc('labels.equals') },
+  { id: '=="*{k}*"', labelValue: 'contains', label: i18n.tc('labels.contains') },
+  { id: '!="*{k}*"', labelValue: 'notcontains', label: i18n.tc('labels.notContains') },
   { id: '=null=true', labelValue: 'empty', label: i18n.tc('labels.empty') },
   { id: '=null=false', labelValue: 'notempty', label: i18n.tc('labels.notEmpty') },
-  { id: '==*{k}', labelValue: 'begins', label: i18n.tc('labels.begins') },
-  { id: '=={k}*', labelValue: 'ends', label: i18n.tc('labels.ends') }
+  { id: '=="{k}*"', labelValue: 'begins', label: i18n.tc('labels.begins') },
+  { id: '=="*{k}"', labelValue: 'ends', label: i18n.tc('labels.ends') }
 ]
 export const tagOperators = [
   { id: '=in=({k})', labelValue: 'has', label: i18n.tc('labels.has') },
   { id: '=out=({k})', labelValue: 'hasnot', label: i18n.tc('labels.hasNot') }
 ]
 export const equalOperators = [
-  { id: '=={k}', labelValue: 'equals', label: i18n.tc('labels.equals') },
-  { id: '!={k}', labelValue: 'notequals', label: i18n.tc('labels.notEquals') }
+  { id: '=="{k}"', labelValue: 'equals', label: i18n.tc('labels.equals') },
+  { id: '!="{k}"', labelValue: 'notequals', label: i18n.tc('labels.notEquals') }
 ]
 export const orderOperators = [
-  { id: '=={k}', labelValue: 'ordered', label: i18n.tc('labels.ordered') },
-  { id: '<{k}', labelValue: 'orderedbefore', label: i18n.tc('labels.orderedBefore') },
-  { id: '>{k}', labelValue: 'orderedafter', label: i18n.tc('labels.orderedAfter') }
+  { id: '=="{k}"', labelValue: 'ordered', label: i18n.tc('labels.ordered') },
+  { id: '<"{k}"', labelValue: 'orderedbefore', label: i18n.tc('labels.orderedBefore') },
+  { id: '>"{k}"', labelValue: 'orderedafter', label: i18n.tc('labels.orderedAfter') }
 ]
 export const courseOperators = [
-  { id: '=={k}', labelValue: 'appliedfor', label: i18n.tc('labels.appliedFor') },
-  { id: '<{k}', labelValue: 'not_appliedfor', label: i18n.tc('labels.notAppliedFor') },
-  { id: '>{k}', labelValue: 'started_before', label: i18n.tc('labels.startedBefore') },
-  { id: '>{k}', labelValue: 'started_after', label: i18n.tc('labels.startedAfter') }
+  { id: '=="{k}"', labelValue: 'appliedfor', label: i18n.tc('labels.appliedFor') },
+  { id: '<"{k}"', labelValue: 'not_appliedfor', label: i18n.tc('labels.notAppliedFor') },
+  { id: '>"{k}"', labelValue: 'started_before', label: i18n.tc('labels.startedBefore') },
+  { id: '>"{k}"', labelValue: 'started_after', label: i18n.tc('labels.startedAfter') }
 ]
 export const listmgrOperators = [
-  { id: '=={k}', labelValue: 'started', label: i18n.tc('labels.started') },
-  { id: '<{k}', labelValue: 'startedbefore', label: i18n.tc('labels.startedBefore') },
-  { id: '>{k}', labelValue: 'startedafter', label: i18n.tc('labels.startedAfter') },
-  { id: '=={k}', labelValue: 'stopped', label: i18n.tc('labels.stopped') },
-  { id: '<{k}', labelValue: 'stoppedbefore', label: i18n.tc('labels.stoppedBefore') },
-  { id: '>{k}', labelValue: 'stoppedafter', label: i18n.tc('labels.stoppedAfter') }
+  { id: '=="{k}"', labelValue: 'started', label: i18n.tc('labels.started') },
+  { id: '<"{k}"', labelValue: 'startedbefore', label: i18n.tc('labels.startedBefore') },
+  { id: '>"{k}"', labelValue: 'startedafter', label: i18n.tc('labels.startedAfter') },
+  { id: '=="{k}"', labelValue: 'stopped', label: i18n.tc('labels.stopped') },
+  { id: '<"{k}"', labelValue: 'stoppedbefore', label: i18n.tc('labels.stoppedBefore') },
+  { id: '>"{k}"', labelValue: 'stoppedafter', label: i18n.tc('labels.stoppedAfter') }
 ]
 export const mailingOperators = [
   { id: '???', labelValue: 'sent', label: i18n.tc('labels.sent') },
@@ -95,8 +95,8 @@ export const emailOperators = [
   { id: '???', labelValue: 'bounced', label: i18n.tc('labels.bounced') }
 ]
 export const workflowOperators = [
-  { id: '=={k}', labelValue: 'wflstarted', label: i18n.tc('labels.wflstarted') },
-  { id: '=={k}', labelValue: 'wflnotstarted', label: i18n.tc('labels.wflnotstarted') },
+  { id: '=="{k}"', labelValue: 'wflstarted', label: i18n.tc('labels.wflstarted') },
+  { id: '=="{k}"', labelValue: 'wflnotstarted', label: i18n.tc('labels.wflnotstarted') },
   { id: '???', labelValue: 'wflended', label: i18n.tc('labels.wflended') },
   { id: '???', labelValue: 'wflpaststep', label: i18n.tc('labels.wflpaststep') },
   { id: '???', labelValue: 'wflrunning', label: i18n.tc('labels.wflrunning') }
@@ -106,12 +106,12 @@ export const yesnoOperators = [
   { id: '=null=true', labelValue: 'false', label: i18n.tc('labels.no') }
 ]
 export const genderOperators = [
-  { id: '=={k}', labelValue: 'M', label: i18n.tc('labels.male') },
-  { id: '=={k}', labelValue: 'F', label: i18n.tc('labels.female') },
-  { id: '=={k}', labelValue: '-', label: i18n.tc('labels.unspecified') }
+  { id: '=="{k}"', labelValue: 'M', label: i18n.tc('labels.male') },
+  { id: '=="{k}"', labelValue: 'F', label: i18n.tc('labels.female') },
+  { id: '=="{k}"', labelValue: '-', label: i18n.tc('labels.unspecified') }
 ]
 export const groupOperators = [
-  { id: '=={k}', labelValue: 'member', label: i18n.tc('labels.member') },
-  { id: '!={k}', labelValue: 'notmember', label: i18n.tc('labels.notmember') },
+  { id: '=="{k}"', labelValue: 'member', label: i18n.tc('labels.member') },
+  { id: '!="{k}"', labelValue: 'notmember', label: i18n.tc('labels.notmember') },
   { id: '=out=({k})', labelValue: 'exclude', label: i18n.tc('labels.exclude') }
 ]

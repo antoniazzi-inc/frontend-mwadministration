@@ -314,7 +314,6 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
         })
         this.newOrderLine.orderLinePaymentSchedules = paymentSchedules
       }
-      debugger
       if (this.selectedBeneficiaries && this.selectedBeneficiaries.length > 1) {
         let customerInd = this.selectedBeneficiaries.findIndex((e: any) => e.id === this.cartOrderCopy.orderCustomer?.relationId)
         let orderLinesToAdd = []

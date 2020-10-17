@@ -60,7 +60,7 @@
             </router-link>
           </div>
           <div class="profile-tile profile-tile-inlined col-md-2 col-xs-4">
-            <router-link @click.native.prevent="changeProductType('VOUCHER')" to="" :class="{'profile-tile-box': true, active: selectedProductType === 'VOUCHER'}">
+            <router-link @click.native.prevent="changeProductType('VOUCHER')" to="" :class="{'profile-tile-box': true, active: product.productType === 'VOUCHER'}">
               <div>
                 <i class="productIcon fa fa-ticket-alt"/>
               </div>
@@ -193,9 +193,8 @@
             </div>
             <div class="form-group col-auto" v-if="isSubscription && product.productSubscription">
               <label class="form-control-label">{{$t('labels.subscriptionMaxTerms')}}</label>
-              <input :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required|min_value:1'"
+              <input :class="{'form-control':true}"
                      type="number" name="Subscription Max Terms" style="max-width:100px" v-model="product.productSubscription.maxTimes"/>
-              <span class="small text-danger">{{errors.first('Subscription Max Terms')}}</span>
             </div>
           </div>
 
@@ -252,7 +251,11 @@
           </div>
         </form>
       </tab-content>
-        <span class="small text-danger pull-right" v-if="errors.all().length">{{$t('labels.thereAreSomeErrors')}}</span>
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <span class="small text-danger pull-right" v-if="errors.all().length">{{$t('labels.thereAreSomeErrors')}}</span>
+          </div>
+        </div>
       <button @click="stepBack" slot="prev" class="btn btn-primary btn-lg" :disabled="isSaving" style="min-width:140px;">{{$t('buttons.back')}}</button>
       <button @click="stepForward" slot="next" class="btn btn-primary" style="min-width:140px;" :disabled="isSaving">{{$t('buttons.next')}}</button>
       <button slot="finish" class="btn btn-primary btn-lg" style="min-width:140px;" :disabled="isSaving">{{$t('buttons.finish')}}</button>

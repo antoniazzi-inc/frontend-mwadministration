@@ -284,7 +284,7 @@ export default class SearchRules extends mixins(Vue) {
         label: 'labels.freeFields',
         description: 'labels.freeFieldsComplexSearch',
         searchQuery: '(relationCustomFields.customField.id=={conditionId} and relationCustomFields.value)',
-        searchQueryOption: '(relationCustomFields.customField.id=={conditionId} and relationCustomFields.customFieldOption.id=={conditionOptionId} and relationCustomFields.value)',
+        searchQueryOption: '(relationCustomFields.customField.id=={conditionId} and relationCustomFields.customField.customFieldOptions.id=={conditionOptionId} and relationCustomFields.value)',
         conditions: [],
         operator: {
           id: 'textOperators',

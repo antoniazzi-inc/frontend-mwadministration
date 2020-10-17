@@ -12,6 +12,9 @@ import coursesService from "@/shared/services/coursesService";
   components:{
     SearchableSelectComponent,
     flatPickr
+  },
+  props:{
+    query: [Object,Array,String]
   }
 })
 export default class CoursesSelectComplexSearchComponent extends mixins(CommonHelpers, Vue) {

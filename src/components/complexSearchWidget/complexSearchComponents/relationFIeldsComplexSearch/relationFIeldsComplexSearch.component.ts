@@ -7,11 +7,13 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import moment from "moment";
-import {INSTANT_FORMAT} from "@/shared/filters";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 @Component({
   components: {
     SearchableSelectComponent,
     flatPickr
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class RelationFIeldsComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -26,6 +28,7 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
   public selectedGeneder: any
   public dateConfig: any
   public searchValue: string
+  public dateValue: string
   public outputElement: string
   public appliedQuery: string
   public msName: string
@@ -53,13 +56,13 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
     }
     this.outputElement = ''
     this.searchValue = ''
+    this.dateValue = ''
     this.outputElementOptions = []
     this.allRelationFields = []
     this.appliedQuery = ''
     this.finalQuery = ''
     this.msName = 'RELATIONMS'
   }
-
   public mounted() {
     this.allRelationFields = [
       {
@@ -139,13 +142,45 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
         operators: dateOperators,
         searchQuery: 'relationProfile.birthDate'
       }
-
     ]
+    if(this.$props.query){
+      const preFillData = this.checkIfRuleExists('relFields', this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedOperator = preFillData.value.operator
+        this.selectedRelationField = preFillData.value.attribute
+        this.outputElement = this.selectedRelationField.outputElement.type
+        if(this.outputElement === 'date' && preFillData.value.value) {
+          this.dateValue = moment(preFillData.value.value).format(DATE_FORMAT)
+        } else if(this.outputElement === 'singleSelect' && preFillData.value.value){
+          this.selectedGeneder = preFillData.value.value
+        } else if(this.outputElement === 'text' && preFillData.value.value){
+          this.searchValue = preFillData.value.value
+        }
+      }
+    }
   }
 
+  @Watch('dateValue', {immediate: true, deep: true})
+  public updateDateValue(newVal: any) {
+    if(this.selectedRelationField && this.selectedRelationField.outputElement && this.selectedRelationField.outputElement.type === 'date' && newVal){
+      if(this.selectedRelationField.id === 'birthDate') {
+        newVal = moment(newVal, 'DD-MM-YYYY').format('YYYY-MM-DD')
+      } else
+        newVal = moment(newVal, 'DD-MM-YYYY').format(INSTANT_FORMAT)
+    }
+    this.updateQuery(this.selectedOperator ? this.selectedOperator.id : null, this.selectedRelationField ? this.selectedRelationField.searchQuery : null, newVal)
+    this.$emit('input', {
+      attribute: this.selectedRelationField,
+      subAttribute: null,
+      operator: this.selectedOperator,
+      value: newVal,
+      msName: this.msName,
+      searchQuery: this.finalQuery
+    })
+  }
   @Watch('searchValue', {immediate: true, deep: true})
   public updateSearchValue(newVal: any) {
-    if(this.selectedRelationField.outputElement.type === 'date' && newVal){
+    if(this.selectedRelationField && this.selectedRelationField.outputElement && this.selectedRelationField.outputElement.type === 'date' && newVal){
       if(this.selectedRelationField.id === 'birthDate') {
         newVal = moment(newVal, 'DD-MM-YYYY').format('YYYY-MM-DD')
       } else
@@ -241,6 +276,12 @@ export default class RelationFIeldsComplexSearchComponent extends mixins(CommonH
   public addOperator(e: any) {
     if (!e) return
     this.selectedOperator = e
+    if(this.selectedRelationField && this.selectedRelationField.outputElement && this.selectedRelationField.outputElement.type === 'date' && this.searchValue){
+      if(this.selectedRelationField.id === 'birthDate') {
+        this.searchValue = moment(this.searchValue, 'DD-MM-YYYY').format('YYYY-MM-DD')
+      } else
+        this.searchValue = moment(this.searchValue, 'DD-MM-YYYY').format(INSTANT_FORMAT)
+    }
     this.updateQuery(this.selectedOperator.id, this.selectedRelationField ? this.selectedRelationField.searchQuery : '', this.searchValue ? this.searchValue : this.selectedGeneder !== null ? this.selectedGeneder.labelValue : null)
     this.$emit('input', {
       attribute: this.selectedRelationField,

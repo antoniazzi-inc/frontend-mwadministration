@@ -821,43 +821,89 @@ export default class CommonHelpers extends Vue {
   }
 
 
-  /*
-   * Name: updateSimpleSearchQuery
-   * arg: entity -> (relation, order, product, promotion...), queryArray -> actual simpleSearch values
-   * description: Update SimpleSearch query and save to localStorage
-   * Author: Nick Dam
-   */
-  public updateSimpleSearchQuery(entity: any, queryArray:any[]){
-    let queryLocalStorage = localStorage.getItem('simpleSearchQueries')
-    if(queryLocalStorage) {
-      let simpleSearchQuery = JSON.parse(queryLocalStorage)
-      simpleSearchQuery[entity] = queryArray
-      localStorage.setItem('simpleSearchQueries', JSON.stringify(simpleSearchQuery))
-    } else {
-      let simpleSearchQuery:any = {}
-      simpleSearchQuery[entity] = queryArray
-      localStorage.setItem('simpleSearchQueries', JSON.stringify(simpleSearchQuery))
-    }
-  }
-
-  /*
-  * Name: reverseSimpleSearchQuery
-  * arg: entity -> (relation, order, product, promotion...)
-  * description: Read from localStorage and return the values in order to populate the search
-  * Author: Nick Dam
-  */
-  public reverseSimpleSearchQuery(entity: any){
-    let queryLocalStorage = localStorage.getItem('simpleSearchQueries')
-    if(queryLocalStorage) {
-      let simpleSearchQuery = JSON.parse(queryLocalStorage)
-      if(simpleSearchQuery[entity]){
-        return simpleSearchQuery[entity]
+    /*
+     * Name: updateSimpleSearchQuery
+     * arg: entity -> (relation, order, product, promotion...), queryArray -> actual simpleSearch values
+     * description: Update SimpleSearch query and save to localStorage
+     * Author: Nick Dam
+     */
+    public updateSimpleSearchQuery(entity: any, queryArray:any[]){
+      let queryLocalStorage = localStorage.getItem('simpleSearchQueries')
+      if(queryLocalStorage) {
+        let simpleSearchQuery = JSON.parse(queryLocalStorage)
+        simpleSearchQuery[entity] = queryArray
+        localStorage.setItem('simpleSearchQueries', JSON.stringify(simpleSearchQuery))
+        localStorage.removeItem('complexSearchQueries')
+        localStorage.setItem('activeSearch', 'simple')
+      } else {
+        let simpleSearchQuery:any = {}
+        simpleSearchQuery[entity] = queryArray
+        localStorage.setItem('simpleSearchQueries', JSON.stringify(simpleSearchQuery))
+        localStorage.removeItem('complexSearchQueries')
+        localStorage.setItem('activeSearch', 'simple')
       }
-      return []
-    } else {
-      return []
     }
-  }
+
+    /*
+    * Name: reverseSimpleSearchQuery
+    * arg: entity -> (relation, order, product, promotion...)
+    * description: Read from localStorage and return the values in order to populate the search
+    * Author: Nick Dam
+    */
+    public reverseSimpleSearchQuery(entity: any){
+      let queryLocalStorage = localStorage.getItem('simpleSearchQueries')
+      if(queryLocalStorage) {
+        let simpleSearchQuery = JSON.parse(queryLocalStorage)
+        if(simpleSearchQuery[entity]){
+          return simpleSearchQuery[entity]
+        }
+        return []
+      } else {
+        return []
+      }
+    }
+
+      /*
+       * Name: updateComplexSearchQuery
+       * arg: entity -> (relation, order, product, promotion...), queryArray -> actual simpleSearch values
+       * description: Update SimpleSearch query and save to localStorage
+       * Author: Nick Dam
+       */
+      public updateComplexSearchQuery(entity: any, queryArray:any[]){
+        let queryLocalStorage = localStorage.getItem('complexSearchQueries')
+        if(queryLocalStorage) {
+          let complexSearchQuery = JSON.parse(queryLocalStorage)
+          complexSearchQuery[entity] = queryArray
+          localStorage.setItem('complexSearchQueries', JSON.stringify(complexSearchQuery))
+          localStorage.removeItem('simpleSearchQueries')
+          localStorage.setItem('activeSearch', 'complex')
+        } else {
+          let complexSearchQuery:any = {}
+          complexSearchQuery[entity] = queryArray
+          localStorage.setItem('complexSearchQueries', JSON.stringify(complexSearchQuery))
+          localStorage.removeItem('simpleSearchQueries')
+          localStorage.setItem('activeSearch', 'complex')
+        }
+      }
+
+      /*
+      * Name: reverseSimpleSearchQuery
+      * arg: entity -> (relation, order, product, promotion...)
+      * description: Read from localStorage and return the values in order to populate the search
+      * Author: Nick Dam
+      */
+      public reverseComplexSearchQuery(entity: any){
+        let queryLocalStorage = localStorage.getItem('complexSearchQueries')
+        if(queryLocalStorage) {
+          let complexSearchQuery = JSON.parse(queryLocalStorage)
+          if(complexSearchQuery[entity]){
+            return complexSearchQuery[entity]
+          }
+          return []
+        } else {
+          return []
+        }
+      }
 
   /*
   * Name: removeSimpleSearchQuery
@@ -874,6 +920,18 @@ export default class CommonHelpers extends Vue {
         localStorage.setItem('simpleSearchQueries', JSON.stringify(simpleSearchQuery))
       }
     }
+  }
+  /*
+  * Name: checkIfRuleExists
+  * arg: ruleId -> (id of search rule that needs to be checked), query -> (actual search query)
+  * description: Find if there is an rule defined into a complex search query
+  * Author: Nick Dam
+  */
+  public checkIfRuleExists(ruleId: any, query:any) {
+    let index = query.children.findIndex((e:any)=> e.identifier === ruleId)
+    if(index > -1) {
+      return query.children[index]
+    } else return null
   }
 
   public updateRecentItemsAfterRead(an_id: number, a_label: string, a_type: string,) {

@@ -94,7 +94,7 @@ export default class MultiLanguageHtmlEditorComponent extends Vue {
       for (const key in this.$store.state.languages) {
         if (this.$store.state.languages.hasOwnProperty(key)) {
           newVal.forEach((l:any, i:any) => {
-            if(l === key){
+            if(l.langKey === key){
               allAvailableLanguages.push({
                 name: this.$store.state.languages[key].name,
                 langKey: key

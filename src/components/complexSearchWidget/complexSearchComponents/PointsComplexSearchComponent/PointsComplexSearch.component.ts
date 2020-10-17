@@ -7,6 +7,8 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
 @Component({
   components:{
     SearchableSelectComponent
+  }, props: {
+    query: [Object,Array,String]
   }
 })
 export default class PointsComplexSearchComponent extends mixins(CommonHelpers, Vue) {
@@ -26,6 +28,15 @@ export default class PointsComplexSearchComponent extends mixins(CommonHelpers, 
       false, false, false, false, false, true)
     this.appliedQuery = 'relationProfile.points'
     this.msName = 'RELATIONMS'
+  }
+  public mounted(){
+    if(this.$props.query){
+      const preFillData = this.checkIfRuleExists('points', this.$props.query)
+      if(preFillData && preFillData.value) {
+        this.selectedOperator = preFillData.value.operator
+        this.initialValue = preFillData.value.value
+      }
+    }
   }
   @Watch('value', {immediate: true, deep: true})
   public updateVal(newVal:any){

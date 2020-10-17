@@ -13,7 +13,7 @@ import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/S
 import {promotionType} from "@/shared/models/productms/PromotionModel";
 import {IMoneyConfig, MoneyConfig} from "@/shared/models/moneyConfig";
 import moment from "moment";
-import {INSTANT_FORMAT} from "@/shared/filters";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -44,7 +44,7 @@ export default class PromotionComponent extends mixins(CommonHelpers, Vue) {
   constructor() {
     super()
     this.active = false
-    this.availableFrom = null
+    this.availableFrom = moment().format(DATE_FORMAT)
     this.availableTo = null
     this.selectedPromoType = null
     this.selectedDiscount = null
