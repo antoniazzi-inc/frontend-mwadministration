@@ -191,6 +191,79 @@ export const group = {
     }
   ]
 }
+export const workflow = {
+  actions: {
+    copy: true,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 10,
+  cols: [
+    {
+      name: 'labels.id',
+      field: 'id',
+      authorities: ['*'],
+      subField: null,
+      type: '',
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.label',
+      field: 'name',
+      authorities: ['*'],
+      subField: null,
+      type: null,
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.description',
+      field: 'description',
+      authorities: ['*'],
+      subField: null,
+      type: null,
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.status',
+      field: 'status',
+      authorities: ['*'],
+      subField: null,
+      type: null,
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.category',
+      field: 'category',
+      subField: null,
+      type: null,
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        let name = ''
+        Store.state.lookups.categories.forEach((cat: any) => {
+          if (cat.id === item.categoryId) {
+            name = cat.code
+          }
+        })
+        return name
+      }
+    },
+    {
+      name: 'labels.createdOn',
+      field: 'createdOn',
+      subField: null,
+      type: 'date',
+      authorities: ['*'],
+      sort: false,
+      method: null
+    }
+  ]
+}
 export const tag = {
   actions: {
     copy: true,
@@ -2202,5 +2275,15 @@ export const columnsVisibility = {
   },
   relationOrders: {
     itemsPerPage: 10
+  },
+  workflow: {
+    id: true,
+    name: true,
+    description: true,
+    status: true,
+    category: true,
+    createdOn: true,
+    itemsPerPage: 10
   }
+
 }
