@@ -355,13 +355,13 @@ export default class RelationComponent extends mixins(CommonHelpers, Vue) {
         let group:IComplexSearchGroup = new ComplexSearchGroup()
         let queries:IComplexSearchQuery[]=[]
         child.children.forEach((groupChild:any) => {
-          queries.push(new ComplexSearchQuery(groupChild.value.msName, groupChild.value.searchQuery))
+          queries.push(new ComplexSearchQuery(groupChild.value.msName, groupChild.value.searchQuery, groupChild.value.inOperator))
         })
         group.operator = child.operatorIdentifier
         group.queries = queries
         groups.push(group)
       } else {
-        groups.push(new ComplexSearchGroup(query.operatorIdentifier, [new ComplexSearchQuery(child.value.msName, child.value.searchQuery)]))
+        groups.push(new ComplexSearchGroup(query.operatorIdentifier, [new ComplexSearchQuery(child.value.msName, child.value.searchQuery, child.value.inOperator)]))
       }
     })
     complexQueryDto.groups = groups

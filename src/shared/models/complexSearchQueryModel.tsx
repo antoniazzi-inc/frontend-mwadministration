@@ -6,7 +6,8 @@ export interface IComplexSearchQuery {
 export class ComplexSearchQuery implements IComplexSearchQuery {
   constructor(
     public  msName?: string,
-    public query?: string
+    public query?: string,
+    public inOperator?: boolean,
   ) {
   }
 }

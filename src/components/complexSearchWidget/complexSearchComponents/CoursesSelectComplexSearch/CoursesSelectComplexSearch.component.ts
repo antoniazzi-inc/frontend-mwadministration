@@ -3,11 +3,12 @@ import CommonHelpers from "@/shared/commonHelpers";
 import {Component, Vue, Watch} from "vue-property-decorator";
 import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/SearchableSelectConfig";
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
-
+import moment from 'moment'
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import {courseOperators} from "@/shared/complexSearchOperators";
 import coursesService from "@/shared/services/coursesService";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 @Component({
   components:{
     SearchableSelectComponent,
@@ -59,7 +60,7 @@ export default class CoursesSelectComplexSearchComponent extends mixins(CommonHe
   }
   @Watch('dateValue', {immediate: true, deep: true})
   public updateSearchValue(newVal:any){
-    this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: newVal})
+    this.updateQuery()
   }
   public addCourse(e:any){
     if(!e) return
@@ -77,34 +78,56 @@ export default class CoursesSelectComplexSearchComponent extends mixins(CommonHe
     } else {
       this.$set(this, 'allEvents', [])
     }
-    this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
   }
   public removeCourse(e:any){
     if(!e) return
     this.selectedCourse = null
     this.selectedEvent = null
     this.allEvents = []
-    this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
   }
 
   public addCourseStep(e:any){
     if(!e) return
     this.selectedEvent = e
-    this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
   }
   public removeCourseStep(e:any){
     if(!e) return
     this.selectedEvent = null
-    this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
   }
   public addOperator(e:any){
     if(!e) return
     this.selectedOperator = e
-    this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
   }
   public removeOperator(e:any){
     if(!e) return
     this.selectedOperator = null
-    this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: this.dateValue})
+    this.updateQuery()
+
+  }
+
+
+  public updateQuery(){
+    let operator = this.selectedOperator ? this.selectedOperator.id : null
+    let value = this.dateValue
+    let inOperator = true
+      if(this.selectedOperator.labelValue === 'appliedfor') {
+        if(this.selectedEvent && this.selectedEvent.value && this.selectedEvent.value.id)
+        this.searchQuery = `event.id==${this.selectedEvent.value.id}`
+      } else if(this.selectedOperator.labelValue === 'not_appliedfor') {
+        inOperator = false
+        if(this.selectedEvent && this.selectedEvent.value && this.selectedEvent.value.id)
+        this.searchQuery = `event.id==${this.selectedEvent.value.id}`
+      }
+      else if(this.selectedOperator.labelValue === 'started_after' || this.selectedOperator.labelValue === 'started_before') {
+        value = moment(this.dateValue, DATE_FORMAT).format(INSTANT_FORMAT)
+        if(this.selectedEvent && this.selectedEvent.value && this.selectedEvent.value.id)
+        this.searchQuery = `event.id==${this.selectedEvent.value.id} and event.eventStart${operator.replace('{k}', value)}`
+      }
+    this.$emit('input', {attribute: this.selectedCourse, subAttribute: this.selectedEvent, operator: this.selectedOperator, value: this.dateValue, msName: this.msName, searchQuery: this.searchQuery, inOperator: inOperator})
   }
 }

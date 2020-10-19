@@ -84,4 +84,68 @@ export class RelationEntity implements IRelationEntity {
 };
 
 
+export const enum Activity_type {
+  FOLLOW = 'FOLLOW',
+  PLAYMATE = 'PLAYMATE',
+  CHALLENGED = 'CHALLENGED',
+  CHALLENGE_RESULT = 'CHALLENGE_RESULT',
+  ALL_TIME_HIGH = 'ALL_TIME_HIGH',
+  CLUB_MEMBER = 'CLUB_MEMBER'
+}
+export const enum Subject_Type {
+  TEAM_PLAYMATE = 'TEAM_PLAYMATE',
+  OPPONENT = 'OPPONENT',
+  CLUB = 'CLUB'
+}
+export const enum Media_type {
+  USER_AVATAR = 'USER_AVATAR',
+  VIDEO = 'VIDEO',
+  IMAGE = 'IMAGE'
+  /*additional media types when needed*/
+}
+export interface IUser  {
+  first_name: string;
+  last_name: string;
+  avatar: string;
+  id: number;
+}
+export interface ISubject  {
+  subject_type: Subject_Type,
+  user: IUser // Check if Club is user
+}
+export interface IMedia  {
+ url: string;
+ type: Media_type
+}
+export interface IOption  {
+  media: IMedia;
+  title: string;
+  votes: IUser[]; // Check if Club is user
+}
+export interface IPoll  {
+  title: string;
+  options: IOption[],
+
+}
+
+export interface IGame_info  {
+  sets: number;
+  results: string[] //1/4, 2/6, 6/4…
+  game_type: string // single, double, mini, no_serve
+  winner_user_id: number
+}
+
+export class IUserActivity {
+  constructor(
+    public user: IUser,
+    public subjects: ISubject[],
+    public applause: IUser[], // Check if Club is user
+    public activityType: Activity_type,
+    public poll: IPoll,
+    public game_info: IGame_info
+  ) {
+  }
+}
+
+
 
