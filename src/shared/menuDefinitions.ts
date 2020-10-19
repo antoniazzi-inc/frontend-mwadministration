@@ -55,13 +55,13 @@ export const MenuDefinitions = [
     {
       name: 'labels.mailings',
       icon: '',
-      path: '/actions-mailings',
+      path: '/mailings',
       authorities: ['*']
     },
     {
       name: 'labels.workflows',
       icon: '',
-      path: '/actions-workflows',
+      path: '/workflows',
       authorities: ['*']
     },
     {

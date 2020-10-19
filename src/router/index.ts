@@ -46,6 +46,8 @@ import NewCourseComponent from "@/entities/productms/course/newCourse/newCourse.
 import OrderComponent from "@/entities/orderms/order/order.vue";
 import EditOrderComponent from "@/entities/orderms/order/editOrder/editOrder.vue";
 import NewOrderComponent from "@/entities/orderms/order/newOrder/newOrder.vue";
+import WorkflowComponent from "@/entities/workflowms/workflow/workflows.vue";
+import EditWorkflowComponent from '@/entities/workflowms/workflow/editWorkflow/editWorkflow.vue'
 
 Vue.use(VueRouter)
 
@@ -155,9 +157,14 @@ const routes = [
     name: 'ActionsMailings',
     component: HomeDashboard
   }, {
-    path: '/actions-workflows',
-    name: 'ActionsWorkflows',
-    component: HomeDashboard
+    path: '/workflows',
+    name: 'Workflows',
+    component: WorkflowComponent
+  }, {
+    path: '/workflows/edit/:id',
+    name: 'EditWorkflow',
+    component: EditWorkflowComponent,
+    params: { id: null },
   }, {
     path: '/actions-courses',
     name: 'ActionsCourses',
