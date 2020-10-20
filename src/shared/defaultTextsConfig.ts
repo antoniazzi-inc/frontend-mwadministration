@@ -141,7 +141,7 @@ export const EmailTemplates = [
     items: [{
       id: 'headerText',
       name: 'labels.headerText',
-      component: 'textInput'
+      component: 'multiLang'
     }, {
       id: 'pageText',
       name: 'labels.pageText',
@@ -154,7 +154,7 @@ export const EmailTemplates = [
     items: [{
       id: 'headerText',
       name: 'labels.headerText',
-      component: 'textInput'
+      component: 'multiLang'
     }, {
       id: 'pageText',
       name: 'labels.pageText',
@@ -162,7 +162,7 @@ export const EmailTemplates = [
     }, {
       id: 'buttonText',
       name: 'labels.buttonText',
-      component: 'textInput'
+      component: 'multiLang'
     }, {
       id: 'buttonLink',
       name: 'labels.buttonLink',
@@ -179,7 +179,7 @@ export const EmailTemplates = [
     items: [{
       id: 'headerText',
       name: 'labels.headerText',
-      component: 'textInput'
+      component: 'multiLang'
     }, {
       id: 'pageText',
       name: 'labels.pageText',
@@ -204,7 +204,7 @@ export const EmailTemplates = [
     items: [{
       id: 'headerText',
       name: 'labels.headerText',
-      component: 'textInput'
+      component: 'multiLang'
     }, {
       id: 'pageText',
       name: 'labels.pageText',
@@ -212,7 +212,7 @@ export const EmailTemplates = [
     }, {
       id: 'buttonText',
       name: 'labels.buttonText',
-      component: 'textInput'
+      component: 'multiLang'
     }, {
       id: 'buttonLink',
       name: 'labels.buttonLink',
@@ -243,7 +243,7 @@ export const HtmlPageTemplates = [
     items: [{
       id: 'headerText',
       name: 'labels.headerText',
-      component: 'textInput'
+      component: 'multiLang'
     }, {
       id: 'pageText',
       name: 'labels.pageText',
@@ -256,7 +256,7 @@ export const HtmlPageTemplates = [
     items: [{
       id: 'headerText',
       name: 'labels.headerText',
-      component: 'textInput'
+      component: 'multiLang'
     }, {
       id: 'pageText',
       name: 'labels.pageText',
@@ -276,7 +276,7 @@ export const HtmlPage = {
   subject: [],
   value: {
     selectedTemplate: null,
-    headerText: '',
+    headerText: [],
     pageText: {},
     footerText: {},
     socialMedia: []
@@ -318,11 +318,11 @@ export const EmailTextConfig = {
   subject: [],
   value: {
     selectedTemplate: null,
-    headerText: '',
+    headerText: [],
     pageText: {},
     pageText2: {},
-    buttonText: '',
-    buttonLink: '',
+    buttonText: [],
+    buttonLink: {},
     imageUrl: '',
     footerText: {},
     socialMedia: []

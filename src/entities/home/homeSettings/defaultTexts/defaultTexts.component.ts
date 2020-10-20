@@ -54,6 +54,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   public emailText: any
   public htmlPage: any
   public multiLangConfig: any
+  public multiLangConfigText: any
   public selectedTextValuesBackup: any
   public availableLangs: any[]
   public selectedTextValues: any
@@ -84,6 +85,9 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
     this.htmlFragmentText = HtmlFragmentText
     this.multiLangConfig = new MultiLanguageConfig(true, false,
       'labels.subject', '', false,
+      false, false, true, true, false)
+    this.multiLangConfigText = new MultiLanguageConfig(true, false,
+      '', '', false,
       false, false, true, true, false)
     this.availableLangs = []
     this.administrationSettingsService = AdministrationSettingsService.getInstance()
@@ -231,6 +235,32 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
       this.emailText.subject.splice(index, 1)
     }
   }
+  public addNewButtonOrHeaderText (langKey: any, item:any, itemId:any) {
+    if(!langKey) return
+    const newLang = {
+      langKey: langKey,
+      name: '',
+      description: ''
+    }
+    if(item === 'htmlText'){
+      this.htmlPage.value[itemId].push(newLang)
+    } else {
+      this.emailText.value[itemId].push(newLang)
+    }
+  }
+
+  public changeNewButtonOrHeaderText (lang: any, item:any, itemId:any) {
+    if(!lang) return
+    if(item === 'htmlText'){
+      //this.htmlPage.value[itemId].push(lang)
+    } else {
+      //this.emailText.value[itemId] = lang
+    }
+  }
+
+  public removeNewButtonOrHeaderText (lang: any, item:any, itemId:any) {
+    if(!lang) return
+  }
 
   public addNewHtmlPageSubject (langKey: any) {
     const newLang = {
@@ -277,10 +307,10 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
     this.selectedEmailTemplate = template
     this.emailText.value = {
       selectedTemplate: template && template.id ? template.id : null,
-      headerText: '',
+      headerText: [],
       pageText: {},
       pageText2: {},
-      buttonText: '',
+      buttonText: [],
       buttonLink: '',
       imageUrl: '',
       footerText: {},
@@ -297,10 +327,10 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
     this.selectedHtmlPageTemplate = template
     this.htmlPage.value = {
       selectedTemplate: template && template.id ? template.id : null,
-      headerText: '',
+      headerText: [],
       pageText: {},
       pageText2: {},
-      buttonText: '',
+      buttonText: [],
       buttonLink: '',
       imageUrl: '',
       footerText: {},

@@ -24,7 +24,7 @@ export class MultiLanguageConfig implements IMultiLanguageConfig {
   public requiredName?: boolean,
   public requiredDescription?: boolean
   ) {
-    this.nameLabel = this.nameLabel ? this.nameLabel : 'labels.name'
-    this.descriptionLabel = this.descriptionLabel ? this.descriptionLabel : 'labels.description'
+    this.nameLabel = this.nameLabel ? this.nameLabel : ''
+    this.descriptionLabel = this.descriptionLabel ? this.descriptionLabel : ''
   }
 }

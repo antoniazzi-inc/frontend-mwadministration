@@ -81,6 +81,13 @@
                     <label>{{$t(item.name)}}</label>
                     <input type="text" v-model="emailText.value[item.id]" class="form-control"
                            v-if="item.component === 'textInput'"/>
+                    <multi-language-component
+                      v-if="item.component === 'multiLang'"
+                      :config="multiLangConfigText"
+                      :value="emailText.value[item.id]"
+                      @onAdd="addNewButtonOrHeaderText($event, 'emailText', item.id)"
+                      @onChange="changeNewButtonOrHeaderText($event, 'emailText', item.id)"
+                      @onRemove="removeNewButtonOrHeaderText($event, 'emailText', item.id)"/>
                     <MultiLanguageHtmlEditorComponent v-if="item.component === 'htmlEditor'"
                                                       :availableLangs="availableLangs"
                                                :content.sync="emailText.value[item.id]"
@@ -100,6 +107,13 @@
                     <label>{{$t(item.name)}}</label>
                     <input type="text" v-model="htmlPage.value[item.id]" class="form-control"
                            v-if="item.component === 'textInput'"/>
+                    <multi-language-component
+                      v-if="item.component === 'multiLang'"
+                      :config="multiLangConfigText"
+                      :value="emailText.value[item.id]"
+                      @onAdd="addNewButtonOrHeaderText($event, 'htmlPage', item.id)"
+                      @onChange="changeNewButtonOrHeaderText($event, 'htmlPage', item.id)"
+                      @onRemove="removeNewButtonOrHeaderText($event, 'htmlPage', item.id)"/>
                     <MultiLanguageHtmlEditorComponent v-if="item.component === 'htmlEditor'"
                                                :content.sync="htmlPage.value[item.id]"
                                                       :availableLangs="availableLangs"
