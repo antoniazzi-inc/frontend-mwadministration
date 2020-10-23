@@ -2145,6 +2145,12 @@ export const columnsVisibility = {
     email: true,
     itemsPerPage: 20
   },
+  masterTemplate:{
+    itemsPerPage: 20,
+    id: true,
+    createdOn: true,
+    updatedOn: true
+  },
   order: {
     id: true,
     createdOn: true,
