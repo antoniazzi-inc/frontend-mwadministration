@@ -1097,6 +1097,50 @@ export const helpCategory = {
   ]
 }
 
+
+export const masterTemplate = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: true,
+    info: false
+  },
+  itemsPerPage: 10,
+  cols: [
+    {
+      name: 'labels.id',
+      field: 'id',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.createdOn',
+      field: 'createdOn',
+      authorities: ['*'],
+      type: 'date',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.updatedOn',
+      field: 'updatedOn',
+      authorities: ['*'],
+      type: 'date',
+      subField: null,
+      sort: false,
+      method: null
+
+    }
+  ]
+}
+
+
 export const helpTag = {
   actions: {
     copy: true,
