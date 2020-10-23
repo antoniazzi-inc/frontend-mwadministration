@@ -1136,6 +1136,34 @@ export const masterTemplate = {
 
     },
     {
+      name: 'labels.name',
+      field: 'name',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.default',
+      field: 'isDefault',
+      authorities: ['*'],
+      type: 'boolean',
+      subField: null,
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.premium',
+      field: 'isPremium',
+      authorities: ['*'],
+      type: 'boolean',
+      subField: null,
+      sort: false,
+      method: null
+    },
+    {
       name: 'labels.createdOn',
       field: 'createdOn',
       authorities: ['*'],
@@ -2148,6 +2176,9 @@ export const columnsVisibility = {
   masterTemplate:{
     itemsPerPage: 20,
     id: true,
+    name: true,
+    isDefault: true,
+    isPremium: true,
     createdOn: true,
     updatedOn: true
   },
