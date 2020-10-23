@@ -224,6 +224,11 @@ export const MenuDefinitions = [
       icon: '',
       path: '/maintenance/migrations',
       authorities: ['*']
+    }, {
+      name: 'labels.masterTemplates',
+      icon: '',
+      path: '/maintenance/master-templates',
+      authorities: ['ROLE_SUPER_ADMIN']
     }]
   }
 ]

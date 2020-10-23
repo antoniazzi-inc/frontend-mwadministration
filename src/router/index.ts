@@ -48,6 +48,7 @@ import EditOrderComponent from "@/entities/orderms/order/editOrder/editOrder.vue
 import NewOrderComponent from "@/entities/orderms/order/newOrder/newOrder.vue";
 import WorkflowComponent from "@/entities/workflowms/workflow/workflows.vue";
 import EditWorkflowComponent from '@/entities/workflowms/workflow/editWorkflow/editWorkflow.vue'
+import MasterTemplateComponent from '@/entities/orderms/masterTemplate/masterTemplate.vue'
 
 Vue.use(VueRouter)
 
@@ -378,6 +379,10 @@ const routes = [
     path: '/maintenance/migrations',
     name: 'Migrations',
     component: MigrationsComponent
+  }, {
+    path: '/maintenance/master-templates',
+    name: 'Master Templates',
+    component: MasterTemplateComponent
   }, {
     path: '/notFound',
     name: 'NotFound',
