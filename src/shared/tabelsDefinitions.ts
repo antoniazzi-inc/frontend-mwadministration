@@ -522,6 +522,24 @@ export const order = {
       sort: false,
       method: null
     },{
+      name: 'labels.productFeatures',
+      field: 'productFeatures',
+      subField: null,
+      type: '',
+      authorities: ['*'],
+      sort: false,
+      method: function (item: any) {
+        let result:any = []
+        item.orderLines.forEach((orderLine:any) => {
+          if(orderLine.orderProduct.orderProductAttributeValues) {
+            orderLine.orderProduct.orderProductAttributeValues.forEach((attrVal:any) => {
+              result.push(`${attrVal.attributeName} - ${attrVal.attributeValueName}`)
+            })
+          }
+        })
+        return result.join(',')
+      }
+    },{
       name: 'labels.nettoAmount',
       field: 'nettoAmount',
       subField: null,
@@ -529,7 +547,7 @@ export const order = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        //TODO handle nettoAmount display into table
+        return `${Store.state.currency} ${item.invoice.nettoAmount}`
       }
     },{
       name: 'labels.invoiceNumber',
@@ -555,7 +573,7 @@ export const order = {
           return false
         }
       }
-    },
+    }
   ]
 }
 

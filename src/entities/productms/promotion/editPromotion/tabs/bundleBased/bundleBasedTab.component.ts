@@ -52,7 +52,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     this.multiSelectConfigAttributeValue = new SearchableSelectConfig('name',
       'labels.chooseFeatureValue', '', false,
       false, false, false, false)
-    this.multiSelectConfigAttribute = new SearchableSelectConfig('name',
+    this.multiSelectConfigAttribute = new SearchableSelectConfig('label',
       'labels.chooseFeature', '', false,
       false, false, false, false)
     this.promotionCopy = new Promotion()
@@ -380,7 +380,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     self.allItems[itemIndex].selectedAttributes = attr;
     $.each(attr.value.attributeValues, function (k, v) {
       allAttributeValues.push({
-        name: attr.name + ' - ' + self.getMultiLangName(v.attributeValueLanguages).name,
+        name: attr.label + ' - ' + self.getMultiLangName(v.attributeValueLanguages).name,
         value: v,
         attribute: attr.value
       });

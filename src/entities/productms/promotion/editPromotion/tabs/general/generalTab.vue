@@ -43,9 +43,9 @@
           <div :class="{'form-group': true}" v-if="selectedDiscountType===1 || selectedDiscountType===2">
             <label class="control-label" v-if="selectedDiscountType===1">{{$t('labels.percentageAmount')}}</label>
             <label class="control-label" v-if="selectedDiscountType===2">{{$t('labels.fixedAmount')}}</label>
-            <money v-if="selectedDiscountType===2" style="max-width:200px;" v-model="discountPriceAmount" class="form-control" name="discountAmount" v-bind="money"></money>
-            <money v-if="selectedDiscountType===1" style="max-width:200px;" v-model="discountPriceAmount" class="form-control" name="discountAmount" v-bind="moneyPercentage"></money>
-            <div v-if="selectedDiscountType === 2" class="form-group">
+            <money v-if="selectedDiscountType===1" style="max-width:200px;" v-model="discountPriceAmount" class="form-control" name="discountAmount1" v-bind="moneyPercentage"></money>
+            <money v-else-if="selectedDiscountType===2" style="max-width:200px;" v-model="discountPriceAmount" class="form-control" name="discountAmount" v-bind="money"></money>
+            <div v-else-if="selectedDiscountType === 2" class="form-group">
               <label class="control-label">{{$t('labels.useThreeDecimals')}}</label>
               <toggle-switch id="productArchived"
                              :on-text="$t('labels.yes')"

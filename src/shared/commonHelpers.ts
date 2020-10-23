@@ -796,25 +796,29 @@ export default class CommonHelpers extends Vue {
       result = {
         id: 1,
         name: 'percentage',
-        label: 'percentage'
+        label: 'percentage',
+        value: promotionType.discount.percentage
       }
     } else if (promotionType.discount.fixed) {
       result = {
         id: 2,
         name: 'fixed',
-        label: 'fixedAmount'
+        label: 'fixedAmount',
+        value: promotionType.discount.fixed
       }
     } else if (promotionType.discount.noShipping) {
       result = {
         id: 3,
         name: 'noShipping',
-        label: 'noShipping'
+        label: 'noShipping',
+        value: promotionType.discount.noShipping
       }
     } else {
       result = {
         id: 4,
         name: 'freeItems',
-        label: 'freeItems'
+        label: 'freeItems',
+        value: promotionType.discount.freeItems
       }
     }
     return result

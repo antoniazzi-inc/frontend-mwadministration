@@ -24,6 +24,7 @@ import SearchableSelectComponent from "@/components/searchableSelect/searchableS
 import RelationService from "@/shared/services/relationService";
 import {EventReservation, ReservationStatus} from "@/shared/models/eventReservation.model";
 import eventReservationService from "@/shared/services/eventReservation";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 
 @Component({
   props: {
@@ -254,6 +255,8 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
         htmlContent: this.pageContent
       });
     if (this.course.id) {
+      this.course.events = undefined
+      this.course.typeCourses = undefined
       this.courseService.put(this.course).then((resp: AxiosResponse) => {
         if (resp && resp.data) {
           this.isSaving = false
@@ -411,6 +414,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
 
   public removeCurrentEvent(item: any, index: any) {
     this.selectedEvent = new Event()
+    this.selectedDeleteMode = 'event'
     this.selectedEvent.eventLanguages = []
     if (this.course && this.course.events) {
       let event: IEvent = this.course.events[index]
@@ -437,8 +441,8 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
 
   public saveNewEvent() {
     this.editEvent = false;
-    this.selectedEvent.eventStart = moment(this.eventStart);
-    this.selectedEvent.eventEnd = moment(this.eventEnd);
+    this.selectedEvent.eventStart = this.eventStart ? moment(this.eventStart, DATE_FORMAT).format(INSTANT_FORMAT) : undefined;
+    this.selectedEvent.eventEnd = this.eventEnd ? moment(this.eventEnd, DATE_FORMAT).format(INSTANT_FORMAT) : undefined;
     this.selectedEvent.course = {
       id: this.course.id,
       version: this.course.version
@@ -627,6 +631,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
   public removeReservation(item: any, ind: number) {
     this.reservationToRemove = item
     this.reservationToRemoveIndex = ind
+    this.selectedDeleteMode = 'reservation'
   }
 
   public removeReservationConfirmed(type: any) {

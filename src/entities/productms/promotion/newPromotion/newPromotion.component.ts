@@ -576,26 +576,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
             })
             break;
           case 'LOYALTY':
-            this.$validator.validateAll({
-              points: this.earnedPoints,
-              totalPurchaseItems: this.totalPurchaseItems
-            }).then(resp => {
-              if (resp && this.totalPurchaseAmount > 0) {
-                resolve(true)
-              } else {
-                this.step4Error = ''
-                if (this.totalPurchaseAmount < 1) {
-                  resolve(false)
-                  this.step4Error = this.$t('labels.totalAmountMusBeBiggerOrEqualThan1')
-                } else {
-                  if (this.couponCode && this.maxTimesUsed) {
-                    resolve(true)
-                  } else {
-                    resolve(false)
-                  }
-                }
-              }
-            })
+              resolve(this.validateLoyalty())
             break;
           case 'PERSONAL_COUPON':
             if (this.couponMaxTimesUsed) {
@@ -704,6 +685,18 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
 
   public goBack() {
     this.$router.push('/promotions')
+  }
+
+  public validateLoyalty() {
+    if(this.earnedPoints){
+      return true
+    } else if(this.totalPurchaseAmount) {
+      return true
+    } else if(this.totalPurchaseItems){
+      return true
+    } else {
+      return false
+    }
   }
 
   public removeProduct(product: any) {

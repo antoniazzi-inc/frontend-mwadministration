@@ -265,17 +265,17 @@
         <template v-if="promotion.promotionType === 'LOYALTY'">
         <div :class="{'form-group mt-3':true}">
           <label class="control-label">{{$t('labels.earnedPointsToReceiveThisPromotion')}}</label>
-          <input v-validate="'numeric|min_value:1'" :class="{'form-control': true, invalid: errors.has('points')}" type="number"  name="points" v-model="earnedPoints"/>
+          <input  v-validate ="{ rules: { required: validateLoyalty} }" :class="{'form-control': true, invalid: errors.has('points')}" type="number"  name="points" v-model="earnedPoints"/>
           <span class="text-danger small">{{errors.first('points')}}</span>
         </div>
         <div class="form-group mt-3">
           <label class="control-label">{{$t('labels.totalPurchaseAmount')}}</label>
-          <money v-model="totalPurchaseAmount" :class="{'form-control': true, invalid: errors.has('totalPurchaseAmount')}" name="totalPurchaseAmount"  v-bind="moneyConfig"></money>
+          <money v-validate ="{ rules: { required: validateLoyalty} }" v-model="totalPurchaseAmount" :class="{'form-control': true, invalid: errors.has('totalPurchaseAmount')}" name="totalPurchaseAmount"  v-bind="moneyConfig"></money>
           <span class="text-danger small">{{step4Error}}</span>
         </div>
         <div class="form-group mt-3">
           <label class="control-label">{{$t('labels.totalPurchaseItems')}}</label>
-          <input type="number" v-validate="'numeric|min_value:1'" :class="{'form-control': true, invalid: errors.has('totalPurchaseItems')}" v-model="totalPurchaseItems" name="totalPurchaseItems"/>
+          <input type="number" v-validate ="{ rules: { required: validateLoyalty} }" :class="{'form-control': true, invalid: errors.has('totalPurchaseItems')}" v-model="totalPurchaseItems" name="totalPurchaseItems"/>
           <span class="text-danger small">{{errors.first('totalPurchaseItems')}}</span>
         </div>
         </template>

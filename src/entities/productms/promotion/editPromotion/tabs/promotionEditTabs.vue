@@ -7,7 +7,7 @@
             <a :class="{'nav-link': true, 'active': currentTab === 'general'}" id="general-tab" data-toggle="tab"
                href="#general" role="tab" aria-controls="general" aria-selected="true">{{$t('labels.general')}}</a>
           </li>
-          <li class="nav-item tab-nav" @click="currentTab = 'products'" v-if="promotion.promotionType === 'BUNDLE'">
+          <li class="nav-item tab-nav" @click="currentTab = 'products'" v-if="promotion.promotionType !== 'BUNDLE'">
             <a :class="{'nav-link': true, 'active': currentTab === 'products'}" id="products-tab" data-toggle="tab"
                href="#products" role="tab" aria-controls="products" aria-selected="false">{{$t('labels.products')}}</a>
           </li>

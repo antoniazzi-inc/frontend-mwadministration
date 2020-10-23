@@ -8,8 +8,8 @@ export interface IEvent extends IBaseEntity{
     latitude?: number;
     longitude?: number;
     seats?: number;
-    eventStart?: Moment;
-    eventEnd?: Moment;
+    eventStart?: any;
+    eventEnd?: any;
     price?: number;
     eventLanguages?: IEventLanguage[];
     course?: ICourse;
@@ -23,8 +23,8 @@ export class Event implements IEvent {
         public latitude?: number,
         public longitude?: number,
         public seats?: number,
-        public eventStart?: Moment,
-        public eventEnd?: Moment,
+        public eventStart?: any,
+        public eventEnd?: any,
         public price?: number,
         public createdOn?: Moment,
         public updatedOn?: Moment,

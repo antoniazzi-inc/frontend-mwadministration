@@ -178,8 +178,8 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       this.discountQuantityAmount = products[0].quantity
     }
     if (discountId.discount && (discountId.discount.id === 1 || discountId.discount.id === 2)) {
-      let discountPrice = this.getDiscount(newVal)
-      this.discountPriceAmount = discountPrice
+      let discountPrice = this.getDiscountType(newVal)
+      this.discountPriceAmount = discountPrice.discount.value
     }
   }
 
@@ -307,10 +307,10 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
         this.promotionCopy = resp.data;
         switch (self.selectedDiscountType) {
           case 1:
-            updateDiscountDto.percentage = self.discountPriceAmount.replace('%','');
+            updateDiscountDto.percentage = self.discountPriceAmount
             break;
           case 2:
-            updateDiscountDto.fixed = self.discountPriceAmount.replace(self.$store.state.currency,'');
+            updateDiscountDto.fixed = self.discountPriceAmount
             break;
           case 3:
             updateDiscountDto.noShipping = true;
