@@ -63,6 +63,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     sockets = new Sockets();
     relationSocket = new Sockets();
     productSocket = new Sockets();
+    orderSocket = new Sockets();
     loading = true;
     isReady = true;
     errorMessage:any = null;
@@ -273,6 +274,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
         this.sockets.connect().then(()=>{})
           this.relationSocket.connectRelation().then(()=>{})
             this.productSocket.connectProduct().then(()=>{})
+            this.orderSocket.connectOrder().then(()=>{})
         resolve()
       })
     }

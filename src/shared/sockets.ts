@@ -19,10 +19,13 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
   public socket: any;
   public relationSocket: any;
   public productSocket: any;
+  public orderSocket: any;
+  public connectedOrder: any;
   public store: any;
   public stompClient: any;
   public stompClientRelation: any;
   public stompClientProduct: any;
+  public stompClientOrder: any;
 
   constructor () {
     super()
@@ -31,14 +34,17 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
     this.socket = null
     this.relationSocket = null
     this.productSocket = null
+    this.orderSocket = null
     this.receivedMessages = []
     this.sendMessage = null
     this.connected = false
     this.connectedRelation = false
     this.connectedProduct = false
+    this.connectedOrder = false
     this.stompClient = null
     this.stompClientRelation = null
     this.stompClientProduct = null
+    this.stompClientOrder = null
   }
 
   public connect () {
@@ -116,6 +122,29 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
     })
     })
   }
+  public connectOrder () {
+    this.productSocket = new SockJS('/orderms/socket')
+    return new Promise(resolve => {
+      if(!this.store.state.userIdentity.administrationId) return
+    this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
+      this.stompClientOrder = Stomp.over(this.orderSocket)
+      this.stompClientOrder.connect({}, (frame: any) => {
+        this.connectedOrder = true
+        this.stompClientOrder.subscribe(`/session/${result.data.uid}`, (tick: any) => {
+          const resp = JSON.parse(tick.body)
+          this.updateLookups(resp)
+        })
+          resolve(true)
+      },
+      (error: any) => {
+        console.log(error)
+        this.connectedOrder = false
+        resolve(false)
+      }
+      )
+    })
+    })
+  }
 
   public disconnect () {
     if (this.stompClient) {
@@ -156,6 +185,11 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
       case 'relationgroup':
         lookupData = this.store.state.lookups.groups
         lookupName = 'groups'
+        itemName = obj.content.label
+        break
+      case 'invoicetemplate':
+        lookupData = this.store.state.lookups.invoiceTemplates
+        lookupName = 'invoiceTemplates'
         itemName = obj.content.label
         break
       case 'customfield':
