@@ -90,6 +90,21 @@ module.exports = {
         ws: false,
         changeOrigin: true
       },
+      '/orderms/socket': {
+        target: {
+          // host: '46.217.82.127',
+          host: 'localhost',
+          protocol: 'https:',
+          port: 8080
+        },
+        onProxyReq: proxyReq => {
+          proxyReq.setHeader('origin', 'https://localhost:8080/orderms/socket')
+          proxyReq.setHeader('sec-fetch-mode', 'no-cors')
+          proxyReq.setHeader('Sec-Fetch-Site', 'none')
+        },
+        ws: false,
+        changeOrigin: true
+      },
       '/render': {
         target: 'https://api.mjml.io/v1',
         pathRewrite: {
