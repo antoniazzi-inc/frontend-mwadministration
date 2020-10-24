@@ -123,7 +123,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
     })
   }
   public connectOrder () {
-    this.productSocket = new SockJS('/orderms/socket')
+    this.orderSocket = new SockJS('/orderms/socket')
     return new Promise(resolve => {
       if(!this.store.state.userIdentity.administrationId) return
     this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
@@ -156,9 +156,13 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
     if (this.stompClientProduct) {
       this.stompClientProduct.disconnect()
     }
+    if (this.stompClientOrder) {
+      this.stompClientOrder.disconnect()
+    }
     this.connected = false
     this.connectedRelation = false
     this.connectedProduct = false
+    this.connectedOrder = false
   }
 
   public updateLookups (obj: any) {
