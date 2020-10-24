@@ -270,19 +270,10 @@ export default class App extends mixins(Vue, CommonHelpers) {
 
     connectSockets () {
       return new Promise(resolve => {
-        this.sockets.connect().then(()=>{
-          this.relationSocket.connectRelation().then(()=>{
-            this.productSocket.connectProduct().then(()=>{
-              resolve()
-            }).catch(e=>{
-              resolve(e)
-            })
-          }).catch(e=>{
-            resolve(e)
-          })
-        }).catch(e=>{
-          resolve(e)
-        })
+        this.sockets.connect().then(()=>{})
+          this.relationSocket.connectRelation().then(()=>{})
+            this.productSocket.connectProduct().then(()=>{})
+        resolve()
       })
     }
     retrieveAccount () {
