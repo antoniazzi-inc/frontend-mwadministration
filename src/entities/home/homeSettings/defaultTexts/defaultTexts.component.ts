@@ -51,6 +51,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   public searchableConfigHtml: ISearchableSelectConfig
   public currentTab: any
   public selectedText: any
+  public copiedConfiguration: any
   public emailText: any
   public htmlPage: any
   public multiLangConfig: any
@@ -71,14 +72,15 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
     this.selectedHtmlPageTemplate = null
     this.searchableConfig = new SearchableSelectConfig('name',
       'labels.emailTemplate', '', true,
-      false, true, false, false)
+      false, false, false, false, false, true)
     this.searchableConfigHtml = new SearchableSelectConfig('name',
       'labels.htmlPageTemplate', '', true,
-      false, true, false, false)
+      false, false, false, false, false, true)
 
     this.clickedTab = ''
     this.currentTab = 'values'
     this.selectedText = null
+    this.copiedConfiguration = null
     this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
     this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
     this.selectedTextValuesBackup = null
@@ -116,6 +118,9 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
     })
   }
 
+  public updateCopiedConfiguration (config: any) {
+    this.copiedConfiguration = config
+  }
   public chooseText (text: any) {
     this.selectedText = text
     const pagination: any = {
@@ -133,14 +138,14 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
         if (text.type === 'email') {
           this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
           settingValueJson = JSON.parse(JSON.stringify(EmailTextConfig))
-          this.selectedEmailTemplate = null
+          this.selectedHtmlPageTemplate = this.emailTemplates[0]
           this.htmlFragmentText = JSON.parse(JSON.stringify(HtmlFragmentText))
           this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
         }
         if (text.type === 'htmlEditor') {
           this.htmlPage = JSON.parse(JSON.stringify(HtmlPage))
           settingValueJson = JSON.parse(JSON.stringify(HtmlPage))
-          this.selectedHtmlPageTemplate = null
+          this.selectedHtmlPageTemplate = this.htmlPageTemplates[0]
           this.htmlFragmentText = JSON.parse(JSON.stringify(HtmlFragmentText))
           this.emailText = JSON.parse(JSON.stringify(EmailTextConfig))
         }
@@ -263,6 +268,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public addNewHtmlPageSubject (langKey: any) {
+    if(!langKey) return
     const newLang = {
       langKey: langKey,
       name: '',
@@ -272,6 +278,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public changeNewHtmlPageSubject (subject: any) {
+    if(!subject) return
     let index = null
     this.htmlPage.subject.forEach((item: any, ind: number) => {
       if (item.langKey === subject.langKey) {
@@ -284,14 +291,17 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public updateSocialMedia (obj: any) {
+    if(!obj) return
     this.emailText.value.socialMedia = obj
   }
 
   public updateHtmlSocialMedia (obj: any) {
+    if(!obj) return
     this.htmlPage.value.socialMedia = obj
   }
 
   public removeNewHtmlPageSubject (subject: any) {
+    if(!subject) return
     let index = null
     this.htmlPage.subject.forEach((item: any, ind: number) => {
       if (item.langKey === subject.langKey) {
@@ -304,50 +314,56 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public emailTemplateChanged (template: any) {
+    if(!template) return
     this.selectedEmailTemplate = template
     this.emailText.value = {
       selectedTemplate: template && template.id ? template.id : null,
-      headerText: [],
-      pageText: {},
-      pageText2: {},
-      buttonText: [],
-      buttonLink: '',
-      imageUrl: '',
-      footerText: {},
-      socialMedia: ''
+      headerText: this.htmlPage.value.headerText ? this.htmlPage.value.headerText : [],
+      pageText: this.htmlPage.value.pageText ? this.htmlPage.value.pageText : {},
+      pageText2: this.htmlPage.value.pageText2 ? this.htmlPage.value.pageText2 : {},
+      buttonText: this.htmlPage.value.buttonText ? this.htmlPage.value.buttonText : [],
+      buttonLink: this.htmlPage.value.buttonLink ? this.htmlPage.value.buttonLink : '',
+      imageUrl: this.htmlPage.value.imageUrl ? this.htmlPage.value.imageUrl : '',
+      footerText: this.htmlPage.value.footerText ? this.htmlPage.value.footerText : {},
+      socialMedia: this.htmlPage.value.socialMedia ? this.htmlPage.value.socialMedia : ''
     }
-    this.emailText.subject = []
+    this.htmlPage.subject = this.htmlPage.subject ? this.htmlPage.subject : []
   }
 
   public emailTemplateRemoved (template: any) {
+    if(!template) return
     this.selectedEmailTemplate = null
   }
 
   public htmlPageTemplateChanged (template: any) {
+    if(!template) return
     this.selectedHtmlPageTemplate = template
     this.htmlPage.value = {
       selectedTemplate: template && template.id ? template.id : null,
-      headerText: [],
-      pageText: {},
-      pageText2: {},
-      buttonText: [],
-      buttonLink: '',
-      imageUrl: '',
-      footerText: {},
-      socialMedia: ''
+      headerText: this.htmlPage.value.headerText ? this.htmlPage.value.headerText : [],
+      pageText: this.htmlPage.value.pageText ? this.htmlPage.value.pageText : {},
+      pageText2: this.htmlPage.value.pageText2 ? this.htmlPage.value.pageText2 : {},
+      buttonText: this.htmlPage.value.buttonText ? this.htmlPage.value.buttonText : [],
+      buttonLink: this.htmlPage.value.buttonLink ? this.htmlPage.value.buttonLink : '',
+      imageUrl: this.htmlPage.value.imageUrl ? this.htmlPage.value.imageUrl : '',
+      footerText: this.htmlPage.value.footerText ? this.htmlPage.value.footerText : {},
+      socialMedia: this.htmlPage.value.socialMedia ? this.htmlPage.value.socialMedia : ''
     }
-    this.htmlPage.subject = []
+    this.htmlPage.subject = this.htmlPage.subject ? this.htmlPage.subject : []
   }
 
   public htmlPageTemplateRemoved (template: any) {
+    if(!template) return
     this.selectedHtmlPageTemplate = null
   }
 
   public updateEmailTextConfig (config: any) {
+    if(!config) return
     this.emailText.config = config
   }
 
   public updateHtmlPageTextConfig (config: any) {
+    if(!config) return
     this.htmlPage.config = config
   }
 

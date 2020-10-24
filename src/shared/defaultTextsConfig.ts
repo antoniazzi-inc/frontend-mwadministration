@@ -286,7 +286,7 @@ export const HtmlPage = {
     backgroundColor: '#ffffff',
     width: '',
     border: '',
-    borderColor: '',
+    buttonForegroundColor: '',
     header: {
       fontSize: '30',
       textAlign: 'center',
@@ -332,7 +332,7 @@ export const EmailTextConfig = {
     backgroundColor: '#ffffff',
     width: '',
     border: '',
-    borderColor: '',
+    buttonForegroundColor: '',
     header: {
       fontSize: '30',
       textAlign: 'center',

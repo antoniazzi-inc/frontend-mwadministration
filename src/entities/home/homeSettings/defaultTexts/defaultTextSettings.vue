@@ -2,6 +2,12 @@
   <form v-if="config">
     <div class="form-row mt-3">
       <div class="col">
+        <button class="btn btn-outline-info" @click.prevent.stop="copyConfig">{{$t('buttons.copy')}}</button>
+        <button class="btn ml-3 btn-outline-success" @click.prevent.stop="pasteConfig">{{$t('buttons.paste')}}</button>
+      </div>
+    </div>
+    <div class="form-row mt-3">
+      <div class="col">
         <label>{{$t('labels.font')}}</label>
         <searchable-select-component :config="searchableConfigFonts"
                                      :options="allFonts"
@@ -27,10 +33,10 @@
         </div>
       </div>
       <div class="col">
-        <label class="form-control-label">{{$t('labels.borderColor')}}</label><br/>
+        <label class="form-control-label">{{$t('labels.ButtonForegroundColor')}}</label><br/>
         <div class="dropdown col-md-12">
           <button  type="button" data-toggle="dropdown" aria-haspopup="true"
-                   :style="{'background-color': config.borderColor, width: '100%', height: '20px'}" aria-expanded="false"> &nbsp;
+                   :style="{'background-color': config.buttonForegroundColor, width: '100%', height: '20px'}" aria-expanded="false"> &nbsp;
           </button>
           <div class="dropdown-menu" aria-labelledby="dLabel">
             <form>

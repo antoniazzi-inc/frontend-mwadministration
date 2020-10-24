@@ -13,6 +13,8 @@ import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/S
 import {IMultiLanguageConfig, MultiLanguageConfig} from "@/shared/models/MultiLanguageConfig";
 import SimpleSearchComponent from "@/components/simpleSearch/simpleSearch.vue";
 import vue2Dropzone from "vue2-dropzone";
+import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
+import Chrome from "vue-color/src/components/Chrome";
 
 @Component({
   components: {
@@ -21,7 +23,9 @@ import vue2Dropzone from "vue2-dropzone";
     SearchableSelectComponent,
     MultiLangHtmlEditorComponent,
     PaginationTableComponent,
-    SimpleSearch: SimpleSearchComponent
+    SimpleSearch: SimpleSearchComponent,
+    ToggleSwitch,
+    'chrome-picker': Chrome
   },
   props: {
     active: Boolean
@@ -31,6 +35,7 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
   $refs!: {
     editInvoiceModal: HTMLElement
   }
+  public colors: any = [];
   public itemsPerPage: number;
   public queryCount: number | any;
   public page: number;
@@ -48,10 +53,15 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
   public multiLangConfigCompanyData: any;
   public uploadLogoConfig: any;
   public selectedLogo: any;
+  public singleSelectConfigMasterTemplate: ISearchableSelectConfig;
   public multiLangConfigPaymentInfo: IMultiLanguageConfig;
   public multiLangConfigPaymentInfoPaid: IMultiLanguageConfig;
   public multiLangConfigPaymentInfoFooter: IMultiLanguageConfig;
   public multiLangConfigPaymentInfoHeader: IMultiLanguageConfig;
+  public multiLangConfigPaymentUnpaidIncasso: IMultiLanguageConfig;
+  public multiLangConfigPaymentUnpaidBank: IMultiLanguageConfig;
+  public multiLangConfigExtraFooter: IMultiLanguageConfig;
+  public multiLangConfigExtraHeader: IMultiLanguageConfig;
   public invoiceTemplates: IInvoiceTemplate[];
   public invoiceToEdit: IInvoiceTemplate | any;
   public countriesConfig: ISearchableSelectConfig = new SearchableSelectConfig('enName', 'labels.selectCountry', '',
@@ -85,6 +95,8 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
     this.queryCount = null;
     this.selectedLogo = null;
     this.isSaveInvoiceTemplateDisabled = true;
+    this.singleSelectConfigMasterTemplate = new SearchableSelectConfig('name', 'labels.selectMasterTempalte', '',
+      false, false, false, false, true, false)
     this.currentTab = 'companyData',
       this.multiLangConfigCompanyData = {
         showName: true,
@@ -102,10 +114,18 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
       'labels.unpaidBottom', false, false, false, true, false, false)
     this.multiLangConfigPaymentInfoPaid = new MultiLanguageConfig(false, true, '',
       'labels.paidBottom', false, false, false, true, false, false)
+    this.multiLangConfigPaymentUnpaidIncasso = new MultiLanguageConfig(false, true, '',
+      'labels.unpaidIncasso', false, false, false, true, false, false)
+    this.multiLangConfigPaymentUnpaidBank = new MultiLanguageConfig(false, true, '',
+      'labels.unpaidBankTransfer', false, false, false, true, false, false)
     this.multiLangConfigPaymentInfoFooter = new MultiLanguageConfig(false, true, '',
       'labels.smallFooter', false, false, false, true, false, false)
     this.multiLangConfigPaymentInfoHeader = new MultiLanguageConfig(false, true, '',
       'labels.smallHeader', false, false, false, true, false, false)
+     this.multiLangConfigExtraFooter = new MultiLanguageConfig(false, true, '',
+      'labels.extraFooter', false, false, false, true, false, false)
+    this.multiLangConfigExtraHeader = new MultiLanguageConfig(false, true, '',
+      'labels.extraHeader', false, false, false, true, false, false)
     this.page = 1;
     this.previousPage = null;
     this.propOrder = 'id';
@@ -127,10 +147,18 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
       paymentInfoSmallHeader: [],
       paymentInfoUnpaid: [],
       paymentInfoPaid: [],
+      unpaidIncassoLine: [],
+      unpaidBankTransferLine: [],
+      extraFooter: [],
+      extraHeader: [],
       paymentInfoSmallFooter: [],
       selectedCountry: null,
+      masterTemplate: null,
       invoiceEmailContent: {},
       fontName: '',
+      fontColor: '',
+      titleColor: '',
+      highlightColor: '',
       fontUrl: '',
     };
     this.errorInvoiceTemplate = '';
@@ -148,6 +176,21 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
 
   public search() {
 
+  }
+  public updateFontColor(color:any) {
+    this.invoiceTemplateData.fontColor = color.hex
+  }
+  public updateTitleColor(color:any) {
+    this.invoiceTemplateData.titleColor = color.hex
+  }
+  public updateHighlightColor(color:any) {
+    this.invoiceTemplateData.highlightColor = color.hex
+  }
+  public masterTemplateChanged(template:any) {
+    this.invoiceToEdit.masterTemplate = template
+  }
+  public masterTemplateRemoved(template:any) {
+    this.invoiceToEdit.masterTemplate = null
   }
 
   public closeInvoiceDialog() {
@@ -400,6 +443,137 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
       this.invoiceTemplateData.paymentInfoPaid.splice(index, 1);
     }
   }
+
+  public updateUnpaidIncasso(data: any) {
+    let index = null;
+    $.each(this.invoiceTemplateData.unpaidIncassoLine, function (k, v) {
+      if (v.langKey === data.langKey) {
+        index = k;
+      }
+    });
+    if (index) {
+      this.$set(this.invoiceTemplateData.unpaidIncassoLine, index, data);
+    }
+  }
+
+  public addNewUnpaidIncasso(lang: any) {
+    const newLang: any = {
+      name: '',
+      description: '',
+      langKey: lang
+    }
+    this.invoiceTemplateData.unpaidIncassoLine.push(newLang)
+  }
+
+  public removeUnpaidIncasso(data: any) {
+    let index = null;
+    $.each(this.invoiceTemplateData.unpaidIncassoLine, function (k, v) {
+      if (v.langKey === data.langKey) {
+        index = k;
+      }
+    });
+    if (index) {
+      this.invoiceTemplateData.unpaidIncassoLine.splice(index, 1);
+    }
+  }
+public updateExtraFooter(data: any) {
+    let index = null;
+    $.each(this.invoiceTemplateData.extraFooter, function (k, v) {
+      if (v.langKey === data.langKey) {
+        index = k;
+      }
+    });
+    if (index) {
+      this.$set(this.invoiceTemplateData.extraFooter, index, data);
+    }
+  }
+
+  public addNewExtraFooter(lang: any) {
+    const newLang: any = {
+      name: '',
+      description: '',
+      langKey: lang
+    }
+    this.invoiceTemplateData.extraFooter.push(newLang)
+  }
+
+  public removeExtraFooter(data: any) {
+    let index = null;
+    $.each(this.invoiceTemplateData.extraFooter, function (k, v) {
+      if (v.langKey === data.langKey) {
+        index = k;
+      }
+    });
+    if (index) {
+      this.invoiceTemplateData.extraFooter.splice(index, 1);
+    }
+  }
+public updateExtraHeader(data: any) {
+    let index = null;
+    $.each(this.invoiceTemplateData.extraHeader, function (k, v) {
+      if (v.langKey === data.langKey) {
+        index = k;
+      }
+    });
+    if (index) {
+      this.$set(this.invoiceTemplateData.extraHeader, index, data);
+    }
+  }
+
+  public addNewExtraHeader(lang: any) {
+    const newLang: any = {
+      name: '',
+      description: '',
+      langKey: lang
+    }
+    this.invoiceTemplateData.extraHeader.push(newLang)
+  }
+
+  public removeExtraHeader(data: any) {
+    let index = null;
+    $.each(this.invoiceTemplateData.extraHeader, function (k, v) {
+      if (v.langKey === data.langKey) {
+        index = k;
+      }
+    });
+    if (index) {
+      this.invoiceTemplateData.extraHeader.splice(index, 1);
+    }
+  }
+
+  public updateUnpaidBank(data: any) {
+    let index = null;
+    $.each(this.invoiceTemplateData.unpaidBankTransferLine, function (k, v) {
+      if (v.langKey === data.langKey) {
+        index = k;
+      }
+    });
+    if (index) {
+      this.$set(this.invoiceTemplateData.unpaidBankTransferLine, index, data);
+    }
+  }
+
+  public addNewUnpaidBank(lang: any) {
+    const newLang: any = {
+      name: '',
+      description: '',
+      langKey: lang
+    }
+    this.invoiceTemplateData.unpaidBankTransferLine.push(newLang)
+  }
+
+  public removeUnpaidBank(data: any) {
+    let index = null;
+    $.each(this.invoiceTemplateData.unpaidBankTransferLine, function (k, v) {
+      if (v.langKey === data.langKey) {
+        index = k;
+      }
+    });
+    if (index) {
+      this.invoiceTemplateData.unpaidBankTransferLine.splice(index, 1);
+    }
+  }
+
 
   public updateSmallFooter(data: any) {
     let index = null;

@@ -27,5 +27,6 @@ constructor(
     public templateDataJson?: string,
     public invoices?: IInvoice[],
   ){
+  this.isDefault = isDefault ? true : false
   }
 };

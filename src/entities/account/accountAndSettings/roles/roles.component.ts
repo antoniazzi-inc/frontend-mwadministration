@@ -27,6 +27,7 @@ export default class RolesComponent extends mixins(CommonHelpers, Vue) {
 
   public roleService: any;
   public searchQuery: any;
+  public active: any;
   public allRoles: IRole[];
   public role: IRole;
   constructor () {
@@ -34,10 +35,12 @@ export default class RolesComponent extends mixins(CommonHelpers, Vue) {
     this.searchQuery = 'code=out=(ROLE_SUPER_ADMIN,ROLE_USER,ROLE_ADMIN,ROLE_RELATION,ROLE_CUSTOMER,ROLE_BENEFICIARY,ROLE_AFFILIATE,ROLE_NEWSLETTER,ROLE_SUPPORT)'
     this.roleService = RoleService.getInstance()
     this.allRoles = []
+    this.active = false
     this.role = new Role()
   }
 
   public mounted () {
+    this.active = true
   }
 
   public newRole () {

@@ -7,7 +7,8 @@
           <simple-search @onSearch="search"></simple-search>
         </div>
         <div class="p-4">
-          <button type="button" @click="createNewInvoiceTemplate" class="btn btn-primary float-right jh-create-entity create-invoice-template create-button">
+          <button type="button" @click="createNewInvoiceTemplate"
+                  class="btn btn-primary float-right jh-create-entity create-invoice-template create-button">
             <i class="fas fa-plus"/> <span v-text="$t('buttons.newInvoiceTemplate')"></span>
           </button>
         </div>
@@ -78,11 +79,18 @@
                        role="tabpanel"
                        aria-labelledby="companyData-tab">
                     <span class="small text-danger">{{ $t(errorInvoiceTemplate) }}</span>
-                    <div class="form-group mt-3">
-                      <div class="col-md-12 pl-0 ml-0">
+                    <div class="form-group mt-3 row">
+                      <div class="col-md-6">
                         <label>{{ $t('labels.name') }}</label>
                         <input v-model="invoiceTemplateData.invoiceName" type="text"
                                :class="{'form-control': true, invalid: invoiceTemplateData.invoiceName === '' ? true : false}"/>
+                      </div>
+                      <div class="col-md-6">
+                        <label>{{ $t('labels.isDefault') }}</label>
+                        <toggle-switch
+                          :on-text="$t('labels.yes')"
+                          :off-text="$t('labels.no')"
+                          :value.sync="invoiceToEdit.isDefault"/>
                       </div>
                     </div>
                     <div class="form-group mt-3">
@@ -174,6 +182,36 @@
                       <label>{{ $t('labels.chamber') }}</label>
                       <input v-model="invoiceTemplateData.chamber" type="text" class="form-control"/>
                     </div>
+                    <div class="col-md-12 p-0 m-0">
+                      <div class="form-group mt-3">
+                        <multi-language-component
+                          :config="multiLangConfigPaymentInfoFooter"
+                          :value="invoiceTemplateData.paymentInfoSmallFooter"
+                          @onAdd="addNewSmallFooter"
+                          @onChange="updateSmallFooter"
+                          @onRemove="removeSmallFooter"/>
+                      </div>
+                    </div>
+                    <div class="col-md-12 p-0 m-0">
+                      <div class="form-group mt-3">
+                        <multi-language-component
+                          :config="multiLangConfigExtraFooter"
+                          :value="invoiceTemplateData.extraFooter"
+                          @onAdd="addNewExtraFooter"
+                          @onChange="updateExtraFooter"
+                          @onRemove="removeExtraFooter"/>
+                      </div>
+                    </div>
+                    <div class="col-md-12 p-0 m-0">
+                      <div class="form-group mt-3">
+                        <multi-language-component
+                          :config="multiLangConfigExtraHeader"
+                          :value="invoiceTemplateData.extraHeader"
+                          @onAdd="addNewExtraHeader"
+                          @onChange="updateExtraHeader"
+                          @onRemove="removeExtraHeader"/>
+                      </div>
+                    </div>
                   </div>
                   <div :class="{'tab-pane': true, active: currentTab === 'paymentInfo'}" id="paymentInfo"
                        role="tabpanel"
@@ -201,13 +239,25 @@
                       </div>
                     </div>
                     <div class="col-md-12 p-0 m-0">
+                      <label class="mt-2">{{ $t('') }}</label>
                       <div class="form-group mt-3">
                         <multi-language-component
-                          :config="multiLangConfigPaymentInfoFooter"
-                          :value="invoiceTemplateData.paymentInfoSmallFooter"
-                          @onAdd="addNewSmallFooter"
-                          @onChange="updateSmallFooter"
-                          @onRemove="removeSmallFooter"/>
+                          :config="multiLangConfigPaymentUnpaidIncasso"
+                          :value="invoiceTemplateData.unpaidIncassoLine"
+                          @onAdd="addNewUnpaidIncasso"
+                          @onChange="updateUnpaidIncasso"
+                          @onRemove="removeUnpaidIncasso"/>
+                      </div>
+                    </div>
+                    <div class="col-md-12 p-0 m-0">
+                      <label class="mt-2">{{ $t('') }}</label>
+                      <div class="form-group mt-3">
+                        <multi-language-component
+                          :config="multiLangConfigPaymentUnpaidBank"
+                          :value="invoiceTemplateData.unpaidBankTransferLine"
+                          @onAdd="addNewUnpaidBank"
+                          @onChange="updateUnpaidBank"
+                          @onRemove="removeUnpaidBank"/>
                       </div>
                     </div>
                     <div class="col-md-12 p-0 m-0">
@@ -223,13 +273,64 @@
                   </div>
                   <div :class="{'tab-pane': true, active: currentTab === 'layout'}" id="layout" role="tabpanel"
                        aria-labelledby="layout-tab">
-                    <div class="form-group col-md-6 mt-3">
-                      <label class="control-label">{{ $t('labels.font') }}</label>
-                      <select v-model="invoiceTemplateData.selectedFont" class="form-control" @change="changeFont">
-                        <option v-for="(item, index) in allFonts" :key="index" :value="item.fontName">
-                          {{ item.fontName }}
-                        </option>
-                      </select>
+                    <div class="row">
+                      <div class="form-group col-md-6 mt-3">
+                        <label class="control-label">{{ $t('labels.font') }}</label>
+                        <select v-model="invoiceTemplateData.selectedFont" class="form-control" @change="changeFont">
+                          <option v-for="(item, index) in allFonts" :key="index" :value="item.fontName">
+                            {{ item.fontName }}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-6 mt-3">
+                        <label class="control-label">{{ $t('labels.masterTemplate') }}</label>
+                        <searchable-select-component :config="singleSelectConfigMasterTemplate"
+                                                     :options="$store.state.lookups.masterTemplates"
+                                                     :value="invoiceToEdit.masterTemplate"
+                                                     @onChange="masterTemplateChanged"
+                                                     @onDelete="masterTemplateRemoved"/>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-md-4 mt-3">
+                          <label class="control-label">{{ $t('labels.baseFontColor') }}</label>
+                          <div class="dropdown">
+                            <button type="button" class="color-button" data-toggle="dropdown" aria-haspopup="true"
+                                    :style="{'background-color': invoiceTemplateData.fontColor, width: '100%'}"
+                                    aria-expanded="false"/>
+                            <div class="dropdown-menu" aria-labelledby="dLabel">
+                              <form>
+                                <chrome-picker :value="colors" @input="updateFontColor"></chrome-picker>
+                              </form>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="form-group col-md-4 mt-3">
+                        <label class="control-label">{{ $t('labels.titleColor') }}</label>
+                        <div class="dropdown">
+                          <button type="button" class="color-button" data-toggle="dropdown" aria-haspopup="true"
+                                  :style="{'background-color': invoiceTemplateData.titleColor, width: '100%'}"
+                                  aria-expanded="false"/>
+                          <div class="dropdown-menu" aria-labelledby="dLabel">
+                            <form>
+                              <chrome-picker :value="colors" @input="updateTitleColor"></chrome-picker>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-4 mt-3">
+                        <label class="control-label">{{ $t('labels.highlightColor') }}</label>
+                        <div class="dropdown">
+                          <button type="button" class="color-button" data-toggle="dropdown" aria-haspopup="true"
+                                  :style="{'background-color': invoiceTemplateData.highlightColor, width: '100%'}"
+                                  aria-expanded="false"/>
+                          <div class="dropdown-menu" aria-labelledby="dLabel">
+                            <form>
+                              <chrome-picker :value="colors" @input="updateHighlightColor"></chrome-picker>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div :class="{'tab-pane': true, active: currentTab === 'emailContent'}" id="emailContent"
@@ -259,131 +360,133 @@
         </div>
       </div>
     </div>
-      <div id="invoicePreview">
-        <div class="header align-self">
-          <div class="row">
-            <div
-              :class="{'col-md-12': true, 'text-left': invoiceTemplateData.logoPosition === 'LEFT_ALIGNED', 'text-center': invoiceTemplateData.logoPosition === 'CENTERED', 'text-right': invoiceTemplateData.logoPosition === 'RIGHT_ALIGNED'}">
-              <img :class="{logoPreview: true}" :src="selectedLogo"/>
-            </div>
+    <div id="invoicePreview">
+      <div class="header align-self">
+        <div class="row">
+          <div
+            :class="{'col-md-12': true, 'text-left': invoiceTemplateData.logoPosition === 'LEFT_ALIGNED', 'text-center': invoiceTemplateData.logoPosition === 'CENTERED', 'text-right': invoiceTemplateData.logoPosition === 'RIGHT_ALIGNED'}">
+            <img :class="{logoPreview: true}" :src="selectedLogo"/>
           </div>
         </div>
-        <div class="invoiceBody">
-          <div class="row invoiceAddressInfo">
-            <div class="col-md-9 text-left">
-              <span class="customerName">{{ $t('labels.customerFullName') }}<br/></span>
-              <span class="customerAddress">{{ $t('labels.customerAddress') }}<br/></span>
-              <span class="customerPostal">{{ $t('labels.customerCityPostal') }}<br/></span>
-              <span class="customerCountry">{{ $t('labels.country') }}<br/></span>
-            </div>
-            <div class="col-md-3 text-left">
-              <span class="companyName invoiceCompanyName">{{ invoiceTemplateData.companyName }}<br/></span>
-              <span class="companyAddress">{{ invoiceTemplateData.addressLine1 }}<br/></span>
-              <span class="companyAddress">{{ invoiceTemplateData.addressLine2 }}<br/></span>
-              <span class="companyPostal">{{ invoiceTemplateData.postalCode }}<br/></span>
-              <span
-                class="companyCountry">{{ invoiceTemplateData.selectedCountry ? invoiceTemplateData.selectedCountry.enName : '' }}<br/></span>
-              <p></p>
-              <p>
-                {{ invoiceTemplateData.phoneNumber }}
-                <br/>
-                {{ invoiceTemplateData.email }}
-              </p>
-              <p></p>
-              <p>
-                <span>{{ $t('labels.KVK') }} {{ invoiceTemplateData.chamber }}</span><br/>
-                <span>{{ $t('labels.BTW') }} {{ invoiceTemplateData.vat }}</span>
-              </p>
-            </div>
+      </div>
+      <div class="invoiceBody">
+        <div class="row invoiceAddressInfo">
+          <div class="col-md-9 text-left">
+            <span class="customerName">{{ $t('labels.customerFullName') }}<br/></span>
+            <span class="customerAddress">{{ $t('labels.customerAddress') }}<br/></span>
+            <span class="customerPostal">{{ $t('labels.customerCityPostal') }}<br/></span>
+            <span class="customerCountry">{{ $t('labels.country') }}<br/></span>
           </div>
-          <div class="invoiceInfo row mt-5">
-            <div class="col-md-8">
-              <p>{{ $t('labels.invoiceNumber') }} 0000001</p>
-              <p>{{ $t('labels.clientNumber') }} 420</p>
-            </div>
-            <div class="col-md-4">
-              <p>{{ $t('labels.paymentDueBy') }} {{ new Date() | formatOnlyDate }}</p>
-              <p>{{ $t('labels.invoiceDate') }} {{ new Date() | formatOnlyDate }}</p>
-            </div>
+          <div class="col-md-3 text-left">
+            <span class="companyName invoiceCompanyName">{{ invoiceTemplateData.companyName }}<br/></span>
+            <span class="companyAddress">{{ invoiceTemplateData.addressLine1 }}<br/></span>
+            <span class="companyAddress">{{ invoiceTemplateData.addressLine2 }}<br/></span>
+            <span class="companyPostal">{{ invoiceTemplateData.postalCode }}<br/></span>
+            <span
+              class="companyCountry">{{
+                invoiceTemplateData.selectedCountry ? invoiceTemplateData.selectedCountry.enName : ''
+              }}<br/></span>
+            <p></p>
+            <p>
+              {{ invoiceTemplateData.phoneNumber }}
+              <br/>
+              {{ invoiceTemplateData.email }}
+            </p>
+            <p></p>
+            <p>
+              <span>{{ $t('labels.KVK') }} {{ invoiceTemplateData.chamber }}</span><br/>
+              <span>{{ $t('labels.BTW') }} {{ invoiceTemplateData.vat }}</span>
+            </p>
           </div>
-          <div class="invoiceData row mt-5">
+        </div>
+        <div class="invoiceInfo row mt-5">
+          <div class="col-md-8">
+            <p>{{ $t('labels.invoiceNumber') }} 0000001</p>
+            <p>{{ $t('labels.clientNumber') }} 420</p>
+          </div>
+          <div class="col-md-4">
+            <p>{{ $t('labels.paymentDueBy') }} {{ new Date() | formatOnlyDate }}</p>
+            <p>{{ $t('labels.invoiceDate') }} {{ new Date() | formatOnlyDate }}</p>
+          </div>
+        </div>
+        <div class="invoiceData row mt-5">
+          <div class="col-md-12">
+            <h3>{{ $t('labels.invoice') }}</h3>
             <div class="col-md-12">
-              <h3>{{ $t('labels.invoice') }}</h3>
-              <div class="col-md-12">
-                <div class="table table-bordered">
-                  <div class="row">
-                    <div class="col-md-1 text-center" style="border-right: 1px solid #ccc;">
-                      1
-                    </div>
-                    <div class="col-md-8">
-                      {{ $t('labels.productName') }} <br/>
-                      {{ $t('labels.productDescription') }}
-                    </div>
-                    <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
-                      50,00
-                    </div>
+              <div class="table table-bordered">
+                <div class="row">
+                  <div class="col-md-1 text-center" style="border-right: 1px solid #ccc;">
+                    1
                   </div>
-                  <div class="row" :style="{border: 'none'}" v-for="item in 23" :key="item">
-                    <div class="col-md-1 text-center" style="border-right: 1px solid #ccc;">
-                      <br/>
-                    </div>
-                    <div class="col-md-8" style="'border-top': 'none'; 'border-bottom': 'none';">
-                      <br/>
-                    </div>
-                    <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
-                      <br/>
-                    </div>
+                  <div class="col-md-8">
+                    {{ $t('labels.productName') }} <br/>
+                    {{ $t('labels.productDescription') }}
                   </div>
+                  <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
+                    50,00
+                  </div>
+                </div>
+                <div class="row" :style="{border: 'none'}" v-for="item in 23" :key="item">
+                  <div class="col-md-1 text-center" style="border-right: 1px solid #ccc;">
+                    <br/>
+                  </div>
+                  <div class="col-md-8" style="'border-top': 'none'; 'border-bottom': 'none';">
+                    <br/>
+                  </div>
+                  <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
+                    <br/>
+                  </div>
+                </div>
 
-                  <div class="row" :style="{border: 'none'}">
-                    <div class="col-md-1 text-center" style="border-right: 1px solid #ccc;">
-                      <br/>
-                    </div>
-                    <div class="col-md-8" style="'border-top': 'none'; 'border-bottom': 'none';">
-                      <h5 class="font-weight-bold">{{ $t('labels.totalExclusive') }}</h5>
-                    </div>
-                    <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
-                      <h5 class="font-weight-bold">50.00</h5>
-                    </div>
+                <div class="row" :style="{border: 'none'}">
+                  <div class="col-md-1 text-center" style="border-right: 1px solid #ccc;">
+                    <br/>
                   </div>
-                  <div class="row" :style="{border: 'none'}">
-                    <div class="col-md-1 text-center" style="border-right: 1px solid #ccc;">
-                      <br/>
-                    </div>
-                    <div class="col-md-8" style="'border-top': 'none'; 'border-bottom': 'none';">
-                      <h5 class="font-weight-bold">{{ $t('labels.btw21') }}</h5>
-                    </div>
-                    <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
-                      <h5 class="font-weight-bold">9.50
-                        <hr/>
-                      </h5>
-                    </div>
+                  <div class="col-md-8" style="'border-top': 'none'; 'border-bottom': 'none';">
+                    <h5 class="font-weight-bold">{{ $t('labels.totalExclusive') }}</h5>
                   </div>
-                  <div class="row" :style="{border: 'none'}">
-                    <div class="col-md-1" style="border-right: 1px solid #ccc;">
-                      <br/>
-                    </div>
-                    <div class="col-md-8" style="'border-top': 'none'; 'border-bottom': 'none';">
-                      <h5 class="font-weight-bold">{{ $t('labels.totalIncl') }}</h5>
-                    </div>
-                    <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
-                      <h5 class="font-weight-bold">59.50</h5>
-                    </div>
+                  <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
+                    <h5 class="font-weight-bold">50.00</h5>
+                  </div>
+                </div>
+                <div class="row" :style="{border: 'none'}">
+                  <div class="col-md-1 text-center" style="border-right: 1px solid #ccc;">
+                    <br/>
+                  </div>
+                  <div class="col-md-8" style="'border-top': 'none'; 'border-bottom': 'none';">
+                    <h5 class="font-weight-bold">{{ $t('labels.btw21') }}</h5>
+                  </div>
+                  <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
+                    <h5 class="font-weight-bold">9.50
+                      <hr/>
+                    </h5>
+                  </div>
+                </div>
+                <div class="row" :style="{border: 'none'}">
+                  <div class="col-md-1" style="border-right: 1px solid #ccc;">
+                    <br/>
+                  </div>
+                  <div class="col-md-8" style="'border-top': 'none'; 'border-bottom': 'none';">
+                    <h5 class="font-weight-bold">{{ $t('labels.totalIncl') }}</h5>
+                  </div>
+                  <div class="col-md-3 text-center" style="border-left: 1px solid #ccc;">
+                    <h5 class="font-weight-bold">59.50</h5>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-12">
-              <p>{{ $t('labels.paymentDueBy') }} {{ new Date() | formatOnlyDate }}</p>
-              <p>{{ getMultiLangName(invoiceTemplateData.paymentInfoSmallFooter).name }}</p>
-            </div>
+          </div>
+          <div class="col-md-12">
+            <p>{{ $t('labels.paymentDueBy') }} {{ new Date() | formatOnlyDate }}</p>
+            <p>{{ getMultiLangName(invoiceTemplateData.paymentInfoSmallFooter).name }}</p>
           </div>
         </div>
-        <div class="invoiceFooter mt-2">{{ invoiceTemplateData.companyName }} | {{ invoiceTemplateData.phoneNumber }} |
-          {{ invoiceTemplateData.email }} | {{ invoiceTemplateData.chamber }} | {{ invoiceTemplateData.vat }}
-        </div>
+      </div>
+      <div class="invoiceFooter mt-2">{{ invoiceTemplateData.companyName }} | {{ invoiceTemplateData.phoneNumber }} |
+        {{ invoiceTemplateData.email }} | {{ invoiceTemplateData.chamber }} | {{ invoiceTemplateData.vat }}
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts" src="./invoiceTemplate.component.ts">

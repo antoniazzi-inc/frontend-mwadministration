@@ -44,6 +44,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
   public connect () {
     this.socket = new SockJS('/administrationms/socket')
     return new Promise(resolve => {
+      if(!this.store.state.userIdentity.administrationId) return
       this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
         this.store.commit('updateAdministration', result.data)
         this.stompClient = Stomp.over(this.socket)
@@ -67,6 +68,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
   public connectRelation () {
     this.relationSocket = new SockJS('/relationms/socket')
     return new Promise(resolve => {
+      if(!this.store.state.userIdentity.administrationId) return
     this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
       this.stompClientRelation = Stomp.over(this.relationSocket)
       this.stompClientRelation.connect({}, (frame: any) => {
@@ -94,6 +96,7 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
   public connectProduct () {
     this.productSocket = new SockJS('/productms/socket')
     return new Promise(resolve => {
+      if(!this.store.state.userIdentity.administrationId) return
     this.administrationService.get(this.store.state.userIdentity.administrationId).then((result: AxiosResponse) => {
       this.stompClientProduct = Stomp.over(this.productSocket)
       this.stompClientProduct.connect({}, (frame: any) => {

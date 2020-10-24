@@ -35,6 +35,7 @@ export default new Vuex.Store({
       paymentMethods: [],
       deliveryMethods: [],
       roles: [],
+      masterTemplates: [],
       promotions: [],
       invoiceTemplates: [],
       permissions: [],
@@ -96,6 +97,9 @@ export default new Vuex.Store({
     },
     regions (state, newState) {
       state.lookups.regions = newState
+    },
+    masterTemplates (state, newState) {
+      state.lookups.masterTemplates = newState
     },
     companies (state, newState) {
       state.lookups.companies = newState

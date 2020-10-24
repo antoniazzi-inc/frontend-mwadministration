@@ -15,7 +15,7 @@
 
     <PaginationTableComponent
       :ref="'paginationTable'"
-      :active="true"
+      :active="active"
       :useService="false"
       :table="'roles'"
       :searchQuery="searchQuery"

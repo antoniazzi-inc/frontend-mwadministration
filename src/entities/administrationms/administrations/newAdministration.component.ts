@@ -86,6 +86,7 @@ export default class NewAdministrationComponent extends mixins(CommonHelpers, Vu
   }
 
   public retrieveItem (id: number) {
+    if(!id) return
     this.administrationService.get(id).then((resp: AxiosResponse) => {
       this.administration = resp.data
     })

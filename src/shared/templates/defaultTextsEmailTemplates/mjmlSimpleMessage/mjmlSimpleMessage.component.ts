@@ -25,6 +25,7 @@ export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelper
 
   @Watch('active', { immediate: true, deep: true })
   public init () {
+    debugger
     this.htmlOutput = `<mjml>
   <mj-head>
     <mj-attributes>
@@ -38,7 +39,7 @@ export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelper
         <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
         font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
-        align="${this.$props.value.config.header.textAlign}">${this.$props.value.value.headerText}</mj-text>
+        align="${this.$props.value.config.header.textAlign}">${this.getMultiLangName(this.$props.value.value.headerText).name}</mj-text>
       </mj-column>
    </mj-section>
    <mj-section width="100%" >

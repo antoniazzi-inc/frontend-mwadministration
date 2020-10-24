@@ -12,7 +12,8 @@ import SearchableSelectComponent from '@/components/searchableSelect/searchableS
   },
   props: {
     configuration: Object,
-    active: Boolean
+    active: Boolean,
+    'copied-config': Object
   }
 })
 export default class DefaultTextSettingsComponent extends mixins(Vue, CommonHelpers) {
@@ -40,9 +41,17 @@ export default class DefaultTextSettingsComponent extends mixins(Vue, CommonHelp
   public fontRemoved (font: any) {
     this.config.font = ''
   }
+  public copyConfig () {
+    this.$emit('onCopy', this.config)
+  }
+  public pasteConfig () {
+    if(this.$props.copiedConfig){
+      this.config = this.$props.copiedConfig
+    }
+  }
 
   public updateBorderColor (e: any) {
-    this.config.borderColor = e.hex
+    this.config.buttonForegroundColor = e.hex
   }
 
   public updateButtonsBackgroundColor (e: any) {

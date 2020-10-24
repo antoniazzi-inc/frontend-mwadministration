@@ -29,6 +29,7 @@ import promotionsService from "@/shared/services/promotionsService";
 import productService from "@/shared/services/productService";
 import coursesService from "@/shared/services/coursesService";
 import InvoiceTemplatesService from "@/shared/services/orderms/InvoiceTemplatesService";
+import MasterTemplateService from "@/shared/services/masterTemplateService";
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -57,6 +58,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
     regionService = RegionService.getInstance();
     deliveryMethodService = DeliveryMethodService.getInstance();
     courseService = coursesService.getInstance();
+    masterTemplatesService = MasterTemplateService.getInstance();
     counter = 0;
     sockets = new Sockets();
     relationSocket = new Sockets();
@@ -182,6 +184,10 @@ export default class App extends mixins(Vue, CommonHelpers) {
         })
         this.$store.commit('courses', courses)
       })
+      this.masterTemplatesService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
+        this.counter++
+        this.$store.commit('masterTemplates', resp.data.content)
+      })
 
       this.invoiceTemplateService.getAll(pagination, undefined).then((resp: AxiosResponse) => {
         this.counter++
@@ -233,7 +239,7 @@ export default class App extends mixins(Vue, CommonHelpers) {
 
     @Watch('counter', { immediate: true, deep: true })
     public changeReady (newVal: any) {
-      if (newVal > 15) {
+      if (newVal > 16) {
         this.isReady = true
       }
     }

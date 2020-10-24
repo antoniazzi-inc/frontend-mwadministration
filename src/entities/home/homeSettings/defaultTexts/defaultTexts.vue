@@ -131,10 +131,14 @@
                  aria-labelledby="settings-tab">
               <default-text-settings-component v-if="selectedText.type==='email'" type="'email'"
                                                :active="currentTab === 'settings'" :configuration="emailText.config"
-                                               @onUpdate="updateEmailTextConfig"/>
+                                               :copied-config="copiedConfiguration"
+                                               @onUpdate="updateEmailTextConfig"
+                                               @onCopy="updateCopiedConfiguration"/>
               <default-text-settings-component v-if="selectedText.type==='htmlPage'" type="'htmlPage'"
+                                               :copied-config="copiedConfiguration"
                                                :active="currentTab === 'settings'" :configuration="htmlPage.config"
-                                               @onUpdate="updateHtmlPageTextConfig"/>
+                                               @onUpdate="updateHtmlPageTextConfig"
+                                               @onCopy="updateCopiedConfiguration"/>
             </div>
             <div :class="{'tab-pane': true, active: currentTab === 'preview'}" id="preview" role="tabpanel"
                  aria-labelledby="preview-tab">

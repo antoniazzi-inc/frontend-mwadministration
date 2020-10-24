@@ -47,7 +47,7 @@ export default class MjmlFullPageComponent extends mixins(Vue, CommonHelpers) {
           <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
         font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
-        align="${this.$props.value.config.header.textAlign}">${this.$props.value.value.headerText}</mj-text>
+        align="${this.$props.value.config.header.textAlign}">${this.getMultiLangName(this.$props.value.value.headerText).name}</mj-text>
         <mj-text font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
         color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage]}</mj-text>
