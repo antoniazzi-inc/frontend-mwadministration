@@ -232,8 +232,8 @@ export default class App extends mixins(Vue, CommonHelpers) {
     public async getLookups (newVal: any) {
       if (newVal) {
         this.isReady = false
-        this.populateLookups()
         this.connectSockets().then(resp=>{})
+        this.populateLookups()
       }
     }
 
