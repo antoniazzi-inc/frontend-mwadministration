@@ -66,7 +66,7 @@
           <div class="row">
             <div class="col-md-5 mt-3">
               <label class="form-control-label">{{ $t('labels.company') }}</label>
-              <input type="email" class="form-control" v-model="selectedCompany"/>
+              <input type="email" class="form-control" v-model="orderCopy.orderCustomer.companyName"/>
             </div>
             <div class="col-md-4 mt-3">
               <label class="form-control-label">{{ $t('labels.vatNumber') }}</label>

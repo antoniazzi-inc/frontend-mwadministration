@@ -11,6 +11,8 @@ export interface ICustomer extends IBaseEntity{
     asCompany?: boolean;
     defaultPaymentMethodId?: number;
     relation?: IRelationEntity;
+    isCompany?: boolean;
+    companyName?: string;
 }
 
 export class Customer implements ICustomer {
@@ -22,16 +24,17 @@ export class Customer implements ICustomer {
         public vatDisabled?: boolean,
         public invoiceLetter?: boolean,
         public onePageCheckout?: boolean,
-        public asCompany?: boolean,
         public relation?: IRelationEntity,
         public defaultPaymentMethodId?: number,
         public version?: number,
         public createdOn?: Moment,
-        public updatedOn?: Moment
+        public updatedOn?: Moment,
+        public companyName?: string,
+        public isCompany?: boolean
   ) {
     this.invoiceLetter = this.invoiceLetter || false
     this.onePageCheckout = this.onePageCheckout || false
     this.vatDisabled = this.vatDisabled || false
-    this.asCompany = this.asCompany || false
+    this.isCompany = this.isCompany || false
   }
 }

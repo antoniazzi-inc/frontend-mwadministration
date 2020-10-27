@@ -31,6 +31,8 @@ export default class InvoiceComponent extends (CommonHelpers) {
   public configuration: any;
   public selectedInvoiceTemplate: any;
   public allCustomFields: any;
+  public selectedPaymentMethod: any;
+  public singleSelectPaymentMethod: ISearchableSelectConfig;
   public invoiceTemplates: IInvoiceTemplate[];
   public singleSelectConfig: ISearchableSelectConfig = new SearchableSelectConfig('name', 'labels.selectInvoiceTemplate', '', false, false, true, false, true, false, true)
 
@@ -41,8 +43,12 @@ export default class InvoiceComponent extends (CommonHelpers) {
     this.invoiceNumber = '';
     this.customerName = '';
     this.sendDate = null;
+    this.singleSelectPaymentMethod = new SearchableSelectConfig('label',
+      'labels.choosePaymentMethod', '', false,
+      false, false, false, false, true)
     this.invoiceTemplateService = InvoiceTemplatesService.getInstance();
     this.scheduledDate = null;
+    this.selectedPaymentMethod = null;
     this.selectedInvoiceTemplate = null;
     this.invoiceTemplates = [];
     this.configuration = {
@@ -60,6 +66,12 @@ export default class InvoiceComponent extends (CommonHelpers) {
       this.orderCopy = newVal
       if (newVal.invoice) {
         this.selectedInvoiceTemplate = newVal.invoice.invoiceTemplate;
+      }
+      if(newVal.orderPaymentMethod){
+        let paymentMethod = this.$store.state.lookups.paymentMethods.findIndex((d:any)=> d.value.id === newVal.orderPaymentMethod.paymentMethodId)
+        if(paymentMethod > -1){
+          this.selectedPaymentMethod = this.$store.state.lookups.paymentMethods[paymentMethod]
+        }
       }
       if (newVal.orderCustomer)
         this.customerName = newVal.orderCustomer.fullName;
@@ -106,6 +118,15 @@ export default class InvoiceComponent extends (CommonHelpers) {
   public deleteCustomField(e: any) {
   }
 
+  public addPaymentMethod(e: any) {
+    if(!e) return
+    this.selectedPaymentMethod = e;
+  }
+
+  public removePaymentMethod(e: any) {
+    if(!e) return
+    this.selectedPaymentMethod = null
+  }
   public addInvoiceTemplate(e: any) {
     this.selectedInvoiceTemplate = e;
   }

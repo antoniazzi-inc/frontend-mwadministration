@@ -107,7 +107,9 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
             relationId: step1.selectedRelation.id,
             email: step1.selectedRelation.email,
             fullName: `${step1.selectedRelation.relationProfile.firstName ? step1.selectedRelation.relationProfile.firstName : ''} ${step1.selectedRelation.relationProfile.middleName ? step1.selectedRelation.relationProfile.middleName : ''} ${step1.selectedRelation.relationProfile.lastName ? step1.selectedRelation.relationProfile.lastName : ''}`,
-            title: step1.selectedRelation.relationProfile.title
+            title: step1.selectedRelation.relationProfile.title,
+            isCompany: step1.isCompany,
+            companyName: step1.companyName
           }
           this.cartOrder.customerBillingAddress = step1.cartOrderCopy.customerBillingAddress
           this.cartOrder.customerDeliveryAddress = step1.cartOrderCopy.customerDeliveryAddress
@@ -160,7 +162,9 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
             relationId: resp.data.id,
             email: resp.data.email,
             fullName: resp.data.relationProfile.firstName + ' ' + resp.data.relationProfile.middleName + ' ' + resp.data.relationProfile.lastName,
-            title: resp.data.relationProfile.title
+            title: resp.data.relationProfile.title,
+            isCompany: step1.isCompany,
+            companyName: step1.companyName
           }
           let billAddrIndex = resp.data.relationAddresses.findIndex((e: any) => e.usedForBilling === true)
           let billAddr = null
@@ -187,20 +191,9 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
         this.createCart()
       })
     } else if (step1.isCompany) {
-      this.cartOrder.orderCustomer.companyId = step1.selectedCompany.id
-      this.cartOrder.orderCustomer.relationId = undefined //TODO make sure if this should be undefined if customer is company ask K
-      if (step1.addressToUseInInvoice === 'company') {
-        this.cartOrder.customerBillingAddress = new CustomerBillingAddress(undefined, undefined, undefined, undefined,
-          undefined, this.cartOrder.orderCustomer?.relationId, step1.selectedCompany.id, step1.selectedCompany.addressStreet, step1.selectedCompany.addressHouseNumber, step1.selectedCompany.city,
-          step1.selectedCompany.countryId, step1.selectedCompany.entranceNumber, step1.selectedCompany.appartmentNumber, step1.selectedCompany.postalCode, step1.selectedCompany.addressType, undefined, undefined, undefined)
-        if (step1.isDeliveryBilling) {
-          this.cartOrder.customerDeliveryAddress = this.cartOrder.customerBillingAddress
-        } else {
-          this.cartOrder.customerDeliveryAddress = new CustomerDeliveryAddress(undefined, undefined, undefined, undefined,
-            undefined, this.cartOrder.orderCustomer?.relationId, step1.customerDeliveryAddress.id, step1.customerDeliveryAddress.street, step1.customerDeliveryAddress.houseNumber, step1.customerDeliveryAddress.city,
-            step1.customerDeliveryAddress.countryId, step1.customerDeliveryAddress.entranceNumber, step1.customerDeliveryAddress.appartmentNumber, step1.customerDeliveryAddress.postalCode, step1.customerDeliveryAddress.addressType, undefined, undefined, undefined)
-        }
-      }
+      this.cartOrder.orderCustomer.isCompany = step1.isCompany
+      this.cartOrder.orderCustomer.companyName = step1.companyName
+      this.cartOrder.orderCustomer.relationId = step1.selectedRelation.id
       this.createCart()
     } else if (!this.cartOrder.customerBillingAddress.relationAddressId) {
       let step1: any = this.$refs.step1

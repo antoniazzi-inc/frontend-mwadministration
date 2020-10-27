@@ -64,6 +64,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   public timer: any
   public newBeneficiaryError: any
   public relationAddressService: any
+  public companyName: any
   public beneficiaryIndexToEdit: any
   public newCompanyCountry: any
   public newCompanyError: any
@@ -108,6 +109,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     this.applicableTax = 'reverse'
     this.addressToUseInInvoice = 'relation'
     this.addressToUseInInvoiceBeneficiary = 'relation'
+    this.companyName = ''
     this.selectedCompany = new Company()
     this.createNewBeneficiary = false
     this.isCompany = false
@@ -192,17 +194,38 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   @Watch('isCompany', {immediate: true, deep: true})
   public isCompanyWatcher(newVal: any) {
     if (!newVal) {
-      this.allCompanies = []
-      this.selectedCompany = new Company()
-      if (this.addressToUseInInvoice === 'company') {
-        this.cartOrderCopy.customerBillingAddress = new CustomerBillingAddress()
-        this.selectedBillingCountry = null
-        this.addressToUseInInvoice = 'relation'
+      this.companyName = ''
+      if(this.cartOrderCopy.orderCustomer) {
+        this.cartOrderCopy.orderCustomer.companyName = this.companyName
+        this.cartOrderCopy.orderCustomer.relationId = this.selectedRelation.id
+        this.cartOrderCopy.orderCustomer.isCompany = false
       }
     } else {
-      if (this.selectedRelation && this.selectedRelation.companies){
-        this.addressToUseInInvoice = 'company'
-        this.allCompanies = this.selectedRelation.companies
+      if(this.selectedRelation.relationProfile)
+        this.companyName = this.selectedRelation.relationProfile.companyName
+      if(this.cartOrderCopy.orderCustomer) {
+        this.cartOrderCopy.orderCustomer.companyName = this.companyName
+        this.cartOrderCopy.orderCustomer.relationId = this.selectedRelation.id
+        this.cartOrderCopy.orderCustomer.isCompany = true
+      }
+    }
+  }
+
+  @Watch('companyName', {immediate: true, deep: true})
+  public companyNameWatcher(newVal: any) {
+    if (!newVal) {
+      this.companyName = ''
+      if(this.cartOrderCopy.orderCustomer) {
+        this.cartOrderCopy.orderCustomer.companyName = this.companyName
+        this.cartOrderCopy.orderCustomer.relationId = this.selectedRelation.id
+        this.cartOrderCopy.orderCustomer.isCompany = false
+      }
+    } else {
+        this.companyName = newVal
+      if(this.cartOrderCopy.orderCustomer) {
+        this.cartOrderCopy.orderCustomer.companyName = this.companyName
+        this.cartOrderCopy.orderCustomer.relationId = this.selectedRelation.id
+        this.cartOrderCopy.orderCustomer.isCompany = true
       }
     }
   }
@@ -572,7 +595,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
         }
       }
       if(self.isCompany) {
-        if(!this.selectedCompany.id){
+        if(!this.companyName){
           resolve({status: false, msg: self.$t('labels.pleaseSelectCompany')})
         }
       }

@@ -351,10 +351,11 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       }
       let orderLinesToAdd:any = self.cartOrderCopy.orderLines ? self.cartOrderCopy.orderLines : []
       if (self.selectedBeneficiaries && self.selectedBeneficiaries.length >= 1) {
-        let customerInd = self.selectedBeneficiaries.findIndex((e: any) => e.id === self.cartOrderCopy.orderCustomer?.relationId)
+        let relId = self.cartOrderCopy.orderCustomer ? self.cartOrderCopy.orderCustomer.relationId : null
+        let customerInd = self.selectedBeneficiaries.findIndex((e: any) => e.id === relId)
         this.selectedBeneficiaries.forEach((benef: any) => {
             let currOrderLine = JSON.parse(JSON.stringify(self.newOrderLine))
-          if (benef.id !== self.selectedBeneficiaries[customerInd].id) {
+          if (customerInd === -1 || customerInd > -1 && benef.id !== self.selectedBeneficiaries[customerInd].id) {
             let benefFullName = `${benef.relationProfile.firstName} ${benef.relationProfile.middleName} ${benef.relationProfile.lastName}`
             currOrderLine.orderLineBeneficiary = new OrderLineBeneficiary(undefined, undefined, undefined, undefined, undefined, this.cartOrderCopy.orderCustomer?.relationId, benef.id, benef.email, benefFullName, benef.title)
             let deliveryAddrInd = benef.relationAddresses.findIndex((addr: any) => addr.usedForDelivery)

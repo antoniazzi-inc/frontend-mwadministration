@@ -77,15 +77,16 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public selectedPromotion: any;
   public multiSelectConfig: ISearchableSelectConfig;
   public singleSelectConfigAttribute: ISearchableSelectConfig;
+  public singleSelectConfigBeneficiary: ISearchableSelectConfig;
   public singleSelectConfigAffiliate: ISearchableSelectConfig;
   public singleSelectConfigDeliveryMethod: ISearchableSelectConfig;
-  public singleSelectPaymentMethod: ISearchableSelectConfig;
   public productService: any;
   public cartOrderService: any;
   public attributeService: any;
   public promotionService: any;
   public deliveryMethodService: any;
   public selectedAffiliate: any;
+  public selectedBeneficiaries: any;
   public relationService: any;
   public orderLineService: any;
   public orderDiscountLineService: any;
@@ -103,6 +104,9 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.orderLineService = OrderLinesService.getInstance()
     this.orderDiscountLineService = OrderDiscountLinesService.getInstance()
     this.allShippingMethods = [];
+    this.singleSelectConfigBeneficiary = new SearchableSelectConfig('email',
+      'labels.chooseBeneficiary', '', false,
+      false, true, true, false)
     this.allRelations = [];
     this.allShippingMethodsBackup = [];
     this.selectedShippingMethods = null;
@@ -125,9 +129,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.multiSelectConfig = new SearchableSelectConfig('email',
       'labels.chooseBeneficiary', '', false,
       false, true, true, false, false, true)
-    this.singleSelectPaymentMethod = new SearchableSelectConfig('email',
-      'labels.choosePaymentMethod', '', false,
-      false, false, false, false, true)
+
     this.isProductSelected = false;
     this.usePaymentSchedule = false;
     this.addNewPromotion = false;
@@ -158,6 +160,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.selectedProductSubscription = null;
     this.selectedBeneficiary = [];
     this.beneficiaryList = [];
+    this.selectedBeneficiaries = [];
     this.availablePrmotions = [];
     this.allProductFeatures = [];
     this.searchProductInit = function () {
@@ -250,9 +253,6 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public retrieve() {
-    let self = this;
-    let allProd: any = [];
-
     this.allProducts = this.$store.state.lookups.products;
     this.$set(this, 'allShippingMethods', this.$store.state.lookups.deliveryMethods);
     this.$set(this, 'allShippingMethodsBackup', this.$store.state.lookups.deliveryMethods);
@@ -355,6 +355,7 @@ public getPromoName(item:any){
       if (resp.data.attributes && resp.data.attributes.length) {
         $.each(resp.data.attributes, function (k, v) {
           let attributeName: any = '';
+
           if (v.attributeLanguages.length) attributeName = self.getMultiLangName(v.attributeLanguages).name;
           $.each(v.attributeValues, function (i, j) {
             let attributeValueName: any = '';
@@ -368,6 +369,16 @@ public getPromoName(item:any){
           });
         });
         self.allProductFeatures = features;
+        if(this.selectedOrderLine.orderProduct && this.selectedOrderLine.orderProduct.orderProductAttributeValues){
+          let selectedFeatures:any = []
+          this.selectedOrderLine.orderProduct.orderProductAttributeValues.forEach((e:any)=>{
+            let ind = features.findIndex((f:any)=> f.attributeId === e.attributeId)
+            if(ind > -1){
+              selectedFeatures.push(features[ind])
+            }
+          })
+          this.selectedProductFeature = selectedFeatures
+        }
       }
       this.allPromotions = []
       this.populatePromotions()
@@ -711,7 +722,7 @@ public getPromoName(item:any){
     let self = this;
     let allItems: any = []
     $.each(item.orderProduct.orderProductAttributeValues, function (k, v) {
-      allItems.push(self.getMultiLangName(v.attributeValue.attributeValueLanguages).name);
+      allItems.push(`${v.attributeName} -> ${v.attributeValueName} (+${v.attributeValuePrice}${self.$store.state.currency})`);
     });
     return allItems.join();
   }

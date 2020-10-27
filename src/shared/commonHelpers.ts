@@ -124,7 +124,7 @@ export default class CommonHelpers extends Vue {
     fields.forEach((item, key) => {
       if (key < fields.length - 1) {
         if (operator) {
-          result += `${item}==*${query}*${operator} `
+          result += `${item}==*${query}* ${operator} `
         } else result += `${item}==*${query}*&`
       } else {
         result += `${item}==*${query}*`

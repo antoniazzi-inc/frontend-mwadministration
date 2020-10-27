@@ -8,6 +8,8 @@ export interface IOrderCustomer extends BaseEntity {
     email?: string;
     fullName?: string;
     title?: string;
+    isCompany?: boolean;
+    companyName?: string;
 }
 
 export default class OrderCustomer implements IOrderCustomer {
@@ -21,6 +23,9 @@ constructor(
     public email?: string,
     public fullName?: string,
     public title?: string,
+    public isCompany?: boolean,
+    public companyName?: string
   ){
+    this.isCompany = this.isCompany || false
   }
 };

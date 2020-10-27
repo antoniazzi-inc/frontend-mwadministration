@@ -37,6 +37,15 @@
                                          @onDelete="removeInvoiceTemplate"/>
           </div>
         </div>
+        <div class="col-md-12">
+          <label class="form-control-label">{{ $t('labels.selectPaymentMethod') }}</label>
+          <searchable-select-component :config="singleSelectPaymentMethod"
+                                       :options="$store.state.lookups.paymentMethods"
+                                       :value="selectedPaymentMethod"
+                                       @onChange="addPaymentMethod"
+                                       @onDelete="removePaymentMethod"
+          />
+        </div>
       </div>
     </div>
       <div class="col-md-6">

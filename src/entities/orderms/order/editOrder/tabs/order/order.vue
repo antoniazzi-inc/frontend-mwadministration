@@ -10,12 +10,6 @@
             <div class="col-auto mr-5" v-if="orderLines && orderLines.length && !addNewPromotion">
               <button type="button" class="btn-primary btn" @click="addPromotion">{{$t('labels.addPromotion')}}</button>
             </div>
-            <div class="col-auto ml-5">
-              <searchable-select-component :config="singleSelectPaymentMethod"
-                 :options="$store.state.lookups.paymentMethods"
-                 :value="selectedPaymentMethod"
-              />
-            </div>
           </div>
 
             <div v-if="addProduct && !addNewPromotion" id="add-prod-form">
@@ -33,7 +27,7 @@
                 </div>
 
                 <div class="row">
-                  <div class="form-group col-md-12" v-if="selectedProductFeature && selectedProductFeature.length">
+                  <div class="form-group col-md-12">
                     <label>{{$t('labels.selectProductAttribute')}}</label>
                     <searchable-select-component :config="singleSelectConfigAttribute"
                                                  :options="allProductFeatures"
@@ -70,8 +64,14 @@
                                                @onDelete="removeAffiliate"/>
                   </div>
                   <div class="form-group col-md-6">
-                    <label class="form-control-label">{{$t('labels.beneficiary')}}</label>
-                    <input type="text" class="form-control" name="beneficary" placeholder="TODO search / select beneficiary"/>
+                    <div class="form-group" v-if="beneficiaryList.length > 1">
+                      <label class="form-control-label">{{$t('labels.beneficiary')}}</label>
+                      <searchable-select-component :config="singleSelectConfigBeneficiary"
+                                                   :options="beneficiaryList"
+                                                   :value="selectedBeneficiaries"
+                                                   @onChange="addBeneficiary"
+                                                   @onDelete="removeBeneficiary"/>
+                    </div>
                   </div>
                 </div>
 

@@ -25,7 +25,7 @@ export class MoneyConfig implements IMoneyConfig {
     //this.prefix = Store.state.currency + ' '
     //this.suffix = this.suffix ? this.suffix : ''
     //this.suffix = ''
-    this.precision = this.precision && this.precision >= 0 ? this.precision : 2
+    this.precision = this.precision && this.precision > 0 ? this.precision : 2
     this.masked = this.masked ? this.masked : false
   }
 }

@@ -157,12 +157,7 @@
           </div>
           <div class="col-md-10" v-if="isCompany">
             <label class="form-control-label">{{ $t('labels.company') }}</label>
-            <searchable-select-component :config="singleSelectConfigCompany"
-                                         :options="allCompanies"
-                                         :value="selectedCompany"
-                                         @onCreate="createNewCompany"
-                                         @onChange="companyChanged"
-                                         @onDelete="removeCompany"/>
+            <input type="text" class="form-control" v-model="companyName">
           </div>
           <div class="form-group col-md-6 mt-3" v-if="isCompany">
             <label class="form-control-label">{{ $t('labels.vatNumber') }}</label>

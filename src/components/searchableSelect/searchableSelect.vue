@@ -30,7 +30,7 @@
         :options="options"
         :class="{invalid: $props.config.required ? val ? false : true : false}"
         :searchable="true"
-        :close-on-select="!$props.config.multiple"
+        :close-on-select="true"
         :deselect-label="'Can\'t remove this value'"
         :show-labels="true"
         :preselectFirst="$props.config.preselectFirst"
