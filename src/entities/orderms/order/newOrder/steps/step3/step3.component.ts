@@ -13,7 +13,8 @@ import OrderPaymentMethod from "@/shared/models/orderms/OrderPaymentMethodModel"
     InvoicePreviewComponent
   },
   props: {
-    cartOrder: Object
+    cartOrder: Object,
+    active: Boolean
   }
 })
 export default class Step3Component extends mixins(CommonHelpers, Vue) {

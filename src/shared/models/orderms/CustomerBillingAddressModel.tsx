@@ -18,6 +18,7 @@ export interface ICustomerBillingAddress extends BaseEntity {
     phoneNumber?: string;
     description?: string;
     phoneType?: string;
+    countryName?: string;
 }
 
 export default class CustomerBillingAddress implements ICustomerBillingAddress {
@@ -40,6 +41,7 @@ constructor(
     public phoneNumber?: string,
     public description?: string,
     public phoneType?: string,
+    public countryName?: string,
   ){
   this.addressType = AddressType.OTHER
 

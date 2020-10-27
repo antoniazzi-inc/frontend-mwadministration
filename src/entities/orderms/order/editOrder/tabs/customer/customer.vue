@@ -4,7 +4,7 @@
       <div class="col-12">
         <form name="editForm" role="form" novalidate v-on:submit.prevent="save()">
           <div class="row">
-            <div class="col-md-8 form-group" v-if="orderCopy.orderCustomer && orderCopy.orderCustomer.fullName">
+            <div class="col-md-8 form-group" v-if="orderCopy.orderCustomer && orderCopy.orderCustomer.fullName !== undefined">
                 <label class="form-control-label">{{ $t('labels.name') }}</label>
                 <input type="text" class="form-control" v-model="orderCopy.orderCustomer.fullName"/>
             </div>
@@ -87,7 +87,8 @@
         <div class="form-group">
           <hr/>
           <div class=" col-md-12 text-right">
-            <button type="submit" @click.prevent="save" class="btn btn-primary">{{ $t('buttons.save') }}</button>
+            <button type="submit" @click.prevent="cancel" class="btn btn-outline-danger">{{ $t('buttons.cancel') }}</button>
+            <button type="submit" @click.prevent="save" class="btn ml-2 btn-primary">{{ $t('buttons.save') }}</button>
           </div>
         </div>
       </form>

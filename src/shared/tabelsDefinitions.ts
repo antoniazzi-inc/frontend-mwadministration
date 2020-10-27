@@ -547,7 +547,7 @@ export const order = {
       authorities: ['*'],
       sort: false,
       method: function (item: any) {
-        return `${Store.state.currency} ${item.invoice.nettoAmount}`
+        return `${Store.state.currency} ${item.nettoAmount}`
       }
     },{
       name: 'labels.invoiceNumber',

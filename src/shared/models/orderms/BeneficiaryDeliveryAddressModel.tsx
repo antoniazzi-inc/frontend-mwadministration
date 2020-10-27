@@ -12,6 +12,7 @@ export interface IBeneficiaryDeliveryAddress extends BaseEntity {
     city?: string;
     countryId?: number;
     entranceNumber?: string;
+    countryName?: string;
     appartmentNumber?: string;
     postalCode?: string;
     addressType?: string;
@@ -32,6 +33,7 @@ constructor(
     public beneficiaryRelationAddressId?: number,
     public street?: string,
     public houseNumber?: string,
+    public countryName?: string,
     public city?: string,
     public countryId?: number,
     public entranceNumber?: string,

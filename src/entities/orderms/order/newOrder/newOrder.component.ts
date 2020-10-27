@@ -91,7 +91,9 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
         self.beneficiaries = self.$refs.step1.beneficiaryList
         // @ts-ignore
         self.customerRelation = self.$refs.step1.selectedRelation
-        self.beneficiaries.push(self.customerRelation)
+        let benefIndex = self.beneficiaries.findIndex((e:any)=> e.id === self.customerRelation.id)
+        if(benefIndex === -1)
+          self.beneficiaries.push(self.customerRelation)
         if (validation.msg) {
           self.stepValidationError = validation.msg
         } else {

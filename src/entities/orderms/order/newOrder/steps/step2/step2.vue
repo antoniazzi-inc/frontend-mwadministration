@@ -29,6 +29,14 @@
                                          @onChange="productAttributeChanged"
                                          @onDelete="productAttributeRemoved"/>
           </div>
+          <div class="form-group" v-if="allEvents.length">
+            <label>{{$t('labels.selectEvents')}}</label>
+            <searchable-select-component :config="singleSelectConfigEvents"
+                                         :options="allEvents"
+                                         :value="selectedEvents"
+                                         @onChange="eventsChanged"
+                                         @onDelete="eventsRemoved"/>
+          </div>
           <div class="form-row" v-if="selectedProduct">
             <div class="form-group col-md-6">
               <label class="form-control-label">{{$t('labels.price')}}</label>
@@ -135,7 +143,7 @@
         </div>
       </div>
 
-      <div v-else class="scrollable">
+      <div v-else-if="allOrderLines && allOrderLines.length" class="scrollable">
 
         <div class="pipeline-item" v-for="(item, index) in allOrderLines" :key="index">
           <div class="pi-controls">
@@ -183,7 +191,7 @@
 
     <div class="col-md-6">
       <h3 class="form-control-label">{{ $t('labels.invoiceOverview') }}</h3>
-      <invoice-preview-component :cart-order="cartOrderCopy"/>
+      <invoice-preview-component :cart-order="cartOrderCopy" :active="$props.active"/>
     </div>
 
     <div class="modal" data-backdrop="static" data-keyboard="false" id="removeLine" tabindex="-1" role="dialog" ref="removeLine">

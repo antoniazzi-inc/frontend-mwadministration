@@ -19,6 +19,7 @@ import RelationAddressService from "@/shared/services/relationAddressService";
 import {PhoneType} from "@/shared/models/relationms/company-phone.model";
 import companyService from "@/shared/services/companyService";
 import * as validateVatNumber from '@/shared/vatValidator'
+
 @Component({
   props: {
     cartOrder: Object
@@ -125,7 +126,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   @Watch('cartOrder.customerBillingAddress', {immediate: true, deep: true})
   public updateCustomerBillingAddr(newVal: any) {
     if (newVal) {
-      this.selectedBillingCountry = this.preselectCountry(newVal.countryId ? newVal.countryId : 150)
+      this.selectedBillingCountry = this.preselectCountry(newVal.countryId ? newVal.countryId : this.$store.state.administration.country.id)
       if (this.isDeliveryBilling) {
         let addr = newVal
         let relAddrId = newVal.id
@@ -175,6 +176,12 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
 
   @Watch('selectedRelation', {immediate: true, deep: true})
   public watchRelationChange(newVal: any) {
+    if(this.$store.state.administration.country && this.$store.state.administration.country.id) {
+      let country = this.preselectCountry(this.$store.state.administration.country.id)
+      this.billingCountryChanged(country)
+      this.deliveryCountryChanged(country)
+      this.addCountryBeneficiary(country)
+    }
     if (newVal && newVal.id) {
       this.singleSelectConfigCompany.enableAdd = true
     } else {
@@ -252,6 +259,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
     if (!this.cartOrderCopy.customerBillingAddress)
       this.cartOrderCopy.customerBillingAddress = new CustomerBillingAddress()
     this.selectedCompany = new Company()
+
   }
 
   public relationsChanged(rel: any) {
@@ -285,7 +293,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
         this.selectedBillingCountry = this.preselectCountry(addresses[0].countryId)
         return addresses[0]
       } else {
-        this.selectedBillingCountry = this.preselectCountry(150)
+        this.selectedBillingCountry = this.preselectCountry(this.$store.state.administration.country.id)
         return new RelationAddress()
       }
     }
@@ -394,9 +402,11 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   }
 
   public billingCountryChanged(country: any) {
+    if(!country) return
     this.selectedBillingCountry = country
     if (this.cartOrderCopy.customerBillingAddress && country && country.id) {
       this.cartOrderCopy.customerBillingAddress.countryId = country.id
+      this.cartOrderCopy.customerBillingAddress.countryName = country.enName
     }
   }
 
@@ -439,17 +449,21 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   }
 
   public removeCountryBeneficiary(country: any) {
+    if(!country) return
     this.selectedCountryBeneficiary = null
   }
 
   public deliveryCountryChanged(country: any) {
+    if(!country) return
     this.selectedDeliveryCountry = country
     if (this.cartOrderCopy.customerDeliveryAddress && country && country.id) {
       this.cartOrderCopy.customerDeliveryAddress.countryId = country.id
+      this.cartOrderCopy.customerDeliveryAddress.countryName = country.enName
     }
   }
 
   public deliveryCountryRemoved(country: any) {
+    if(!country) return
     this.selectedDeliveryCountry = null
   }
 
@@ -546,7 +560,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
   public validateStep(){
     let self = this
     return new Promise(resolve => {
-      let address = this.validateAddress(this.cartOrderCopy.customerDeliveryAddress)
+      let address = self.validateAddress(self.cartOrderCopy.customerDeliveryAddress)
 
       if(!self.selectedRelation.email) {
         resolve({status: false, msg: self.$t('labels.noCustomerSelected')})

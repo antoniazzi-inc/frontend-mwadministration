@@ -10,7 +10,8 @@ import OrderCustomer from "@/shared/models/orderms/OrderCustomerModel";
 @Component({
   components: {},
   props: {
-    cartOrder: Object
+    cartOrder: Object,
+    active: Boolean
   }
 })
 export default class InvoicePreviewComponent extends mixins(CommonHelpers, Vue) {
@@ -38,12 +39,27 @@ export default class InvoicePreviewComponent extends mixins(CommonHelpers, Vue) 
     this.cartOrderService = CartOrdersService.getInstance()
   }
 
-  @Watch('cartOrder', {immediate: false, deep: true})
+  @Watch('cartOrder.orderLines', {immediate: false, deep: true})
   public cartOrderUpdate(newVal: any) {
+    if(newVal && newVal.length && this.$props.active)
+      this.updateCart(this.$props.cartOrder)
+  }
+
+  @Watch('cartOrder.orderDiscountLines', {immediate: false, deep: true})
+  public cartOrderDiscounts(newVal: any) {
+    if(newVal && newVal.length && this.$props.active)
+      this.updateCart(this.$props.cartOrder)
+  }
+  @Watch('active', {immediate: false, deep: true})
+  public updateActive(newVal: any) {
+    if(newVal)
+      this.updateCart(this.$props.cartOrder)
+  }
+
+  @Watch('cartOrder', {immediate: false, deep: true})
+  public updateCartOrder(newVal: any) {
     if (!newVal) return false
     this.cartOrderCopy = newVal
-    if(newVal.orderLines && newVal.orderLines.length)
-      this.updateCart(newVal)
   }
 
   public mounted() {

@@ -202,7 +202,7 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
     this.validateInvoiceTemplate().then(resp => {
       //@ts-ignore
       if (resp.valid) {
-        this.invoiceToEdit.templateDataJson = JSON.stringify(this.invoiceTemplateData);
+        this.invoiceToEdit.templateDataJson = this.invoiceTemplateData;
         this.invoiceToEdit.name = this.invoiceTemplateData.invoiceName;
         this.invoiceToEdit.description = this.invoiceTemplateData.invoiceDescription;
         if (this.invoiceToEdit.id) {
@@ -289,7 +289,7 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
   public editInvoice(invoice: any) {
     this.invoiceToEdit = invoice;
     if (invoice.templateDataJson) {
-      this.invoiceTemplateData = JSON.parse(invoice.templateDataJson);
+      this.invoiceTemplateData = invoice.templateDataJson
     }
     //@ts-ignore
     $(this.$refs.editInvoiceModal).modal('show');

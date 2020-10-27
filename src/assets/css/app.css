@@ -67,7 +67,7 @@
 }
 .scrollable{
     max-height: 650px;
-    height: 100%;
+    padding-bottom: 5%;
     overflow-y: auto;
     overflow-x: hidden;
 }

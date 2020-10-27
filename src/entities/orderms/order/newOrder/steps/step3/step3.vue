@@ -15,7 +15,7 @@
       </div>
       <div class="col-md-6">
         <h3 class="form-control-label">{{ $t('labels.invoiceOverview') }}</h3>
-        <invoice-preview-component :cart-order="cartOrderCopy"/>
+        <invoice-preview-component :cart-order="cartOrderCopy" :active="$props.active"/>
       </div>
     </div>
 </template>

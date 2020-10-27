@@ -5,21 +5,27 @@ import { AxiosResponse } from 'axios'
 import MasterTemplateService from '@/shared/services/masterTemplateService'
 import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
+import MasterTemplate, {IMasterTemplate} from "@/shared/models/orderms/MasterTemplateModel";
+import HtmlEditorComponent from "@/components/htmlEditor/htmlEditor.vue";
 @Component({
   components: {
     'simple-search': SimpleSearchComponent,
-    PaginationTableComponent
+    PaginationTableComponent,
+    HtmlEditorComponent
   }
 })
 export default class MasterTemplateComponent extends mixins(Vue, CommonHelpers) {
   $refs!: {
     paginationTable: PaginationTableComponent;
+    masterTemplateModal: HTMLElement;
   }
   public active:boolean
   public masterTemplateService: any
+  public masterTemplate: IMasterTemplate
   constructor () {
     super()
     this.active=false
+    this.masterTemplate= new MasterTemplate()
     this.masterTemplateService = MasterTemplateService.getInstance()
   }
   public mounted(){
@@ -33,7 +39,7 @@ export default class MasterTemplateComponent extends mixins(Vue, CommonHelpers) 
   }
 
   public editMasterTemplate (masterTemplate: any) {
-    this.$router.push({ name: 'EditMasterTemplate', params: { id: masterTemplate.id } })
+    this.$router.push({ name: 'NewMasterTemplates', params: { id: masterTemplate.id } })
   }
 
   public deleteMasterTemplate (masterTemplate: any) {

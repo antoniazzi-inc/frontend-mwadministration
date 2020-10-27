@@ -25,7 +25,6 @@ export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelper
 
   @Watch('active', { immediate: true, deep: true })
   public init () {
-    debugger
     this.htmlOutput = `<mjml>
   <mj-head>
     <mj-attributes>

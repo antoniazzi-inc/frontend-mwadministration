@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <hr>
       <div class="row p-0 m-0">
-        <div class="col-md-6 text-left form-group">
+        <!--<div class="col-md-6 text-left form-group">
           <span>{{ cartOrderCopy.orderCustomer && cartOrderCopy.orderCustomer.fullName ? cartOrderCopy.orderCustomer.fullName : '' }}</span>
 
           <br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>
@@ -19,7 +19,7 @@
           <span>{{ customerCountry }}</span>
           <br v-if="$parent.$parent.$refs.customerPanel.isCompany"/>
           <span v-if="$parent.$parent.$refs.customerPanel.isCompany">{{$parent.$parent.$refs.customerPanel.companyVat}}</span>
-        </div>
+        </div>-->
         <div class="col-md-6 text-right form-group">
           <label class="form-control-label text-center">{{ $t('labels.sendInvoiceTo') }}:</label>
           <br/>

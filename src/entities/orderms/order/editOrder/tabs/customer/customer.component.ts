@@ -32,6 +32,7 @@ import CustomerBillingAddressesService from "@/shared/services/orderms/CustomerB
 export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
   public invoiceLanguage: any;
   public orderCopy: any;
+  public orderCopyBackup: any;
   public selectedLang: any;
   public startDateConfig: any;
   public startDate: any;
@@ -54,6 +55,7 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     super();
     this.invoiceLanguage = null;
     this.selectedLang = null;
+    this.orderCopyBackup = null;
     this.companyService = companyService.getInstance();
     this.relationService = relationService.getInstance();
     this.cartOrderService = CartOrdersService.getInstance();
@@ -82,12 +84,19 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
 
   }
 
+  @Watch('orderCopy', {immediate: true, deep: true})
+  public updateOrderCopy(newVal: any) {
+    if(newVal && this.orderCopyBackup === null && newVal.id) {
+      let copy = JSON.parse(JSON.stringify(newVal))
+      this.orderCopyBackup = Object.assign({}, copy)
+    }
+  }
   @Watch('order', {immediate: true, deep: true})
   public updateCart(newVal: any) {
-    if (newVal) {
+    if (newVal && newVal.id) {
       this.orderCopy = newVal
       if (newVal.invoice && newVal.invoice.invoiceTemplate) {
-        const invoiceTemplateData = JSON.parse(newVal.invoice.invoiceTemplate.templateDataJson);
+        const invoiceTemplateData = newVal.invoice.invoiceTemplate.templateDataJson;
         let detailsJson = null
         if(JSON.parse(newVal.invoice.additionalDetailsJson)){
           detailsJson = JSON.parse(newVal.invoice.additionalDetailsJson)
@@ -108,11 +117,12 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public mounted() {
+
   }
 
   public retrrieveCompanies(id: any) {
     this.allCompanies = [];
-    this.companyService.getAll({
+    /*this.companyService.getAll({
       page: 0,
       size: 10000,
       sort: 'id,asc'
@@ -120,7 +130,7 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
       if (resp && resp.data) {
         this.allCompanies = resp.data.content;
       }
-    });
+    });*/
   }
 
   public changeLanguage(e: any) {
@@ -210,6 +220,11 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
 
   public closeDialog() {
 
+  }
+  public cancel() {
+    if(this.orderCopyBackup === null) return
+    Object.assign(this.orderCopy, this.orderCopyBackup);
+    this.orderCopyBackup = null
   }
 
   public updateInvoiceEmailContent(content: any) {

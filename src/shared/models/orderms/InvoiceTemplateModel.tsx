@@ -9,7 +9,7 @@ export interface IInvoiceTemplate extends BaseEntity {
     description?: string;
     isDefault?: boolean;
     logoUrl?: string;
-    templateDataJson?: string;
+    templateDataJson?: any;
     invoices?: IInvoice[];
 }
 
@@ -24,7 +24,7 @@ constructor(
     public description?: string,
     public isDefault?: boolean,
     public logoUrl?: string,
-    public templateDataJson?: string,
+    public templateDataJson?: any,
     public invoices?: IInvoice[],
   ){
   this.isDefault = isDefault ? true : false

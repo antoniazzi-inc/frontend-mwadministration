@@ -17,6 +17,7 @@ export interface ICustomerDeliveryAddress extends BaseEntity {
     phoneNumber?: string;
     description?: string;
     phoneType?: string;
+    countryName?: string;
 }
 
 export default class CustomerDeliveryAddress implements ICustomerDeliveryAddress {
@@ -39,6 +40,7 @@ constructor(
     public phoneNumber?: string,
     public description?: string,
     public phoneType?: string,
+    public countryName?: string,
   ){
   }
 };

@@ -39,8 +39,12 @@
 
         <div class="form-row mt-5">
           <div class="col-md-12">
-            <label class="form-control-label">{{$t('labels.invoiceEmailSubject')}}</label>
-            <input type="text" class="form-control" v-model="invoiceEmailSubject"/>
+            <multi-language-component
+              :config="multiLangConfig"
+              :value="invoiceEmailSubject"
+              @onAdd="addNewEmailSubject"
+              @onChange="updateEmailSubject"
+              @onRemove="removeEmailSubject"/>
           </div>
           <div class="form-group col-md-12">
             <MultiLanguageHtmlEditorComponent
@@ -54,7 +58,7 @@
 
     <div class="col-md-6">
       <h3 class="form-control-label">{{ $t('labels.invoiceOverview') }}</h3>
-      <invoice-preview-component :cart-order="cartOrderCopy"/>
+      <invoice-preview-component :cart-order="cartOrderCopy" :active="$props.active"/>
     </div>
 
   </div>

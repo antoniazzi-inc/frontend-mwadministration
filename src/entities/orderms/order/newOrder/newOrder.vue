@@ -27,7 +27,7 @@
         </div>
       </tab-content>
       <tab-content @click="step = 1" :title="$t('labels.products')" :before-change="validateStep" icon="dashicons dashicons-info">
-        <step2 ref="step2" :customerRelation="customerRelation" @onUpdate="updateStep" :beneficiaryList="beneficiaries" :cartOrder="cartOrder"/>
+        <step2 ref="step2" :customerRelation="customerRelation" @onUpdate="updateStep" :beneficiaryList="beneficiaries" :cartOrder="cartOrder" :active="step === 1"/>
         <div class="row">
           <div class="col-md-12 text-right">
             <span class="text-right text-danger">{{stepValidationError}}</span>
@@ -35,7 +35,7 @@
         </div>
       </tab-content>
       <tab-content @click="step = 2" :title="$t('labels.payment')" :before-change="validateStep" icon="dashicons dashicons-format-image">
-        <step3 ref="step3" @onUpdate="updateStep" :cartOrder="cartOrder"/>
+        <step3 ref="step3" @onUpdate="updateStep" :cartOrder="cartOrder" :active="step === 2"/>
         <div class="row">
           <div class="col-md-12 text-right">
             <span class="text-right text-danger">{{stepValidationError}}</span>
@@ -43,7 +43,7 @@
         </div>
       </tab-content>
       <tab-content @click="step = 3" :title="$t('labels.invoice')" :before-change="validateStep" icon="dashicons dashicons-saved">
-        <step4 ref="step4" @onUpdate="updateStep" :cartOrder="cartOrder"/>
+        <step4 ref="step4" @onUpdate="updateStep" :cartOrder="cartOrder" :active="step === 3"/>
       </tab-content>
     </form-wizard>
   </div>

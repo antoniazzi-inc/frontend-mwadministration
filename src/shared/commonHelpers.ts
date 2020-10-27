@@ -1,11 +1,11 @@
 import {Vue, Component} from 'vue-property-decorator'
 import {ILanguage, Language} from '@/shared/models/language.model'
 import {columnsVisibility} from '@/shared/tabelsDefinitions'
-import {Country} from '@/shared/models/administrationms/country.model'
+import {Country, ICountry} from '@/shared/models/administrationms/country.model'
 import axios from 'axios'
 import Store from "@/store";
 import {ITaxRate} from "@/shared/models/administrationms/tax-rate.model";
-
+import { postcodeValidator } from 'postcode-validator';
 @Component
 export default class CommonHelpers extends Vue {
   /*
@@ -297,7 +297,7 @@ export default class CommonHelpers extends Vue {
    * Author: Nick Dam
    */
   public getCountryById(id: number) {
-    let result = {
+    let result:ICountry = {
       enName: ''
     }
     this.$store.state.allCountries.forEach((country: any) => {
@@ -405,7 +405,7 @@ export default class CommonHelpers extends Vue {
     let number = ''
     let city = ''
     let postal = ''
-    let country = ''
+    let country:any = ''
     if (addresses && addresses.length) {
       street = addresses[0].street
       number = addresses[0].houseNumber
@@ -459,14 +459,22 @@ export default class CommonHelpers extends Vue {
    } else if(!address.houseNumber) {
      result.msg = this.$t('labels.enterValidHouseNumber')
      result.status = false
+   }
+   else if(!address.countryId) {
+       result.msg = this.$t('labels.enterValidCountry')
+       result.status = false
    } else if(!address.postalCode) {
-     result.msg = this.$t('labels.enterValidPostalCode')
+     result.msg = this.$t('labels.enterPostalCode')
      result.status = false
+   }else if(address.postalCode){
+     let country:any =  this.getCountryById(address.countryId)
+     let valid = postcodeValidator(address.postalCode, country.iso)
+     if(!valid){
+       result.msg = this.$t('labels.enterValidPostalCode')
+       result.status = false
+     }
    } else if(!address.city) {
      result.msg = this.$t('labels.enterValidCity')
-     result.status = false
-   } else if(!address.countryId) {
-     result.msg = this.$t('labels.enterValidCountry')
      result.status = false
    }
    return result
@@ -745,46 +753,56 @@ export default class CommonHelpers extends Vue {
    */
   public getDiscountType(promotion: any) {
     let result:any = {}
+    let value:any = {}
     let type = ''
     switch (promotion.promotionType) {
       case 'TIME':
         result = this.getDiscountTypeString(promotion.typeTimeBased)
         type = 'typeTimeBased'
+        value = promotion.typeTimeBased
         break;
       case 'AFFILIATE':
         result = this.getDiscountTypeString(promotion.typeAffiliateBased)
         type = 'typeAffiliateBased'
+        value = promotion.typeAffiliateBased
         break;
       case 'BUNDLE':
         result = this.getDiscountTypeString(promotion.typeBundleBaseds[0])
         type = 'typeBundleBaseds'
+        value = promotion.typeBundleBaseds[0]
         break;
       case 'COUPON':
         result = this.getDiscountTypeString(promotion.typeCouponBased)
         type = 'typeCouponBased'
+        value = promotion.typeCouponBased
         break;
       case 'LOYALTY':
         result = this.getDiscountTypeString(promotion.typeLoyaltyBased)
         type = 'typeLoyaltyBased'
+        value = promotion.typeLoyaltyBased
         break;
       case 'PERSONAL_COUPON':
         result = this.getDiscountTypeString(promotion.typePersonalCouponBased)
         type = 'typePersonalCouponBased'
+        value = promotion.typePersonalCouponBased
         break;
       case 'PRICE':
         result = this.getDiscountTypeString(promotion.typePriceBaseds[0])
         type = 'typePriceBaseds'
+        value = promotion.typePriceBaseds[0]
         break;
       case 'QUANTITY':
         result = this.getDiscountTypeString(promotion.typeQuantityBaseds[0])
         type = 'typeQuantityBaseds'
+        value = promotion.typeQuantityBaseds[0]
         break;
       case 'TEMPORARY_COUPON':
         result = this.getDiscountTypeString(promotion.typePersonalCouponBased)
         type = 'typePersonalCouponBased'
+        value = promotion.typePersonalCouponBased
         break;
     }
-    return {discount: result, type: type}
+    return {discount: result, type: type, value: value}
   }
 
   public getDiscountTypeString(promotionType: any) {

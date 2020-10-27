@@ -49,6 +49,8 @@ import NewOrderComponent from "@/entities/orderms/order/newOrder/newOrder.vue";
 import WorkflowComponent from "@/entities/workflowms/workflow/workflows.vue";
 import EditWorkflowComponent from '@/entities/workflowms/workflow/editWorkflow/editWorkflow.vue'
 import MasterTemplateComponent from '@/entities/orderms/masterTemplate/masterTemplate.vue'
+import NewMasterTemplateComponent
+  from "@/entities/orderms/masterTemplate/newMasterTemplate/newMasterTemplate.vue";
 
 Vue.use(VueRouter)
 
@@ -383,6 +385,11 @@ const routes = [
     path: '/maintenance/master-templates',
     name: 'Master Templates',
     component: MasterTemplateComponent
+  },{
+    path: '/maintenance/master-templates/new',
+    name: 'NewMasterTemplates',
+    component: NewMasterTemplateComponent,
+    params: { id: null }
   }, {
     path: '/notFound',
     name: 'NotFound',

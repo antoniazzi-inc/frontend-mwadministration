@@ -11,16 +11,21 @@ import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 import MultiLanguageHtmlEditorComponent from "@/components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue";
 import InvoicePreviewComponent from "@/entities/orderms/order/newOrder/invoicePreview/invoicePreview.vue";
 import {DATE_FORMAT} from "@/shared/filters";
+import MultiLanguageComponent from '@/components/multiLanguage/MultiLanguage.vue'
+import {IMultiLanguageConfig, MultiLanguageConfig} from "@/shared/models/MultiLanguageConfig";
+
 @Component({
   components: {
     SearchableSelectComponent,
     flatPickr,
     ToggleSwitch,
     MultiLanguageHtmlEditorComponent,
-    InvoicePreviewComponent
+    InvoicePreviewComponent,
+    MultiLanguageComponent
   },
   props: {
-    cartOrder: Object
+    cartOrder: Object,
+    active: Boolean
   }
 })
 export default class Step4Component extends mixins(CommonHelpers, Vue) {
@@ -36,6 +41,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
   public invoicePreviewData: any
   public invoiceEmailContent: any
   public invoiceEmailSubject: any
+  public multiLangConfig: IMultiLanguageConfig
 
 
   constructor () {
@@ -45,6 +51,9 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
       altInput: false,
       dateFormat: 'd-m-Y'
     }
+    this.multiLangConfig = new MultiLanguageConfig(true, false,
+      'labels.invoiceEmailSubject', '', false,
+      false, false, true, true, false)
     this.invoiceDate = null
     this.invoiceDeliveryDate = moment().format(DATE_FORMAT)
     this.invoiceScheduledOn = moment().format(DATE_FORMAT)
@@ -54,7 +63,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     this.selectedInvoiceTemplate = null
     this.invoiceAdditionalDetails = ''
     this.invoiceLanguage = ''
-    this.invoiceEmailSubject = ''
+    this.invoiceEmailSubject = []
     this.invoiceEmailContent = ''
     this.cartOrderCopy = new CartOrder()
     this.invoicePreviewData = {
@@ -72,7 +81,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
   }
   public changeInvoiceTemplate (template:any) {
     if(template && template.templateDataJson) {
-      this.invoiceEmailContent = JSON.parse(template.templateDataJson).invoiceEmailContent
+      this.invoiceEmailContent = template.templateDataJson.invoiceEmailContent
     }
     this.selectedInvoiceTemplate = template
   }
@@ -91,5 +100,54 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
     return new Promise(resolve => {
       resolve({status: true, msg: ''})
     })
+  }
+
+  public addNewEmailSubject(langKey:any){
+    if(!langKey) return
+    const lang = {
+      langKey: langKey,
+      name: '',
+      description: ''
+    }
+    let index = null
+    if (this.invoiceEmailSubject && this.invoiceEmailSubject.length) {
+      this.invoiceEmailSubject.forEach((language:any, i:any) => {
+        if (language.langKey === lang.langKey) {
+          index = i
+        }
+      })
+      if (index !== null) {
+        this.$set(this.invoiceEmailSubject, index, lang)
+      } else {
+        this.invoiceEmailSubject.push(lang)
+      }
+    } else {
+      this.invoiceEmailSubject = [lang]
+    }
+  }
+  public updateEmailSubject(lang:any){
+    if(!lang) return
+    let index = null
+    if (this.invoiceEmailSubject && this.invoiceEmailSubject.length) {
+      this.invoiceEmailSubject.forEach((language:any, i:any) => {
+        if (language.langKey === lang.langKey) {
+          index = i
+        }
+      })
+      if (index !== null) {
+        this.$set(this.invoiceEmailSubject, index, lang)
+      } else {
+        this.invoiceEmailSubject.push(lang)
+      }
+    } else {
+      this.invoiceEmailSubject = [lang]
+    }
+  }
+  public removeEmailSubject(lang:any){
+    if(!lang) return
+    let ind = this.invoiceEmailSubject.findIndex((e:any)=>{e.langKey === lang.langKey})
+    if(ind > -1){
+      this.invoiceEmailSubject.splice(ind, 1)
+    }
   }
 }

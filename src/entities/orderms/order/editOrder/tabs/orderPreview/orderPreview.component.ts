@@ -51,8 +51,12 @@ export default class OrderPreviewComponent extends mixins(CommonHelpers) {
             selectedPaymentMethod: {}
         };
     }
-    @Watch('order', {immediate: true, deep: true})
+    @Watch('order.orderLines', {immediate: true, deep: true})
     public changeCartOrder(newVal:any) {
+      if(newVal) this.updateCart()
+    }
+    @Watch('order.orderDiscountLines', {immediate: true, deep: true})
+    public changeCartOrderDiscount(newVal:any) {
       if(newVal) this.updateCart()
     }
     public getCustomerRelationAddress(){

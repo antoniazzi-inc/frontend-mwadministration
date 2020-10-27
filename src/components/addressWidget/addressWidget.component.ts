@@ -49,8 +49,8 @@ export default class AddressWidgetComponent extends mixins(CommonHelpers, Vue) {
       this.addressCopy = newVal
       if (newVal && !newVal.id) {
         this.newAddress = true
-        this.selectedCountry = this.preselectCountry(150)
-        this.addressCopy.countryId = this.preselectCountry(150).id
+        this.selectedCountry = this.preselectCountry(this.$store.state.administration.country.id)
+        this.addressCopy.countryId = this.preselectCountry(this.$store.state.administration.country.id).id
       } else {
         this.selectedCountry = this.preselectCountry(newVal.countryId)
       }
