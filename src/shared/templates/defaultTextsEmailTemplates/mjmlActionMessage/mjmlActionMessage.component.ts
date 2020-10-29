@@ -41,19 +41,20 @@ export default class MjmlActionMessageComponent extends mixins(Vue, CommonHelper
         <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
         font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
-        align="${this.$props.value.config.header.textAlign}">${this.getMultiLangName(this.$props.value.value.headerText).name}</mj-text>
+        align="${this.$props.value.config.header.textAlign}">${this.$props.value.value.headerText.length > 0 ? this.getMultiLangName(this.$props.value.value.headerText).name : ''}</mj-text>
       </mj-column>
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
         color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage]}</mj-text>
         <mj-button font-weight="${this.$props.value.config.buttons.fontWeight}" href="${this.$props.value.value.buttonLink}"
         background-color="${this.$props.value.config.buttons.backgroundColor}"
+        display="${this.$props.value.value.buttonText.length > 0 ? 'inline' : 'none'}"
         border-radius="${this.$props.value.config.buttons.borderRadius}px" color="${this.$props.value.config.buttons.color}">
-          ${this.getMultiLangName(this.$props.value.value.buttonText).name}
+          ${this.$props.value.value.buttonText.length > 0 ? this.getMultiLangName(this.$props.value.value.buttonText).name : ''}
          </mj-button>
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText2[this.$store.state.currentLanguage]}</mj-text>
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText2.length > 0 ? this.$props.value.value.pageText2[this.$store.state.currentLanguage] : ''}</mj-text>
    </mj-section>
    </mj-section>
   </mj-body>

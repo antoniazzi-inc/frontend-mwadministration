@@ -4,7 +4,7 @@
       <div class="col-md-6">
         <div name="editForm" class="search-banner" style="padding:2em;" novalidate v-on:submit.prevent="save()">
           <div>
-            <h2 v-if="$props.courseId === null" v-text="$t('labels.editCourse')"></h2>
+            <h2 v-if="$props.courseId === null || course.id > 0" v-text="$t('labels.editCourse')"></h2>
             <h2 v-else v-text="$t('labels.createCourse')"></h2>
 
             <div class="form-group">

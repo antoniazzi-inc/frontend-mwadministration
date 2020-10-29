@@ -127,12 +127,11 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
           },
           vatCalculation: ''
         },
-        freeFields: []
+        freeFields: this.$store.state.lookups.freeFields
       }
     }
 
     public mounted () {
-      this.registrationSettingsJson.freeFields = this.$store.state.lookups.freeFields
       this.retrieve()
     }
 

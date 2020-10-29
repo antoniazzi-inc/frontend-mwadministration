@@ -5,7 +5,7 @@ export default class  typebundlebasedsService extends BaseEntityService<ITypeBun
     private static instance: typebundlebasedsService;
 
     private constructor() {
-        super('/api/productms/api/promotions/type-bundle-baseds')
+        super('/api/productms/api/type-bundle-baseds')
     }
 
     public static getInstance(): typebundlebasedsService {

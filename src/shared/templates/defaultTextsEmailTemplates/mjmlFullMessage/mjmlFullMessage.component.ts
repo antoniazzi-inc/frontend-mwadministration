@@ -56,7 +56,7 @@ export default class MjmlFullMessageComponent extends mixins(Vue, CommonHelpers)
             src="${this.$props.value.value.imageUrl}" target="_blank" title="" width="${this.imageWidth}px"></mj-image>
    <mj-text font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.footerText[this.$store.state.currentLanguage]}</mj-text>
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.footerText[this.$store.state.currentLanguage] ? this.$props.value.value.footerText[this.$store.state.currentLanguage] : ''}</mj-text>
       </mj-column>
    </mj-wrapper>
   </mj-body>

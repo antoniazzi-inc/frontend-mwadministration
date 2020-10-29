@@ -41,10 +41,10 @@ export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelper
         align="${this.$props.value.config.header.textAlign}">${this.getMultiLangName(this.$props.value.value.headerText).name}</mj-text>
       </mj-column>
    </mj-section>
-   <mj-section width="100%" >
+   <mj-section width="100%" padding="30px">
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage]}</mj-text>
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}</mj-text>
 </mj-section>
   </mj-body>
 </mjml>`

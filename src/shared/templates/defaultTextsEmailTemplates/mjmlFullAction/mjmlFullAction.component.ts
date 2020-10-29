@@ -54,7 +54,7 @@ export default class MjmlFullActionComponent extends mixins(Vue, CommonHelpers) 
     </mj-attributes>
     <mj-style inline="inline">a { text-decoration: none!important; color: inherit!important; }</mj-style>
   </mj-head>
-  <mj-body width="${this.imageWidth}" background-color="${this.$props.value.config.backgroundColor}">
+  <mj-body width="${this.imageWidth ? this.imageWidth : "100%"}" background-color="${this.$props.value.config.backgroundColor}">
   <mj-section full-width="full-width" padding="30px" border="2px solid ${this.$props.value.config.borderColor}">
       <mj-column margin="20px" width="100%">
         <mj-text font-style="${this.$props.value.config.header.fontStyle}"
@@ -64,7 +64,7 @@ export default class MjmlFullActionComponent extends mixins(Vue, CommonHelpers) 
 
         <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage]}</mj-text>
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}</mj-text>
 
         <mj-button font-weight="${this.$props.value.config.buttons.fontWeight}" href="${this.$props.value.value.buttonLink}"
         background-color="${this.$props.value.config.buttons.backgroundColor}"
@@ -74,13 +74,13 @@ export default class MjmlFullActionComponent extends mixins(Vue, CommonHelpers) 
 
          <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText2[this.$store.state.currentLanguage]}</mj-text>
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText2[this.$store.state.currentLanguage] ? this.$props.value.value.pageText2[this.$store.state.currentLanguage] : ''}</mj-text>
 
         <mj-image align="center" border="none" padding-bottom="0px" padding-left="0px" padding-right="0px" padding="0px 25px"
             src="${this.$props.value.value.imageUrl}" target="_blank" title="" width="${this.imageWidth}px"></mj-image>
 
    <mj-text font-size="${this.$props.value.config.text.fontSize}px" align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.footerText[this.$store.state.currentLanguage]}</mj-text>
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.footerText[this.$store.state.currentLanguage] ? this.$props.value.value.footerText[this.$store.state.currentLanguage] : ''}</mj-text>
 
         <mj-social font-size="15px" icon-size="30px" mode="horizontal">
           ${social}

@@ -125,7 +125,7 @@
           <tbody>
 
           <tr v-for="(item, index) in registrationSettingsJson.freeFields" :key="index">
-            <td>{{item.value.label}}</td>
+            <td>{{item.label}}</td>
             <td>
               <toggle-switch
                 :on-text="$t('labels.yes')"

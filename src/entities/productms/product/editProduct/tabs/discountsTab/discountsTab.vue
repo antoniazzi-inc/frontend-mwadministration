@@ -25,7 +25,7 @@
 
     <div class="form-buttons-w text-right mt-3">
       <button type="button" @click="goBack" class="btn btn-outline-primary ml-3">{{$t('buttons.backToList')}}</button>
-      <button type="button" @click.prevent="cancel" class="btn btn-primary ml-3">{{$t('buttons.cancel')}}</button>
+      <!--<button type="button" @click.prevent="cancel" class="btn btn-primary ml-3">{{$t('buttons.cancel')}}</button>-->
       <button class="btn btn-primary"  @click.prevent="save">{{$t('buttons.save')}}</button>
     </div>
     <!--

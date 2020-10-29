@@ -279,6 +279,13 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
   public save() {
     let self = this;
+    let prods:any = []
+    this.promotionCopy.products.forEach((e:any)=>{
+      prods.push({
+        id: e.id,
+        version: e.version
+      })
+    })
     let dto: any = {
       id: this.promotionCopy.id,
       administrationId: this.promotionCopy.administrationId,
@@ -289,7 +296,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       availableTo: moment(this.availableTo),
       promotionType: this.promotionCopy.promotionType,
       recurrent: this.promotionCopy.recurrent,
-      products: this.promotionCopy.products,
+      products: prods,
       promotionLanguages: this.promotionCopy.promotionLanguages,
     };
     dto[this.promoType] = this.promotionCopy[this.promoType];

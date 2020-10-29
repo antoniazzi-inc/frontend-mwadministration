@@ -33,7 +33,7 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     public checkoutUpsell = '';
     public backToCallingPage = false;
     public productCopy: IProduct = new Product();
-    public productBackup: IProduct = new Product();
+    public productBackup: IProduct|null = null;
     public affiliateAgreement: IAffiliateAgreement = new AffiliateAgreement();
     public affiliateAgreementProduct: IAffiliateAgreementProduct = new AffiliateAgreementProduct();
     public editorConfig = {};
@@ -58,7 +58,10 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     @Watch('product', { immediate: true, deep: true })
     public updatedProd (newVal: any) {
       this.productCopy = newVal
-      this.productBackup = JSON.parse(JSON.stringify(newVal))
+      if(this.productBackup === null && newVal.id){
+        let copy = JSON.parse(JSON.stringify(newVal))
+        this.productBackup = Object.assign({}, copy)
+      }
       this.fixedReward = newVal.generalFlatCommission ? newVal.generalFlatCommission : this.fixedReward
       this.percentageReward = newVal.generalPercentageCommission ? newVal.generalPercentageCommission : this.percentageReward
       this.isSalesInfo = !!newVal.affiliateSalesInfoJson
@@ -91,6 +94,14 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
       this.$router.push('/products')
     }
     public cancel () {
-      this.productCopy = this.productBackup
+      if(this.productBackup) {
+        this.fixedReward = this.productBackup.generalFlatCommission ? this.productBackup.generalFlatCommission : this.fixedReward
+        this.percentageReward = this.productBackup.generalPercentageCommission ? this.productBackup.generalPercentageCommission : this.percentageReward
+        this.isSalesInfo = this.productBackup.affiliateSalesInfoJson !== null ? true : false
+        this.productCopy.affiliateSalesInfoJson = JSON.parse(JSON.stringify(this.productBackup.affiliateSalesInfoJson))
+        this.productCopy.availableForAffiliates = this.productBackup.availableForAffiliates ? JSON.parse(JSON.stringify(this.productBackup.availableForAffiliates)) : false
+        let copy = JSON.parse(JSON.stringify(this.productCopy))
+        this.productBackup = Object.assign({}, copy)
+      }
     }
 }

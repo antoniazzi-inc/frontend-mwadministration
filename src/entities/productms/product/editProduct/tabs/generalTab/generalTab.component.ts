@@ -103,6 +103,14 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       this.productCopy = newVal
       this.availableFrom = this.$props.product.availableFrom ? moment(this.$props.product.availableFrom).format(DATE_FORMAT) : null
       this.availableTo = this.$props.product.availableTo ? moment(this.$props.product.availableTo).format(DATE_FORMAT) : null
+      if(newVal.productLanguages){
+      let langs:any = {}
+      newVal.productLanguages.forEach((prodLang:any)=>{
+        langs[prodLang.langKey] = new ProductLanguage(prodLang.createdOn, prodLang.updatedOn, prodLang.id, prodLang.version, prodLang.langKey,
+          prodLang.maxExceededMessage)
+      })
+      this.availableLangs = langs
+      }
       if (moment(this.$props.product.availableFrom).isBefore(moment())) {
         this.validFromConfig.minDate = this.availableFrom
         this.validToConfig.minDate = this.availableFrom
@@ -235,6 +243,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
         this.availableToError = true
         return
       }
+      this.productCopy.typeCourse = undefined
       // @ts-ignore
       this.productCopy.availableTo = this.productCopy.availableTo ? moment(this.productCopy.availableTo, 'YYYY-MM-DDTHH:mm')._d : null
       // @ts-ignore
