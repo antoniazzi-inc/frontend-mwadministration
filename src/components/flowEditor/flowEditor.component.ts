@@ -12,14 +12,14 @@ import SimpleFlowChart from '@/components/flowEditor/simpleFlowchart.vue'
   }
 })
 export default class FlowEditorComponent extends mixins(Vue, CommonHelpers) {
-//  $refs!: {
-//    deleteModal: HTMLElement;
-//  }
   public scene: any;
-  public newNodeType: number;
-  public newNodeLabel: string;
-  public nodeCategory: any;
   public isLoading: boolean;
+  public adding: boolean;
+  public addEvent: any;
+
+  public starts: any;
+  public actions: any;
+  public conditions: any;
 
   protected props = {
     table: String,
@@ -29,84 +29,166 @@ export default class FlowEditorComponent extends mixins(Vue, CommonHelpers) {
   constructor() {
     super()
     this.scene = {
-        centerX: 1024,
-        centerY: 140,
+        centerX: 1, //1024,
+        centerY: 1, //140,
         scale: 1,
-        nodes: [
-        {
-          id: 2,
-          x: -700,
-          y: -69,
-          type: 'Action',
-          label: 'test1',
-        },
-        {
-          id: 4,
-          x: -357,
-          y: 80,
-          type: 'Script',
-          label: 'test2',
-        },
-        {
-          id: 6,
-          x: -557,
-          y: 80,
-          type: 'Rule',
-          label: 'test3',
-        }
-      ],
-        links: [
-        {
-          id: 3,
-          from: 2, // node id the link start
-          to: 4,  // node id the link end
-        }
-      ]
+        nodes: this.generateNodes(),
+        links: this.generateLinks()
     };
-    this.newNodeType = 0;
-    this.newNodeLabel = '';
-    this.nodeCategory = [
-      'rule',
-      'action',
-      'script',
-      'decision',
-      'fork',
-      'join',
+    this.adding = false;
+    this.addEvent = {
+      e: null,
+      type: '',
+      subtype: '',
+      name: ''
+    };
+    this.starts = [
+      { id: 'start_form', label: 'filled in form'},
+      { id: 'start_purchase', label: 'purchased a product'}
+    ];
+    this.conditions = [
+      { id: 'cond_group', label: 'member of group'},
+      { id: 'cond_freefield', label: 'free field value'}
+    ];
+    this.actions = [
+      { id: 'action_mail', label: 'send a mail'},
+      { id: 'action_notify', label: 'notify me'}
     ];
     this.isLoading = true
   }
 
   public canvasClick(e: any) {
-    console.log('canvas Click, event:', e)
+    //console.log('canvas Click, event:', e)
   }
 
-  public addNode() {
-    let maxID = Math.max(0, ...this.scene.nodes.map((link: any) => {
-      return link.id
-    }))
-    this.scene.nodes.push({
-      id: maxID + 1,
-      x: -400,
+  private generateLinks() {
+    let links = [];
+    let link = {
+      id: 1,
+      from: 6,
+      to: 4,
+      type: 'output'
+    };
+    links.push(link);
+    link = {
+      id: 2,
+      from: 6,
+      to: 7,
+      type: 'output'
+    };
+    links.push(link);
+    return links;
+  }
+
+  private generateNodes() {
+    let nodes = [];
+    let node = {
+      id: 4,
+      x: 100,
+      y: 200,
+      type: 'action',
+      label: 'Geen idee hiero',
+    };
+    nodes.push(node);
+    node = {
+      id: 6,
+      x: 100,
       y: 50,
-      type: this.nodeCategory[this.newNodeType],
-      label: this.newNodeLabel ? this.newNodeLabel: `test${maxID + 1}`,
-    })
+      type: 'start',
+      label: 'test1',
+    };
+    nodes.push(node);
+    node = {
+      id: 7,
+      x: 400,
+      y: 200,
+      type: 'condition',
+      label: 'What to do here? I dont know',
+    };
+    nodes.push(node);
+    return nodes;
+  }
+
+  public startAddNode(e: any) {
+    this.addEvent.e = e;
+    this.adding = true;
+    this.openAddModal();
   }
 
   public nodeClick(id: any) {
-    console.log('node click', id);
   }
 
   public nodeDelete(id: any) {
     console.log('node delete', id);
   }
 
+  public nodeEdit(id: any) {
+    // load & prepare data
+    this.openEditModal();
+  }
+
   public linkBreak(id: any) {
-    console.log('link break', id);
+    console.log('link removed', id);
   }
 
   public linkAdded(link: any) {
     console.log('new link added:', link);
+  }
+
+  public closeAddModal() {
+    // @ts-ignore
+    $(this.$refs.addModal).modal('hide')
+  }
+
+  public openAddModal() {
+    // @ts-ignore
+    $(this.$refs.addModal).modal('show')
+  }
+
+  public closeEditModal() {
+    // @ts-ignore
+    $(this.$refs.editModal).modal('hide')
+  }
+
+  public openEditModal() {
+    // @ts-ignore
+    $(this.$refs.editModal).modal('show')
+  }
+
+  public saveExistingNode() {
+    this.closeEditModal()
+  }
+
+  public saveNewNode() {
+
+    if (this.adding) {
+
+      console.log(this.addEvent.e);
+
+      // triggered when canvas is double-clicked or output port is clicked
+      let x = this.addEvent.e.clientX
+      let y = this.addEvent.e.clientY
+
+      //x = this.addEvent.e.screenX
+      //y = this.addEvent.e.screenY
+
+      let maxID = Math.max(0, ...this.scene.nodes.map((link: any) => {
+        return link.id
+      }))
+
+      let adj_x = this.scene.centerX
+      let adj_y = this.scene.centerY
+
+      this.closeAddModal()
+
+      this.scene.nodes.push({
+        id: maxID + 1,
+        x: x, // - 1080,
+        y: y, // - 400,
+        type: this.addEvent.type,
+        label: this.addEvent.name // `test${maxID + 1}`,
+      })
+    }
   }
 
 }

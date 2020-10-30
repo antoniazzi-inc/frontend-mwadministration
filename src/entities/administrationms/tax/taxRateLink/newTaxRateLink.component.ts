@@ -41,12 +41,12 @@ export default class NewTaxRateLinkComponent extends mixins(CommonHelpers, Vue) 
     this.validFromConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y'
+      dateFormat: 'd-m-Y'
     }
     this.validToConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: ''
     }
     this.searchableConfigFrom = new SearchableSelectConfig('rate',

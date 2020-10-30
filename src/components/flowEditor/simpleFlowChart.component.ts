@@ -3,6 +3,8 @@ import {mixins} from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import FlowChartLink from '@/components/flowEditor/flowchartLink.vue'
 import FlowChartNode from '@/components/flowEditor/flowchartNode.vue'
+import {IRelationGroup} from "@/shared/models/relationms/relation-group.model";
+import {AxiosResponse} from "axios";
 
 @Component({
   components: {
@@ -33,6 +35,10 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
   public rootDivOffset: any;
   public height: string;
 
+  // double clicks
+  public clicks: number;
+  public timer: any;
+
   get nodeOptions() {
     return {
       centerY: this.$props.scene.centerY,
@@ -59,6 +65,7 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
         start: [cx, cy],
         end: [ex, ey],
         id: link.id,
+        type: link.type,
       };
     })
     if (this.draggingLink) {
@@ -72,6 +79,7 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
       lines.push({
         start: [cx, cy],
         end: [this.draggingLink.mx, this.draggingLink.my],
+        type: this.draggingLink.type,
       })
     }
     return lines;
@@ -79,7 +87,7 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
 
   constructor() {
     super()
-    this.height = '100%' //'400px'
+    this.height = '100%'
     this.action = {
       linking: false,
       dragging: false,
@@ -97,6 +105,11 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
       top: 0,
       left: 0
     }
+
+    // double clicks
+    this.clicks = 0;
+    this.timer = null;
+
   }
 
   public mounted() {
@@ -115,19 +128,20 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
 
   public getPortPosition(type: string, x: number, y: number) {
     if (type === 'top') {
-      return [x + 40, y];
+      return [x + 100, y];
     }
     else if (type === 'bottom') {
-      return [x + 40, y + 80];
+      return [x + 100, y + 45];
     }
   }
 
-  public linkingStart(index: any) {
+  public linkingStart(index: any, outputType: string) {
     this.action.linking = true;
     this.draggingLink = {
       from: index,
       mx: 0,
       my: 0,
+      type: outputType
     };
   }
 
@@ -146,6 +160,7 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
           id: maxID + 1,
           from: this.draggingLink.from,
           to: index,
+          type: this.draggingLink.type
         };
         this.$props.scene.links.push(newLink)
         this.$emit('linkAdded', newLink)
@@ -206,13 +221,20 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
 
   public handleUp(e: any) {
     const target = e.target || e.srcElement;
+
     if (this.$el.contains(target)) {
       if (typeof target.className !== 'string' || target.className.indexOf('node-input') < 0) {
+        //console.log('dragged to nowhere', this.action.dragging);
         this.draggingLink = null;
       }
-      if (typeof target.className === 'string' && target.className.indexOf('node-delete') > -1) {
-        // console.log('delete2', this.action.dragging);
+      if (typeof target.className === 'string' && (target.className.indexOf('node-delete') > -1 || target.className.indexOf('do-del') > -1)) {
         this.nodeDelete(this.action.dragging);
+      }
+      if (typeof target.className === 'string' && (target.className.indexOf('node-edit') > -1 || target.className.indexOf('do-edit') > -1)) {
+        this.nodeEdit(this.action.dragging);
+      }
+      if (typeof target.className === 'string' && target.className.indexOf('node-output') > -1) {
+        this.$emit('outportClick', e);
       }
     }
     this.action.linking = false;
@@ -220,9 +242,23 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
     this.action.scrolling = false;
   }
 
+  public handleDoubleClick(e: any){
+    this.clicks++;
+    if (this.clicks === 1) {
+      let self = this;
+      this.timer = setTimeout(function() {
+        self.clicks = 0;
+      }, 500);
+    }
+    else {
+      clearTimeout(this.timer);
+      this.$emit('canvasDoubleClick', e);
+      this.clicks = 0;
+    }
+  }
+
   public handleDown(e: any) {
     const target = e.target || e.srcElement;
-    // console.log('for scroll', target, e.keyCode, e.which)
     if ((target === this.$el || target.matches('svg, svg *')) && e.which === 1) {
       this.action.scrolling = true;
       [this.mouse.lastX, this.mouse.lastY] = this.getMousePosition(this.$el, e);
@@ -251,6 +287,11 @@ export default class SimpleFlowChart extends mixins(Vue, CommonHelpers) {
       return link.from !== id && link.to !== id
     })
     this.$emit('nodeDelete', id)
+  }
+
+  public nodeEdit(id: any) {
+    // open edit screen
+    this.$emit('nodeEdit', id)
   }
 
   private getMousePosition (element: any, event: any) {

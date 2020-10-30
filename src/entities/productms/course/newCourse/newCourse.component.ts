@@ -137,7 +137,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     this.dateConfigStart = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y H:i',
+      dateFormat: 'd-m-Y H:i',
       timeFormat: 'H:i',
       enableTime: true,
       time_24hr: true,
@@ -146,7 +146,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     this.dateConfigEnd = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y H:i',
+      dateFormat: 'd-m-Y H:i',
       timeFormat: 'H:i',
       enableTime: true,
       time_24hr: true

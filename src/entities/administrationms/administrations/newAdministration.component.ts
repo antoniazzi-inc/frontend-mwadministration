@@ -61,12 +61,12 @@ export default class NewAdministrationComponent extends mixins(CommonHelpers, Vu
     this.validFromConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y'
+      dateFormat: 'd-m-Y'
     }
     this.validToConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: ''
     }
     this.validFrom = new Date()

@@ -62,13 +62,13 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     this.validFromConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: null
     }
     this.validToConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: null
     }
     this.availableFrom = null

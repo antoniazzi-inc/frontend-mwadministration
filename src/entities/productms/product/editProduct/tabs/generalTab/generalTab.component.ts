@@ -40,14 +40,14 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     public validFromConfig: any = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: moment().format(DATE_FORMAT)
     }
 
     public validToConfig: any = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: moment().format(DATE_FORMAT)
     }
 

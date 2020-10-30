@@ -86,13 +86,31 @@ export default class FlowChartNode extends mixins(Vue, CommonHelpers) {
     e.preventDefault();
   }
 
+  public outputNoMouseDown(e: any) {
+    this.$emit('noLinkingStart')
+    e.preventDefault();
+  }
+
+  public outputYesMouseDown(e: any) {
+    this.$emit('yesLinkingStart')
+    e.preventDefault();
+  }
+
   public inputMouseDown(e: any) {
     e.preventDefault();
   }
 
   public inputMouseUp(e: any) {
+    // happens when link is connected to a destination port
     this.$emit('linkingStop')
     e.preventDefault();
+  }
+
+  public portClick(e: any) {
+    // happens when output port is clicked
+    console.log('port clicked')
+    //this.$emit('portClicked')
+    //e.preventDefault();
   }
 
 }

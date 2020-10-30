@@ -42,12 +42,12 @@ export default class NewTaxRateComponent extends mixins(CommonHelpers, Vue) {
     this.validFromConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y'
+      dateFormat: 'd-m-Y'
     }
     this.validToConfig = {
       wrap: true,
       altInput: false,
-      dateFormat: 'm-d-Y',
+      dateFormat: 'd-m-Y',
       minDate: ''
     }
     this.moneyConfig = new MoneyConfig(undefined, undefined, '', '%', 0, false)

@@ -6,11 +6,13 @@
       <text
         text-anchor="middle"
         :transform="arrowTransform"
-        font-size="22">&times;</text>
+        font-size="28">&times;</text>
     </a>
+
     <path v-else d="M -1 -1 L 0 1 L 1 -1 z"
           :style="arrowStyle"
           :transform="arrowTransform"></path>
+
   </g>
 </template>
 
