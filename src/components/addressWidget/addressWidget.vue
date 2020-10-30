@@ -51,7 +51,7 @@
           <div class="row">
             <div class="form-group col-md-4">
               <label class="control-label">{{$t('labels.postalCode')}}</label>
-              <input type="text" :placeholder="$t('labels.postalCode')" v-validate="'required'" @blur="validatePostalCode"
+              <input type="text" :placeholder="$t('labels.postalCode')"
                      :class="{'form-control': true, 'invalid': errors.has('postalCode')}"
                      v-model="addressCopy.postalCode" name="postalCode"/>
               <span class="text-danger small">{{errors.first('postalCode')}}</span>
@@ -125,6 +125,7 @@
             <b v-if="showMore"><i class="os-icon os-icon-arrow-up2"></i>{{$t('labels.showLess')}}</b>
           </router-link>
           <div class="form-buttons-w text-right">
+            <span class="small text-danger">{{addressError}}</span><br/>
             <button class="btn btn-outline-primary" @click.prevent="cancel" type="submit"> {{$t('buttons.cancel')}}
             </button>
             <button class="btn btn-primary ml-2" @click.prevent="save" type="submit"><span>{{$t('buttons.save')}}</span>

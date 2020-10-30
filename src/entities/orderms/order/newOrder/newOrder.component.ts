@@ -103,13 +103,16 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
           let step1: any = this.$refs.step1
           this.cartOrder.currency = this.$store.state.currencyName
           this.cartOrder.languageCode = this.$store.state.currentLanguage
+
           this.cartOrder.orderCustomer = {
             relationId: step1.selectedRelation.id,
             email: step1.selectedRelation.email,
             fullName: `${step1.selectedRelation.relationProfile.firstName ? step1.selectedRelation.relationProfile.firstName : ''} ${step1.selectedRelation.relationProfile.middleName ? step1.selectedRelation.relationProfile.middleName : ''} ${step1.selectedRelation.relationProfile.lastName ? step1.selectedRelation.relationProfile.lastName : ''}`,
             title: step1.selectedRelation.relationProfile.title,
             isCompany: step1.isCompany,
-            companyName: step1.companyName
+            companyName: step1.companyName,
+            vatNumber: step1.cartOrderCopy.orderCustomer.vatNumber,
+            taxRulesJson: step1.cartOrderCopy.orderCustomer.taxRulesJson
           }
           this.cartOrder.customerBillingAddress = step1.cartOrderCopy.customerBillingAddress
           this.cartOrder.customerDeliveryAddress = step1.cartOrderCopy.customerDeliveryAddress
@@ -164,7 +167,9 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
             fullName: resp.data.relationProfile.firstName + ' ' + resp.data.relationProfile.middleName + ' ' + resp.data.relationProfile.lastName,
             title: resp.data.relationProfile.title,
             isCompany: step1.isCompany,
-            companyName: step1.companyName
+            companyName: step1.companyName,
+            vatNumber: step1.cartOrderCopy.orderCustomer.vatNumber,
+            taxRulesJson: step1.cartOrderCopy.orderCustomer.taxRulesJson
           }
           let billAddrIndex = resp.data.relationAddresses.findIndex((e: any) => e.usedForBilling === true)
           let billAddr = null
@@ -194,6 +199,8 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
       this.cartOrder.orderCustomer.isCompany = step1.isCompany
       this.cartOrder.orderCustomer.companyName = step1.companyName
       this.cartOrder.orderCustomer.relationId = step1.selectedRelation.id
+      this.cartOrder.orderCustomer.vatNumber = step1.cartOrderCopy.orderCustomer.vatNumber
+      this.cartOrder.orderCustomer.taxRulesJson = JSON.stringify({val: step1.cartOrderCopy.orderCustomer.taxRulesJson})
       this.createCart()
     } else if (!this.cartOrder.customerBillingAddress.relationAddressId) {
       let step1: any = this.$refs.step1
@@ -228,6 +235,9 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
         this.createCart()
       })
     } else {
+      if (step1.isDeliveryBilling) {
+        this.cartOrder.customerDeliveryAddress.relationAddressId = this.cartOrder.customerBillingAddress.relationAddressId
+      }
       this.createCart()
     }
   }

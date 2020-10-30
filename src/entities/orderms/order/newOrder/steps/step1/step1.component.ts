@@ -131,7 +131,7 @@ export default class Step1Component extends mixins(CommonHelpers, Vue) {
       this.selectedBillingCountry = this.preselectCountry(newVal.countryId ? newVal.countryId : this.$store.state.administration.country.id)
       if (this.isDeliveryBilling) {
         let addr = newVal
-        let relAddrId = newVal.id
+        let relAddrId = newVal.relationAddressId
         addr.id = undefined
         addr.version = undefined
         addr.administrationId = undefined

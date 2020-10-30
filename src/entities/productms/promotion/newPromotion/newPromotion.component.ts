@@ -197,6 +197,11 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
     this.promotion.typeTimeBased = new TypeTimeBased()
   }
 
+  @Watch('discountTypeId', {immediate: true, deep: true})
+  public changeDiscountTypeId(newVal: any) {
+    if(newVal === 4)
+      this.promotion.recurrent = false
+  }
   @Watch('availableFrom', {immediate: true, deep: true})
   public changeAvailableToMin(newVal: any) {
     this.validToConfig.minDate = moment(newVal).format(DATE_FORMAT)
@@ -308,6 +313,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
           if (self.discountTypeId === 4) {
             // @ts-ignore
             self.promotion.typeTimeBased.discount[discountName] = discountValue;
+            self.promotion.recurrent = false
           } else {
             //@ts-ignore
             self.promotion.typeTimeBased.discount[discountName] = JSON.stringify(discountValue);

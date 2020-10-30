@@ -98,8 +98,10 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
         this.fixedReward = this.productBackup.generalFlatCommission ? this.productBackup.generalFlatCommission : this.fixedReward
         this.percentageReward = this.productBackup.generalPercentageCommission ? this.productBackup.generalPercentageCommission : this.percentageReward
         this.isSalesInfo = this.productBackup.affiliateSalesInfoJson !== null ? true : false
-        this.productCopy.affiliateSalesInfoJson = JSON.parse(JSON.stringify(this.productBackup.affiliateSalesInfoJson))
-        this.productCopy.availableForAffiliates = this.productBackup.availableForAffiliates ? JSON.parse(JSON.stringify(this.productBackup.availableForAffiliates)) : false
+        if(this.productBackup && this.productBackup.affiliateSalesInfoJson){
+          this.productCopy.affiliateSalesInfoJson = JSON.parse(JSON.stringify(this.productBackup.affiliateSalesInfoJson))
+          this.productCopy.availableForAffiliates = this.productBackup.availableForAffiliates ? JSON.parse(JSON.stringify(this.productBackup.availableForAffiliates)) : false
+        }
         let copy = JSON.parse(JSON.stringify(this.productCopy))
         this.productBackup = Object.assign({}, copy)
       }

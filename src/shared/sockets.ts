@@ -191,11 +191,6 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         lookupName = 'groups'
         itemName = obj.content.label
         break
-      case 'invoicetemplate':
-        lookupData = this.store.state.lookups.invoiceTemplates
-        lookupName = 'invoiceTemplates'
-        itemName = obj.content.label
-        break
       case 'customfield':
         obj.content = {
           label: this.getMultiLangName(obj.content.customFieldLanguages).name,
@@ -258,6 +253,11 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         lookupData = this.store.state.lookups.invoiceTemplates
         lookupName = 'invoiceTemplates'
         itemName = obj.content.label
+        break
+      case 'role':
+        lookupData = this.store.state.lookups.roles
+        lookupName = 'roles'
+        itemName = obj.content.name
         break
     }
     if (lookupName === '') {

@@ -69,7 +69,7 @@
                     <div class="form-row mt-3">
                       <label>{{$t('labels.vatNumber')}}</label>
                       <input @blur="validateVat" type="text" :class="{'form-control': true}"
-                             v-model="newCompany.vatNumber"/>
+                             v-model="cartOrderCopy.orderCustomer.vatNumber"/>
                     </div>
                     <div class="form-row mt-3">
                       <label class="control-label">{{$t('labels.companyPhone')}}</label>
@@ -161,15 +161,17 @@
           </div>
           <div class="form-group col-md-6 mt-3" v-if="isCompany">
             <label class="form-control-label">{{ $t('labels.vatNumber') }}</label>
-            <input v-model="selectedCompany.vatNumber" class="form-control mt-2 mb-2 mr-sm-1 mb-sm-0"
+            <input v-model="cartOrderCopy.orderCustomer.vatNumber" class="form-control mt-2 mb-2 mr-sm-1 mb-sm-0"
                    :placeholder="$t('labels.vatNumber')" type="text">
           </div>
           <div class="form-group col-md-6 mt-3" v-if="isCompany">
             <label class="form-control-label">{{ $t('labels.applicableTaxRulings') }}</label>
-            <select class="form-control mt-2 mb-2 mr-sm-1 mb-sm-0" v-model="applicableTax">
-              <option value="reverse">{{$t('labels.reverse')}}</option>
-              <option value="normal">{{$t('labels.normal')}}</option>
-              <option value="noVat">{{$t('labels.noVat')}}</option>
+            <select class="form-control mt-2 mb-2 mr-sm-1 mb-sm-0" v-model="cartOrderCopy.orderCustomer.taxRulesJson">
+              <option value="vat">{{ $t('labels.vat') }}</option>
+              <option value="reverse">{{ $t('labels.reverseCharged') }}</option>
+              <option value="notApplicable">{{ $t('labels.notApplicable') }}</option>
+              <option value="noVat">{{ $t('labels.noVat') }}</option>
+              <option value="euVat">{{ $t('labels.euvat') }}</option>
             </select>
           </div>
         </div>

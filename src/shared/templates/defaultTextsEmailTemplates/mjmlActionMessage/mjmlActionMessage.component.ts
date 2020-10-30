@@ -45,7 +45,7 @@ export default class MjmlActionMessageComponent extends mixins(Vue, CommonHelper
       </mj-column>
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage]}</mj-text>
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}</mj-text>
         <mj-button font-weight="${this.$props.value.config.buttons.fontWeight}" href="${this.$props.value.value.buttonLink}"
         background-color="${this.$props.value.config.buttons.backgroundColor}"
         display="${this.$props.value.value.buttonText.length > 0 ? 'inline' : 'none'}"

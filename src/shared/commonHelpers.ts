@@ -5,7 +5,7 @@ import {Country, ICountry} from '@/shared/models/administrationms/country.model'
 import axios from 'axios'
 import Store from "@/store";
 import {ITaxRate} from "@/shared/models/administrationms/tax-rate.model";
-import { postcodeValidator } from 'postcode-validator';
+import { postcodeValidator, postcodeValidatorExistsForCountry } from 'postcode-validator';
 @Component
 export default class CommonHelpers extends Vue {
   /*
@@ -300,11 +300,10 @@ export default class CommonHelpers extends Vue {
     let result:ICountry = {
       enName: ''
     }
-    this.$store.state.allCountries.forEach((country: any) => {
-      if (country.id === id) {
-        result = country
-      }
-    })
+    let ind = this.$store.state.allCountries.findIndex((e:any) => e.id === id)
+    if(ind > -1) {
+      result = this.$store.state.allCountries[ind]
+    }
     return result
   }
 
@@ -465,11 +464,14 @@ export default class CommonHelpers extends Vue {
        result.status = false
    } else if(!address.postalCode) {
      result.msg = this.$t('labels.enterPostalCode')
-     result.status = false
+     result.status = true
    }else if(address.postalCode){
      let country:any =  this.getCountryById(address.countryId)
-     let valid = postcodeValidator(address.postalCode, country.iso)
-     if(!valid){
+     let isCountrySupported = postcodeValidatorExistsForCountry(country.iso)
+     if(!isCountrySupported) {
+       result.msg = ''
+       result.status = true
+     }else if(!postcodeValidator(address.postalCode, country.iso)) {
        result.msg = this.$t('labels.enterValidPostalCode')
        result.status = false
      }
@@ -489,7 +491,7 @@ export default class CommonHelpers extends Vue {
   public preselectCountry(id?: number) {
     let country = new Country()
     if (!id) {
-      id = 150
+      id = this.$store.state.administration.country.id
     }
     this.$store.state.allCountries.forEach((cntr: any) => {
       if (cntr.id === id) {

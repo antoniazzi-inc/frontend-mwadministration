@@ -69,10 +69,10 @@ export default class PaymentScheduleComponent extends mixins(CommonHelpers, Vue)
     @Watch('addNewPayment', { immediate: true, deep: true })
     public updateAddNewPayment (newVal: any) {
       if (newVal) {
-        this.editMode = true
-        this.paymentSchedules = [new PaymentSchedule()]
+        this.editMode = newVal
+        this.paymentSchedules = this.$props.product.paymentSchedules ? this.$props.product.paymentSchedules :  [new PaymentSchedule()]
       } else {
-        this.editMode = false
+        this.editMode = newVal
       }
     }
 

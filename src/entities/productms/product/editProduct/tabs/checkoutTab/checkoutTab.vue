@@ -268,12 +268,20 @@
           </div>
           <div class="row">
             <div class="form-group col-md-6">
-              <label class="form-control-label">{{$t('labels.linkText')}}</label>
-              <input type="text" class="form-control" v-model="termsAndConditions.conditionsLinkText"/>
+              <multi-language-component
+                :config="multiLangConfig"
+                :value="termsAndConditions.conditionsLinkText"
+                @onAdd="addNewConditionsLinkText"
+                @onChange="changeConditionsLinkText"
+                @onRemove="removeConditionsLinkText"/>
             </div>
             <div class="form-group col-md-6">
-              <label class="form-control-label">{{$t('labels.linkText')}}</label>
-              <input type="text" class="form-control" v-model="termsAndConditions.privacyStatementLinkText"/>
+              <multi-language-component
+                :config="multiLangConfig"
+                :value="termsAndConditions.privacyStatementLinkText"
+                @onAdd="addNewPrivacyStatementLinkText"
+                @onChange="changePrivacyStatementLinkText"
+                @onRemove="removePrivacyStatementLinkText"/>
             </div>
           </div>
           <div class="form-buttons-w text-right mt-3">

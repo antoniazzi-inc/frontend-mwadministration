@@ -49,6 +49,7 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
   public companyService: any;
   public selectedCompany: any;
   public orderCustomerService: any;
+  public taxRulesJson: any;
   public customerBillingAddressService: any;
 
   constructor() {
@@ -65,6 +66,7 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     this.selectedCountry = null;
     this.selectedCompany = '';
     this.affiliateCode = '';
+    this.taxRulesJson = ''
     this.vatNumber = '';
     this.startDate = '';
     this.invoiceEmailContent = '';
@@ -95,6 +97,9 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
   public updateCart(newVal: any) {
     if (newVal && newVal.id) {
       this.orderCopy = newVal
+      if(this.orderCopy.orderCustomer.taxRulesJson){
+        this.taxRulesJson = JSON.parse(this.orderCopy.orderCustomer.taxRulesJson).val
+      }
       if (newVal.invoice && newVal.invoice.invoiceTemplate) {
         const invoiceTemplateData = newVal.invoice.invoiceTemplate.templateDataJson;
         let detailsJson = null
@@ -156,6 +161,7 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
 
   public saveCustomer() {
     let customerDto = this.orderCopy.orderCustomer;
+    customerDto.taxRulesJson = JSON.stringify({val: this.taxRulesJson})
     this.orderCustomerService.put(customerDto).then((resp1: AxiosResponse) => {
       this.orderCopy.orderCustomer = resp1.data;
       this.saveCartOrder();

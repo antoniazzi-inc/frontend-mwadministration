@@ -44,7 +44,12 @@ export default class EditProductComponent extends mixins(Vue, CommonHelpers) {
       this.retrieveItem(this.product.id)
     }
   }
-
+  /*
+  * This function is called when product needs to be updated trough socket connection
+  */
+  public updateProductForSocket(prod: any){
+    //TODO
+  }
   public getProductName () {
     return this.getMultiLangName(this.product.productLanguages).name
   }

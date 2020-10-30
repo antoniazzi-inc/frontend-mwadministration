@@ -158,8 +158,7 @@ export default {
       }
     },
     // add, update, remove File Event
-    inputFile (newFile, oldFile) {
-      this.$emit('onUpload', newFile)
+    inputFile (newFile, oldFile){
       if (newFile && oldFile) {
         // max upload size
         if (newFile && newFile.size >= 0 && newFile.size / 1000 > this.$store.state.maxUploadSize) {
@@ -178,20 +177,23 @@ export default {
         }
         if (newFile.progress !== oldFile.progress) {
           this.$emit('onProgress', newFile)
+          return true
         }
         if (newFile.error && !oldFile.error) {
           this.$emit('onError', newFile)
+          return true
         }
         if (newFile.success && !oldFile.success) {
           this.$emit('onSuccess', newFile)
+          return true
         }
       }
       if (!newFile && oldFile) {
         this.maxFileSizeExceedError = false
-        // remove
-        if (oldFile.success && oldFile.response.id) {
+        if (oldFile.mediaId) {
           this.$emit('onRemove', oldFile)
         }
+        return true
       }
       if (newFile && !oldFile) {
         if (newFile && newFile.size >= 0 && newFile.size / 1000 > this.$store.state.maxUploadSize) {
@@ -199,6 +201,9 @@ export default {
           return
         } else {
           this.maxFileSizeExceedError = false
+          if (!newFile.mediaId) {
+            this.$emit('newImageAdded', newFile)
+          }
         }
       }
       // Automatically activate upload

@@ -246,7 +246,6 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     const dtoCreate: any = [];
     const dtoEdit: any = [];
     this.isSaving = true;
-
     this.resizeImages().then(resp => {
       $.each(resp, function (k, v: any) {
         // @ts-ignore
@@ -266,27 +265,11 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
         params: dtoCreate
       };
       if (dtoEdit.length > 0) {
-        //this.setAlert('productImagesUpdated', 'success');
         this.isSaving = false;
-        //this.closeDialog();
-        //this.updateProduct()
-        /*$.each(dtoEdit, function (k, v) {
-          if (self.productCopy.media) {
-            self.productCopy.media.push(v)
-          } else {
-            self.productCopy.media = [v]
-          }
-        });
-        this.productService.put(self.productCopy).then(resp => {
-          this.setAlert('productImagesUpdated', 'success');
-          this.isSaving = false;
-          this.closeDialog();
-          this.updateProduct()
-        })*/
       }
       if (dtoCreate.length > 0) {
         this.productService.createOnBucket(toSend).then((resp: AxiosResponse) => {
-              this.setAlert('productImagesUpdated', 'success');
+              this.setAlert('productImagesUploaded', 'success');
               this.isSaving = false;
               this.updateProduct()
         })
@@ -549,26 +532,58 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
       })
     }
   }
+  public updateMedia(e: any) {
+    //TODO
+  }
   public imageUploadError(e: any) {
   }
 
   public imageLoaded(e: any) {
-    let index = null
-    this.allMediaFiles.forEach((media:any, ind:number)=>{
-      if(media && media.id && media.id === e.id){
-        index = ind
+    if(!e || e.error === "") return
+    let self = this
+    if(e.error === 'edit'){
+      if(e.mediaId) {
+        this.updateMedia(e)
       }
-    })
-    if(index !== null){
-      this.allMediaFiles[index] = e
-    } else {
-      this.allMediaFiles.push(e)
     }
   }
-
+  public imageUploaded(e:any){
+    let self = this
+    new BaseImage(e.blob, e.file.type, e.file.name, undefined, function (image:any) {
+      let dtoImg =  image.resizeAll()
+      let dtoCreate = [{
+        name: dtoImg.name,
+        images: dtoImg.images,
+        bodyContentType: dtoImg.contentType
+      }]
+      const toSend = {
+        id: self.productCopy.id,
+        params: dtoCreate
+      };
+      self.isSaving = true
+      self.productService.createOnBucket(toSend).then((resp: AxiosResponse) => {
+        self.setAlert('productImagesUploaded', 'success');
+        self.allMedia = resp.data
+        self.isSaving = false;
+        self.updateProduct()
+      })
+    })
+  }
   public onImageRemove(e: any) {
+    this.mediaService.delete(e.mediaId).then((resp:AxiosResponse)=>{
+      if(resp){
+        let ind = this.allMediaFiles.findIndex((obj:any)=>obj.mediaId === e.mediaId)
+        if(ind > -1){
+          this.allMediaFiles.splice(ind, 1)
+          this.setAlert('imageRemoved', 'success');
+        }
+      }
+    })
   }
 
+  public onProgress(e:any) {
+    debugger
+  }
   public loadFileLibrary() {
     this.isMediaLoading = true;
     this.productService.loadAllMedia({page: 0, size: 100000, sort: {}}).then(resp => {

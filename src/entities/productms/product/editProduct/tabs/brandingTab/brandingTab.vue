@@ -213,13 +213,13 @@
           </div>
           <div class="row mt-4">
             <div class=" col-md-4 pr-5">
-              <textarea class="form-control" rows="3"></textarea>
+              <textarea class="form-control" rows="3"/>
             </div>
             <div class="col-md-4 pr-5">
-              <textarea class="form-control" rows="3""></textarea>
+              <textarea class="form-control" rows="3"/>
             </div>
             <div class="col-md-4">
-              <textarea class="form-control" rows="3"></textarea>
+              <textarea class="form-control" rows="3"/>
             </div>
           </div>
           <div class="form-buttons-w text-right">
@@ -272,7 +272,7 @@
         <div class="row">
           <div class="form-group mt-4 col-md-12">
             <button class="btn btn-outline-primary mb-2" @click="loadImageGallery(false)">{{$t('labels.openMediaLibrary')}}</button>
-            <upload-widget @onError="imageUploadError" @changeFeaturedImage="changeFeaturedImage" :showFeaturedFlag="true" :allFiles="allMediaFiles" @onUpload="imageLoaded" @onRemove="onImageRemove" :multiple="true"/>
+            <upload-widget @onError="imageUploadError" @changeFeaturedImage="changeFeaturedImage" :showFeaturedFlag="true" :allFiles="allMediaFiles" @onUpload="imageLoaded" @newImageAdded="imageUploaded" @onProgress="onProgress" @onRemove="onImageRemove" :multiple="true"/>
           </div>
         </div>
         <div class="form-buttons-w text-right">

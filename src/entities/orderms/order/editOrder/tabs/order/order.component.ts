@@ -202,18 +202,35 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
 
   @Watch('order', {immediate: true, deep: true})
   public updateOrder(newVal: any) {
+    let self = this
     if (newVal) {
       this.orderCopy = newVal;
       this.orderLines = newVal.orderLines;
+    let benefici:any = []
+      let ind = this.allRelations.findIndex((rel:any) => rel.id === this.orderCopy.orderCustomer.relationId)
+      if(ind > -1) {
+        benefici.push(this.allRelations[ind])
+      }
+    if(newVal && newVal.orderLines)
+      newVal.orderLines.forEach((line:any)=>{
+        if(line.orderLineBeneficiary && line.orderLineBeneficiary.id) {
+          let ind = self.allRelations.findIndex((rel:any) => rel.id === line.orderLineBeneficiary.beneficiaryRelationId)
+          if(ind > -1) {
+            benefici.push(self.allRelations[ind])
+          }
+        }
+      })
+      this.beneficiaryList = benefici
       if(newVal.orderLines)
       this.populatePromotions()
     }
   }
 
-
+ public created(){
+   this.retrieveAllRelations();
+ }
   public mounted() {
     this.retrieve();
-    this.retrieveAllRelations();
     this.searchProductInit = debounce(this.searchProduct, 500);
   }
 
@@ -249,7 +266,6 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.selectedBeneficiary = [];
     this.productQuantity = 1;
     this.productAdditionalInfo = '';
-    this.beneficiaryList = this.allRelations;
   }
 
   public retrieve() {
@@ -388,7 +404,9 @@ public getPromoName(item:any){
     let self = this
     let allPromotions: any = []
     let allProducts: any = []
+
     this.orderCopy.orderLines.forEach((line:any) => {
+
       let index = self.$store.state.lookups.products.findIndex((e:any)=> e.value.id === line.orderProduct.productId)
       if(index > -1) {
         allProducts.push(self.$store.state.lookups.products[index])

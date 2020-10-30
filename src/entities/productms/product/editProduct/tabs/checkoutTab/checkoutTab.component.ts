@@ -5,12 +5,15 @@ import ProductService from '@/shared/services/productService'
 import { IProduct, Product } from '@/shared/models/productms/ProductModel'
 import { AxiosResponse } from 'axios'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
+import {IMultiLanguageConfig, MultiLanguageConfig} from "@/shared/models/MultiLanguageConfig";
+import MultiLanguageComponent from "@/components/multiLanguage/MultiLanguage.vue";
 @Component({
   props: {
     product: Object
   },
   components: {
-    'toggle-switch': ToggleSwitch
+    'toggle-switch': ToggleSwitch,
+    MultiLanguageComponent
   }
 })
 export default class CheckoutTabComponent extends mixins(CommonHelpers) {
@@ -19,6 +22,8 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
     public productCopy: IProduct = new Product();
     public itemsPerPage = 20;
     public queryCount: any = null;
+    public multiLangConfig: IMultiLanguageConfig = new MultiLanguageConfig(true, false, 'labels.linkText',
+      '', false, false, false, true, true, false);
     public page = 1;
     public previousPage: any = null;
     public totalItems = 0;
@@ -70,10 +75,9 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         agreeConditions: false,
         agreePrivacyStatement: false,
         linkToConditions: '',
-        linkText: '',
         privacyStatement: '',
-        privacyStatementLinkText: '',
-        conditionsLinkText: ''
+        privacyStatementLinkText: [],
+        conditionsLinkText: []
       }
     }
 
@@ -83,10 +87,9 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         agreeConditions: false,
         agreePrivacyStatement: false,
         linkToConditions: '',
-        linkText: '',
         privacyStatement: '',
-        privacyStatementLinkText: '',
-        conditionsLinkText: ''
+        privacyStatementLinkText: [],
+        conditionsLinkText: []
       }
       this.productCopy = newVal
       this.registrationSettingsJson = newVal.registrationSettingsJson ? JSON.parse(newVal.registrationSettingsJson) : {
@@ -194,4 +197,37 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         this.$emit('update', resp.data)
       })
     }
+    public addNewConditionsLinkText(lang:any){
+      const newLang: any = {
+        name: '',
+        description: '',
+        langKey: lang
+      }
+      if (this.termsAndConditions && this.termsAndConditions.conditionsLinkText) {
+        this.termsAndConditions.conditionsLinkText.push(newLang)
+      } else {
+        this.termsAndConditions.conditionsLinkText = [newLang]
+      }
+    }
+    public changeConditionsLinkText(lang:any){
+      console.log(lang)
+    }
+    public removeConditionsLinkText(lang:any){
+      console.log(lang)
+    }
+
+    public addNewPrivacyStatementLinkText(lang:any){
+      const newLang: any = {
+        name: '',
+        description: '',
+        langKey: lang
+      }
+      if (this.termsAndConditions && this.termsAndConditions.privacyStatementLinkText) {
+        this.termsAndConditions.privacyStatementLinkText.push(newLang)
+      } else {
+        this.termsAndConditions.privacyStatementLinkText = [newLang]
+      }
+    }
+    public changePrivacyStatementLinkText(lang:any){}
+    public removePrivacyStatementLinkText(lang:any){}
 }

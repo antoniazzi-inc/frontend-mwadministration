@@ -95,7 +95,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       this.sentAnnouncement = false
       this.announcementJson = this.productCopy.paymentSchedules && this.productCopy.paymentSchedules[0] && this.productCopy.paymentSchedules[0].announcementJson ? this.productCopy.paymentSchedules[0].announcementJson.email : this.announcementJson
     }
-    if (this.announcementJson.subject !== null) {
+    if (this.announcementJson && this.announcementJson.subject !== null) {
       this.sentAnnouncement = true
     }
   }
@@ -126,6 +126,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
     } else {
       this.productCopy.paymentSchedules = [schedule]
     }
+    this.isSubscription = false
     this.addNewPayment = true
   }
 

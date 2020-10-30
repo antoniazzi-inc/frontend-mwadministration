@@ -4,7 +4,7 @@ import { IInvoice } from './InvoiceModel'
 import { ICustomerBillingAddress } from './CustomerBillingAddressModel'
 import { ICustomerDeliveryAddress } from './CustomerDeliveryAddressModel'
 import { IOrderPaymentMethod } from './OrderPaymentMethodModel'
-import { IOrderCustomer } from './OrderCustomerModel'
+import OrderCustomer, { IOrderCustomer } from './OrderCustomerModel'
 import { IOrderLine } from './OrderLineModel'
 import { IOrderDiscountLine } from './OrderDiscountLineModel'
 
@@ -59,5 +59,6 @@ constructor(
     public orderLines?: IOrderLine[],
     public orderDiscountLines?: IOrderDiscountLine[],
   ){
+  this.orderCustomer = this.orderCustomer ? this.orderCustomer : new OrderCustomer()
   }
 };

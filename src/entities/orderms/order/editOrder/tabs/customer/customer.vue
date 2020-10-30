@@ -70,11 +70,11 @@
             </div>
             <div class="col-md-4 mt-3">
               <label class="form-control-label">{{ $t('labels.vatNumber') }}</label>
-              <input type="email" class="form-control" v-model="vatNumber"/>
+              <input type="email" class="form-control" v-model="orderCopy.orderCustomer.vatNumber"/>
             </div>
             <div class="col-md-3 mt-3">
               <label class="form-control-label">{{ $t('labels.vatSettings') }}</label>
-              <select class="form-control" v-model="vatSettings" @change="changeVat">
+              <select class="form-control" v-model="taxRulesJson" @change="changeVat">
                 <option value="vat">{{ $t('labels.vat') }}</option>
                 <option value="reverse">{{ $t('labels.reverseCharged') }}</option>
                 <option value="notApplicable">{{ $t('labels.notApplicable') }}</option>

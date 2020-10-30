@@ -1,9 +1,9 @@
-import Component, { mixins } from 'vue-class-component'
-import { Vue, Watch } from 'vue-property-decorator'
-import { AddressType, IRelationAddress, RelationAddress } from '@/shared/models/relationms/relation-address.model'
+import Component, {mixins} from 'vue-class-component'
+import {Vue, Watch} from 'vue-property-decorator'
+import {AddressType, IRelationAddress, RelationAddress} from '@/shared/models/relationms/relation-address.model'
 import CommonHelpers from '@/shared/commonHelpers'
-import { ICountry } from '@/shared/models/administrationms/country.model'
-import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
+import {ICountry} from '@/shared/models/administrationms/country.model'
+import {ISearchableSelectConfig, SearchableSelectConfig} from '@/shared/models/SearchableSelectConfig'
 import ToggleSwitch from '@/components/toggleSwitch/toggleSwitch.vue'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 
@@ -22,10 +22,11 @@ export default class AddressWidgetComponent extends mixins(CommonHelpers, Vue) {
   public searchableConfig: ISearchableSelectConfig;
   public editMode: boolean;
   public showMore: boolean;
+  public addressError: string;
   public newAddress: boolean;
-  public selectedCountry: ICountry|null
+  public selectedCountry: ICountry | null
 
-  constructor () {
+  constructor() {
     super()
     this.addressTypes = {
       home: AddressType.HOME,
@@ -39,55 +40,57 @@ export default class AddressWidgetComponent extends mixins(CommonHelpers, Vue) {
     this.editMode = false
     this.newAddress = false
     this.showMore = false
+    this.addressError = ''
     this.selectedCountry = null
     this.addressCopy = new RelationAddress()
   }
 
-  @Watch('address', { immediate: true, deep: true })
-  public populate (newVal: any) {
+  @Watch('address', {immediate: true, deep: true})
+  public populate(newVal: any) {
     if (newVal) {
+      this.addressError = ''
       this.addressCopy = newVal
       if (newVal && !newVal.id) {
         this.newAddress = true
-        this.selectedCountry = this.preselectCountry(this.$store.state.administration.country.id)
-        this.addressCopy.countryId = this.preselectCountry(this.$store.state.administration.country.id).id
       } else {
-        this.selectedCountry = this.preselectCountry(newVal.countryId)
+        this.newAddress = false
       }
     }
   }
 
-  public countryChanged (country: any) {
+  public countryChanged(country: any) {
+    if(!country) return
     this.selectedCountry = country
-    this.addressCopy.countryId = country ? country.id : this.selectedCountry?.id
+    this.addressCopy.countryId = country ? country.id : this.selectedCountry ? this.selectedCountry.id : this.$store.state.administration.country.id
   }
 
-  public validatePostalCode () {
-    // TODO
-  }
-
-  public edit (entity: any) {
+  public edit(entity: any) {
     this.editMode = true
+    let country = this.preselectCountry(this.addressCopy.countryId)
+    this.countryChanged(country)
     this.$emit('onEdit', this.addressCopy)
   }
 
-  public remove () {
+  public remove() {
     this.$emit('onRemove', this.addressCopy)
   }
 
-  public cancel () {
+  public cancel() {
     this.$emit('onCancel')
     this.editMode = false
     this.newAddress = false
     if (!this.addressCopy.id) this.remove()
   }
 
-  public save () {
-    this.$validator.validateAll().then(resp => {
-      if (resp) {
-        this.$emit('onSave', this.addressCopy)
-        this.cancel()
-      }
-    })
+  public save() {
+    let self = this
+    let isValid = this.validateAddress(self.addressCopy)
+    if (isValid.status) {
+      self.$emit('onSave', self.addressCopy)
+      self.cancel()
+    } else {
+      if (isValid.msg)
+        self.addressError = isValid.msg
+    }
   }
 }

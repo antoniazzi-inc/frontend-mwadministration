@@ -151,7 +151,7 @@
       <div class="form-row" v-if="!isSubscription && isUsePaymentSchedules">
         <div class="form-group col-md-10">
           <payment-schedule ref="paymentSchedule" :product="productCopy" :addNewPayment="addNewPayment" @onCancel="cancelPaymentSchedule" @productUpdated="updateProduct"/>
-          <button type="button" class="btn btn-primary" style="margin-top:1em;" @click.prevent="addNewPaymentSchedule">
+          <button type="button" class="btn btn-primary" style="margin-top:1em;" @click.prevent.stop="addNewPaymentSchedule">
             <i class="fas fa-plus"></i> {{$t('buttons.createNew')}}
           </button>
         </div>
@@ -174,7 +174,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body text-left mt-5">
+            <div class="modal-body text-left mt-5" v-if="announcementJson">
               <div class="col-auto form-group">
                 <label class="form-control-label">{{$t('labels.announcementMailSubject')}}</label>
                 <input class="form-control" type="text" v-model="announcementJson.subject"/>
