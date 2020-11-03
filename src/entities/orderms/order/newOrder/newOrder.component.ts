@@ -248,8 +248,6 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
       if (resp) {
         this.setAlert('orderCreated', 'success')
         this.$router.push('/orders')
-      } else {
-        this.setAlert('orderCreateError', 'error')
       }
     })
   }

@@ -425,6 +425,16 @@ export default class CommonHelpers extends Vue {
     // @ts-ignore
     this.$vueOnToast.pop(type, '', this.$t('toastMessages.' + message))
   }
+  /*
+   * Name: setErrorAlert
+   * arg: message -> String
+   * description: Display toast error message to show server error
+   * Author: Nick Dam
+   */
+  public setErrorAlert(message: any) {
+    // @ts-ignore
+    this.$vueOnToast.pop('error', message.title, message.content)
+  }
 
   /*
    * Name: generateRandom

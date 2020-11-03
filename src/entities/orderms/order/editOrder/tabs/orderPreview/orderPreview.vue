@@ -137,22 +137,20 @@
             </div>
           </div>
 
-          <!-- TODO fix totalTaxesMap and add total taxes -->
-          <div class="row p-0 m-0 mb-3">
+          <div class="row p-0 m-0" v-for="(item, index) in invoicePreview.totalTaxesMap" :key="index + '_tax'">
             <div class="col-md-6 text-left font-weight-bold">
-              {{ $t('labels.productTax') }}
+              {{ $t('labels.productTax') }} {{ index }} %
             </div>
             <div class="col-md-6 text-right">
-              {{invoicePreview.totalTaxesMap['21'] | formatAmount}}
+              {{ item | formatAmount}}
             </div>
           </div>
-
-          <div class="row p-0 m-0" v-for="(item, index) in allTaxes" :key="index + '_tax'">
+          <div class="row p-0 m-0 mb-3 mt-3">
             <div class="col-md-6 text-left font-weight-bold">
-              {{ $t('labels.productTax') }} {{ item.taxName }} %
+              {{ $t('labels.productTaxTotal') }}
             </div>
             <div class="col-md-6 text-right">
-              {{ item.value | formatAmount}}
+              {{ invoicePreview.taxAmount | formatAmount}}
             </div>
           </div>
           <div class="row p-0 m-0">

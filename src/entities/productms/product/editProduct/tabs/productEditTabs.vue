@@ -57,23 +57,23 @@
       <div class="tab-content mt-3">
         <div :class="{'tab-pane': true, 'active': currentTab === 'general'}" id="general" role="tabpanel"
              aria-labelledby="general-tab">
-          <general-tab-component :product="product" @update="updateProduct"/>
+          <general-tab-component @updateProductOnSocket="updateProductOnSocket" :product="product" @update="updateProduct"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'digital'}" id="digital" role="tabpanel"
              aria-labelledby="digital-tab">
-          <digital-tab-component :clicked="currentTab === 'digital'" :product="product" @update="updateProduct"/>
+          <digital-tab-component @updateProductOnSocket="updateProductOnSocket" :clicked="currentTab === 'digital'" :product="product" @update="updateProduct"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'physical'}" id="physical" role="tabpanel"
              aria-labelledby="physical-tab">
-          <physical-tab-component :clicked="currentTab === 'physical'" :product="product" @update="updateProduct"/>
+          <physical-tab-component @updateProductOnSocket="updateProductOnSocket" :clicked="currentTab === 'physical'" :product="product" @update="updateProduct"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'course'}" id="course"
              role="course" aria-labelledby="course-tab">
-          <course-tab-component :clicked="currentTab === 'course'"  :product="product" @update="updateProduct"/>
+          <course-tab-component  @updateProductOnSocket="updateProductOnSocket" :clicked="currentTab === 'course'"  :product="product" @update="updateProduct"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'features'}" id="features" role="tabpanel"
              aria-labelledby="features-tab">
-          <features-tab-component :clicked="currentTab === 'features'" :product="product" @update="updateProduct"/>
+          <features-tab-component @updateProductOnSocket="updateProductOnSocket" :clicked="currentTab === 'features'" :product="product" @update="updateProduct"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'promotions'}" id="promotions" role="tabpanel"
              aria-labelledby="promotions-tab">
@@ -85,7 +85,7 @@
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'followUp'}" id="followUp" role="tabpanel"
              aria-labelledby="followUp-tab">
-          <follow-up-tab-component :product="product" @update="updateProduct" :clicked="currentTab === 'followUp'"/>
+          <follow-up-tab-component @updateProductOnSocket="updateProductOnSocket" :product="product" @update="updateProduct" :clicked="currentTab === 'followUp'"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'affiliates'}" id="affiliates" role="tabpanel"
              aria-labelledby="affiliates-tab">
@@ -94,7 +94,7 @@
         <div :class="{'tab-pane': true, 'active': currentTab === 'payments'}" id="payments" role="tabpanel"
              aria-labelledby="payments-tab">
           <keep-alive>
-          <payment-tab-component :clicked="currentTab === 'payments'" :product="product" @update="updateProduct"/>
+          <payment-tab-component @updateProductOnSocket="updateProductOnSocket" :clicked="currentTab === 'payments'" :product="product" @update="updateProduct"/>
           </keep-alive>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'checkout'}" id="checkout" role="tabpanel"
@@ -103,7 +103,7 @@
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'branding'}" id="branding" role="tabpanel"
              aria-labelledby="branding-tab">
-          <branding-tab-component :clicked="currentTab === 'branding'" :product="product"  @update="updateProduct"/>
+          <branding-tab-component @updateProductOnSocket="updateProductOnSocket" :clicked="currentTab === 'branding'" :product="product"  @update="updateProduct"/>
         </div>
       </div>
     </div>

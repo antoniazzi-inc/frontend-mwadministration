@@ -15,11 +15,11 @@
       <div class="form-row" v-if="productCopy.availableForAffiliates">
         <div class="form-group col-md-2">
           <label class="control-label">{{$t('labels.fixedReward')}}</label>
-          <money v-model="fixedReward" class="form-control" name="priceAmount" style="max-width:120px" v-bind="moneyFixed"/>
+          <money v-model="productCopy.generalFlatCommission" class="form-control" name="priceAmount" style="max-width:120px" v-bind="moneyFixed"/>
         </div>
         <div class="form-group col-md-2">
           <label class="control-label">{{$t('labels.percentageReward')}}</label>
-          <money v-model="percentageReward" class="form-control" name="priceAmountPercentage" style="max-width:100px" v-bind="moneyPercentage"/>
+          <money v-model="productCopy.generalPercentageCommission" class="form-control" name="priceAmountPercentage" style="max-width:100px" v-bind="moneyPercentage"/>
         </div>
         <div class="form-group col-md-8">
           <label class="control-label">{{$t('labels.salesInfo')}}</label>

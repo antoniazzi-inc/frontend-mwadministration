@@ -64,13 +64,19 @@
                                                @onDelete="removeAffiliate"/>
                   </div>
                   <div class="form-group col-md-6">
-                    <div class="form-group" v-if="beneficiaryList.length > 1">
+                    <div class="form-group" v-if="!selectedOrderLine.id">
                       <label class="form-control-label">{{$t('labels.beneficiary')}}</label>
-                      <searchable-select-component :config="singleSelectConfigBeneficiary"
+                      <searchable-select-component :config="multiSelectConfigBeneficiary"
                                                    :options="beneficiaryList"
                                                    :value="selectedBeneficiaries"
                                                    @onChange="addBeneficiary"
+                                                   @onSearch="searchRelation"
                                                    @onDelete="removeBeneficiary"/>
+                    </div>
+                    <div class="form-group" v-if="selectedOrderLine.id > 0">
+                      <label class="form-control-label">{{$t('labels.beneficiary')}}</label>
+                      <input v-if="selectedOrderLine.orderLineBeneficiary && selectedOrderLine.orderLineBeneficiary.id" type="text" disabled class="form-control" v-model="selectedOrderLine.orderLineBeneficiary.email">
+                      <input v-else type="text" disabled class="form-control" v-model="$props.order.orderCustomer.email">
                     </div>
                   </div>
                 </div>
@@ -153,6 +159,8 @@
                   <i class="fa fa-edit text-success" @click="editOrderLine(item, index)"></i>
                   <i class="fa fa-trash-alt ml-2 text-danger" data-toggle="modal"
                      data-target="#removeOrderLine" @click="removeOrderLine(index)"></i>
+                  <i class="ml-2 cursor-pointer text-primary os-icon os-icon-grid-10"
+                     data-target="#copyBeneficiary" data-toggle="modal" @click.prevent="copyBeneficiary(item, index)"/>
                 </div>
                 <div class="pi-body">
                   <div class="avatar"><i style="font-size: 2.5rem;" class="fas fa-cash-register"></i></div>
@@ -170,7 +178,6 @@
                   <div class="extra-info" v-if="item.quantity > 1">{{$t('labels.quantity')}}: {{item.quantity}}x</div>
                 </div>
               </div>
-
 <!--
               <div class="row" v-for="(item, index) in orderLines" :key="index">
                   <div class="col-md-12">
@@ -245,6 +252,39 @@
                 </div>
 
             </div>
+          <div class="modal" data-backdrop="static" data-keyboard="false" id="copyBeneficiary" tabindex="-1" role="dialog" ref="copyBeneficiary">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5>{{$t('labels.copy')}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label class="form-control-label">{{$t('labels.chooseBeneficiary')}}</label>
+                        <searchable-select-component :config="singleSelectConfigBeneficiary"
+                                                     :options="beneficiaryList"
+                                                     :value="selectedCopyBeneficiary"
+                                                     @onSearch="searchRelation"
+                                                     @onChange="addCopyBeneficiary"
+                                                     @onDelete="removeCopyBeneficiary"/>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" @click="copyBenef">
+                    {{$t('buttons.copy')}}
+                  </button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="modal" data-backdrop="static" data-keyboard="false" id="removeOrderLine" tabindex="-1" role="dialog" ref="removeOrderLine">
             <div class="modal-dialog" role="document">
               <div class="modal-content">

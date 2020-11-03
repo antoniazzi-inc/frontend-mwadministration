@@ -213,11 +213,11 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
         self.selectedOption.customFieldOptionLanguages && self.selectedOption.customFieldOptionLanguages[0].name
           ? self.selectedOption.code = self.selectedOption.customFieldOptionLanguages[0].name.replace(/\s/g, '_')
           : self.selectedOption.code = ''
+        this.selectedOption.customField = {
+          id: this.freeField.id,
+          version: this.freeField.version
+        }
         if (this.selectedOption.id) {
-          this.selectedOption.customField = {
-            id: this.freeField.id,
-            version: this.freeField.version
-          }
           this.freeFieldOptionService.put(this.selectedOption).then((resp: AxiosResponse) => {
             if (resp) {
               if (this.selectedOptionIndex !== null && this.freeField.customFieldOptions) {
@@ -230,7 +230,19 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
             }
           })
         } else {
-          this.editMode = false
+          this.freeFieldOptionService.post(this.selectedOption).then((resp: AxiosResponse) => {
+            if (resp) {
+              if (this.selectedOptionIndex !== null && this.freeField.customFieldOptions) {
+                this.freeField.customFieldOptions[this.selectedOptionIndex] = resp.data
+              } else {
+                this.freeField.customFieldOptions?.push(resp.data)
+              }
+              this.setAlert('freeFieldOptionCreated', 'success')
+              this.editMode = false
+            } else {
+              this.setAlert('freeFieldOptionCreateError', 'error')
+            }
+          })
         }
       }
     })

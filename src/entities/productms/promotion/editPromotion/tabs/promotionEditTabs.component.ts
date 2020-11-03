@@ -55,7 +55,7 @@ export default class PromotionEditTabsComponent extends mixins(Vue, CommonHelper
     this.currentTab = tab || 'general'
   }
 
-  public updatePromotion (prod: IProduct) {
+  public updatePromotion (prod: any) {
     this.$emit('updatePromotion', prod)
   }
 

@@ -23,6 +23,10 @@ import OrderLine, {IOrderLine} from "@/shared/models/orderms/OrderLineModel";
 import OrderLineDeliveryMethod from "@/shared/models/orderms/OrderLineDeliveryMethodModel";
 import OrderDiscountLinesService from "@/shared/services/orderms/OrderDiscountLinesService";
 import OrderDiscountLine from "@/shared/models/orderms/OrderDiscountLineModel";
+import {IRelationEntity} from "@/shared/models/relationms/relationModel";
+import {Beneficiary} from "@/shared/models/beneficiary.model";
+import BeneficiaryDeliveryAddress from "@/shared/models/orderms/BeneficiaryDeliveryAddressModel";
+import CartOrder from "@/shared/models/orderms/CartOrderModel";
 
 @Component({
   props: {
@@ -37,6 +41,9 @@ import OrderDiscountLine from "@/shared/models/orderms/OrderDiscountLineModel";
   }
 })
 export default class OrderComponent extends mixins(Vue, CommonHelpers) {
+  refs!:{
+    copyBeneficiary:HTMLElement
+  }
   public isProductSelected: boolean;
   public useProductSubscription: boolean;
   public orderHasSubscription: boolean;
@@ -53,9 +60,11 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public allProducts: IProduct[];
   public orderLines: IOrderLine[];
   public allRelations: [];
+  public cartorderRelations: [];
   public selectedProduct: any;
   public timer: any;
   public orderCopy: any;
+  public selectedCopyBeneficiary: any;
   public selectedProductSubscription: any;
   public singSelectConfigProduct: ISearchableSelectConfig;
   public allShippingMethods: any[];
@@ -67,6 +76,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public selectedPaymentMethod: any;
   public moneyFixed: any;
   public productQuantity: any;
+  public orderLineToCopy: any;
   public allProductFeatures: any[];
   public beneficiaryList: any[];
   public selectedOrderLine: any;
@@ -79,6 +89,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public singleSelectConfigAttribute: ISearchableSelectConfig;
   public singleSelectConfigBeneficiary: ISearchableSelectConfig;
   public singleSelectConfigAffiliate: ISearchableSelectConfig;
+  public multiSelectConfigBeneficiary: ISearchableSelectConfig;
   public singleSelectConfigDeliveryMethod: ISearchableSelectConfig;
   public productService: any;
   public cartOrderService: any;
@@ -106,8 +117,12 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.allShippingMethods = [];
     this.singleSelectConfigBeneficiary = new SearchableSelectConfig('email',
       'labels.chooseBeneficiary', '', false,
+      false, true, false, false)
+    this.multiSelectConfigBeneficiary = new SearchableSelectConfig('email',
+      'labels.chooseBeneficiary', '', false,
       false, true, true, false)
     this.allRelations = [];
+    this.cartorderRelations = [];
     this.allShippingMethodsBackup = [];
     this.selectedShippingMethods = null;
     this.selectedPaymentMethod = null;
@@ -158,6 +173,8 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.productQuantity = 1;
     this.deliveryMethodError = '';
     this.selectedProductSubscription = null;
+    this.selectedCopyBeneficiary = null;
+    this.orderLineToCopy = null;
     this.selectedBeneficiary = [];
     this.beneficiaryList = [];
     this.selectedBeneficiaries = [];
@@ -206,20 +223,28 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     if (newVal) {
       this.orderCopy = newVal;
       this.orderLines = newVal.orderLines;
-    let benefici:any = []
-      let ind = this.allRelations.findIndex((rel:any) => rel.id === this.orderCopy.orderCustomer.relationId)
-      if(ind > -1) {
-        benefici.push(this.allRelations[ind])
-      }
+      let benefici:any = [{
+        ...this.orderCopy.orderCustomer,
+        relationAddresses: [this.orderCopy.customerDeliveryAddress],
+        id: this.orderCopy.orderCustomer.relationId,
+        email: this.orderCopy.orderCustomer.email,
+      }]
     if(newVal && newVal.orderLines)
-      newVal.orderLines.forEach((line:any)=>{
+      newVal.orderLines.forEach((line:IOrderLine)=>{
         if(line.orderLineBeneficiary && line.orderLineBeneficiary.id) {
-          let ind = self.allRelations.findIndex((rel:any) => rel.id === line.orderLineBeneficiary.beneficiaryRelationId)
-          if(ind > -1) {
-            benefici.push(self.allRelations[ind])
+          let benefId = line.orderLineBeneficiary && line.orderLineBeneficiary.id ? line.orderLineBeneficiary.beneficiaryRelationId : this.orderCopy.orderCustomer.relationId
+          let existingBenef = benefici.findIndex((e:any) => e.id === benefId)
+          if(existingBenef === -1) {
+            benefici.push({
+              ...this.orderCopy.orderCustomer,
+              relationAddresses: [line.beneficiaryDeliveryAddress],
+              id: line.orderLineBeneficiary.beneficiaryRelationId,
+              email: line.orderLineBeneficiary.email
+            })
           }
         }
       })
+      this.cartorderRelations = benefici
       this.beneficiaryList = benefici
       if(newVal.orderLines)
       this.populatePromotions()
@@ -227,24 +252,10 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   }
 
  public created(){
-   this.retrieveAllRelations();
  }
   public mounted() {
     this.retrieve();
     this.searchProductInit = debounce(this.searchProduct, 500);
-  }
-
-  public retrieveAllRelations(query?: string): void {
-    const paginationQuery = {
-      page: 0,
-      size: 1000,
-      sort: 'id,asc'
-    };
-    this.relationService.getAll(paginationQuery, query)
-      .then((res: AxiosResponse) => {
-        if (res && res.data)
-          this.allRelations = res.data.content;
-      });
   }
 
   public selectProduct() {
@@ -252,10 +263,11 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.isProductSelected = true;
     this.addNewPromotion = false
     this.addProduct = true;
-
+    this.selectedOrderLine = new OrderLine()
     this.selectedProduct = {
       name: null,
       value: {
+        id: null,
         price: 0
       }
     };
@@ -493,7 +505,7 @@ public getPromoName(item:any){
     const self = this
     if (this.timer) clearTimeout(this.timer);
     this.timer = setTimeout(() => {
-      self.retrieveAllRelations(finalQ)
+      self.beneficiaryList = self.cartorderRelations
     }, 500);
   }
 
@@ -695,8 +707,11 @@ public getPromoName(item:any){
       if (beneficiary && beneficiary.id !== this.$props.order.orderCustomer.id) {
         beneficiaryFullName = self.getBeneficiaryFullName(beneficiary);
         newBeneficiary = new OrderLineBeneficiary(undefined, undefined, undefined, undefined, undefined, this.$props.order.orderCustomer.relationId, beneficiary.id, beneficiary.email, beneficiaryFullName, beneficiary.title);
+        if(!beneficiary.relationAddresses[0]){
+          return this.setAlert('noBeneficiaryAddress', 'error')
+        }
         beneficiaryAddress = beneficiary.relationAddresses[0];
-        beneficiaryAddress.beneficiaryRelationId = beneficiary.beneficiaryRelationId;
+        beneficiaryAddress.beneficiaryRelationId = beneficiary.beneficiaryRelationId ? beneficiary.beneficiaryRelationId : beneficiary.id;
         beneficiaryAddress.beneficiaryRelationAddressId = JSON.parse(JSON.stringify(beneficiary.relationAddresses[0].id));
         beneficiaryAddress.id = undefined;
         beneficiaryAddress.version = undefined;
@@ -842,6 +857,112 @@ public getPromoName(item:any){
 
     }
   }
+  public searchRelation(rel: any) {
+    if(rel.id) return
+    if(rel.length < 3) return;
+    const self = this
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      self.doSearch(rel)
+    }, 500);
+  }
+  public doSearch(rel: any) {
+    if(!rel && rel.length > 2) return
+    const queryArray: any = []
+    queryArray.push({
+        mainOperator: 'or',
+        children: [{
+          key: 'email',
+          value: rel,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: false
+        }]
+      },
+      {
+        mainOperator: 'or',
+        children: [{
+          key: 'relationProfile.firstName',
+          value: rel,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: false
+        }]
+      })
+    let finalQ = this.queryBuilder(queryArray)
+    this.populateRelations(finalQ)
+  }
+  public populateRelations(query:any){
+      const self = this
+      const pagination = {
+        page: 0,
+        size: 100,
+        sort: 'id,asc'
+      }
+      this.relationService.getAll(pagination, query ? query : undefined).then((resp: AxiosResponse) => {
+        if (resp && resp.data) {
+          if(resp.data.content.length > 0) {
+            Vue.nextTick(function () {
+              self.beneficiaryList = resp.data.content
+            })
+          } else {
+            Vue.nextTick(function () {
+              self.beneficiaryList = self.cartorderRelations
+            })
+          }
+        }
+      })
+  }
 
+  public addCopyBeneficiary(beneficiary:any){
+    this.selectedCopyBeneficiary = beneficiary;
+  }
+  public removeCopyBeneficiary(){
+    this.selectedCopyBeneficiary = null;
+  }
+  public closeCopyModal(){
+    //@ts-ignore
+    $(this.$refs.copyBeneficiary).modal('hide');
+  }
+  public copyBeneficiary(item:any, idnex:any){
+    this.orderLineToCopy = JSON.parse(JSON.stringify(item));
+  }
+  public copyBenef(){
+    let fullName = ''
+    let title = this.selectedCopyBeneficiary.relationProfile ? this.selectedCopyBeneficiary.relationProfile.title :
+      this.selectedCopyBeneficiary.title ? this.selectedCopyBeneficiary.title : ''
+    if(!this.selectedCopyBeneficiary.fullName){
+      let firstName =  this.selectedCopyBeneficiary.relationProfile.firstName ? this.selectedCopyBeneficiary.relationProfile.firstName : '';
+      let middleName =  this.selectedCopyBeneficiary.relationProfile.middleName ? this.selectedCopyBeneficiary.relationProfile.middleName : '';
+      let lastName =  this.selectedCopyBeneficiary.relationProfile.lastName ? this.selectedCopyBeneficiary.relationProfile.lastName : '';
+      fullName = firstName + ' ' + middleName + ' ' + lastName;
+    } else{
+      fullName = this.selectedCopyBeneficiary.fullName;
+    }
 
+    let orderLineBenef = new OrderLineBeneficiary(undefined, undefined, undefined, undefined, undefined, this.orderCopy.orderCustomer?.relationId, this.selectedCopyBeneficiary.id, this.selectedCopyBeneficiary.email, fullName, title)
+    let dto = {...this.orderLineToCopy, id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
+    dto.orderLineBeneficiary = orderLineBenef
+    dto.beneficiaryDeliveryAddress = {...dto.beneficiaryDeliveryAddress,
+      id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
+    dto.orderProduct = {...dto.orderProduct,
+      id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
+    dto.cartOrder = {
+      id: this.orderCopy.id,
+      version: this.orderCopy.version,
+    }
+    this.orderLineService.post(dto).then((resp:AxiosResponse) => {
+      if(resp && resp.data) {
+        this.orderCopy.orderLines?.push(resp.data)
+        this.selectedCopyBeneficiary = new Beneficiary();
+        this.orderLineToCopy = new CartOrder();
+        this.setAlert('newOrderLineCreated','success')
+        this.$emit('updateCart', this.orderCopy)
+        this.closeCopyModal();
+      } else {
+        this.setAlert('newOrderLineCreateError','error')
+      }
+    })
+
+  }
 }

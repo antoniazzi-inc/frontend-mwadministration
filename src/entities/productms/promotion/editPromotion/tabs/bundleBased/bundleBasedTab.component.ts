@@ -48,13 +48,13 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     this.editMode = false
     this.multiSelectConfigProduct = new SearchableSelectConfig('label',
       'labels.chooseProduct', '', true,
-      false, false, false, false)
+      false, false, false, false, false, false)
     this.multiSelectConfigAttributeValue = new SearchableSelectConfig('name',
       'labels.chooseFeatureValue', '', false,
-      false, false, false, false)
+      false, false, false, false, false, false)
     this.multiSelectConfigAttribute = new SearchableSelectConfig('label',
       'labels.chooseFeature', '', false,
-      false, false, false, false)
+      false, false, false, false, false, false)
     this.promotionCopy = new Promotion()
     this.selectedBundle = null
     this.itemToDelete = null
@@ -141,10 +141,9 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     let self = this;
     this.allItems = [];
     let items:any = [];
-    if(bundle.itemsJson.products.length && !bundle.itemsJson.attributeValues) {
+    if(bundle.itemsJson && bundle.itemsJson.products && bundle.itemsJson.products.length && !bundle.itemsJson.attributeValues) {
       $.each(bundle.itemsJson.products, function (k, v) {
         self.getSelectedProducts( v.id, index).then(selectedProducts => {
-
           self.getSelectedProductsAttributes( v.id, index).then(resp => {
             Vue.nextTick(function () {
               items.push({
@@ -157,11 +156,15 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
                 selectedAttributeValues: null,
                 selectedBundleQuantity: v.quantity
               });
+              Vue.nextTick(function () {
+                self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
+                self.$set(self, 'allItems', items);
+              });
             })
           });
         });
       });
-    }
+    } else
     if(bundle.itemsJson.attributeValues && bundle.itemsJson.attributeValues.length) {
       $.each(bundle.itemsJson.attributeValues, function (k, v) {
         self.getSelectedProducts(v.id, index).then(selectedProducts => {
@@ -180,15 +183,21 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
                 selectedAttributeValues: resp1.selectedAttributeValue,
                 selectedBundleQuantity: v.quantity
               });
+              Vue.nextTick(function () {
+                self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
+                self.$set(self, 'allItems', items);
+              });
             });
           });
         });
       });
+    }else {
+      Vue.nextTick(function () {
+        self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
+        self.$set(self, 'allItems', items);
+      });
     }
-    Vue.nextTick(function () {
-      self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
-      self.$set(self, 'allItems', items);
-    });
+
     this.selectedBundleIndex = index;
     this.editMode = true;
   }
@@ -200,7 +209,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         const prod = this.$store.state.lookups.products[prodIndex].value
         let attrValue:any = [];
         let allAttributeValues:any = [];
-        $.each(prod.value.attributes, function (i, j) {
+        $.each(prod.attributes, function (i, j) {
           self.attributeService.get(j.id).then((attribute:AxiosResponse) => {
             $.each(j.attributeValues, function (k, v) {
               allAttributeValues.push({
@@ -227,8 +236,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     item.discount.updatedOn = null;
     this.typeBundleBasedService.post(item).then((resp:AxiosResponse) => {
       this.allItems.push(resp.data);
-      if(this.promotionCopy.typeBundleBaseds) this.promotionCopy.typeBundleBaseds.push(resp.data);
-      this.$emit('updatePromotion', this.promotionCopy);
+      this.$emit('updatePromotion', undefined);
       this.editBundle(resp.data, this.allItems.length-1);
     });
   }
@@ -419,20 +427,15 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
   public removeBundle(){
     let self=this;
     this.typeBundleBasedService.delete(this.bundleToDelete.id).then((resp:AxiosResponse) => {
-      if(!resp || !resp.data){
+      if(!resp){
         return this.setAlert('bundleRemoveError', 'error')
       }
-      this.setAlert('bundleRemoved', 'success')
-      let index = null;
-      $.each(this.promotionCopy.typeBundleBaseds, function (k, v:any) {
-        if(self.bundleToDelete.id === v.id){
-          index = k;
-        }
-      });
-      if(index !== null){
-        if(this.promotionCopy.typeBundleBaseds) this.promotionCopy.typeBundleBaseds.splice(index, 1);
-        this.$emit('updatePromotion', this.promotionCopy);
+      if(this.promotionCopy.typeBundleBaseds){
+        let ind = this.promotionCopy.typeBundleBaseds?.findIndex((e:any) => e.id === this.bundleToDelete.id)
+        if(ind > -1) this.promotionCopy.typeBundleBaseds?.splice(ind, 1)
       }
+      this.setAlert('bundleRemoved', 'success')
+      this.$emit('updatePromotion', this.promotionCopy);
       this.cancelNewBundle();
     });
   }
@@ -460,6 +463,9 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         });
       }
     });
+    if(!this.selectedBundle.itemsJson){
+      this.selectedBundle.itemsJson = {}
+    }
     this.selectedBundle.itemsJson.attributeValues = allAttributeValues.length ? allAttributeValues : null;
     this.selectedBundle.itemsJson.products = allProducts.length ? allProducts : null;
     this.promotionCopy = this.$props.promotion;
@@ -479,7 +485,12 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         if(!resp || !resp.data){
           return this.setAlert('promotionUpdateError', 'error')
         }
-        if(this.promotionCopy.typeBundleBaseds) this.promotionCopy.typeBundleBaseds.push(resp.data);
+        if(this.promotionCopy.typeBundleBaseds){
+          let ind:any = this.promotionCopy.typeBundleBaseds?.findIndex((e:any) => e.id === resp.data.id)
+          if(ind > -1){
+            this.promotionCopy.typeBundleBaseds[ind] = resp.data
+          }
+        }
         this.$emit('updatePromotion', this.promotionCopy);
         this.editMode = false;
         this.selectedBundle = null;
@@ -490,8 +501,10 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         if(!resp || !resp.data){
           return this.setAlert('promotionUpdateError', 'error')
         }
-        if(this.promotionCopy.typeBundleBaseds) this.promotionCopy.typeBundleBaseds.push(resp.data);
-        this.$emit('updatePromotion', this.promotionCopy);
+        if(this.promotionCopy.typeBundleBaseds){
+          this.promotionCopy.typeBundleBaseds.push(resp.data)
+        }
+        this.$emit('updatePromotion', undefined);
         this.editMode = false;
         this.selectedBundle = null;
         this.setAlert('promotionCreated', 'success')

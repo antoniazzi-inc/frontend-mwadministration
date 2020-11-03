@@ -53,7 +53,8 @@ export default class OrderPreviewComponent extends mixins(CommonHelpers) {
     }
     @Watch('order.orderLines', {immediate: true, deep: true})
     public changeCartOrder(newVal:any) {
-      if(newVal) this.updateCart()
+      if(newVal) {
+        this.updateCart()}
     }
     @Watch('order.orderDiscountLines', {immediate: true, deep: true})
     public changeCartOrderDiscount(newVal:any) {
@@ -77,7 +78,11 @@ export default class OrderPreviewComponent extends mixins(CommonHelpers) {
     }
 
     public updateCart(){
-      this.cartOrderService.updateCart(this.$props.order).then((resp:AxiosResponse)=>{
+      let dto = this.$props.order
+      if(dto.invoice && dto.invoice.invoiceTemplate){
+        dto.invoice.invoiceTemplate.templateDataJson = undefined
+      }
+      this.cartOrderService.updateCart(dto).then((resp:AxiosResponse)=>{
         if(resp && resp.data)
         this.invoicePreview = resp.data
       })

@@ -255,16 +255,14 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       const dto = JSON.parse(JSON.stringify(this.productCopy))
       dto.attributes = null
       if (this.productCopy.productType === 'SERVICE') {
-        this.typeServiceService.put(this.productCopy.typeService).then((resp: AxiosResponse) => {})
+        this.typeServiceService.put(this.productCopy.typeService).then((resp: AxiosResponse) => {
+          if(resp && resp.data){
+            this.productCopy.typeService = resp.data
+            this.setAlert('productUpdated', 'success')
+            this.$emit('updateProductOnSocket', this.productCopy)
+          }
+        })
       }
-      dto.typeDigital = undefined
-      dto.typeService = undefined
-      dto.typePhysical = undefined
-      dto.productSubscription = undefined
-      this.productService.put(dto).then((resp: AxiosResponse) => {
-        self.setAlert('productUpdated', 'success')
-        self.$emit('update', resp)
-      })
     }
 
     public changeAvailableFromDate (date: any) {

@@ -163,7 +163,6 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
     let customerDto = this.orderCopy.orderCustomer;
     customerDto.taxRulesJson = JSON.stringify({val: this.taxRulesJson})
     this.orderCustomerService.put(customerDto).then((resp1: AxiosResponse) => {
-      this.orderCopy.orderCustomer = resp1.data;
       this.saveCartOrder();
     }).catch((err: any) => {
       this.setAlert('error', 'error')
@@ -172,6 +171,7 @@ export default class CustomerComponent extends mixins(CommonHelpers, Vue) {
 
   public saveCartOrder() {
     let cartOrderDto = new CartOrder();
+    cartOrderDto.orderCustomer = undefined
     cartOrderDto.languageCode = this.selectedLang;
     cartOrderDto.id = this.orderCopy.id;
     cartOrderDto.discountAmount = this.orderCopy.discountAmount;

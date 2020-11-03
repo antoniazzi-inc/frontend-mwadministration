@@ -12,7 +12,7 @@
       {{$t('labels.created') | lower}} {{ product.createdOn | formatDate}}
       {{$t('labels.and') | lower}} {{$t('labels.updated') | lower}} {{ product.updatedOn | formatDate}}
     </p>
-    <product-edit-tabs-component :product="product" ref="editTabs" @updateProduct="updateProduct"></product-edit-tabs-component>
+    <product-edit-tabs-component @updateProductOnSocket="updateProductForSocket" :product="product" ref="editTabs" @updateProduct="updateProduct"></product-edit-tabs-component>
   </div>
 </template>
 <script type="ts" src="./editProduct.component.ts"></script>

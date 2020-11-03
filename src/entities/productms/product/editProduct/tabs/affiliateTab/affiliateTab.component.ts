@@ -62,8 +62,6 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
         let copy = JSON.parse(JSON.stringify(newVal))
         this.productBackup = Object.assign({}, copy)
       }
-      this.fixedReward = newVal.generalFlatCommission ? newVal.generalFlatCommission : this.fixedReward
-      this.percentageReward = newVal.generalPercentageCommission ? newVal.generalPercentageCommission : this.percentageReward
       this.isSalesInfo = !!newVal.affiliateSalesInfoJson
     }
 
@@ -74,20 +72,16 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
       dto.typePhysical = undefined
       dto.typeCourse = undefined
       dto.productSubscription = undefined
-      if (this.productCopy.availableForAffiliates) {
-        if (this.fixedReward > 0) {
-          dto.generalFlatCommission = this.fixedReward
-        }
-        if (this.percentageReward > 0) {
-          dto.generalPercentageCommission = this.percentageReward
-        }
-      } else {
+      if (!this.productCopy.availableForAffiliates) {
         dto.generalFlatCommission = null
         dto.generalPercentageCommission = null
         dto.affiliateSalesInfoJson = null
       }
       this.productService.put(dto).then((resp: AxiosResponse) => {
-        this.setAlert('productUpdated', 'success')
+        if(resp && resp.data){
+          this.setAlert('productUpdated', 'success')
+          this.productBackup = Object.assign({}, resp.data)
+        }
       })
     }
     public goBack() {
@@ -95,15 +89,16 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     }
     public cancel () {
       if(this.productBackup) {
-        this.fixedReward = this.productBackup.generalFlatCommission ? this.productBackup.generalFlatCommission : this.fixedReward
-        this.percentageReward = this.productBackup.generalPercentageCommission ? this.productBackup.generalPercentageCommission : this.percentageReward
-        this.isSalesInfo = this.productBackup.affiliateSalesInfoJson !== null ? true : false
+        this.isSalesInfo = this.productBackup.affiliateSalesInfoJson ? true : false
         if(this.productBackup && this.productBackup.affiliateSalesInfoJson){
           this.productCopy.affiliateSalesInfoJson = JSON.parse(JSON.stringify(this.productBackup.affiliateSalesInfoJson))
           this.productCopy.availableForAffiliates = this.productBackup.availableForAffiliates ? JSON.parse(JSON.stringify(this.productBackup.availableForAffiliates)) : false
         }
-        let copy = JSON.parse(JSON.stringify(this.productCopy))
-        this.productBackup = Object.assign({}, copy)
+        let copy = JSON.parse(JSON.stringify(this.productBackup))
+        this.productCopy = Object.assign({}, copy)
+      } else {
+        let copy = JSON.parse(JSON.stringify( this.$props.product))
+        this.productCopy = Object.assign({}, copy)
       }
     }
 }

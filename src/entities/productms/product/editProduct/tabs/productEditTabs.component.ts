@@ -55,8 +55,12 @@ export default class ProductEditTabsComponent extends mixins(Vue, CommonHelpers)
   public updateProduct (prod: IProduct) {
     this.$emit('updateProduct', prod)
   }
+  public updateProductOnSocket (prod: IProduct) {
+    this.$emit('updateProductOnSocket', prod)
+  }
 
   public goBack () {
     this.$router.push({ name: 'Products' })
   }
+
 }

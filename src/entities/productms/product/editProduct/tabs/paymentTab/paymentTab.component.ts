@@ -77,11 +77,13 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
 
   @Watch('product', {immediate: true, deep: true})
   public updateProd(newVal: any) {
-    if (newVal.productSubscription && newVal.productSubscription !== null && !this.isSubscription) this.isSubscription = true;
+    if(newVal && newVal.paymentSchedules && newVal.paymentSchedules.length > 0) {this.isUsePaymentSchedules = true;}
+    if(newVal && newVal.productSubscription && newVal.productSubscription.id > 0) {this.isSubscription = true;}
+    /*if (newVal.productSubscription && newVal.productSubscription !== null && !this.isSubscription) this.isSubscription = true;
     if (newVal && newVal.paymentSchedules && newVal.paymentSchedules !== null && newVal.paymentSchedules.length > 0 && !this.isSubscription) {
-      this.isUsePaymentSchedules = true;
+
       this.sentAnnouncement = true;
-    }
+    }*/
     this.populatePaymentMethods(newVal);
     this.productCopy = newVal
   }
@@ -179,6 +181,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
         this.selectedPaymentMethods.splice(index, 1);
         if (this.productCopy.productPaymentMethods) this.productCopy.productPaymentMethods.splice(index, 1);
         this.$emit('update', this.productCopy)
+        this.$emit('updateProductOnSocket', this.productCopy)
       })
     }
   }
@@ -222,6 +225,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       this.setAlert('paymentCreated', 'success');
       this.productCopy.productPaymentMethods ? this.productCopy.productPaymentMethods.push(resp.data) : this.productCopy.productPaymentMethods = [resp.data];
       this.$emit('update', this.productCopy)
+      this.$emit('updateProductOnSocket', this.productCopy)
     })
   }
 
@@ -240,6 +244,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       this.productCopy.productPaymentMethods ? this.productCopy.productPaymentMethods.push(resp.data) : this.productCopy.productPaymentMethods = [resp.data];
         if(resp && resp.data){
           this.$emit('update', this.productCopy)
+          this.$emit('updateProductOnSocket', this.productCopy)
         }
       })
   }
@@ -280,6 +285,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
           this.setAlert('productUpdated', 'success');
           this.productCopy.productSubscription = resp.data;
           this.$emit('update', this.productCopy)
+          this.$emit('updateProductOnSocket', this.productCopy)
         })
       } else {
         if (this.productCopy && this.productCopy.productSubscription) {
@@ -295,6 +301,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
             this.setAlert('productUpdated', 'success');
             this.productCopy.productSubscription = resp1.data;
             this.$emit('update', this.productCopy)
+            this.$emit('updateProductOnSocket', this.productCopy)
           })
         })
       }

@@ -48,7 +48,16 @@ export default class EditProductComponent extends mixins(Vue, CommonHelpers) {
   * This function is called when product needs to be updated trough socket connection
   */
   public updateProductForSocket(prod: any){
-    //TODO
+    if(prod && prod.id){
+      prod.typeDigital = undefined
+      prod.followupAction = undefined
+      prod.paymentSchedules = undefined
+      this.productService.put(prod).then((resp:AxiosResponse) => {
+        if(resp && resp.data) {
+          this.product = resp.data
+        }
+      })
+    }
   }
   public getProductName () {
     return this.getMultiLangName(this.product.productLanguages).name

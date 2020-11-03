@@ -30,6 +30,7 @@ import productService from "@/shared/services/productService";
 import coursesService from "@/shared/services/coursesService";
 import InvoiceTemplatesService from "@/shared/services/orderms/InvoiceTemplatesService";
 import MasterTemplateService from "@/shared/services/masterTemplateService";
+import {EventBus} from "@/shared/eventBus";
 Vue.use(money, { precision: 2 })
 Vue.use(VueOnToast, {})
   @Component({
@@ -69,13 +70,19 @@ export default class App extends mixins(Vue, CommonHelpers) {
     errorMessage:any = null;
     mainMenu = MenuDefinitions;
     customConfig = {
-      timeout: 2500,
+      timeout: 7500,
       preventDuplicates: true
     };
 
     columns: any = []
     mounted () {
-      let self = this
+      EventBus.$on('showServerError', (content: any) => {
+          if(content.response.data){
+            let message = {title: content.response.data.title, content: content.response.data.detail}
+            this.setErrorAlert(message)
+          }
+      })
+        let self = this
       //Reload the app after 30s if the counter condition is not satisfied( some requests are not loaded properly
       // or socket connection fails)
       setTimeout(function () {

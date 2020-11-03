@@ -45,6 +45,7 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
     public singleSelectConfig: ISearchableSelectConfig;
     public orderLineToRemove: any;
     public orderLineService: any;
+    public beneficiaryList: any;
     constructor(){
         super();
         this.orderCopy = new CartOrder()
@@ -60,6 +61,7 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
         this.selectedRelation = null
         this.orderLineToRemove = null
         this.allRelations = []
+        this.beneficiaryList = []
         this.multiSelectConfigCountry = new SearchableSelectConfig('enName',
           'labels.country', '', false,
           false, true, false, false)
@@ -70,8 +72,17 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
 
     @Watch('order', {immediate: true, deep:true})
     public updateCart(newVal:any){
-      if(newVal){
+      if(newVal && newVal.id){
         this.orderCopy = newVal
+        let beneficiaryList:any = []
+        newVal.orderLines.forEach((line:IOrderLine) => {
+          if(line.orderLineBeneficiary && line.orderLineBeneficiary.id) {
+            if(beneficiaryList.findIndex((e:any) => e.relationId === line.orderLineBeneficiary?.beneficiaryRelationId) === -1){
+              beneficiaryList.push(line)
+            }
+          }
+        })
+        this.beneficiaryList = beneficiaryList
       }
     }
   public mounted(){
@@ -108,40 +119,6 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
     }
     public prepareRemove(item:any, index:any){
         this.orderLineToRemove = index;
-    }
-    public copyBeneficiary(item:any, idnex:any){
-        this.orderLineToCopy = JSON.parse(JSON.stringify(item));
-    }
-    public copyBenef(){
-        let firstName =  this.selectedCopyBeneficiary.relationProfile.firstName ? this.selectedCopyBeneficiary.relationProfile.firstName : '';
-        let middleName =  this.selectedCopyBeneficiary.relationProfile.middleName ? this.selectedCopyBeneficiary.relationProfile.middleName : '';
-        let lastName =  this.selectedCopyBeneficiary.relationProfile.lastName ? this.selectedCopyBeneficiary.relationProfile.lastName : '';
-        let fullName = firstName + ' ' + middleName + ' ' + lastName;
-        let orderLineBenef = new OrderLineBeneficiary(undefined, undefined, undefined, undefined, undefined, this.orderCopy.orderCustomer?.relationId, this.selectedCopyBeneficiary.id, this.selectedCopyBeneficiary.email, fullName, this.selectedCopyBeneficiary.relationProfile.title)
-        let dto = {...this.orderLineToCopy, id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
-        dto.orderLineBeneficiary = orderLineBenef
-      dto.beneficiaryDeliveryAddress = {...dto.beneficiaryDeliveryAddress,
-        id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
-      dto.orderProduct = {...dto.orderProduct,
-        id: undefined, administrationId: undefined, version: undefined, createdOn: undefined, updatedOn: undefined}
-        dto.cartOrder = {
-          id: this.orderCopy.id,
-          version: this.orderCopy.version,
-        }
-        this.orderLineService.post(dto).then((resp:AxiosResponse) => {
-          if(resp && resp.data) {
-            this.orderCopy.orderLines?.push(resp.data)
-            this.selectedCopyBeneficiary = new Beneficiary();
-            this.selectedBeneficiaryAddress = new BeneficiaryDeliveryAddress();
-            this.orderLineToCopy = new CartOrder();
-            this.setAlert('newBeneficiaryAdded','success')
-            this.$emit('updateCart', this.orderCopy)
-            this.closeCopyModal();
-          } else {
-            this.setAlert('newBeneficiaryAddError','error')
-          }
-        })
-
     }
     public saveBeneficiary(){
         this.selectedOrderLine.beneficiaryDeliveryAddress = this.selectedBeneficiaryAddress;
@@ -185,12 +162,6 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
     public removeCountry(country:any){
         this.selectedCountry = null;
     }
-    public addCopyBeneficiary(beneficiary:any){
-        this.selectedCopyBeneficiary = beneficiary;
-    }
-    public removeCopyBeneficiary(){
-        this.selectedCopyBeneficiary = null;
-    }
     public closeRemoveModal(){
       //@ts-ignore
       $(this.$refs.removeBeneficiary).modal('hide');
@@ -199,8 +170,5 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
       //@ts-ignore
       $(this.$refs.editBeneficiary).modal('hide');
     }
-    public closeCopyModal(){
-      //@ts-ignore
-        $(this.$refs.copyBeneficiary).modal('hide');
-    }
+
 }

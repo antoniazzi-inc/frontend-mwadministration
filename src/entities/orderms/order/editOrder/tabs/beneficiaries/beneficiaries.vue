@@ -15,7 +15,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(item, index) in orderCopy.orderLines" :key="index">
+                                    <tr v-for="(item, index) in beneficiaryList" :key="index">
                                         <td>{{item.orderLineBeneficiary ? item.orderLineBeneficiary.title ? item.orderLineBeneficiary.title + ' ' : '' + item.orderLineBeneficiary.fullName :  orderCopy.orderCustomer.title ? orderCopy.orderCustomer.title + ' ' : '' + orderCopy.orderCustomer.fullName}}</td>
                                         <td>{{item.orderLineBeneficiary ? item.orderLineBeneficiary.email : orderCopy.orderCustomer.email}}</td>
                                         <td>{{item.orderProduct.productName}}</td>
@@ -27,9 +27,6 @@
                                                 </div>
                                                 <div class="text-danger ml-3 cursor-pointer" data-target="#removeBeneficiary" data-toggle="modal" @click.prevent="prepareRemove(item, index)">
                                                     <i class="fas fa-trash-alt"></i>
-                                                </div>
-                                                <div class="ml-3 cursor-pointer text-primary" data-target="#copyBeneficiary" data-toggle="modal" @click.prevent="copyBeneficiary(item, index)">
-                                                    <i class="os-icon os-icon-grid-10"></i>
                                                 </div>
                                             </div>
                                         </td>
@@ -57,38 +54,6 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" @click="removeBeneficiary">
                 {{$t('buttons.confirm')}}
-              </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal" data-backdrop="static" data-keyboard="false" id="copyBeneficiary" tabindex="-1" role="dialog" ref="copyBeneficiary">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5>{{$t('labels.copy')}}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="row">
-                  <div class="col-md-12">
-                    <label class="form-control-label">{{$t('labels.chooseBeneficiary')}}</label>
-                    <searchable-select-component :config="singleSelectConfig"
-                                                 :options="allRelations"
-                                                 :value="selectedCopyBeneficiary"
-                                                 @onChange="addCopyBeneficiary"
-                                                 @onDelete="removeCopyBeneficiary"/>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" @click="copyBenef">
-                {{$t('buttons.copy')}}
               </button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
             </div>
@@ -145,17 +110,6 @@
                                                    @onChange="addCountry"
                                                    @onDelete="removeCountry" style="margin-top:1em;"/>
                     </form>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12 mt-3">
-                    <label class="form-control-label">{{$t('labels.quantity')}}</label>
-                    <input type="number" min="0" class="form-control" v-model="selectedOrderLine.quantity"/>
-                  </div>
-                </div>
-                <div class="row" v-if="selectedOrderLine.orderProduct ? selectedOrderLine.orderProduct.productType === 'COURSE' : false">
-                  <div class="col-md-12">
-                    <p>TODO: When courses are implemented implement this too</p>
                   </div>
                 </div>
               </form>

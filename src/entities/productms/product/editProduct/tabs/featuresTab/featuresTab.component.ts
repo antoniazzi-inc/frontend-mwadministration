@@ -156,6 +156,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
           this.editModeAttribute = false
           this.setAlert('featureOptionAdded', 'success')
           this.$emit('update')
+          this.$emit('updateProductOnSocket', undefined)
         }
       })
     } else if (this.selectedOption.id && this.selectedProductFeature.id) {
@@ -169,6 +170,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
           this.$emit('update')
           this.editModeAttribute = false
           this.setAlert('featureOptionEdited', 'success')
+          this.$emit('updateProductOnSocket', undefined)
         }
       })
     } else if (!this.selectedOption.id && !this.selectedProductFeature.id) {
@@ -255,6 +257,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
         if (index !== null && self.productCopy.attributes) {
           self.productCopy.attributes[index] = resp.data
         }
+        this.$emit('updateProductOnSocket', self.productCopy)
         self.setAlert('productUpdated', 'success')
         self.editAttributeValue = false
         self.editMode = false
@@ -264,13 +267,16 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
     } else {
       this.selectedProductFeature.attributeValues = this.allOptions
       this.attributeService.post(self.selectedProductFeature).then((resp: AxiosResponse) => {
-        Vue.nextTick(function () {
-          self.productCopy.attributes ? self.productCopy.attributes.push(resp.data) : self.productCopy.attributes = [resp.data]
-          self.$emit('update', self.productCopy)
-        })
-        self.setAlert('productUpdated', 'success')
-        self.editAttributeValue = false
-        self.editMode = false
+        if(resp && resp.data) {
+          Vue.nextTick(function () {
+            self.productCopy.attributes ? self.productCopy.attributes.push(resp.data) : self.productCopy.attributes = [resp.data]
+            self.$emit('update', self.productCopy)
+            self.$emit('updateProductOnSocket', self.productCopy)
+          })
+          self.setAlert('productUpdated', 'success')
+          self.editAttributeValue = false
+          self.editMode = false
+        }
       })
     }
   }
@@ -338,6 +344,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
             self.productCopy.attributes[index] = self.selectedProductFeature
           }
         }
+        this.$emit('updateProductOnSocket', this.productCopy)
         this.$emit('update', this.productCopy)
       })
     } else {
@@ -369,6 +376,7 @@ export default class FeaturesTabComponent extends mixins(CommonHelpers, Vue) {
         self.productCopy.attributes.splice(index, 1)
       }
       this.closeDialog()
+      this.$emit('updateProductOnSocket', undefined)
       this.$emit('update', self.productCopy)
     })
   }

@@ -20,17 +20,15 @@
         </div>
       </div>
 
-      <!-- Pieter, oct 2nd, 2020: TODO I changed the UI but the logic (v-model + error checks) etc is not implemented yet  -->
-
-      <div class="form-row price-row" style="margin-bottom: 2em">
+      <div class="form-row price-row" style="margin-bottom: 2em" v-if="!isUsePaymentSchedules && (!$props.product.paymentSchedules || $props.product.paymentSchedules.length === 0)">
         <div class="form-group col-auto">
           <label class="control-label">{{$t('labels.isSubscription')}}</label>
           <toggle-switch id="repeatSubscription1"
-             :on-text="$t('labels.yes')"
+             :on-text="$t('labels.yes')" :disabled="$props.product.productSubscription && $props.product.productSubscription.id > 0"
              :off-text="$t('labels.no')"
              :value.sync="isSubscription"/>
         </div>
-        <div class="form-group col-auto" v-if="isSubscription">
+        <div class="form-group col-auto" v-if="isSubscription && (!$props.product.paymentSchedules || $props.product.paymentSchedules===0)">
           <label class="control-label">{{$t('labels.subscriptionMaxTerms')}}</label>
           <input :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required|min_value:0'"
                  type="number" name="Subscription Max Terms" style="max-width:100px" v-model="productCopy.productSubscription.maxTimes"/>
@@ -73,65 +71,11 @@
           </button>
         </div>
       </div>
-
-
-      <!--
-      <div v-if="isSubscription">
-          <div class="row">
-              <div class="form-group col-md-6" v-if="productCopy.productSubscription">
-                  <label class="form-control-label">{{$t('labels.subscriptionTerm')}}</label>
-                  <select class="form-control" v-model="productCopy.productSubscription.period">
-                      <option value="weekly">{{$t('labels.weekly')}}</option>
-                      <option value="bi-weekly">{{$t('labels.bi-weekly')}}</option>
-                      <option value="month">{{$t('labels.month')}}</option>
-                      <option value="quarter">{{$t('labels.quarter')}}</option>
-                      <option value="half-Year">{{$t('labels.halfYear')}}</option>
-                      <option value="year">{{$t('labels.year')}}</option>
-                  </select>
-              </div>
-              <div class="form-group col-md-6"  v-if="productCopy.productSubscription">
-                  <label class="form-control-label">{{$t('labels.subscriptionMaxTerms')}}</label>
-                  <input class="form-control" type="number" min="0" v-model="productCopy.productSubscription.maxTimes"/>
-              </div>
-          </div>
-          <div class="row">
-              <div class="form-group col-md-6" v-if="productCopy.productSubscription">
-                  <label class="form-control-label">{{$t('labels.startDate')}}</label>
-                  <select class="form-control" v-model="productCopy.productSubscription.startDate">
-                      <option value="firstOfCurrentMonth">{{$t('labels.startAtBeginningOfCurrentMonth')}}</option>
-                      <option value="firstOfNextMonth">{{$t('labels.beginningOfNextMonth')}}</option>
-                      <option value="now">{{$t('labels.atThisMoment')}}</option>
-                      <option value="paymentDone">{{$t('labels.startAfterPaymentIsDone')}}</option>
-                  </select>
-              </div>
-          </div>
-      </div>
-
-      <div class="form-row" v-if="sentAnnouncement">
-        <div class="col-auto form-group">
-            <label class="form-control-label">{{$t('labels.announcementMailSubject')}}</label>
-            <input class="form-control" type="text" v-model="announcementJson.subject"/>
-        </div>
-        <div class="col-auto form-group">
-            <label class="form-control-label">{{$t('labels.replayToName')}}</label>
-            <input class="form-control" type="text" v-model="announcementJson.replyToName"/>
-        </div>
-        <div class="col-auto form-group">
-            <label class="form-control-label">{{$t('labels.replayToEmail')}}</label>
-            <input class="form-control" type="text" v-model="announcementJson.replyToAddress"/>
-        </div>
-        <div class="col-auto form-group">
-            <label class="form-control-label">{{$t('labels.announcementMailContent')}}</label>
-            <trumbowyg v-model="announcementJson.content" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
-        </div>
-      </div>
-      -->
-
-      <div class="form-row" v-if="!isSubscription">
+      <div class="form-row" v-if="!isSubscription && !$props.product.isSubscription">
         <div class="form-group col-auto">
           <label class="form-control-label">{{$t('labels.paymentSchedules')}}</label>
           <toggle-switch id="repeatSubscription"
-             :on-text="$t('labels.yes')"
+             :on-text="$t('labels.yes')" :disabled="$props.product.paymentSchedules && $props.product.paymentSchedules.length > 0"
              :off-text="$t('labels.no')"
              :value.sync="isUsePaymentSchedules"/>
         </div>
@@ -148,7 +92,7 @@
           </a>
         </div>
       </div>
-      <div class="form-row" v-if="!isSubscription && isUsePaymentSchedules">
+      <div class="form-row" v-if="!isSubscription && isUsePaymentSchedules && !$props.product.isSubscription">
         <div class="form-group col-md-10">
           <payment-schedule ref="paymentSchedule" :product="productCopy" :addNewPayment="addNewPayment" @onCancel="cancelPaymentSchedule" @productUpdated="updateProduct"/>
           <button type="button" class="btn btn-primary" style="margin-top:1em;" @click.prevent.stop="addNewPaymentSchedule">
