@@ -437,17 +437,6 @@ export default class CommonHelpers extends Vue {
   }
 
   /*
- * Name: setAlert
- * arg: message -> String, type -> String( error, success, waring, info)
- * description: Display toast message
- * Author: Nick Dam
- */
-  public setAlertWithMessage(title: any, type: string, message: any) {
-    // @ts-ignore
-    this.$vueOnToast.pop(type, message, this.$t('toastMessages.' + title))
-  }
-
-  /*
    * Name: generateRandom
    * arg: /
    * description: Generate number text string
