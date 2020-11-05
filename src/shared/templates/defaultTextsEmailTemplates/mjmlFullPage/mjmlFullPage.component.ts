@@ -23,6 +23,10 @@ export default class MjmlFullPageComponent extends mixins(Vue, CommonHelpers) {
     this.renderOutput = ''
   }
 
+  public getLineHeight(font: any) {
+    return (font * 1.6) + 'px'
+  }
+
   @Watch('active', { immediate: true, deep: true })
   public init () {
     const social: any = []
@@ -52,9 +56,13 @@ export default class MjmlFullPageComponent extends mixins(Vue, CommonHelpers) {
    align="${this.$props.value.config.text.textAlign}"
         color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}</mj-text>
         </mj-column>
-    <mj-column width="100%"  background-color="${this.$props.value.config.footer.backgroundColor}">
-    <mj-text font-size="${this.$props.value.config.footer.fontSize}px" align="${this.$props.value.config.footer.textAlign}"
-        color="${this.$props.value.config.footer.color}">${this.$props.value.value.footerText[this.$store.state.currentLanguage] ? this.$props.value.value.footerText[this.$store.state.currentLanguage] : ''}</mj-text>
+    <mj-column width="100%" background-color="${this.$props.value.config.footer.backgroundColor}">
+    <mj-text font-size="${this.$props.value.config.footer.fontSize}px"
+    padding-left="20px" padding-right="20px"
+    align="${this.$props.value.config.footer.textAlign}"
+        color="${this.$props.value.config.footer.color}">
+${this.$props.value.value.footerText[this.$store.state.currentLanguage] ? this.$props.value.value.footerText[this.$store.state.currentLanguage] : ''}
+</mj-text>
         <mj-social font-size="15px" icon-size="30px" mode="horizontal">
           ${social}
         </mj-social>

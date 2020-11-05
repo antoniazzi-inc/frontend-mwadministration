@@ -24,6 +24,10 @@ export default class MjmlFullMessageComponent extends mixins(Vue, CommonHelpers)
     this.imageWidth = 0
   }
 
+  public getLineHeight(font: any) {
+    return (font * 1.6) + 'px'
+  }
+
   @Watch('value', { immediate: true, deep: true })
   public setImageWidth () {
     const self = this
@@ -37,28 +41,60 @@ export default class MjmlFullMessageComponent extends mixins(Vue, CommonHelpers)
 
   @Watch('active', { immediate: true, deep: true })
   public init () {
+    const social: any = []
+    if (this.$props.value.value.socialMedia && this.$props.value.value.socialMedia.length > 0) {
+      this.$props.value.value.socialMedia.forEach((item: any, index: any) => {
+        if (item.visible) {
+          social.push(`<mj-social-element name="${item.name.toLowerCase() + '-noshare'}" href="${item.url}">&nbsp;&nbsp;&nbsp;&nbsp;
+</mj-social-element>`)
+        }
+      })
+    }
     this.htmlOutput = `<mjml>
   <mj-head>
     <mj-attributes>
-      <mj-all padding="0px" width="100%"></mj-all>
+      <mj-all padding="0px"></mj-all>
     </mj-attributes>
     <mj-style inline="inline">a { text-decoration: none!important; color: inherit!important; }</mj-style>
   </mj-head>
-  <mj-body width="${this.imageWidth ? this.imageWidth : '650px'}" background-color="${this.$props.value.config.backgroundColor}">
-  <mj-wrapper full-width="full-width" border="2px solid ${this.$props.value.config.borderColor}" padding="30px">
-      <mj-column width="100%">
+  <mj-body width="${this.imageWidth ? this.imageWidth : "100%"}" background-color="${this.$props.value.config.backgroundColor}">
+  <mj-section full-width="full-width" padding="0px">
+      <mj-column padding="20px" width="100%">
         <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
-        font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
+        font-size="${this.$props.value.config.header.fontSize}px"
+        color="${this.$props.value.config.header.color}"
         align="${this.$props.value.config.header.textAlign}">${this.getMultiLangName(this.$props.value.value.headerText).name}</mj-text>
-        <mj-text font-size="${this.$props.value.config.text.fontSize}px" align="${this.$props.value.config.text.textAlign}">${this.$props.value.value.pageText[this.$store.state.currentLanguage]}</mj-text>
-        <mj-image align="center" border="none" padding-bottom="0px" padding-left="0px" padding-right="0px" padding="0px 25px"
-            src="${this.$props.value.value.imageUrl}" target="_blank" title="" width="${this.imageWidth}px"></mj-image>
-   <mj-text font-size="${this.$props.value.config.text.fontSize}px"
+
+        <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.footerText[this.$store.state.currentLanguage] ? this.$props.value.value.footerText[this.$store.state.currentLanguage] : ''}</mj-text>
+   line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}</mj-text>
+
+        <mj-image align="center" alt="" border="none" padding-bottom="0px" padding-left="0px" padding-right="0px" padding="0px 25px"
+            src="${this.$props.value.value.imageUrl}" target="_blank" title="" width="${this.imageWidth}px"></mj-image>
+
+         <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
+           align="${this.$props.value.config.text.textAlign}"
+           line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
+        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText2[this.$store.state.currentLanguage] ? this.$props.value.value.pageText2[this.$store.state.currentLanguage] : ''}</mj-text>
+
       </mj-column>
-   </mj-wrapper>
+   </mj-section>
+   <mj-section background-color="${this.$props.value.config.footer.backgroundColor}">
+   <mj-column padding="0px" width="100%">
+<mj-text padding-left="20px" padding-right="20px" font-size="${this.$props.value.config.footer.fontSize}px"
+align="${this.$props.value.config.footer.textAlign}"
+            color="${this.$props.value.config.footer.color}"
+            line-height="${this.getLineHeight(this.$props.value.config.footer.fontSize)}"
+            container-background-color="${this.$props.value.config.footer.backgroundColor}">
+            ${this.$props.value.value.footerText[this.$store.state.currentLanguage] ? this.$props.value.value.footerText[this.$store.state.currentLanguage] : ''}
+        </mj-text>
+            <mj-social font-size="15px" padding="20px" icon-size="30px" mode="horizontal">
+          ${social}
+        </mj-social>
+  </mj-column>
+   </mj-section>
   </mj-body>
 </mjml>`
     if (this.$props.active) {

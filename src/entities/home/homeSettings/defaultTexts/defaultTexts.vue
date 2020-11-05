@@ -17,7 +17,7 @@
                   <ul class="sub-menu">
                     <template v-for="(text, index) in item.texts">
                       <li :key="index">
-                        <a class="text-entry-link" @click="chooseText(text)" :key="index"><span>{{$t(text.name)}}</span></a>
+                        <a class="text-entry-link" :class="{'item-selected': selectedText && selectedText.settingsKey === text.settingsKey}" @click="chooseText(text)" :key="index"><span>{{$t(text.name)}}</span></a>
                       </li>
                     </template>
                   </ul>
@@ -171,7 +171,14 @@
 <script type="ts" src="./defaultTexts.component.ts"></script>
 
 <style scoped>
-
+.panel-heading {
+  cursor: pointer;
+}
+.item-selected {
+  font-size:1.3em;
+  font-variant-caps: all-small-caps;
+  font-weight: 800;
+}
 .panel-title {
   position: relative;
 }

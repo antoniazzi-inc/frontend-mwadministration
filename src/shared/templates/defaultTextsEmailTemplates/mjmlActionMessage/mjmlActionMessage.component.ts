@@ -23,15 +23,24 @@ export default class MjmlActionMessageComponent extends mixins(Vue, CommonHelper
     this.renderOutput = ''
   }
 
+  public getLineHeight(font: any) {
+    return (font * 1.6) + 'px'
+  }
+
+  public getBtnFontSize(size: string) {
+    if (size === 'small') return '12px'
+    else if (size === 'medium') return '14px'
+    else if (size === 'large') return '24px'
+    else if (size === 'extralarge') return '40px'
+    else return '14px';
+  }
+
   @Watch('active', { immediate: true, deep: true })
   public init () {
     this.htmlOutput = `<mjml>
   <mj-head>
     <mj-attributes>
       <mj-all padding="0px"></mj-all>
-      <mj-text font-family="Ubuntu, Helvetica, Arial, sans-serif" padding="0 25px" font-size="13px"></mj-text>
-      <mj-section background-color="#ffffff"></mj-section>
-      <mj-class name="preheader" color="#000000" font-size="11px"></mj-class>
     </mj-attributes>
     <mj-style inline="inline">a { text-decoration: none!important; color: inherit!important; }</mj-style>
   </mj-head>
@@ -41,21 +50,32 @@ export default class MjmlActionMessageComponent extends mixins(Vue, CommonHelper
         <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
         font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
-        align="${this.$props.value.config.header.textAlign}">${this.$props.value.value.headerText.length > 0 ? this.getMultiLangName(this.$props.value.value.headerText).name : ''}</mj-text>
+        align="${this.$props.value.config.header.textAlign}">
+            ${this.$props.value.value.headerText.length > 0 ? this.getMultiLangName(this.$props.value.value.headerText).name : ''}
+        </mj-text>
       </mj-column>
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}</mj-text>
+   line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
+        color="${this.$props.value.config.text.color}">
+${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}
+       </mj-text>
+
         <mj-button font-weight="${this.$props.value.config.buttons.fontWeight}" href="${this.$props.value.value.buttonLink}"
         background-color="${this.$props.value.config.buttons.backgroundColor}"
-        display="${this.$props.value.value.buttonText.length > 0 ? 'inline' : 'none'}"
-        border-radius="${this.$props.value.config.buttons.borderRadius}px" color="${this.$props.value.config.buttons.color}">
+        font-size="${this.getBtnFontSize(this.$props.value.config.buttons.buttonSize)}"
+        padding-bottom="10px"
+        border-radius="${this.$props.value.config.buttons.borderRadius}px" color="${this.$props.value.config.buttonForegroundColor}">
           ${this.$props.value.value.buttonText.length > 0 ? this.getMultiLangName(this.$props.value.value.buttonText).name : ''}
          </mj-button>
+
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText2.length > 0 ? this.$props.value.value.pageText2[this.$store.state.currentLanguage] : ''}</mj-text>
-   </mj-section>
+   line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
+        color="${this.$props.value.config.text.color}">
+${this.$props.value.value.pageText2[this.$store.state.currentLanguage] ? this.$props.value.value.pageText2[this.$store.state.currentLanguage] : ''}
+        </mj-text>
+
    </mj-section>
   </mj-body>
 </mjml>`

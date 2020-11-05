@@ -41,7 +41,10 @@ export default class MjmlSimplePageComponent extends mixins(Vue, CommonHelpers) 
         align="${this.$props.value.config.header.textAlign}">${this.getMultiLangName(this.$props.value.value.headerText).name}</mj-text>
         <mj-text font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
-        color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}</mj-text>
+        color="${this.$props.value.config.text.color}">
+        KUT
+${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}
+</mj-text>
       </mj-column>
    </mj-section>
   </mj-body>
