@@ -316,7 +316,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   public emailTemplateChanged (template: any) {
     if(!template) return
     this.selectedEmailTemplate = template
-    this.emailText.value = {
+   /* this.emailText.value = {
       selectedTemplate: template && template.id ? template.id : null,
       headerText: this.htmlPage.value.headerText ? this.htmlPage.value.headerText : [],
       pageText: this.htmlPage.value.pageText ? this.htmlPage.value.pageText : {},
@@ -327,7 +327,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
       footerText: this.htmlPage.value.footerText ? this.htmlPage.value.footerText : {},
       socialMedia: this.htmlPage.value.socialMedia ? this.htmlPage.value.socialMedia : ''
     }
-    this.htmlPage.subject = this.htmlPage.subject ? this.htmlPage.subject : []
+    this.htmlPage.subject = this.htmlPage.subject ? this.htmlPage.subject : []*/
   }
 
   public emailTemplateRemoved (template: any) {
@@ -338,7 +338,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
   public htmlPageTemplateChanged (template: any) {
     if(!template) return
     this.selectedHtmlPageTemplate = template
-    this.htmlPage.value = {
+    /*this.htmlPage.value = {
       selectedTemplate: template && template.id ? template.id : null,
       headerText: this.htmlPage.value.headerText ? this.htmlPage.value.headerText : [],
       pageText: this.htmlPage.value.pageText ? this.htmlPage.value.pageText : {},
@@ -349,7 +349,7 @@ export default class DefaultTextsComponent extends mixins(Vue, CommonHelpers) {
       footerText: this.htmlPage.value.footerText ? this.htmlPage.value.footerText : {},
       socialMedia: this.htmlPage.value.socialMedia ? this.htmlPage.value.socialMedia : ''
     }
-    this.htmlPage.subject = this.htmlPage.subject ? this.htmlPage.subject : []
+    this.htmlPage.subject = this.htmlPage.subject ? this.htmlPage.subject : []*/
   }
 
   public htmlPageTemplateRemoved (template: any) {

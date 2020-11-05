@@ -18,10 +18,10 @@
                                     <tr v-for="(item, index) in beneficiaryList" :key="index">
                                         <td>{{item.orderLineBeneficiary ? item.orderLineBeneficiary.title ? item.orderLineBeneficiary.title + ' ' : '' + item.orderLineBeneficiary.fullName :  orderCopy.orderCustomer.title ? orderCopy.orderCustomer.title + ' ' : '' + orderCopy.orderCustomer.fullName}}</td>
                                         <td>{{item.orderLineBeneficiary ? item.orderLineBeneficiary.email : orderCopy.orderCustomer.email}}</td>
-                                        <td>{{item.orderProduct.productName}}</td>
+                                        <td>{{item.orderProduct.productName}} {{item.additionalProducts && item.additionalProducts.length > 0 ? item.additionalProducts.join() : ''}}</td>
                                         <td>{{item.quantity}}</td>
                                         <td class="text-center">
-                                            <div class="btn-group flex-btn-group-container">
+                                            <div class="btn-group flex-btn-group-container" v-if="item.orderLineBeneficiary || (item.orderLineBeneficiary && item.orderLineBeneficiary.beneficiaryRelationId)">
                                                 <div @click.prevent="editBeneficiary(item)" data-target="#editBeneficiary" data-toggle="modal"  class="ml-3 text-success cursor-pointer">
                                                     <i class="fas fa-edit"></i>
                                                 </div>

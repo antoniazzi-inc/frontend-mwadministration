@@ -19,6 +19,10 @@
             <a :class="{'nav-link': true, 'active': currentTab === 'course'}" id="course-tab" data-toggle="tab"
                href="#course" role="tab" aria-controls="course" aria-selected="false">{{$t('labels.course')}}</a>
           </li>
+          <li class="nav-item tab-nav" @click="currentTab = 'voucher'" v-if="product.productType === 'VOUCHER'">
+            <a :class="{'nav-link': true, 'active': currentTab === 'voucher'}" id="voucher-tab" data-toggle="tab"
+               href="#voucher" role="tab" aria-controls="voucher" aria-selected="false">{{$t('labels.voucher')}}</a>
+          </li>
           <li class="nav-item tab-nav" @click="currentTab = 'features'">
             <a :class="{'nav-link': true, 'active': currentTab === 'features'}" id="features-tab" data-toggle="tab"
                href="#features" role="tab" aria-controls="features" aria-selected="false">{{$t('labels.features')}}</a>
@@ -70,6 +74,10 @@
         <div :class="{'tab-pane': true, 'active': currentTab === 'course'}" id="course"
              role="course" aria-labelledby="course-tab">
           <course-tab-component  @updateProductOnSocket="updateProductOnSocket" :clicked="currentTab === 'course'"  :product="product" @update="updateProduct"/>
+        </div>
+        <div :class="{'tab-pane': true, 'active': currentTab === 'voucher'}" id="voucher"
+             role="voucher" aria-labelledby="voucher-tab">
+          <voucher-tab-component  @updateProductOnSocket="updateProductOnSocket" :clicked="currentTab === 'voucher'"  :product="product" @update="updateProduct"/>
         </div>
         <div :class="{'tab-pane': true, 'active': currentTab === 'features'}" id="features" role="tabpanel"
              aria-labelledby="features-tab">

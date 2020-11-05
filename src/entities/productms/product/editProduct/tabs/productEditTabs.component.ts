@@ -14,6 +14,7 @@ import GeneralTabComponent from '@/entities/productms/product/editProduct/tabs/g
 import PayBtnTabComponent from '@/entities/productms/product/editProduct/tabs/payBtnTab/payBtnTab.vue'
 import PhysicalTabComponent from '@/entities/productms/product/editProduct/tabs/physicalTab/physicalTab.vue'
 import PaymentTabComponent from '@/entities/productms/product/editProduct/tabs/paymentTab/paymentTab.vue'
+import VoucherTabComponent from "@/entities/productms/product/editProduct/tabs/voucherTab/voucherTab.vue";
 
 @Component({
   props: {
@@ -32,7 +33,8 @@ import PaymentTabComponent from '@/entities/productms/product/editProduct/tabs/p
     AffiliateTabComponent,
     PaymentTabComponent,
     CheckoutTabComponent,
-    BrandingTabComponent
+    BrandingTabComponent,
+    VoucherTabComponent
   }
 })
 export default class ProductEditTabsComponent extends mixins(Vue, CommonHelpers) {

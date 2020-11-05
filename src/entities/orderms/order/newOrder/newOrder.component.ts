@@ -255,7 +255,12 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
   public changeTab(e: any, z: any) {
     this.step = z
   }
-
+  public saveAsDraft(){
+    //TODO Handle saving as draft
+  }
+  public cancelConfirmed(){
+    this.$router.go(-1)
+  }
   public updateStep(obj: any) {
     this.cartOrder[obj.field] = obj.payload
   }

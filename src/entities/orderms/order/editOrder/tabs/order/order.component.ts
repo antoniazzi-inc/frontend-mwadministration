@@ -219,27 +219,24 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
 
   @Watch('order', {immediate: true, deep: true})
   public updateOrder(newVal: any) {
-    let self = this
     if (newVal) {
       this.orderCopy = newVal;
       this.orderLines = newVal.orderLines;
       let benefici:any = [{
         ...this.orderCopy.orderCustomer,
-        relationAddresses: [this.orderCopy.customerDeliveryAddress],
-        id: this.orderCopy.orderCustomer.relationId,
-        email: this.orderCopy.orderCustomer.email,
+        relationAddresses: this.orderCopy.customerDeliveryAddress ? [this.orderCopy.customerDeliveryAddress] : [this.orderCopy.customerBillingAddress]
       }]
     if(newVal && newVal.orderLines)
       newVal.orderLines.forEach((line:IOrderLine)=>{
-        if(line.orderLineBeneficiary && line.orderLineBeneficiary.id) {
-          let benefId = line.orderLineBeneficiary && line.orderLineBeneficiary.id ? line.orderLineBeneficiary.beneficiaryRelationId : this.orderCopy.orderCustomer.relationId
+        if(line.orderLineBeneficiary && line.orderLineBeneficiary.beneficiaryRelationId) {
+          let benefId = line.orderLineBeneficiary && line.orderLineBeneficiary.beneficiaryRelationId ? line.orderLineBeneficiary.beneficiaryRelationId : this.orderCopy.orderCustomer.relationId
           let existingBenef = benefici.findIndex((e:any) => e.id === benefId)
           if(existingBenef === -1) {
             benefici.push({
-              ...this.orderCopy.orderCustomer,
-              relationAddresses: [line.beneficiaryDeliveryAddress],
-              id: line.orderLineBeneficiary.beneficiaryRelationId,
-              email: line.orderLineBeneficiary.email
+              ...line.orderLineBeneficiary ? line.orderLineBeneficiary : newVal.orderCustomer,
+              relationAddresses: [line.beneficiaryDeliveryAddress ? line.beneficiaryDeliveryAddress : newVal.customerDeliveryAddress],
+              id: line.orderLineBeneficiary.beneficiaryRelationId ? line.orderLineBeneficiary.beneficiaryRelationId : newVal.orderCustomer.relationId,
+              email: line.orderLineBeneficiary.email ? line.orderLineBeneficiary.email : newVal.orderCustomer.email
             })
           }
         }
@@ -447,19 +444,12 @@ public getPromoName(item:any){
 
   public addProductFeatureSelect(feature: any) {
     if (!feature) return
-    this.selectedProductFeature.push(feature);
+    this.selectedProductFeature = feature;
   }
 
   public removeProductFeature(feature: any) {
-    let index = null;
-    $.each(this.selectedProductFeature, function (k, v) {
-      if (feature.value.id === v.value.id) {
-        index = k;
-      }
-    });
-    if (index !== null) {
-      this.selectedProductFeature.splice(index, 1);
-    }
+    if(!feature) return
+    this.selectedProductFeature = feature
   }
 
   public paymentScheduleChanged(schedule: any) {
@@ -575,7 +565,11 @@ public getPromoName(item:any){
       this.saveEditedOrderLine();
       return;
     }
-    if (this.selectedBeneficiary.length) {
+    let benefInd = this.selectedBeneficiary.findIndex((e:any)=>e.beneficiaryRelationId === this.orderCopy.orderCustomer.relationId)
+    if(benefInd === -1)
+      benefInd = this.selectedBeneficiary.findIndex((e:any)=>!e.beneficiaryRelationId && e.relationId === this.orderCopy.orderCustomer.relationId)
+    debugger
+    if (this.selectedBeneficiary.length && benefInd === -1) {
       this.selectedBeneficiary.forEach(beneficiary => {
         self.createNewOrderLine(beneficiary).then((resp: any) => {
           resp.cartOrder = {
@@ -592,8 +586,7 @@ public getPromoName(item:any){
         });
       });
     } else {
-      //@ts-ignore
-      this.createNewOrderLine(this.orderCopy.orderCustomer).then((resp: any) => {
+      this.createNewOrderLine(undefined).then((resp: any) => {
         resp.cartOrder = {
           id: this.$props.order.id,
           version: this.$props.order.version,
@@ -702,9 +695,10 @@ public getPromoName(item:any){
           orderProduct: v.attribute.product
         });
       });
-      let beneficiaryFullName: any, newBeneficiary, beneficiaryAddress;
+      debugger
+      let beneficiaryFullName: any, newBeneficiary, beneficiaryAddress
       //@ts-ignore
-      if (beneficiary && beneficiary.id !== this.$props.order.orderCustomer.id) {
+      if (beneficiary && beneficiary.beneficiaryRelationId !== self.$props.order.orderCustomer.relationId) {
         beneficiaryFullName = self.getBeneficiaryFullName(beneficiary);
         newBeneficiary = new OrderLineBeneficiary(undefined, undefined, undefined, undefined, undefined, this.$props.order.orderCustomer.relationId, beneficiary.id, beneficiary.email, beneficiaryFullName, beneficiary.title);
         if(!beneficiary.relationAddresses[0]){
@@ -806,7 +800,7 @@ public getPromoName(item:any){
 
   }
 
-  public removeOrderLine(orderLine: any, index: any) {
+  public removeOrderLine(index: any) {
     this.orderLineToRemove = index;
   }
 

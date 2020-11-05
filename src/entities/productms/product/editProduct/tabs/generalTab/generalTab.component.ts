@@ -262,6 +262,16 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
             this.$emit('updateProductOnSocket', this.productCopy)
           }
         })
+      } else {
+        dto.typeDigital = undefined
+        dto.followupAction = undefined
+        dto.paymentSchedules = undefined
+        this.productService.put(dto).then((resp:AxiosResponse) => {
+          if(resp && resp.data){
+            this.productCopy = resp.data
+            this.setAlert('productUpdated', 'success')
+          }
+        })
       }
     }
 

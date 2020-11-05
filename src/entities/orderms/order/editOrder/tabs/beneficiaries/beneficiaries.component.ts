@@ -77,9 +77,15 @@ export default class BeneficiariesComponent extends mixins(Vue,CommonHelpers){
         let beneficiaryList:any = []
         newVal.orderLines.forEach((line:IOrderLine) => {
           if(line.orderLineBeneficiary && line.orderLineBeneficiary.id) {
-            if(beneficiaryList.findIndex((e:any) => e.relationId === line.orderLineBeneficiary?.beneficiaryRelationId) === -1){
+            let benefInd = beneficiaryList.findIndex((e:any) => e.relationId === line.orderLineBeneficiary?.beneficiaryRelationId)
+            if(benefInd === -1){
               beneficiaryList.push(line)
+            } else {
+              let additionalProd = [line.orderProduct?.productName].concat(beneficiaryList.additionalProducts)
+              beneficiaryList.additionalProducts = additionalProd
             }
+          } else {
+            beneficiaryList.push(line)
           }
         })
         this.beneficiaryList = beneficiaryList

@@ -27,8 +27,6 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     public isAvailable = false;
     public isSalesInfo = false;
     public useFixed = false;
-    public fixedReward = 0;
-    public percentageReward = 0;
     public selectedCompany: ICompany = new Company();
     public checkoutUpsell = '';
     public backToCallingPage = false;
@@ -59,10 +57,18 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     public updatedProd (newVal: any) {
       this.productCopy = newVal
       if(this.productBackup === null && newVal.id){
-        let copy = JSON.parse(JSON.stringify(newVal))
+        let copy = JSON.parse(JSON.stringify(this.$props.product))
         this.productBackup = Object.assign({}, copy)
+        this.isSalesInfo = newVal.affiliateSalesInfoJson !== undefined
       }
-      this.isSalesInfo = !!newVal.affiliateSalesInfoJson
+    }
+    @Watch('isSalesInfo', { immediate: true, deep: true })
+    public isSalesInfoWatch (newVal: any) {
+      if(newVal){
+      //  this.productCopy.affiliateSalesInfoJson = ''
+      } else {
+       // this.productCopy.affiliateSalesInfoJson = undefined
+      }
     }
 
     public save () {
@@ -80,7 +86,8 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
       this.productService.put(dto).then((resp: AxiosResponse) => {
         if(resp && resp.data){
           this.setAlert('productUpdated', 'success')
-          this.productBackup = Object.assign({}, resp.data)
+          this.productBackup = null
+          this.$emit('update')
         }
       })
     }
@@ -89,15 +96,19 @@ export default class AffiliateTabComponent extends mixins(Vue, CommonHelpers) {
     }
     public cancel () {
       if(this.productBackup) {
-        this.isSalesInfo = this.productBackup.affiliateSalesInfoJson ? true : false
         if(this.productBackup && this.productBackup.affiliateSalesInfoJson){
-          this.productCopy.affiliateSalesInfoJson = JSON.parse(JSON.stringify(this.productBackup.affiliateSalesInfoJson))
-          this.productCopy.availableForAffiliates = this.productBackup.availableForAffiliates ? JSON.parse(JSON.stringify(this.productBackup.availableForAffiliates)) : false
+          this.productCopy.affiliateSalesInfoJson = this.productBackup.affiliateSalesInfoJson
+        } else {
+          this.productCopy.affiliateSalesInfoJson = undefined
         }
-        let copy = JSON.parse(JSON.stringify(this.productBackup))
+        this.productCopy.generalPercentageCommission = this.productBackup.generalPercentageCommission
+        this.productCopy.generalFlatCommission = this.productBackup.generalFlatCommission
+        this.productCopy.availableForAffiliates = this.productBackup.availableForAffiliates
+        let copy = this.productBackup
         this.productCopy = Object.assign({}, copy)
+        this.isSalesInfo = this.productBackup.affiliateSalesInfoJson ? true : false
       } else {
-        let copy = JSON.parse(JSON.stringify( this.$props.product))
+        let copy = JSON.parse(JSON.stringify(this.$props.product))
         this.productCopy = Object.assign({}, copy)
       }
     }

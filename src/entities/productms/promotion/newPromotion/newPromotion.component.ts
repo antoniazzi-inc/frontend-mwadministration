@@ -215,7 +215,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public generateCouponCode() {
-    this.couponCode = this.generateRandom();
+    this.couponCode = this.generateRandom().toUpperCase();
   }
 
   public changeProductType(type: any) {
@@ -239,6 +239,7 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
           self.promotion.typeCouponBased = new TypeCouponBased();
           self.promotion.typeCouponBased.discount = new Discount();
           self.promotion.typeCouponBased.coupon = new Coupon();
+          self.generateCouponCode()
           break;
         case 'LOYALTY':
           self.promotion.typeLoyaltyBased = new TypeLoyaltyBased();

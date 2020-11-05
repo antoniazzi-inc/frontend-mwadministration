@@ -100,7 +100,7 @@
       <div class="example-foorer">
         <div class="btn-group">
           <file-upload
-            v-if="allFiles.length"
+            v-if="allFiles.length || allFiles.length === 0"
             class="btn btn-primary"
             :class="{'dropdown-toggle': directory ? true : false}"
             :post-action="postAction"

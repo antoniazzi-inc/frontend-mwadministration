@@ -28,7 +28,7 @@
              :off-text="$t('labels.no')"
              :value.sync="isSubscription"/>
         </div>
-        <div class="form-group col-auto" v-if="isSubscription && (!$props.product.paymentSchedules || $props.product.paymentSchedules===0)">
+        <div class="form-group col-auto" v-if="isSubscription">
           <label class="control-label">{{$t('labels.subscriptionMaxTerms')}}</label>
           <input :class="{'form-control':true, invalid: errors.has('period')}" v-validate="'required|min_value:0'"
                  type="number" name="Subscription Max Terms" style="max-width:100px" v-model="productCopy.productSubscription.maxTimes"/>

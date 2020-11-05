@@ -16,8 +16,8 @@
                   <div class="ticket-content">
                                 <span class="label">
                                     <br/>
-                                    <p>{{productText[index]}}</p>
-                                    <p>{{attributesTexts[index]}}</p>
+                                    <p>{{getProductName(item)}}</p>
+                                    <p>{{getAttributeName(item)}}</p>
                                     <p>{{$t('labels.discount')}}: {{getBundleDiscount(item)}}</p>
                                 </span><br/>
                   </div>

@@ -65,7 +65,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public selectedOrderLineDeliveryMethod: any
   public selectedAffiliate: any
   public selectedProductAttributes: any[]
-  public selectedEvents: any[]
+  public selectedEvents: any
   public productAttributes: any[]
   public allEvents: any[]
   public availablePromotions: any
@@ -112,7 +112,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.availablePromotions = []
     this.selectedBeneficiaries = []
     this.allEvents = []
-    this.selectedEvents = []
+    this.selectedEvents = null
     this.allOrderLines = []
     this.allPromotions = []
     this.cartOrderCopy = new CartOrder()
@@ -131,7 +131,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       false, true, true, false, false, false)
     this.singleSelectConfigEvents = new SearchableSelectConfig('label',
       'labels.chooseEvent', '', false,
-      false, true, true, false, false, true)
+      false, true, false, false, false, true)
     this.singleSelectConfigDeliveryMethod = new SearchableSelectConfig('label',
       'labels.chooseDeliveryMethod', '', false,
       false, true, false, false, false, false)
@@ -223,10 +223,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.selectedProductAttributes = attr
   }
   public eventsRemoved(event: any) {
-    let ind = this.selectedEvents.findIndex((e:any) => e.value.id === event.value.id)
-    if(ind > -1){
-      this.selectedEvents.splice(ind, 1)
-    }
+    this.selectedEvents = null
   }
 
   public eventsChanged(events: any) {

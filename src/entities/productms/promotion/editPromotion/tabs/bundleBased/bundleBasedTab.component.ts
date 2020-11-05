@@ -76,28 +76,13 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
       this.promotionCopy = newVal
       if (newVal.typeBundleBaseds && newVal.typeBundleBaseds.length) {
         this.allBundles = newVal.typeBundleBaseds;
-          $.each(this.allBundles, function (k, v) {
-            if(v.itemsJson.products && v.itemsJson.products.length) self.getBundleProductInfo(v, k);
-          });
-          $.each(this.allBundles, function (k, v) {
-            if(v.itemsJson.attributeValues && v.itemsJson.attributeValues.length) self.getBundleProductAttributesInfo(v, k);
-          });
       }
 
     }
   }
 
   public mounted() {
-    let self = this;
     this.allBundles = this.$props.promotion.typeBundleBaseds ? this.$props.promotion.typeBundleBaseds : [];
-    if(this.allBundles.length){
-      $.each(this.allBundles, function (k, v) {
-        if(v.itemsJson.products && v.itemsJson.products.length) self.getBundleProductInfo(v, k);
-      });
-      $.each(this.allBundles, function (k, v) {
-        if(v.itemsJson.attributeValues && v.itemsJson.attributeValues.length) self.getBundleProductAttributesInfo(v, k);
-      });
-    }
     this.promotionCopy = this.$props.promotion;
   }
   public previousState() {
@@ -123,12 +108,12 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         $.each(prod.attributes, function (i, j) {
           self.attributeService.get(j.id).then((attribute:AxiosResponse) => {
             allAttr.push({
-              name: self.getMultiLangName(prod.productLanguages).name + ' - ' + self.getMultiLangName(j.attributeLanguages).name,
+              label: self.getMultiLangName(prod.productLanguages).name + ' - ' + self.getMultiLangName(j.attributeLanguages).name,
               value: j,
               product: prod
             });
             attr.push({
-              name: self.getMultiLangName(attribute.data.attributeLanguages).name,
+              label: self.getMultiLangName(attribute.data.attributeLanguages).name,
               value: attribute.data
             });
           });
@@ -136,70 +121,6 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         resolve({allAttributes: allAttr, selectedAttr: attr});
       }
     });
-  }
-  public editBundle(bundle: any, index: number) {
-    let self = this;
-    this.allItems = [];
-    let items:any = [];
-    if(bundle.itemsJson && bundle.itemsJson.products && bundle.itemsJson.products.length && !bundle.itemsJson.attributeValues) {
-      $.each(bundle.itemsJson.products, function (k, v) {
-        self.getSelectedProducts( v.id, index).then(selectedProducts => {
-          self.getSelectedProductsAttributes( v.id, index).then(resp => {
-            Vue.nextTick(function () {
-              items.push({
-                allProducts: self.$store.state.lookups.products,
-                selectedProducts: selectedProducts,
-                //@ts-ignore
-                allAttributes: resp.allAttributes,
-                selectedAttributes: null,
-                allAttributeValues: [],
-                selectedAttributeValues: null,
-                selectedBundleQuantity: v.quantity
-              });
-              Vue.nextTick(function () {
-                self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
-                self.$set(self, 'allItems', items);
-              });
-            })
-          });
-        });
-      });
-    } else
-    if(bundle.itemsJson.attributeValues && bundle.itemsJson.attributeValues.length) {
-      $.each(bundle.itemsJson.attributeValues, function (k, v) {
-        self.getSelectedProducts(v.id, index).then(selectedProducts => {
-          self.getSelectedProductsAttributes(v.id, index).then(resp => {
-            self.getSelectedProductsAttributeValues(v.id, index).then(resp1 => {
-              items.push({
-                allProducts: self.$store.state.lookups.products,
-                selectedProducts: selectedProducts,
-                //@ts-ignore
-                allAttributes: resp.allAttributes,
-                //@ts-ignore
-                selectedAttributes: resp.selectedAttr,
-                //@ts-ignore
-                allAttributeValues: resp1.allAttributesValues,
-                //@ts-ignore
-                selectedAttributeValues: resp1.selectedAttributeValue,
-                selectedBundleQuantity: v.quantity
-              });
-              Vue.nextTick(function () {
-                self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
-                self.$set(self, 'allItems', items);
-              });
-            });
-          });
-        });
-      });
-    }else {
-      Vue.nextTick(function () {
-        self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
-        self.$set(self, 'allItems', items);
-      });
-    }
-
-    this.selectedBundleIndex = index;
-    this.editMode = true;
   }
   public getSelectedProductsAttributeValues(id:any, index:any) {
     let self = this;
@@ -227,6 +148,110 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
       }
     });
   }
+  public editBundle(bundle: any, index: number) {
+    let self = this;
+    this.allItems = [];
+    let items:any = [];
+    if(bundle.itemsJson && bundle.itemsJson.products && bundle.itemsJson.products.length && !bundle.itemsJson.attributeValues) {
+       $.each(bundle.itemsJson.products, function (k, v) {
+        self.getSelectedProducts( v.id, index).then(selectedProducts => {
+          self.getSelectedProductsAttributes( v.id, index).then(resp => {
+            Vue.nextTick(function () {
+              items.push({
+                allProducts: self.$store.state.lookups.products,
+                selectedProducts: selectedProducts,
+                //@ts-ignore
+                allAttributes: resp.allAttributes,
+                selectedAttributes: null,
+                allAttributeValues: [],
+                selectedAttributeValues: null,
+                selectedBundleQuantity: v.quantity
+              });
+              Vue.nextTick(function () {
+                self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
+                self.$set(self, 'allItems', items);
+              });
+            })
+          });
+        });
+      });
+    }
+
+    if(bundle.itemsJson.attributeValues && bundle.itemsJson.attributeValues.length) {
+      $.each(bundle.itemsJson.attributeValues, function (k, v) {
+        let selectedProduct = null
+        let allAttrs:any = []
+        let allAttrVals:any = []
+        let selectedAttrValues:any = []
+        let selectedAttr:any = []
+          self.$store.state.lookups.products.forEach((prod:any) => {
+            if(prod.value.attributes && prod.value.attributes.length) {
+              prod.value.attributes.forEach((attr:any)=> {
+                let ind = attr.attributeValues.findIndex((attrValue:any)=> attrValue.id === v.id)
+                if(ind > -1){
+                  selectedProduct = prod
+                  prod.value.attributes.forEach((attr:any) => {
+                    if(prod.value.attributes.attributeValues)
+                    prod.value.attributes.attributeValues.forEach((attrV:any) => {
+
+                    })
+                  })
+                  prod.value.attributes.forEach((attr:any) => {
+                    allAttrs.push({
+                      label: self.getMultiLangName(prod.value.productLanguages).name + ' - ' +self.getMultiLangName(attr.attributeLanguages).name,
+                      value: attr,
+                      product: prod
+                    })
+                    attr.attributeValues.forEach((attrV:any)=>{
+                      allAttrVals.push({
+                        name: self.getMultiLangName(prod.value.productLanguages).name + ' - ' + self.getMultiLangName(attr.attributeLanguages).name + ' - ' + self.getMultiLangName(attrV.attributeValueLanguages).name,
+                        value: attrV,
+                        product: prod
+                      })
+                    })
+                  })
+                   selectedAttrValues.push({
+                    name: self.getMultiLangName(attr.attributeValues[ind].attributeValueLanguages).name,
+                    value: attr.attributeValues[ind],
+                    product: prod
+                  })
+                   selectedAttr.push({
+                    label: self.getMultiLangName(attr.attributeLanguages).name,
+                    value: attr,
+                    product: prod
+                  })
+                }
+              })
+            }
+          })
+        items.push({
+          allProducts: self.$store.state.lookups.products,
+          selectedProducts: selectedProduct,
+          //@ts-ignore
+          allAttributes: allAttrs,
+          //@ts-ignore
+          selectedAttributes: selectedAttr,
+          //@ts-ignore
+          allAttributeValues: allAttrVals,
+          //@ts-ignore
+          selectedAttributeValues: selectedAttrValues,
+          selectedBundleQuantity: v.quantity
+        });
+      });
+      Vue.nextTick(function () {
+        self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
+        self.$set(self, 'allItems', items);
+      });
+    } else {
+      Vue.nextTick(function () {
+        self.$set(self, 'selectedBundle', JSON.parse(JSON.stringify(bundle)));
+        self.$set(self, 'allItems', items);
+      });
+    }
+    this.selectedBundleIndex = index;
+    this.editMode = true;
+  }
+
   public copyBundle(item: any, index: number) {
     item.id = null;
     item.discount.id = undefined;
@@ -264,22 +289,6 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
   public goBack() {
     this.$router.push('/promotions')
   }
-  public getBundleProductAttributesInfo(bundle:any, index:any){
-    let self = this;
-    let allProductAttributesTexts:any = [];
-    if (bundle.itemsJson && bundle.itemsJson.attributeValues && bundle.itemsJson.attributeValues.length) {
-      $.each(bundle.itemsJson.attributeValues, function (k, v) {
-        self.getAttributeValueName(v.id).then((resp:any)=>{
-          if(resp){
-            allProductAttributesTexts.push(' ' + v.quantity + ' ' + resp);
-          }
-          Vue.nextTick(function () {
-            self.$set(self.attributesTexts, index, allProductAttributesTexts.join());
-          });
-        });
-      });
-    }
-  }
 
   public getAttributeValueName(product:any){
     let self = this;
@@ -293,33 +302,35 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     });
   }
 
-  public getBundleProductInfo(bundle:any, index:number){
-    let self = this;
-    let allProductTexts:any = [];
-    if(bundle.itemsJson && bundle.itemsJson.products && bundle.itemsJson.products.length) {
-      $.each(bundle.itemsJson.products, function (k, v) {
-        self.getProductName(v.id).then(resp=>{
-          if(resp){
-            allProductTexts.push(' ' + v.quantity + ' ' + resp);
+  public getProductName(promo:any){
+    let result = ''
+      if(promo && promo.itemsJson && promo.itemsJson.products && promo.itemsJson.products.length > 0){
+        promo.itemsJson.products.forEach((prod:any) =>{
+          let prodIndex = this.$store.state.lookups.products.findIndex((p:any) => p.value.id === prod.id)
+          if(prodIndex > -1) {
+            result += ` ${prod.quantity} ${this.$store.state.lookups.products[prodIndex].label} `
           }
-          Vue.nextTick(function () {
-            self.$set(self.productText, index, allProductTexts.join());
-          });
-        });
-      });
-    }
-  }
-
-  public getProductName(product:any){
-    let self = this;
-    return new Promise(resolve => {
-      if(!product) resolve(false);
-      let prodIndex = this.$store.state.lookups.products.findIndex((p:any)=> p.value.id === product)
-      if(prodIndex > -1) {
-        const prod = this.$store.state.lookups.products[prodIndex].value
-        resolve(prod.label);
+        })
       }
-    });
+      return result
+  }
+  public getAttributeName(promo:any){
+    let result = ''
+    if(promo && promo.itemsJson && promo.itemsJson.attributeValues && promo.itemsJson.attributeValues.length > 0){
+      promo.itemsJson.attributeValues.forEach((attrVal:any)=>{
+        this.$store.state.lookups.products.forEach((prod:any) => {
+          if(prod.value.attributes && prod.value.attributes.length) {
+            prod.value.attributes.forEach((attr:any)=>{
+              let ind = attr.attributeValues.findIndex((attrValue:any)=> attrValue.id === attrVal.id)
+              if(ind > -1){
+                result += ` ${attrVal.quantity} ${this.getMultiLangName(attr.attributeLanguages).name} -> ${this.getMultiLangName(attr.attributeValues[ind].attributeValueLanguages).name} `
+              }
+            })
+          }
+        })
+      })
+    }
+    return result
   }
 
   public addNewBundle(){

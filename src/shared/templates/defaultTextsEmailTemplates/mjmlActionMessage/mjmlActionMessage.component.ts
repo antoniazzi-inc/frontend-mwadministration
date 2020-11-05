@@ -66,7 +66,7 @@ ${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$pr
         font-size="${this.getBtnFontSize(this.$props.value.config.buttons.buttonSize)}"
         padding-bottom="10px"
         border-radius="${this.$props.value.config.buttons.borderRadius}px" color="${this.$props.value.config.buttonForegroundColor}">
-          ${this.$props.value.value.buttonText.length > 0 ? this.getMultiLangName(this.$props.value.value.buttonText).name : ''}
+          ${this.$props.value.value.buttonText.length > 0 ? this.$props.value.config.buttonForegroundColor : this.$props.value.config.buttonForegroundColor}
          </mj-button>
 
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"

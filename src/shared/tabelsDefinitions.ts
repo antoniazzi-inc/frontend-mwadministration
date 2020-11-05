@@ -1,7 +1,7 @@
 import { ILanguage, Language } from '@/shared/models/language.model'
 import Store from '../store'
 import moment from 'moment'
-import {DATE_FORMAT} from "@/shared/filters";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 const local = localStorage.getItem('tableColumns') ? localStorage.getItem('tableColumns') : ''
 const currentSettings = local ? JSON.parse(local) : {}
 
@@ -736,19 +736,8 @@ export const course = {
       }
     },
     {
-      name: 'labels.eventDates',
-      field: '',
-      subField: null,
-      type: '',
-      authorities: ['*'],
-      sort: false,
-      method: function (newVal: any) {
-        //TODO get the event dates of the course
-      }
-    },
-    {
       name: 'labels.description',
-      field: 'name',
+      field: 'description',
       subField: null,
       type: '',
       authorities: ['*'],
@@ -756,8 +745,21 @@ export const course = {
       method: function (newVal: any) {
         return getMultiLangName(newVal.courseLanguages).description
       }
-    }
-    ]
+    },{
+      name: 'labels.eventDates',
+      field: 'eventDates',
+      subField: null,
+      type: 'date',
+      authorities: ['*'],
+      sort: false,
+      method: function (newVal: any) {
+        let result = ''
+        if(newVal && newVal.events && newVal.events.length){
+          result = `${moment(newVal.events[0].eventStart, INSTANT_FORMAT).format(DATE_FORMAT)} - ${moment(newVal.events[newVal.events.length-1].eventEnd, INSTANT_FORMAT).format(DATE_FORMAT)} (${newVal.events.length} events)`
+        }
+        return result
+      }
+    }]
 }
 export const roles = {
   actions: {
@@ -2339,8 +2341,8 @@ export const columnsVisibility = {
   course: {
     id: true,
     name: true,
-    eventDates: true,
     description: true,
+    eventDates: true,
     itemsPerPage: 20
   },
   paymentMethod: {

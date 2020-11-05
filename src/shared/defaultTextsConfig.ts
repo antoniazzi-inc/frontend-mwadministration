@@ -322,7 +322,7 @@ export const EmailTextConfig = {
     pageText: {},
     pageText2: {},
     buttonText: [],
-    buttonLink: {},
+    buttonLink: '',
     imageUrl: '',
     footerText: {},
     socialMedia: []
