@@ -67,7 +67,7 @@ ${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$pr
         padding-bottom="10px"
         border-radius="${this.$props.value.config.buttons.borderRadius}px" color="${this.$props.value.config.buttonForegroundColor}">
           <mj-raw>
-                <span style="color:${this.$props.value.config.buttonForegroundColor}">
+           <span style="color:${this.$props.value.config.buttonForegroundColor}">
           ${this.getMultiLangName(this.$props.value.value.buttonText).name}
           </span>
           </mj-raw>
