@@ -23,6 +23,15 @@ export default class MjmlSimplePageComponent extends mixins(Vue, CommonHelpers) 
     this.renderOutput = ''
   }
 
+  public getFont(fdata:any) {
+    let f = {name: '', url: ''}
+    let name = fdata.name
+    if (name.indexOf('-') > 0) name = name.substr(0, name.indexOf('-'))
+    f.name = name + ', Arial'
+    f.url = fdata.url
+    return f
+  }
+
   @Watch('active', { immediate: true, deep: true })
   public init () {
     this.htmlOutput = `<mjml owa="desktop">
@@ -31,6 +40,7 @@ export default class MjmlSimplePageComponent extends mixins(Vue, CommonHelpers) 
       <mj-all padding="0px"></mj-all>
     </mj-attributes>
     <mj-style inline="inline">a { text-decoration: none!important; color: inherit!important; }</mj-style>
+    <mj-font name="${this.getFont(this.$props.value.config.font).name}" href="${this.getFont(this.$props.value.config.font).url}" />
   </mj-head>
   <mj-body width="100%" background-color="${this.$props.value.config.backgroundColor}">
   <mj-section full-width="full-width" padding="30px" border="2px solid ${this.$props.value.config.borderColor}">

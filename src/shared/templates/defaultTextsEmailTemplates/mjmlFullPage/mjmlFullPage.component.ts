@@ -23,6 +23,15 @@ export default class MjmlFullPageComponent extends mixins(Vue, CommonHelpers) {
     this.renderOutput = ''
   }
 
+  public getFont(data:any) {
+    let f = {name: '', url: ''}
+    let name = data.name
+    if (name.indexOf('-') > 0) name = name.substr(0, name.indexOf('-'))
+    f.name = name + ', Arial'
+    f.url = data.url
+    return f
+  }
+
   public getLineHeight(font: any) {
     return (font * 1.6) + 'px'
   }
@@ -44,12 +53,14 @@ export default class MjmlFullPageComponent extends mixins(Vue, CommonHelpers) {
       <mj-all padding="0px"></mj-all>
     </mj-attributes>
     <mj-style inline="inline">{ text-decoration: none!important; color: inherit!important; }</mj-style>
+    <mj-font name="${this.getFont(this.$props.value.config.font).name}" href="${this.getFont(this.$props.value.config.font).url}" />
   </mj-head>
   <mj-body width="100%" background-color="${this.$props.value.config.backgroundColor}">
   <mj-wrapper full-width="full-width" border="2px solid ${this.$props.value.config.borderColor}" padding="30px">
    <mj-column width="100%">
           <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
+        font-family="${this.getFont(this.$props.value.config.font).name}"
         font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
         align="${this.$props.value.config.header.textAlign}">${this.getMultiLangName(this.$props.value.value.headerText).name}</mj-text>
         <mj-text font-size="${this.$props.value.config.text.fontSize}px"
@@ -59,6 +70,7 @@ export default class MjmlFullPageComponent extends mixins(Vue, CommonHelpers) {
     <mj-column width="100%" background-color="${this.$props.value.config.footer.backgroundColor}">
     <mj-text font-size="${this.$props.value.config.footer.fontSize}px"
     padding-left="20px" padding-right="20px"
+    font-family="${this.getFont(this.$props.value.config.font).name}"
     align="${this.$props.value.config.footer.textAlign}"
         color="${this.$props.value.config.footer.color}">
 ${this.$props.value.value.footerText[this.$store.state.currentLanguage] ? this.$props.value.value.footerText[this.$store.state.currentLanguage] : ''}

@@ -159,5 +159,76 @@ export const Fonts = [
       woff2: 'http://fonts.gstatic.com/s/josefinsans/v12/Qw3aZQNVED7rKGKxtqIqX5EUDXx4.woff2'
     }
   }
+]
 
+// see https://fonts.google.com/
+export const MjmlFonts = [
+  {
+    name: 'Playfair Display',
+    url: 'https://fonts.googleapis.com/css?family=Playfair+Display'
+  },
+  {
+    name: 'Josefin Sans',
+    url: 'https://fonts.googleapis.com/css?family=Josefin+Sans'
+  },
+  {
+    name: 'Montserrat',
+    url: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500'
+  },
+  {
+    name: 'Merriweather',
+    url: 'https://fonts.googleapis.com/css2?family=Merriweather'
+  },
+  {
+    name: 'Nunito',
+    url: 'https://fonts.googleapis.com/css2?family=Nunito:wght@200'
+  },
+  {
+    name: 'Nothing You Could Do',
+    url: 'https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do'
+  },
+  {
+    name: 'Butterfly Kids',
+    url: 'https://fonts.googleapis.com/css2?family=Butterfly+Kids'
+  },
+  {
+    name: 'Roboto-Regular',
+    url: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400'
+  },
+  {
+    name: 'Roboto Slab',
+    url: 'https://fonts.googleapis.com/css2?family=Roboto+Slab'
+  },
+  {
+    name: 'Raleway',
+    url: 'https://fonts.googleapis.com/css2?family=Raleway'
+  },
+  {
+    name: 'Fjalla One',
+    url: 'https://fonts.googleapis.com/css2?family=Fjalla+One'
+  },
+  {
+    name: 'Noto Sans JP',
+    url: 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP'
+  },
+  {
+    name: 'Alegreya',
+    url: 'https://fonts.googleapis.com/css2?family=Alegreya'
+  },
+  {
+    name: 'Lato',
+    url: 'https://fonts.googleapis.com/css2?family=Lato'
+  },
+  {
+    name: 'PT Sans Narrow',
+    url: 'https://fonts.googleapis.com/css2?family=PT+Sans+Narrow'
+  },
+  {
+    name: 'Amatic SC',
+    url: 'https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700'
+  },
+  {
+    name: 'Arima Madurai',
+    url: 'https://fonts.googleapis.com/css2?family=Arima+Madurai'
+  }
 ]

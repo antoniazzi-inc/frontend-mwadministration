@@ -28,6 +28,15 @@ export default class MjmlFullMessageComponent extends mixins(Vue, CommonHelpers)
     return (font * 1.6) + 'px'
   }
 
+  public getFont(data:any) {
+    let f = {name: '', url: ''}
+    let name = data.name
+    if (name.indexOf('-') > 0) name = name.substr(0, name.indexOf('-'))
+    f.name = name + ', Arial'
+    f.url = data.url
+    return f
+  }
+
   @Watch('value', { immediate: true, deep: true })
   public setImageWidth () {
     const self = this
@@ -56,19 +65,22 @@ export default class MjmlFullMessageComponent extends mixins(Vue, CommonHelpers)
       <mj-all padding="0px"></mj-all>
     </mj-attributes>
     <mj-style inline="inline">a { text-decoration: none!important; color: inherit!important; }</mj-style>
+    <mj-font name="${this.getFont(this.$props.value.config.font).name}" href="${this.getFont(this.$props.value.config.font).url}" />
   </mj-head>
   <mj-body width="${this.imageWidth ? this.imageWidth : "100%"}" background-color="${this.$props.value.config.backgroundColor}">
   <mj-section full-width="full-width" padding="0px">
       <mj-column padding="20px" width="100%">
         <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
+        font-family="${this.getFont(this.$props.value.config.font).name}"
         font-size="${this.$props.value.config.header.fontSize}px"
         color="${this.$props.value.config.header.color}"
         align="${this.$props.value.config.header.textAlign}">${this.getMultiLangName(this.$props.value.value.headerText).name}</mj-text>
 
         <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
-   align="${this.$props.value.config.text.textAlign}"
-   line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
+         align="${this.$props.value.config.text.textAlign}"
+         line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
+         font-family="${this.getFont(this.$props.value.config.font).name}"
         color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}</mj-text>
 
         <mj-image align="center" alt="" border="none" padding-bottom="0px" padding-left="0px" padding-right="0px" padding="0px 25px"
@@ -76,6 +88,7 @@ export default class MjmlFullMessageComponent extends mixins(Vue, CommonHelpers)
 
          <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
            align="${this.$props.value.config.text.textAlign}"
+           font-family="${this.getFont(this.$props.value.config.font).name}"
            line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
         color="${this.$props.value.config.text.color}">${this.$props.value.value.pageText2[this.$store.state.currentLanguage] ? this.$props.value.value.pageText2[this.$store.state.currentLanguage] : ''}</mj-text>
 
@@ -86,6 +99,7 @@ export default class MjmlFullMessageComponent extends mixins(Vue, CommonHelpers)
 <mj-text padding-left="20px" padding-right="20px" font-size="${this.$props.value.config.footer.fontSize}px"
 align="${this.$props.value.config.footer.textAlign}"
             color="${this.$props.value.config.footer.color}"
+            font-family="${this.getFont(this.$props.value.config.font).name}"
             line-height="${this.getLineHeight(this.$props.value.config.footer.fontSize)}"
             container-background-color="${this.$props.value.config.footer.backgroundColor}">
             ${this.$props.value.value.footerText[this.$store.state.currentLanguage] ? this.$props.value.value.footerText[this.$store.state.currentLanguage] : ''}

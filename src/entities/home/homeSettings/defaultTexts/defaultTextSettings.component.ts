@@ -2,7 +2,7 @@ import { mixins } from 'vue-class-component'
 import CommonHelpers from '@/shared/commonHelpers'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { ISearchableSelectConfig, SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
-import { Fonts } from '@/shared/fonts'
+import { MjmlFonts } from '@/shared/fonts'
 import Chrome from 'vue-color/src/components/Chrome'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 @Component({
@@ -27,7 +27,7 @@ export default class DefaultTextSettingsComponent extends mixins(Vue, CommonHelp
     this.searchableConfigFonts = new SearchableSelectConfig('name',
       'labels.fonts', '', false,
       false, true, false, false)
-    this.allFonts = Fonts
+    this.allFonts = MjmlFonts //Fonts
   }
 
   public updateBackgroundColor (color: any) {

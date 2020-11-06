@@ -81,7 +81,7 @@
                         <tr v-for="(option, key) in item.attributeValues" :key="key">
                           <td>{{getAttributeName(productCopy.attributes[index].attributeValues[key].attributeValueLanguages)}}</td>
                           <td>{{option.orderIndex}}</td>
-                          <td>{{option.price}} {{$store.state.currency}}</td>
+                          <td>{{option.price | formatAmount}}</td>
                           <td>{{option.stock}}</td>
                           <td>
                             <div class="text-danger ml-3 cursor-pointer" data-target="#removeEntityAttributeOption" data-toggle="modal" @click.prevent="prepareRemoveAttributeOption(productCopy.attributes[index].attributeValues[key])">

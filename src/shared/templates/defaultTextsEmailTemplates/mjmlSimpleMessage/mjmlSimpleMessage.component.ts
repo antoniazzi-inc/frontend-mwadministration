@@ -23,6 +23,15 @@ export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelper
     this.renderOutput = ''
   }
 
+  public getFont(data:any) {
+    let f = {name: '', url: ''}
+    let name = data.name
+    if (name.indexOf('-') > 0) name = name.substr(0, name.indexOf('-'))
+    f.name = name + ', Arial'
+    f.url = data.url
+    return f
+  }
+
   public getLineHeight(font: any) {
     return (font * 1.6) + 'px'
   }
@@ -35,13 +44,16 @@ export default class MjmlSimpleMessageComponent extends mixins(Vue, CommonHelper
       <mj-all padding="0px"></mj-all>
     </mj-attributes>
     <mj-style inline="inline">a { text-decoration: none!important; color: inherit!important; }</mj-style>
+    <mj-font name="${this.getFont(this.$props.value.config.font).name}" href="${this.getFont(this.$props.value.config.font).url}" />
   </mj-head>
   <mj-body width="100%" background-color="${this.$props.value.config.backgroundColor}">
   <mj-section full-width="full-width" padding="30px" border="2px solid ${this.$props.value.config.borderColor}">
       <mj-column width="100%">
         <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
-        font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
+        font-family="${this.getFont(this.$props.value.config.font).name}"
+        font-size="${this.$props.value.config.header.fontSize}px"
+        color="${this.$props.value.config.header.color}"
         align="${this.$props.value.config.header.textAlign}">
 ${this.getMultiLangName(this.$props.value.value.headerText).name}
 </mj-text>
@@ -49,7 +61,8 @@ ${this.getMultiLangName(this.$props.value.value.headerText).name}
    </mj-section>
    <mj-section width="100%" padding-left="30px" padding-bottom="30px" padding-right="30px">
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
-   align="${this.$props.value.config.text.textAlign}"
+    align="${this.$props.value.config.text.textAlign}"
+    font-family="${this.getFont(this.$props.value.config.font).name}"
         color="${this.$props.value.config.text.color}">
 ${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}
 </mj-text>

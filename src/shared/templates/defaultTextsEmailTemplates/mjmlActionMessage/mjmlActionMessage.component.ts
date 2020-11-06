@@ -35,6 +35,15 @@ export default class MjmlActionMessageComponent extends mixins(Vue, CommonHelper
     else return '14px';
   }
 
+  public getFont(data:any) {
+    let f = {name: '', url: ''}
+    let name = data.name
+    if (name.indexOf('-') > 0) name = name.substr(0, name.indexOf('-'))
+    f.name = name + ', Arial'
+    f.url = data.url
+    return f
+  }
+
   @Watch('active', { immediate: true, deep: true })
   public init () {
     this.htmlOutput = `<mjml>
@@ -43,19 +52,23 @@ export default class MjmlActionMessageComponent extends mixins(Vue, CommonHelper
       <mj-all padding="0px"></mj-all>
     </mj-attributes>
     <mj-style inline="inline">a { text-decoration: none!important; color: inherit!important; }</mj-style>
+    <mj-font name="${this.getFont(this.$props.value.config.font).name}" href="${this.getFont(this.$props.value.config.font).url}" />
   </mj-head>
   <mj-body width="100%" background-color="${this.$props.value.config.backgroundColor}">
   <mj-section full-width="full-width" padding="30px" border="2px solid ${this.$props.value.config.borderColor}">
       <mj-column margin="20px" width="100%">
         <mj-text font-style="${this.$props.value.config.header.fontStyle}"
         font-weight="${this.$props.value.config.header.fontWeight}"
-        font-size="${this.$props.value.config.header.fontSize}px" color="${this.$props.value.config.header.color}"
+        font-size="${this.$props.value.config.header.fontSize}px"
+        font-family="${this.getFont(this.$props.value.config.font).name}"
+        color="${this.$props.value.config.header.color}"
         align="${this.$props.value.config.header.textAlign}">
             ${this.$props.value.value.headerText.length > 0 ? this.getMultiLangName(this.$props.value.value.headerText).name : ''}
         </mj-text>
       </mj-column>
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
+   font-family="${this.getFont(this.$props.value.config.font).name}"
    line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
         color="${this.$props.value.config.text.color}">
 ${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$props.value.value.pageText[this.$store.state.currentLanguage] : ''}
@@ -65,6 +78,7 @@ ${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$pr
         background-color="${this.$props.value.config.buttons.backgroundColor}"
         font-size="${this.getBtnFontSize(this.$props.value.config.buttons.buttonSize)}"
         padding-bottom="10px"
+        font-family="${this.getFont(this.$props.value.config.font).name}"
         border-radius="${this.$props.value.config.buttons.borderRadius}px" color="${this.$props.value.config.buttonForegroundColor}">
           <mj-raw>
            <span style="color:${this.$props.value.config.buttonForegroundColor}">
@@ -75,6 +89,7 @@ ${this.$props.value.value.pageText[this.$store.state.currentLanguage] ? this.$pr
 
    <mj-text width="100%" font-size="${this.$props.value.config.text.fontSize}px"
    align="${this.$props.value.config.text.textAlign}"
+   font-family="${this.getFont(this.$props.value.config.font).name}"
    line-height="${this.getLineHeight(this.$props.value.config.text.fontSize)}"
         color="${this.$props.value.config.text.color}">
 ${this.$props.value.value.pageText2[this.$store.state.currentLanguage] ? this.$props.value.value.pageText2[this.$store.state.currentLanguage] : ''}

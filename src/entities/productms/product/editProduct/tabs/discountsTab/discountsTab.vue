@@ -12,12 +12,26 @@
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="form-group col-md-11">
-          <h3 style="margin-top:1em">{{$t('labels.selectedPromotions')}}</h3>
-          <p v-for="(promo, index) in selectedDiscounts" :key="promo.value.id">
-            {{promo.label}}, available from {{promo.value.availableFrom | formatOnlyDate}} (promotion-type, discount type, amount/perc)
-          </p>
+      <div class="form-row" v-if="selectedDiscounts && selectedDiscounts.length > 0">
+        <div class="form-group col-md-8">
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <th>{{$t('labels.name')}}</th>
+                <th>{{$t('labels.validFrom')}}</th>
+                <th>{{$t('labels.promotionType')}}</th>
+                <th>{{$t('labels.discount')}}</th>
+              </thead>
+              <tbody>
+              <tr v-for="(promo, index) in selectedDiscounts" :key="promo.value.id">
+                <td>{{promo.label}}</td>
+                <td>{{promo.value.availableFrom | formatOnlyDate}}</td>
+                <td>{{promo.value.promotionType}}</td>
+                <td>{{getDiscountDesc(promo)}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

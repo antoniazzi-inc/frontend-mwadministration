@@ -69,6 +69,63 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
   public mounted () {
 
   }
+
+  public getDiscountDesc(promo:any) {
+    if (promo.value.typeCouponBased) {
+      return this.descDiscount(promo.value.typeCouponBased.discount, null)
+    }
+    else if (promo.value.typeTimeBased) {
+      return this.descDiscount(promo.value.typeTimeBased.discount, null)
+    }
+    else if (promo.value.typeLoyaltyBased) {
+      return this.descDiscount(promo.value.typeLoyaltyBased.discount, null)
+    }
+    else if (promo.value.typeQuantityBaseds) {
+      return this.descDiscount(promo.value.typeQuantityBaseds.discount, promo.value)
+    }
+    else if (promo.value.typePriceBaseds) {
+      return this.descDiscount(promo.value.typePriceBaseds.discount, promo.value)
+    }
+    else if (promo.value.typePersonalCouponBased) {
+      return this.descDiscount(promo.value.typePersonalCouponBased.discount, promo.value)
+    }
+    else if (promo.value.typeBundleBaseds) {
+      return this.descDiscount(promo.value.typeBundleBaseds[0].discount, null)
+    }
+    else {
+      return ''
+    }
+  }
+
+  public descDiscount(discount:any, promo:any) {
+    if (discount == undefined) {
+      console.log(promo)
+      return 'HUH .. undefined??'
+    }
+    if (discount.fixed) {
+      if (this.$options && this.$options.filters){
+        return this.$options.filters.formatAmount(discount.fixed)
+      }
+      else return discount.fixed
+    }
+    else if (discount.percentage) {
+      return discount.percentage + '%'
+    }
+    else if (discount.noShipping) {
+      return 'free shipping'
+    }
+    else {
+      if (discount.freeItemsJson.products.length > 0) {
+        if (this.$store.state.lookups.products.findIndex((prod:any)=>prod.value.id === discount.freeItemsJson.products[0].id) > -1) {
+          let p = this.$store.state.lookups.products[this.$store.state.lookups.products.findIndex((prod:any)=>prod.value.id === discount.freeItemsJson.products[0].id)].label
+          return 'free item (' + p + ')'
+        }
+        else return 'free item'
+      }
+      else return 'free item'
+    }
+  }
+
   public goBack() {
     this.$router.push('/products')
   }
