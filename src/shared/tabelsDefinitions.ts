@@ -755,7 +755,9 @@ export const course = {
       method: function (newVal: any) {
         let result = ''
         if(newVal && newVal.events && newVal.events.length){
-          result = `${moment(newVal.events[0].eventStart, INSTANT_FORMAT).format(DATE_FORMAT)} - ${moment(newVal.events[newVal.events.length-1].eventEnd, INSTANT_FORMAT).format(DATE_FORMAT)} (${newVal.events.length} events)`
+          let minEvent = newVal.events.reduce((a:any, b:any) => a.eventStart <= b.eventStart ? a : b)
+          let maxEvent = newVal.events.reduce((e:any, c:any) => e.eventEnd >= c.eventEnd ? e : c)
+          result = `${moment(minEvent.eventStart, INSTANT_FORMAT).format(DATE_FORMAT)} - ${moment(maxEvent.eventEnd, INSTANT_FORMAT).format(DATE_FORMAT)} (${newVal.events.length} events)`
         }
         return result
       }

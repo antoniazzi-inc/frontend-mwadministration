@@ -10,6 +10,8 @@ import {ISearchableSelectConfig, SearchableSelectConfig} from "@/shared/models/S
 import attributesService from "@/shared/services/attributesService";
 import typebundlebasedsService from "@/shared/services/type-bundle-basedsService";
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
+import {MoneyConfig} from "@/shared/models/moneyConfig";
+import Store from "@/store";
 
 @Component({
   props: {
@@ -31,18 +33,27 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
   public selectedBundle: any
   public itemToDelete: any
   public selectedBundleIndex: any
+  public selectedDiscountType: any
+  public discountQuantityAmount: any
   public multiSelectConfigProduct: ISearchableSelectConfig
   public multiSelectConfigAttributeValue: ISearchableSelectConfig
   public multiSelectConfigAttribute: ISearchableSelectConfig
   public attributeValueService: any
   public attributeService: any
   public typeBundleBasedService: any
+  public discountPriceAmount: any
   public bundleToDelete: any
   public productService: any
+  public moneyPercentage: any
+  public singleSelectConfig: any
+  public selectedProduct: any
+  public useMoreDecimalst: boolean
+  public money: any
   public allBundles: any[]
   public productText: any[];
   public allItems: any[];
   public attributesTexts: any[];
+  public allDiscountTypes: any[];
   constructor() {
     super();
     this.editMode = false
@@ -59,14 +70,41 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     this.selectedBundle = null
     this.itemToDelete = null
     this.bundleToDelete = null
+    this.discountQuantityAmount = null
+    this.useMoreDecimalst = false
     this.selectedBundleIndex = null
+    this.selectedProduct = null
+    this.selectedDiscountType = null
+    this.discountPriceAmount = 0
     this.attributeValueService = attributevaluesService.getInstance()
     this.attributeService = attributesService.getInstance()
     this.typeBundleBasedService = typebundlebasedsService.getInstance()
     this.allBundles = []
     this.productText = []
+    this.singleSelectConfig = new SearchableSelectConfig('label',
+      'chooseProduct', '', false,
+      false, false, false, false)
     this.allItems = []
     this.attributesTexts = []
+    this.money = new MoneyConfig(',', '.', Store.state.currency, '', 2, false)
+    this.moneyPercentage = new MoneyConfig(',', '.', '', ' %', 2, false)
+    this.allDiscountTypes = [{
+      id: 1,
+      name: 'percentage',
+      label: 'percentage'
+    }, {
+      id: 2,
+      name: 'fixed',
+      label: 'fixedAmount'
+    }, {
+      id: 3,
+      name: 'noShipping',
+      label: 'noShipping'
+    }, {
+      id: 4,
+      name: 'freeItems',
+      label: 'freeItems'
+    }]
   }
 
   @Watch('promotion', {immediate: true, deep: true})
@@ -77,10 +115,12 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
       if (newVal.typeBundleBaseds && newVal.typeBundleBaseds.length) {
         this.allBundles = newVal.typeBundleBaseds;
       }
-
     }
   }
-
+  @Watch('useMoreDecimalst', {immediate: true, deep: true})
+  public updateUseMoreDecimalst(newVal: any) {
+    this.money.precision = newVal ? 3 : 2
+  }
   public mounted() {
     this.allBundles = this.$props.promotion.typeBundleBaseds ? this.$props.promotion.typeBundleBaseds : [];
     this.promotionCopy = this.$props.promotion;
@@ -248,10 +288,24 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         self.$set(self, 'allItems', items);
       });
     }
+    this.populateDiscount(bundle)
     this.selectedBundleIndex = index;
     this.editMode = true;
   }
 
+  public populateDiscount(bundle: any) {
+    let discountType:any = this.getDiscountTypeString(bundle)
+    this.selectedDiscountType = this.allDiscountTypes.find((e:any)=> e.name === discountType.name).id
+    if(discountType.id === 1){
+      this.discountPriceAmount = bundle.discount.percentage
+    } else if(discountType.id === 2) {
+      this.discountPriceAmount = bundle.discount.fixed
+    } else if(discountType.id === 4) {
+      let selectedProd = this.$store.state.lookups.products.find((prod:any)=> prod.value.id === bundle.discount.freeItemsJson.products[0].id)
+      this.discountQuantityAmount = bundle.discount.freeItemsJson.products[0].quantity
+      this.addDiscountProduct(selectedProd)
+    }
+  }
   public copyBundle(item: any, index: number) {
     item.id = null;
     item.discount.id = undefined;
@@ -484,13 +538,28 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
       id: this.promotionCopy.id,
       version: this.promotionCopy.version
     };
-    this.selectedBundle.discount = {
-      percentage: this.selectedBundle.discount.percentage,
-      fixed: this.selectedBundle.discount.fixed,
-      noShipping: this.selectedBundle.discount.noShipping,
-      freeItemsJson: this.selectedBundle.discount.freeItemsJson,
-      entireOrder: this.selectedBundle.discount.entireOrder
-    };
+
+    if(this.selectedDiscountType === 1){
+      this.selectedBundle.discount = {
+        percentage: this.discountPriceAmount,
+        entireOrder: this.selectedBundle.discount.entireOrder
+      };
+    } else if(this.selectedDiscountType === 2){
+      this.selectedBundle.discount = {
+        fixed: this.discountPriceAmount
+      }
+    } else if(this.selectedDiscountType === 3){
+      this.selectedBundle.discount = {
+        noShipping: true
+      }
+    } else if(this.selectedDiscountType === 4){
+      this.selectedBundle.discount = {
+        freeItemsJson: {
+          products: [{id: this.selectedProduct.value.id, quantity: this.discountQuantityAmount}],
+          attributes: []//TODO ask P if this should be implemented
+        }
+      }
+    }
     if(this.selectedBundle.id){
       this.typeBundleBasedService.put(this.selectedBundle).then((resp:AxiosResponse) => {
         if(!resp || !resp.data){
@@ -521,5 +590,13 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         this.setAlert('promotionCreated', 'success')
       });
     }
+  }
+
+  public addDiscountProduct(prod:any){
+    if(!prod) return
+    this.selectedProduct = prod
+  }
+  public removeDiscountProduct(prod:any){
+    this.selectedProduct = null
   }
 }

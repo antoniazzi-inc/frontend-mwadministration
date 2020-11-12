@@ -30,8 +30,8 @@ export interface IPromotion extends IBaseEntity {
     id?: number;
     version?: number;
     administrationId?: number;
-    availableFrom?: Moment;
-    availableTo?: Moment;
+    availableFrom?: Moment|any;
+    availableTo?: Moment|any;
     recurrent?: boolean;
     typeTimeBased?: ITypeTimeBased;
     promotionType?: promotionType;

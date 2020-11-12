@@ -122,7 +122,11 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
             invoiceType.ORDER, this.cartOrder.orderCustomer.fullName, this.cartOrder.orderCustomer.email, undefined, undefined, undefined,
             undefined, undefined, undefined, undefined, undefined, undefined, undefined, JSON.stringify(step4.invoiceAdditionalDetails),
             undefined, undefined, undefined, undefined, undefined, undefined, undefined)
-          this.cartOrder.invoice.scheduledOn = moment(step4.invoiceScheduledOn, DATE_FORMAT).format(INSTANT_FORMAT)
+          if(step4.sendInvoice){
+            this.cartOrder.invoice.scheduledOn = moment(step4.invoiceScheduledOn, DATE_FORMAT).format(INSTANT_FORMAT)
+          } else {
+            this.cartOrder.invoice.scheduledOn = undefined
+          }
           if(step4.selectedInvoiceTemplate && step4.selectedInvoiceTemplate.id)
           this.cartOrder.invoice.invoiceTemplate = {
             id: step4.selectedInvoiceTemplate.id,
@@ -132,7 +136,8 @@ export default class NewOrderComponent extends mixins(CommonHelpers, Vue) {
             emailSubject: step4.invoiceEmailSubject,
             emailContent: step4.invoiceEmailContent,
             deliveryDate: step4.invoiceDeliveryDate,
-            details: step4.invoiceAdditionalDetails.split('\n')
+            details: step4.invoiceAdditionalDetails.split('\n'),
+            freeFields: []
           }
           this.cartOrder.invoice.additionalDetailsJson = JSON.stringify(additionalDetalis)
         }

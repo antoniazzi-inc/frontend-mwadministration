@@ -216,7 +216,7 @@
                          :on-text="$t('labels.infinite')"
                          :off-text="$t('labels.limited')"
                          :value.sync="couponMaxTimesUsed"></toggle-switch>
-          <input  v-validate="'numeric|min_value:1'" :class="{'form-control mt-3': true, invalid: errors.has('couponMaxTimesUsed')}" type="number" name="couponMaxTimesUsed" v-show="!couponMaxTimesUsed" v-model="maxTimesUsed"/>
+          <input  v-validate="'numeric|min_value:0'" :class="{'form-control mt-3': true, invalid: errors.has('couponMaxTimesUsed')}" type="number" name="couponMaxTimesUsed" v-show="!couponMaxTimesUsed" v-model="maxTimesUsed"/>
           <span v-if="isStep4Validation" class="text-danger small">{{errors.first('couponMaxTimesUsed')}}</span>
         </div>
         <div class="form-group mt-3" v-if="promotion.promotionType === 'TEMPORARY_COUPON'">

@@ -18,6 +18,9 @@ import {AxiosResponse} from 'axios'
 import {ISearchableSelectConfig, SearchableSelectConfig} from '@/shared/models/SearchableSelectConfig'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import PaymentScheduleComponent from '../../payment-schedule.vue'
+import {MultiLanguageConfig} from "@/shared/models/MultiLanguageConfig";
+import MultiLanguageComponent from "@/components/multiLanguage/MultiLanguage.vue";
+import MultiLanguageHtmlEditorComponent from "@/components/multiLanguageHtmlEditor/MultiLanguageHtmlEditor.vue";
 
 @Component({
   props: {
@@ -29,7 +32,9 @@ import PaymentScheduleComponent from '../../payment-schedule.vue'
     'toggle-switch': ToggleSwitch,
     flatPickr,
     trumbowyg: Trumbowyg,
-    'payment-schedule': PaymentScheduleComponent
+    'payment-schedule': PaymentScheduleComponent,
+    MultiLanguageComponent,
+    MultiLanguageHtmlEditorComponent
   }
 })
 export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
@@ -41,6 +46,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   public paymentSchedule: IPaymentSchedule = new PaymentSchedule();
   public selectedPaymentMethods: IProductPaymentMethod[] = [];
   public allPaymentMethods: any = [];
+  public availableLangs: any = [];
   public forceDirectPayment = false;
   public isSubscription = false;
   public isUsePaymentSchedules = false;
@@ -48,6 +54,9 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   public sentAnnouncement = false;
   public sendInvoiceLater = false;
   public addNewPayment = false;
+  public multiLangConfig = new MultiLanguageConfig(true, false,
+    'labels.announcementMailSubject', '', false,
+    false, false, true, true, false)
   public editorConfig = {};
   public sendInvoiceLaterDate = new Date();
   public startDate = 'now';
@@ -69,8 +78,8 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   };
 
   public announcementJson: any = {
-    subject: null,
-    content: null,
+    subject: [],
+    content: {},
     replyToName: '',
     replyToAddress: ''
   };
@@ -97,7 +106,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
       this.sentAnnouncement = false
       this.announcementJson = this.productCopy.paymentSchedules && this.productCopy.paymentSchedules[0] && this.productCopy.paymentSchedules[0].announcementJson ? this.productCopy.paymentSchedules[0].announcementJson.email : this.announcementJson
     }
-    if (this.announcementJson && this.announcementJson.subject !== null) {
+    if (this.announcementJson && this.announcementJson.subject && this.announcementJson.subject.length) {
       this.sentAnnouncement = true
     }
   }
@@ -327,5 +336,58 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
         })
       }
     }
+  }
+
+  public addNewAnnouncmentSubject(lang:any){
+    const newLang: any = {
+      name: '',
+      description: '',
+      langKey: lang
+    }
+    let index = null
+    if (this.announcementJson.subject) {
+      this.announcementJson.subject.forEach((language: any, ind: number) => {
+        if (language.langKey === lang) {
+          index = ind
+        }
+      })
+    }
+    if (index !== null && this.announcementJson.subject) {
+      this.announcementJson.subject.splice(index, 1)
+    }
+    if (index === null) {
+      if (this.announcementJson.subject) {
+        this.announcementJson.subject.push(newLang)
+      } else {
+        this.announcementJson.subject = [newLang]
+      }
+    }
+  }
+  public changeAnnouncmentSubject(lang:any){
+    let index = null
+    if (this.announcementJson.subject) {
+      this.announcementJson.subject.forEach((language: any, ind: number) => {
+        if (language.langKey === lang.langKey) {
+          index = ind
+        }
+      })
+    }
+    if (index !== null && this.announcementJson.subject) {
+      this.$set(this.announcementJson.subject, index, lang)
+    }
+  }
+  public removeAnnouncmentSubject(lang:any){
+    let index = null
+    this.announcementJson.subject.forEach((language: any, ind: number) => {
+      if (language.langKey === lang.langKey) {
+        index = ind
+      }
+    })
+    if (index !== null) {
+      this.announcementJson.subject.splice(index, 1)
+    }
+  }
+  public updateMailContent(content:any){
+    this.announcementJson.content = content
   }
 }

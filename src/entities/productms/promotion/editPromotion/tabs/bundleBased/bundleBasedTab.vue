@@ -72,6 +72,52 @@
             <br/>
           </form>
         </template>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="discount">
+              <div class="form-group mt-3 row">
+                <div class="col-md-3">
+                  <label>{{ $t('labels.discountType') }}</label>
+                  <select class="form-control" style="max-width:200px;" v-model="selectedDiscountType">
+                    <option v-for="(item, index) in allDiscountTypes" :key="index" v-bind:value=item.id>{{ item.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-6 mt-1 pr-0 disc-details">
+                  <div :class="{'form-group': true}" v-if="selectedDiscountType===1 || selectedDiscountType===2">
+                    <label class="control-label" v-if="selectedDiscountType===1">{{ $t('labels.percentageAmount') }}</label>
+                    <label class="control-label" v-if="selectedDiscountType===2">{{ $t('labels.fixedAmount') }}</label>
+                    <money v-if="selectedDiscountType===1" style="max-width:200px;" v-model="discountPriceAmount"
+                           class="form-control" name="discountAmount1" v-bind="moneyPercentage"></money>
+                    <money v-else-if="selectedDiscountType===2" style="max-width:200px;" v-model="discountPriceAmount"
+                           class="form-control" name="discountAmount" v-bind="money"></money>
+                    <div v-else-if="selectedDiscountType === 2" class="form-group">
+                      <label class="control-label">{{ $t('labels.useThreeDecimals') }}</label>
+                      <toggle-switch id="productArchived"
+                                     :on-text="$t('labels.yes')"
+                                     :off-text="$t('labels.no')"
+                                     :value.sync="useMoreDecimalst"></toggle-switch>
+                    </div>
+                  </div>
+                  <div :class="{'form-group': true}" v-if="selectedDiscountType===4">
+                    <label class="control-label">{{ $t('labels.FreeItem') }}</label>
+                    <searchable-select-component :config="singleSelectConfig"
+                                                 :options="$store.state.lookups.products"
+                                                 :value="selectedProduct"
+                                                 @onChange="addDiscountProduct"
+                                                 @onDelete="removeDiscountProduct"
+                                                 style="max-width:80%"/>
+                  </div>
+                  <div :class="{'form-group': true}" v-if="selectedDiscountType===4">
+                    <label class="control-label">{{ $t('labels.quantityAmount') }}</label>
+                    <input type="number" style="max-width:200px;" class="form-control" name="discountAmount"
+                           v-model="discountQuantityAmount"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="buttons-w text-right mb-4 mt-3">
           <button type="button" class="btn btn-outline-primary" @click.prevent="previousState">{{$t('buttons.cancel')}}</button>
           <button type="button" @click="saveBundle" class="btn btn-primary ml-2">{{$t('buttons.save')}}</button>

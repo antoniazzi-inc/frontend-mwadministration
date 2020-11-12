@@ -1,9 +1,9 @@
 <template>
   <div class="modal" data-backdrop="static" data-keyboard="false" id="mediaLibrary" tabindex="-1" role="dialog"
        ref="mediaLibrary">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
-        <form name="editForm" role="form" novalidate @submit.prevent.stop="saveTag()">
+        <form name="editForm" role="form">
           <div class="modal-header">
             <h5>{{$t('labels.mediaLibrary')}}</h5>
           </div>
@@ -12,25 +12,34 @@
               <div class="row library mr-0 pr-0">
                 <div class="col-md-8 pr-0 mr-0">
                   <div class="row library-filters">
-                    <div class="col-md-6 text-left">
+                    <div class="col-md-4 text-left">
                       <div class="form-group">
-                        <label class="form-control-label">{{$t('mediaType')}}</label>
+                        <label class="form-control-label">{{$t('labels.mediaType')}}</label>
                         <select class="form-control" v-model="searchMediaType" @change="filterMedia">
-                          <option value="*">{{$t('allTypes')}}</option>
-                          <option value="image">{{$t('images')}}</option>
-                          <option value="video">{{$t('video')}}</option>
-                          <option value="application">{{$t('documents')}}</option>
-                          <option value="other">{{$t('other')}}</option>
+                          <option value="all">{{$t('labels.allTypes')}}</option>
+                          <option value="video">{{$t('labels.video')}}</option>
+                          <option value="application">{{$t('labels.documents')}}</option>
+                          <option value="other">{{$t('labels.other')}}</option>
                         </select>
                       </div>
                     </div>
-                    <div class="col-md-6 text-left">
+                    <div class="col-md-4 text-left">
                       <div class="form-group pr-2">
-                        <label class="form-control-label">{{$t('search')}}</label>
+                        <label class="form-control-label">{{$t('labels.search')}}</label>
                         <input type="text" class="form-control" v-model="searchMedia" @input="searchMediaByName"/>
                       </div>
                     </div>
+                    <div class="col-md-4 text-left">
+                      <div class="form-group">
+                        <label class="form-control-label">{{$t('labels.category')}}</label>
+                        <select class="form-control" v-model="mediaCategory" @change="changeMediaCategory">
+                          <option value="products">{{$t('labels.products')}}</option>
+                          <option value="emails">{{$t('labels.emails')}}</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
+                  <v-infinite-scroll :loading="mediaIsLoading" @top="prevPage" @bottom="nextPage" :offset='20' style="height: 55vh; overflow-x: hidden; overflow-y: scroll;">
                   <div class="row media-wrapper" v-if="allItems.length > 0">
                     <div @click="selected = index" :class="{media: true, active: selected === index}"
                          v-for="(item, index) in allItems" :key="index">
@@ -38,11 +47,30 @@
                       <i v-if="selected === index" class="fa fa-check"></i>
                     </div>
                   </div>
-                  <div v-else class="text-center">
+                    <div v-if="mediaIsLoading && !isLastPage">
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <div class="loader">
+                            <div class="spinner-border text-primary" role="status">
+                              <span class="sr-only">Loading...</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="isLastPage && mediaIsLoading">
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <p>{{$t('labels.youHaveReachedTheEnd')}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </v-infinite-scroll>
+                  <div v-if="allItems.length === 0 && !mediaIsLoading" class="text-center">
                     <h4>{{$t('emptyGallery')}}</h4>
                   </div>
                 </div>
-                <div class="col-md-4 pr-0 mr-0 image-info" v-if="selectedItem !== null">
+                <div class="col-md-4 pr-0 mr-0 image-info" v-if="selectedItem">
                   <div class="row">
                     <div class="col-md-5 image-info-s">
                       <div class="libraryImage" :style="{'background': 'url('+getImageUrl(selectedItem)+')'}"></div>
@@ -54,10 +82,10 @@
                     </div>
                     <div class="row delete">
                       <div class="col-md-12">
-                        <span v-if="!removeImageConfirm" class="cursor-pointer text-danger pl-3"
+                        <span v-if="!removeImageConfirm" class="cursor-pointer text-danger ml-3"
                               @click="removeImageConfirm=true">{{$t('labels.deletePermanently')}}</span>
-                        <span v-if="removeImageConfirm" class="cursor-pointer text-danger pl-3" @click="removeImage">{{$t('labels.confirmDelete')}}</span>
-                        <span v-if="removeImageConfirm" class="cursor-pointer text-danger pl-3"
+                        <span v-if="removeImageConfirm" class="cursor-pointer text-danger ml-3" @click="removeImage">{{$t('labels.confirmDelete')}}</span>
+                        <span v-if="removeImageConfirm" class="cursor-pointer text-danger ml-3"
                               @click="removeImageConfirm=false">{{$t('buttons.cancel')}}</span>
                       </div>
                     </div>
@@ -81,9 +109,9 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group text-right">
-                        <button type="button" class="btn btn-secondary" @click="cancelUpdateImage">{{$t('buttons.cancel')}}
+                        <button type="button" class="btn btn-secondary ml-2" @click="cancelUpdateImage">{{$t('buttons.cancel')}}
                         </button>
-                        <button type="button" class="btn btn-primary" @click="updateImage">{{$t('buttons.save')}}</button>
+                        <button type="button" class="btn btn-primary ml-2" @click="updateImage">{{$t('buttons.save')}}</button>
                       </div>
                     </div>
                   </div>
@@ -113,8 +141,6 @@
 <style scoped>
   .media-wrapper {
     position: relative;
-    overflow-y: auto;
-    max-height: 500px;
   }
 
   .media {
@@ -156,8 +182,8 @@
 
   .image-info-s {
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
   }
 
   .libraryImage {

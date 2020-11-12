@@ -81,10 +81,10 @@ export default class DiscountsTabComponent extends mixins(Vue, CommonHelpers) {
       return this.descDiscount(promo.value.typeLoyaltyBased.discount, null)
     }
     else if (promo.value.typeQuantityBaseds) {
-      return this.descDiscount(promo.value.typeQuantityBaseds.discount, promo.value)
+      return this.descDiscount(promo.value.typeQuantityBaseds[0].discount, promo.value)
     }
     else if (promo.value.typePriceBaseds) {
-      return this.descDiscount(promo.value.typePriceBaseds.discount, promo.value)
+      return this.descDiscount(promo.value.typePriceBaseds[0].discount, promo.value)
     }
     else if (promo.value.typePersonalCouponBased) {
       return this.descDiscount(promo.value.typePersonalCouponBased.discount, promo.value)

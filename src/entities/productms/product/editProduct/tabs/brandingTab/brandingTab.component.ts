@@ -44,6 +44,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public currentTab = 'general';
   public tabIndex = 0;
   public indexToRemove: any = null;
+  public mediaToRemove: any = null;
   public productCopy: IProduct = new Product();
   public media: IMedia = new Media();
   public selectedCompany: ICompany = new Company();
@@ -68,6 +69,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   public images: any[] = [];
   public backToCallingPage = false;
   public isMediaLoading = false;
+  public activeLibrary = false;
   public showImageEditor = false;
   public isSaving = false;
   public imageToDelete: any = {};
@@ -324,25 +326,7 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     (<any>this.$refs.removeEntityImage).hide()
   }
 
-  public b64toBlob(resp: any, contentType = '', sliceSize = 512) {
-    const byteCharacters = atob(resp);
-    const byteArrays = [];
 
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, {type: contentType});
-    return blob;
-  }
 
   public editImage(image: any, index: any) {
     /*const self = this;
@@ -492,16 +476,9 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   }
 
   public loadImageGallery(toAvoid?: any) {
-    const self = this;
-    this.isMediaLoading = true;
-    this.productService.loadAllMedia({page: 0, size: 100000, sort: {}}).then((resp: any) => {
-      this.isMediaLoading = false;
-      this.allMedia = resp.data;
-      if (!toAvoid) {
-        // @ts-ignore
-        self.$refs.mediaLib.openMediaLibrary()
-      }
-    })
+    // @ts-ignore
+    this.$refs.mediaLib.openMediaLibrary()
+    this.activeLibrary = true
   }
 
   public resetFeatureImage() {
@@ -570,12 +547,20 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
     })
   }
   public onImageRemove(e: any) {
-    this.mediaService.delete(e.mediaId).then((resp:AxiosResponse)=>{
+    //@ts-ignore
+    $(this.$refs.deleteImage).modal('show')
+    this.mediaToRemove = e.mediaId
+  }
+  public deleteImageConfirmed() {
+    //@ts-ignore
+    $(this.$refs.deleteImage).modal('hide')
+    this.mediaService.delete(this.mediaToRemove).then((resp:AxiosResponse)=>{
       if(resp){
-        let ind = this.allMediaFiles.findIndex((obj:any)=>obj.mediaId === e.mediaId)
+        let ind = this.allMediaFiles.findIndex((obj:any)=>obj.mediaId === this.mediaToRemove)
         if(ind > -1){
           this.allMediaFiles.splice(ind, 1)
           this.setAlert('imageRemoved', 'success');
+          this.mediaToRemove = null
         }
       }
     })

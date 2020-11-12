@@ -688,6 +688,25 @@ export default class CommonHelpers extends Vue {
       })
     })
   }
+  public b64toBlob(resp: any, contentType = '', sliceSize = 512) {
+    const byteCharacters = atob(resp);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+  }
 
   public arrayBufferToBase64(buffer: any) {
     let binary = '';
@@ -980,4 +999,66 @@ export default class CommonHelpers extends Vue {
       this.$store.commit('recentItems', items)
     }
 
+  public objectsEqual(o1:any, o2:any) {
+    if(typeof o1 === 'object' && Object.keys(o1).length > 0){
+      if(Object.keys(o1).length === Object.keys(o2).length
+        && Object.keys(o1).every(p => this.objectsEqual(o1[p], o2[p]))){
+        return true
+      } else {
+        if(o1 === o2){
+          return true
+        } else {
+          return false
+        }
+      }
+    } else {
+      return false
+    }
+  }
+  public arraysEqual (a1:any, a2:any) { a1.length === a2.length && a1.every((o:any, idx:any) => this.objectsEqual(o, a2[idx]));}
+  /*
+    * Name: checkIfOrderLineExists
+    * arg: /
+    * description: Generate number text string
+    * Author: Nick Dam
+    */
+  public checkIfOrderLineExists(orderLines:any, id:any, checkField:string, attributeValueId?:any) {
+    let result = false
+    let orderIndex = null
+    if(orderLines && orderLines.length) {
+      orderLines.forEach((orderLine:any, ind:any)=>{
+        switch (checkField){
+          case 'beneficiary':
+            if(orderLine.orderLineBeneficiary && orderLine.orderLineBeneficiary.beneficiaryRelationId === id){
+              result = true
+              orderIndex = ind
+            }
+            break;
+          case 'product':
+            if(orderLine.orderProduct.productId === id){
+              result = true
+              orderIndex = ind
+            }
+            break;
+          case 'attributeValues':
+            if(orderLine.orderProduct && orderLine.orderProduct.orderProductAttributeValues && orderLine.orderProduct.orderProductAttributeValues.length > 0) {
+              let res:any = []
+              id.forEach((val:any, ind:any) => {
+                let index = orderLine.orderProduct.orderProductAttributeValues.findIndex((v:any)=> v.attributeId === val.attributeId && val.value.id === v.attributeValueId)
+                if(index > -1) {res.push(true) }else{ res.push(false)}
+              })
+              if(res.findIndex((r:any) => r === false) > -1){
+                result = false
+                orderIndex = null
+              }else {
+                result = true
+                orderIndex = ind
+              }
+            }
+            break;
+        }
+      })
+    }
+    return {result: result, orderLineIndex: orderIndex}
+  }
 }

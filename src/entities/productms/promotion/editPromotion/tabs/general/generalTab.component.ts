@@ -15,7 +15,7 @@ import {mixins} from "vue-class-component";
 import {AxiosResponse} from "axios";
 import promotionsService from "@/shared/services/promotionsService";
 import discountsService from "@/shared/services/discountsService";
-import {DATE_FORMAT} from "@/shared/filters";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 
 @Component({
   props: {
@@ -292,8 +292,8 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       version: this.promotionCopy.version,
       createdOn: this.promotionCopy.createdOn,
       updatedOn: this.promotionCopy.updatedOn,
-      availableFrom: moment(this.availableFrom),
-      availableTo: moment(this.availableTo),
+      availableFrom: moment(this.availableFrom, DATE_FORMAT).format(INSTANT_FORMAT),
+      availableTo:this.availableTo ? moment(this.availableTo, DATE_FORMAT).format(INSTANT_FORMAT) : null,
       promotionType: this.promotionCopy.promotionType,
       recurrent: this.promotionCopy.recurrent,
       products: prods,

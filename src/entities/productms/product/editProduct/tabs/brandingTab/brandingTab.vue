@@ -271,7 +271,7 @@
       <div :class="{'tab-pane': true, 'active': currentTab === 'images'}" id="images" role="tabpanel" aria-labelledby="images-tab">
         <div class="row">
           <div class="form-group mt-4 col-md-12">
-            <button class="btn btn-outline-primary mb-2" @click="loadImageGallery(false)">{{$t('labels.openMediaLibrary')}}</button>
+            <button class="btn btn-outline-primary mb-2" @click="loadImageGallery()">{{$t('labels.openMediaLibrary')}}</button>
             <upload-widget @onError="imageUploadError" @changeFeaturedImage="changeFeaturedImage" :showFeaturedFlag="true" :allFiles="allMediaFiles" @onUpload="imageLoaded" @newImageAdded="imageUploaded" @onProgress="onProgress" @onRemove="onImageRemove" :multiple="true"/>
           </div>
         </div>
@@ -316,7 +316,30 @@
             </div>
           </div>
         </div>
-    <media-library ref="mediaLib" :items="allMedia" @onSearch="searchMedia" @retrieveItems="loadImageGallery(false)" @onUploadGallery="uploadFromGallery" @onUpload="uploadImgGallery" @onFilter="filterMedia" @onRemove="removeImage" :isLoading="isMediaLoading" mediaLibraryType="images"></media-library>
+    <div class="modal" data-backdrop="static" data-keyboard="false" :id="'deleteImage'" tabindex="-1" role="dialog" ref="deleteImage">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>{{$t('labels.confirmDelete')}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="mt-4">
+              <h5>{{$t('labels.areYouSureToDelete')}}</h5>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="deleteImageConfirmed">
+              {{$t('buttons.confirm')}}
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('buttons.cancel')}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <media-library ref="mediaLib" mediaLibraryType="products" :active="activeLibrary" @close="activeLibrary=false"></media-library>
   </div>
 </template>
 <script lang="ts" src="./brandingTab.component.ts"></script>

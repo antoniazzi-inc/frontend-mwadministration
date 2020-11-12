@@ -19,6 +19,7 @@ declare module 'mjml-body'
 declare module 'mjml-column'
 declare module 'mjml-section'
 declare module 'vuedraggable'
+declare module 'v-infinite-scroll'
 declare module 'mjml-text'
 declare module 'debounce'
 

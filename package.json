@@ -10,7 +10,7 @@
   "dependencies": {
     "@xkeshi/image-compressor": "^0.5.3",
     "axios": "^0.19.2",
-    "bootstrap": "^4.4.1",
+    "bootstrap": "^4.5.3",
     "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.6.4",
     "cropperjs": "^1.5.7",
@@ -26,6 +26,7 @@
     "query-builder-vue": "^1.0.1",
     "sockjs-client": "^1.4.0",
     "util": "^0.12.2",
+    "v-infinite-scroll": "^1.0.4",
     "v-money": "^0.8.1",
     "validate-vat-ts": "^1.1.0",
     "vee-validate": "^2.2.15",

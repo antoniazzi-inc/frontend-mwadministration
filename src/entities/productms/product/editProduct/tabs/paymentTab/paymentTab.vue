@@ -58,7 +58,7 @@
           </select>
           <span class="small text-danger">{{errors.first('period')}}</span>
         </div>
-        <div class="form-group col-auto" v-if="isSubscription && productCopy.paymentSchedules && productCopy.paymentSchedules.length">
+        <div class="form-group col-auto" v-if="isSubscription">
           <label class="control-label">{{$t('labels.sentAnnouncementMail')}}</label>
           <toggle-switch id="sentAnnouncementMail"
              :on-text="$t('labels.yes')"
@@ -119,9 +119,13 @@
               </button>
             </div>
             <div class="modal-body text-left mt-5" v-if="announcementJson">
-              <div class="col-auto form-group">
-                <label class="form-control-label">{{$t('labels.announcementMailSubject')}}</label>
-                <input class="form-control" type="text" v-model="announcementJson.subject"/>
+              <div class="col-auto form-group" v-if="announcementJson.subject">
+                <multi-language-component
+                  :config="multiLangConfig"
+                  :value="announcementJson.subject"
+                  @onAdd="addNewAnnouncmentSubject"
+                  @onChange="changeAnnouncmentSubject"
+                  @onRemove="removeAnnouncmentSubject"/>
               </div>
               <div class="col-auto form-group">
                 <label class="form-control-label">{{$t('labels.replayToName')}}</label>
@@ -133,7 +137,10 @@
               </div>
               <div class="col-auto form-group">
                 <label class="form-control-label">{{$t('labels.announcementMailContent')}}</label>
-                <trumbowyg v-model="announcementJson.content" :config="editorConfig" class="form-control" name="contactInfo"></trumbowyg>
+                <MultiLanguageHtmlEditorComponent
+                  :availableLangs="availableLangs"
+                  :content.sync="announcementJson.content"
+                  @contentChanged="updateMailContent"/>
               </div>
             </div>
             <div class="modal-footer">

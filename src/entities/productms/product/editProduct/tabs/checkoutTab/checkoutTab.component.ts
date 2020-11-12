@@ -191,6 +191,9 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
       dto.typeDigital = undefined
       dto.typeService = undefined
       dto.typePhysical = undefined
+      dto.followupAction = undefined
+      dto.paymentSchedules = undefined
+      dto.typeCourse = undefined
       dto.productSubscription = undefined
       this.productService.put(dto).then((resp: AxiosResponse) => {
         this.setAlert('productUpdated', 'success')

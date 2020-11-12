@@ -25,7 +25,7 @@ import {TypePersonalCouponBased} from "@/shared/models/productms/TypePersonalCou
 import {TypePriceBased} from "@/shared/models/productms/TypePriceBasedModel";
 import {TypeQuantityBased} from "@/shared/models/productms/TypeQuantityBasedModel";
 import {AxiosResponse} from "axios";
-import {DATE_FORMAT} from "@/shared/filters";
+import {DATE_FORMAT, INSTANT_FORMAT} from "@/shared/filters";
 
 @Component({
   components: {
@@ -453,10 +453,12 @@ export default class NewPromotionComponent extends mixins(Vue, CommonHelpers) {
     this.validateStep().then(resp => {
       if (resp) {
         this.createDto().then(() => {
-          this.promotion.availableFrom = moment(this.availableFrom, 'YYYY-MM-DDTHH:mm')
+          this.promotion.availableFrom = moment(this.availableFrom, DATE_FORMAT).format(INSTANT_FORMAT)
           console.log(this.promotion.availableFrom)
-          this.promotion.availableTo = moment(this.availableTo, 'YYYY-MM-DDTHH:mm')
-          if (this.promotion.availableTo === null) this.promotion.availableTo = undefined
+          if(this.availableTo){
+            this.promotion.availableTo = moment(this.availableTo, DATE_FORMAT).format(INSTANT_FORMAT)
+            if (this.promotion.availableTo === null) this.promotion.availableTo = undefined
+          }
           this.promotionService.post(this.promotion).then((resp: AxiosResponse) => {
             if (resp) {
               this.setAlert('promotionCreated', 'success')

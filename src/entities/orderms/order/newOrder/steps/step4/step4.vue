@@ -18,6 +18,17 @@
 
         <div class="form-row">
           <div class="col-md-4">
+            <label class="control-label">{{$t('labels.sendInvoice')}}?</label>
+            <div class="date-input">
+              <toggle-switch
+                :on-text="$t('labels.yes')"
+                :off-text="$t('labels.no')"
+                :value.sync="sendInvoice"/>
+            </div>
+          </div>
+        </div>
+        <div class="form-row mt-3">
+          <div class="col-md-4" v-if="sendInvoice">
             <label class="control-label">{{$t('labels.scheduledOnDate')}}</label>
             <div class="date-input">
               <flat-pickr :config="dateConfig" v-model="invoiceScheduledOn" class="single-daterange form-control"></flat-pickr>

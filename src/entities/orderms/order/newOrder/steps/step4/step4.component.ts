@@ -36,6 +36,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
   public dateConfig: any
   public invoiceDate: any
   public invoiceScheduledOn: any
+  public sendInvoice: any
   public invoiceLanguage: any
   public invoiceDeliveryDate: any
   public invoicePreviewData: any
@@ -61,6 +62,7 @@ export default class Step4Component extends mixins(CommonHelpers, Vue) {
       'labels.chooseInvoiceTemplate', '', false,
       false, true, false, false, false, true)
     this.selectedInvoiceTemplate = null
+    this.sendInvoice = true
     this.invoiceAdditionalDetails = ''
     this.invoiceLanguage = ''
     this.invoiceEmailSubject = []
