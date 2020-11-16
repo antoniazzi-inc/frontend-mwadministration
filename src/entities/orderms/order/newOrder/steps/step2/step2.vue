@@ -137,6 +137,14 @@
              @onChange="addSelectedPromotion"
              @onDelete="removeSelectedPromotion"/>
         </div>
+        <div class="form-group col-md-12 mt-4" v-if="selectedPromotion && selectedPromotion.value.promotionType === 'BUNDLE'">
+          <label class="form-control-label">{{$t('labels.selectBundles')}}</label>
+          <searchable-select-component :config="multiSelectConfigBundles"
+                                       :options="allBundles"
+                                       :value="selectedBundles"
+                                       @onChange="changeSelectedBundles"
+                                       @onDelete="removeSelectedBundles"/>
+        </div>
         <div class="form-group text-right col-md-12">
           <button class="btn btn-outline-danger" @click="closeAddPromotion">{{$t('buttons.cancel')}}</button>
           <button class="btn btn-primary ml-2" @click.stop.prevent="addNewOrderPromotion">{{$t('buttons.add')}}</button>

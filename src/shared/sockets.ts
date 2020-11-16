@@ -271,13 +271,8 @@ export default class Sockets extends mixins(CommonHelpers, Vue) {
         allToUpdate = lookupData
         indexToUpdate = null
         let toCompare = obj.content.id ? obj.content.id : obj.content.value.id ? obj.content.value.id : null
-        indexToUpdate = this.store.state.lookups[lookupName].findIndex((e:any, ind:any)=> {
-          if(e.id && e.id === toCompare){
-            return ind
-          } else if(e.value && e.value.id === toCompare){
-            return  ind
-          }
-        })
+        indexToUpdate = this.store.state.lookups[lookupName].findIndex((e:any, ind:any)=>
+          (e.id && e.id === toCompare) || (e.value && e.value.id === toCompare))
         if (indexToUpdate > -1) {
           allToUpdate[indexToUpdate] = obj.content
           this.store.commit(lookupName, allToUpdate)

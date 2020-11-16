@@ -2077,8 +2077,8 @@ export const relation = {
       subField: null,
       sort: false,
       method: function (item: any) {
-        if (item.companies && item.companies.length > 0) {
-          return item.companies[0].name
+        if (item.relationProfile && item.relationProfile.companyName) {
+          return item.relationProfile.companyName
         }
         return '-'
       }

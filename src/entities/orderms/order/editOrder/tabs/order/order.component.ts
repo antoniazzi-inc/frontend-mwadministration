@@ -568,7 +568,6 @@ public getPromoName(item:any){
     let benefInd = this.selectedBeneficiary.findIndex((e:any)=>e.beneficiaryRelationId === this.orderCopy.orderCustomer.relationId)
     if(benefInd === -1)
       benefInd = this.selectedBeneficiary.findIndex((e:any)=>!e.beneficiaryRelationId && e.relationId === this.orderCopy.orderCustomer.relationId)
-    debugger
     if (this.selectedBeneficiary.length && benefInd === -1) {
       this.selectedBeneficiary.forEach(beneficiary => {
         self.createNewOrderLine(beneficiary).then((resp: any) => {
@@ -695,7 +694,6 @@ public getPromoName(item:any){
           orderProduct: v.attribute.product
         });
       });
-      debugger
       let beneficiaryFullName: any, newBeneficiary, beneficiaryAddress
       //@ts-ignore
       if (beneficiary && beneficiary.beneficiaryRelationId !== self.$props.order.orderCustomer.relationId) {

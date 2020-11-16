@@ -12,13 +12,15 @@ import typebundlebasedsService from "@/shared/services/type-bundle-basedsService
 import SearchableSelectComponent from "@/components/searchableSelect/searchableSelect.vue";
 import {MoneyConfig} from "@/shared/models/moneyConfig";
 import Store from "@/store";
+import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
 
 @Component({
   props: {
     promotion: Object
   },
   components: {
-    SearchableSelectComponent
+    SearchableSelectComponent,
+    ToggleSwitch
   },
   mounted() {
 
@@ -33,6 +35,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
   public selectedBundle: any
   public itemToDelete: any
   public selectedBundleIndex: any
+  public wholeOrder: boolean
   public selectedDiscountType: any
   public discountQuantityAmount: any
   public multiSelectConfigProduct: ISearchableSelectConfig
@@ -72,6 +75,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     this.bundleToDelete = null
     this.discountQuantityAmount = null
     this.useMoreDecimalst = false
+    this.wholeOrder = false
     this.selectedBundleIndex = null
     this.selectedProduct = null
     this.selectedDiscountType = null
@@ -296,6 +300,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
   public populateDiscount(bundle: any) {
     let discountType:any = this.getDiscountTypeString(bundle)
     this.selectedDiscountType = this.allDiscountTypes.find((e:any)=> e.name === discountType.name).id
+    this.wholeOrder = bundle.discount.entireOrder
     if(discountType.id === 1){
       this.discountPriceAmount = bundle.discount.percentage
     } else if(discountType.id === 2) {
@@ -315,7 +320,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     item.discount.updatedOn = null;
     this.typeBundleBasedService.post(item).then((resp:AxiosResponse) => {
       this.allItems.push(resp.data);
-      this.$emit('updatePromotion', undefined);
+      this.$emit('updatePromo', undefined);
       this.editBundle(resp.data, this.allItems.length-1);
     });
   }
@@ -500,7 +505,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         if(ind > -1) this.promotionCopy.typeBundleBaseds?.splice(ind, 1)
       }
       this.setAlert('bundleRemoved', 'success')
-      this.$emit('updatePromotion', this.promotionCopy);
+      this.$emit('updatePromo', undefined);
       this.cancelNewBundle();
     });
   }
@@ -512,6 +517,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     this.closeDialog();
   }
   public saveBundle(){
+    let self = this
     let allProducts:any = [];
     let allAttributeValues:any = [];
     $.each(this.allItems, function (k, v) {
@@ -542,11 +548,12 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
     if(this.selectedDiscountType === 1){
       this.selectedBundle.discount = {
         percentage: this.discountPriceAmount,
-        entireOrder: this.selectedBundle.discount.entireOrder
+        entireOrder: this.wholeOrder
       };
     } else if(this.selectedDiscountType === 2){
       this.selectedBundle.discount = {
-        fixed: this.discountPriceAmount
+        fixed: this.discountPriceAmount,
+        entireOrder: this.wholeOrder
       }
     } else if(this.selectedDiscountType === 3){
       this.selectedBundle.discount = {
@@ -565,13 +572,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         if(!resp || !resp.data){
           return this.setAlert('promotionUpdateError', 'error')
         }
-        if(this.promotionCopy.typeBundleBaseds){
-          let ind:any = this.promotionCopy.typeBundleBaseds?.findIndex((e:any) => e.id === resp.data.id)
-          if(ind > -1){
-            this.promotionCopy.typeBundleBaseds[ind] = resp.data
-          }
-        }
-        this.$emit('updatePromotion', this.promotionCopy);
+        this.$emit('updatePromo', undefined);
         this.editMode = false;
         this.selectedBundle = null;
         this.setAlert('promotionUpdated', 'success')
@@ -581,10 +582,7 @@ export default class BundleBasedTabComponent extends mixins(CommonHelpers, Vue) 
         if(!resp || !resp.data){
           return this.setAlert('promotionUpdateError', 'error')
         }
-        if(this.promotionCopy.typeBundleBaseds){
-          this.promotionCopy.typeBundleBaseds.push(resp.data)
-        }
-        this.$emit('updatePromotion', undefined);
+        this.$emit('updatePromo', undefined);
         this.editMode = false;
         this.selectedBundle = null;
         this.setAlert('promotionCreated', 'success')

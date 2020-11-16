@@ -51,6 +51,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public singleSelectConfigEvents: ISearchableSelectConfig
   public singleSelectConfigBeneficiary: ISearchableSelectConfig
   public singleSelectConfigPromotion: ISearchableSelectConfig
+  public multiSelectConfigBundles: ISearchableSelectConfig
   public cartOrderCopy: ICartOrder
   public selectedProduct: any
   public selectedPaymentSchedule: any
@@ -70,6 +71,8 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public allEvents: any[]
   public availablePromotions: any
   public allPromotions: any[]
+  public allBundles: any[]
+  public selectedBundles: any[]
   public selectedBeneficiaries: any[]
   public allProducts: any[]
   public allOrderLines: any[]
@@ -108,6 +111,8 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.productService = productService.getInstance()
     this.courseService = coursesService.getInstance()
     this.productAttributes = []
+    this.selectedBundles = []
+    this.allBundles = []
     this.allProducts = []
     this.availablePromotions = []
     this.selectedBeneficiaries = []
@@ -126,6 +131,9 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.singleSelectConfigPromotion = new SearchableSelectConfig('label',
       'labels.choosePromotion', '', false,
       false, true, false, false, false, true)
+    this.multiSelectConfigBundles = new SearchableSelectConfig('label',
+      'labels.chooseBundle', '', false,
+      false, true, true, false, false, true)
     this.singleSelectConfigAttribute = new SearchableSelectConfig('label',
       'labels.chooseProductAttribute', '', false,
       false, true, true, false, false, false)
@@ -178,7 +186,6 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
               value: e
             })
           })
-          debugger
           self.allEvents = allEvents
         }
         if (resp.data.attributes && resp.data.attributes.length) {
@@ -376,7 +383,9 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       }
       this.$emit('onUpdate', {field: 'orderLines', payload: self.allOrderLines})
       this.addProduct = false
-      this.allProducts.push(this.selectedProduct)
+      let prodInd = this.allProducts.findIndex((e:any)=> e.value.id === this.selectedProduct.value.id)
+      if(prodInd === -1)
+        this.allProducts.push(this.selectedProduct)
       this.populatePromotions()
     })
   }
@@ -440,6 +449,17 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
 
   public addSelectedPromotion(promo: any) {
     this.selectedPromotion = promo
+    let self = this
+    if(promo && promo.value.promotionType === 'BUNDLE'){
+      let allDiscounts:any = []
+      promo.value.typeBundleBaseds.forEach((b:any)=>{
+        allDiscounts.push({
+          label: b.id,
+          value: b
+        })
+      })
+      this.allBundles = allDiscounts
+    }
   }
 
   public removeSelectedPromotion(promo: any) {
@@ -454,8 +474,28 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public addNewOrderPromotion() {
     this.allPromotions.push(this.selectedPromotion)
     let discountType: any = this.getDiscountType(this.selectedPromotion.value).type
-    if (this.cartOrderCopy.orderDiscountLines) {
-
+    if(this.selectedPromotion && this.selectedPromotion.value.promotionType === "BUNDLE"){
+      this.selectedBundles.forEach((bundle:any)=>{
+        let discountLine = {
+          relationId: this.cartOrderCopy.orderCustomer? this.cartOrderCopy.orderCustomer.relationId : undefined,
+          discountId: bundle.value.discount.id,
+          percentage: bundle.value.discount.percentage,
+          fixed: bundle.value.discount.fixed,
+          noShipping: bundle.value.discount.noShipping ? bundle.value.discount.noShipping : false,
+          freeItemsJson: bundle.value.discount.freeItemsJson,
+          entireOrder: bundle.value.entireOrder,
+          orderPromotion: new OrderPromotion(undefined, undefined, undefined, undefined, undefined, this.cartOrderCopy.orderCustomer?.relationId,
+            this.selectedPromotion.value.id, this.selectedPromotion.value.promotionType, this.getMultiLangName(this.selectedPromotion.value.promotionLanguages).name,
+            this.getMultiLangName(this.selectedPromotion.value.promotionLanguages).description, this.selectedPromotion.value.availableFrom, this.selectedPromotion.value.availableTo,
+            this.selectedPromotion.value.recurrent, this.selectedPromotion.value.promotionTypeDetailsJson, this.selectedPromotion.value.products, this.selectedPromotion.value.attributeValues)
+        }
+        if (this.cartOrderCopy.orderDiscountLines) {
+          this.cartOrderCopy.orderDiscountLines.push(discountLine)
+        }else{
+          this.cartOrderCopy.orderDiscountLines = [discountLine]
+        }
+      })
+    } else if (this.cartOrderCopy.orderDiscountLines) {
       this.cartOrderCopy.orderDiscountLines.push({
         relationId: this.cartOrderCopy.orderCustomer? this.cartOrderCopy.orderCustomer.relationId : undefined,
         discountId: this.selectedPromotion.value[discountType].discount.id,
@@ -588,9 +628,17 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       const isWholeOrder = (promo.value[discountType].discount) ? promo.value[discountType].discount.entireOrder : false
       if (isWholeOrder) allAvailablePromotions.push(promo)
     })
-    let finalArr = allAvailablePromotions.concat(allPromotions)
+    let finalArr = allPromotions.concat(allAvailablePromotions)
     Vue.nextTick(function () {
-      self.availablePromotions = Array.from(new Set(finalArr))
+      let promoToAdd = Array.from(new Set(finalArr))
+      self.availablePromotions = promoToAdd
     })
+  }
+
+  public changeSelectedBundles(bundles:any){
+    this.selectedBundles = bundles
+  }
+  public removeSelectedBundles(bundles:any){
+    this.selectedBundles = bundles
   }
 }

@@ -567,7 +567,6 @@ export default class BrandingTabComponent extends mixins(CommonHelpers) {
   }
 
   public onProgress(e:any) {
-    debugger
   }
   public loadFileLibrary() {
     this.isMediaLoading = true;

@@ -26,6 +26,7 @@ import Store from '@/store/index'
 import {FollowupAction} from '@/shared/models/productms/FollowupActionModel'
 import {DATE_FORMAT} from "@/shared/filters";
 import {ITaxRate} from "@/shared/models/administrationms/tax-rate.model";
+import {VoucherType} from "@/shared/models/orderms/OrderProductPurchasedVoucher";
 
 @Component({
   components: {

@@ -16,6 +16,7 @@ import { IProductPaymentMethod } from './ProductPaymentMethodModel'
 import { IProductLanguage } from './ProductLanguageModel'
 import { IMedia } from './MediaModel'
 import { IPromotion } from './PromotionModel'
+import {ITypeVoucher} from "@/shared/models/productms/TypeVoucherModel";
 export const enum productType {
     COURSE = 'COURSE',
     DIGITAL = 'DIGITAL',
@@ -66,6 +67,7 @@ export interface IProduct extends IBaseEntity {
     typePhysical?: ITypePhysical;
     typeService?: ITypeService;
     typeCourse?: ITypeCourse;
+    typeVoucher?: ITypeVoucher;
     attributes?: IAttribute[];
     paymentSchedules?: IPaymentSchedule[];
     productCategories?: IProductCategory[];
@@ -117,6 +119,7 @@ constructor(
     public followupAction?: IFollowupAction,
     public typeDigital?: ITypeDigital,
     public typePhysical?: ITypePhysical,
+    public typeVoucher?: ITypeVoucher,
     public typeService?: ITypeService,
     public typeCourse?: ITypeCourse,
     public attributes?: IAttribute[],

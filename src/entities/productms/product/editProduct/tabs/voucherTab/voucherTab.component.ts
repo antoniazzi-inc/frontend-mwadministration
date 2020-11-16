@@ -13,6 +13,9 @@ import { AxiosResponse } from 'axios'
 import SearchableSelectComponent from '@/components/searchableSelect/searchableSelect.vue'
 import { SearchableSelectConfig } from '@/shared/models/SearchableSelectConfig'
 import Store from '@/store/index'
+import {VoucherType} from "@/shared/models/orderms/OrderProductPurchasedVoucher";
+import TypeVoucherBasedService from "@/shared/services/type-voucher-basedsService";
+import productService from "@/shared/services/productService";
 
 @Component({
   props: {
@@ -27,6 +30,9 @@ import Store from '@/store/index'
 })
 export default class VoucherTabComponent extends mixins(Vue, CommonHelpers) {
     public voucherSettings:any
+    public productService:any
+    public voucherService:any
+    public voucherTypes:any
     public multiSelectConfig: SearchableSelectConfig = new SearchableSelectConfig('name',
       'labels.chooseOption', '', false,
       false, true, true, false)
@@ -49,15 +55,92 @@ export default class VoucherTabComponent extends mixins(Vue, CommonHelpers) {
     };
     constructor() {
       super();
+      this.voucherService = TypeVoucherBasedService.getInstance()
+      this.productService = productService.getInstance()
+      this.voucherTypes = VoucherType
       this.voucherSettings = {
-        type: 'money',
+        type: 'MONEY',
         numberOfMinutes: 0,
         numberOfPoints: 0,
+        moneyValue: 0,
         daysValid: 0
       }
     }
-
-    public goBack(){}
+    @Watch('product', {immediate: true, deep: true})
+    public updateVoucher(newVal:any){
+      if(newVal && newVal.typeVoucher){
+        this.voucherSettings = {
+          daysValid: newVal.typeVoucher.daysValid,
+          type: '',
+          numberOfMinutes: 0,
+          numberOfPoints: 0,
+          moneyValue: 0,
+        }
+        switch (newVal.typeVoucher.voucherType) {
+          case 'MONEY':
+            this.voucherSettings.moneyValue = newVal.typeVoucher.value
+            this.voucherSettings.type = 'MONEY'
+            break
+          case 'MINUTES':
+            this.voucherSettings.numberOfMinutes = newVal.typeVoucher.value
+            this.voucherSettings.type = 'MINUTES'
+            break
+          case 'POINTS':
+            this.voucherSettings.numberOfPoints = newVal.typeVoucher.value
+            this.voucherSettings.type = 'POINTS'
+            break
+        }
+      }
+    }
+    public goBack(){
+      this.$router.go(-1)
+    }
     public cancel(){}
-    public save(){}
+    public save(){
+      let dto = {
+        id: this.$props.product.typeVoucher ? this.$props.product.typeVoucher.id : undefined,
+        version: this.$props.product.typeVoucher ? this.$props.product.typeVoucher.version : undefined,
+        voucherType: '',
+        daysValid: this.voucherSettings.daysValid,
+        value: null,
+        product: {
+          id: this.$props.product.id,
+          version: this.$props.product.version
+       }
+      }
+      debugger
+      switch (this.voucherSettings.type) {
+        case 'MONEY':
+          dto.value = this.voucherSettings.moneyValue
+          dto.voucherType = this.voucherTypes.MONEY
+          break
+        case 'TIME':
+          dto.value = this.voucherSettings.numberOfMinutes
+          dto.voucherType = this.voucherTypes.MINUTES
+          break
+        case 'POINTS':
+          dto.value = this.voucherSettings.numberOfPoints
+          dto.voucherType = this.voucherTypes.POINTS
+          break
+      }
+      if(this.$props.product.typeVoucher && this.$props.product.typeVoucher.id){
+        this.voucherService.put(dto).then((resp:AxiosResponse) => {
+          if(resp && resp.data){
+            this.setAlert('typeVoucherUpdated', 'success')
+            let prod = this.$props.product
+            prod.typeVoucher = resp.data
+            this.$emit('update', prod)
+          }
+        })
+      } else {
+        let dtoProd = this.$props.product
+        dtoProd.typeVoucher = dto
+        this.productService.put(dtoProd).then((resp:AxiosResponse) => {
+          if(resp && resp.data){
+            this.setAlert('typeVoucherUpdated', 'success')
+            this.$emit('update', resp.data)
+          }
+        })
+      }
+    }
 }

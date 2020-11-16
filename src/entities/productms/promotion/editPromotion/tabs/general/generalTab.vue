@@ -87,7 +87,7 @@
             </div>
             <div class="col-md-6">
               <div class="col-md-12">
-                <div v-if="selectedDiscountType !== 3 && selectedDiscountType !== 4">
+                <div v-if="selectedDiscountType !== 3 && selectedDiscountType !== 4 && promotionCopy.promotionType !== 'BUNDLE'">
                   <label class="control-label">{{ $t('labels.applyToWholeOrder') }}</label>
                   <toggle-switch
                     :on-text="$t('labels.yes')"

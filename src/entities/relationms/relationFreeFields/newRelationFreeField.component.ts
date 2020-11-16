@@ -213,11 +213,11 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
         self.selectedOption.customFieldOptionLanguages && self.selectedOption.customFieldOptionLanguages[0].name
           ? self.selectedOption.code = self.selectedOption.customFieldOptionLanguages[0].name.replace(/\s/g, '_')
           : self.selectedOption.code = ''
-        this.selectedOption.customField = {
-          id: this.freeField.id,
-          version: this.freeField.version
+        self.selectedOption.customField = {
+          id: self.freeField.id,
+          version: self.freeField.version
         }
-        if (this.selectedOption.id) {
+        if (self.selectedOption.id) {
           this.freeFieldOptionService.put(this.selectedOption).then((resp: AxiosResponse) => {
             if (resp) {
               if (this.selectedOptionIndex !== null && this.freeField.customFieldOptions) {
@@ -230,19 +230,23 @@ export default class NewRelationFreeFieldsComponent extends mixins(CommonHelpers
             }
           })
         } else {
-          this.freeFieldOptionService.post(this.selectedOption).then((resp: AxiosResponse) => {
-            if (resp) {
-              if (this.selectedOptionIndex !== null && this.freeField.customFieldOptions) {
-                this.freeField.customFieldOptions[this.selectedOptionIndex] = resp.data
+          if(self.freeField.id){
+            this.freeFieldOptionService.post(this.selectedOption).then((resp: AxiosResponse) => {
+              if (resp) {
+                if (this.selectedOptionIndex !== null && this.freeField.customFieldOptions) {
+                  this.freeField.customFieldOptions[this.selectedOptionIndex] = resp.data
+                } else {
+                  this.freeField.customFieldOptions?.push(resp.data)
+                }
+                this.setAlert('freeFieldOptionCreated', 'success')
+                this.editMode = false
               } else {
-                this.freeField.customFieldOptions?.push(resp.data)
+                this.setAlert('freeFieldOptionCreateError', 'error')
               }
-              this.setAlert('freeFieldOptionCreated', 'success')
-              this.editMode = false
-            } else {
-              this.setAlert('freeFieldOptionCreateError', 'error')
-            }
-          })
+            })
+          } else {
+            this.editMode = false
+          }
         }
       }
     })

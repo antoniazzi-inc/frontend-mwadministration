@@ -174,8 +174,11 @@ export default class InvoiceTemplate extends mixins(CommonHelpers, Vue) {
     this.retrieveAllInvoiceTemplates();
   }
 
-  public search() {
-
+  public search(query:any) {
+    const fields: string[] = ['name']
+    const q: string = this.makeSimpleSearchQuery(fields, query)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/administrationms/api/invoice-templates', undefined, q)
   }
   public updateFontColor(color:any) {
     this.invoiceTemplateData.fontColor = color.hex

@@ -259,6 +259,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
       this.course.typeCourses = undefined
       this.courseService.put(this.course).then((resp: AxiosResponse) => {
         if (resp && resp.data) {
+          this.getCourse()
           this.isSaving = false
           this.setAlert('courseEdited', 'success')
           if(this.fromProducts){
@@ -273,6 +274,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
       this.courseService.post(this.course).then((resp: AxiosResponse) => {
         if (resp && resp.data) {
           this.isSaving = false
+          this.getCourse()
           this.setAlert('courseCreated', 'success')
           if (this.backToProducts) {
             this.$router.push('/products/new?local=true')
@@ -285,7 +287,13 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
       });
     }
   }
-
+  public getCourse() {
+    this.courseService.get(this.course.id).then((resp:AxiosResponse) => {
+      if(resp && resp.data) {
+        this.course = resp.data
+      }
+    })
+  }
   public addNewLangCourse(lang: any) {
     const newLang: any = {
       name: '',

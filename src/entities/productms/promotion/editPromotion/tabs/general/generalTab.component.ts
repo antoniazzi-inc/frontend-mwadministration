@@ -299,7 +299,8 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       products: prods,
       promotionLanguages: this.promotionCopy.promotionLanguages,
     };
-    dto[this.promoType] = this.promotionCopy[this.promoType];
+    //if(this.promotionCopy.promotionType !== 'BUNDLE')
+      dto[this.promoType] = this.promotionCopy[this.promoType];
     let updateDiscountDto: any = {
       id: this.promotionCopy[this.promoType].discount ? this.promotionCopy[this.promoType].discount.id : this.promotionCopy[this.promoType][0].discount.id,
       version: this.promotionCopy[this.promoType].discount ? this.promotionCopy[this.promoType].discount.version : this.promotionCopy[this.promoType][0].discount.version,
@@ -312,6 +313,9 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     this.promotionService.put(dto).then((resp: AxiosResponse) => {
       if (resp && resp.data) {
         this.promotionCopy = resp.data;
+        if(this.promotionCopy.promotionType === 'BUNDLE'){
+          return this.setAlert('promotionUpdated', 'success')
+        }
         switch (self.selectedDiscountType) {
           case 1:
             updateDiscountDto.percentage = self.discountPriceAmount
@@ -326,6 +330,8 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
             updateDiscountDto.freeItemsJson = self.freeItems;
             break;
         }
+
+        if(this.promotionCopy.promotionType !== 'BUNDLE')
         this.discountService.put(updateDiscountDto).then((resp1: AxiosResponse) => {
           if (resp1 && resp1.data) {
             this.setAlert('promotionUpdated', 'success')

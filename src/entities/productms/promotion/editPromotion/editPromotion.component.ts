@@ -36,6 +36,7 @@ export default class EditPromotionComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public updatePromotion (promo: IPromotion) {
+    debugger
     if (promo && promo.id) {
       this.retrieveItem(promo.id)
     } else {

@@ -113,6 +113,17 @@
                     <input type="number" style="max-width:200px;" class="form-control" name="discountAmount"
                            v-model="discountQuantityAmount"/>
                   </div>
+                  <div class="col-md-6">
+                    <div class="col-md-12">
+                      <div v-if="selectedDiscountType !== 3 && selectedDiscountType !== 4">
+                        <label class="control-label">{{ $t('labels.applyToWholeOrder') }}</label>
+                        <toggle-switch
+                          :on-text="$t('labels.yes')"
+                          :off-text="$t('labels.no')"
+                          :value.sync="wholeOrder"/>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
