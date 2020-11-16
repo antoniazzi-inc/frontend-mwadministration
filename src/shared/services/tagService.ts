@@ -14,4 +14,8 @@ export default class TagService extends BaseEntityService<ITagEntity> {
     }
     return TagService.instance
   }
+
+  public deleteTag(id: number) {
+    return this.deleteRequest(`api/tags/`+id)
+  }
 }

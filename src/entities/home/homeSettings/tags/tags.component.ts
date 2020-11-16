@@ -101,7 +101,7 @@ export default class TagsComponent extends mixins(CommonHelpers, Vue) {
 
     public deleteTag (tag: any) {
       if (tag.id) {
-        this.tagService.delete(tag.id).then((resp: any) => {
+        this.tagService.deleteTag(tag.id).then((resp: any) => {
           if (resp) {
             this.setAlert('tagDeleted', 'success')
           } else {

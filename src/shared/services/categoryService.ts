@@ -14,4 +14,8 @@ export default class CategoryService extends BaseEntityService<ICategoryEntity> 
     }
     return CategoryService.instance
   }
+
+  public deleteCategory(id: number) {
+    return this.deleteRequest(`api/categories/`+id)
+  }
 }

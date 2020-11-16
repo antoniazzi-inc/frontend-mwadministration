@@ -104,7 +104,7 @@ export default class CategoriesComponent extends mixins(CommonHelpers, Vue) {
 
   public deleteCategory(cat:ICategoryEntity) {
     if(cat.id){
-      this.categoryService.delete(cat.id).then(resp => {
+      this.categoryService.deleteCategory(cat.id).then(resp => {
         if (resp) {
           this.setAlert('categoryDeleted', 'success')
         } else {
