@@ -131,6 +131,30 @@
       </div>
       <div class="row p-0 m-0">
         <div class="col-md-6 text-left font-weight-bold">
+          {{ $t('labels.totalMoneyVoucher') }}
+        </div>
+        <div class="col-md-6 text-right">
+          {{ invoicePreview.totalMoneyVoucher ? invoicePreview.totalMoneyVoucher + ' ' + cartOrderCopy.currency : 0 }}
+        </div>
+      </div>
+      <div class="row p-0 m-0">
+        <div class="col-md-6 text-left font-weight-bold">
+          {{ $t('labels.totalPointsVoucher') }}
+        </div>
+        <div class="col-md-6 text-right">
+          {{ invoicePreview.totalPointsVoucher ? invoicePreview.totalPointsVoucher : 0 }}
+        </div>
+      </div>
+      <div class="row p-0 m-0">
+        <div class="col-md-6 text-left font-weight-bold">
+          {{ $t('labels.totalMinutesVoucher') }}
+        </div>
+        <div class="col-md-6 text-right">
+          {{ invoicePreview.totalMinutesVoucher ? invoicePreview.totalMinutesVoucher : 0 }}
+        </div>
+      </div>
+      <div class="row p-0 m-0">
+        <div class="col-md-6 text-left font-weight-bold">
           {{ $t('labels.totalNetto') }}
         </div>
         <div class="col-md-6 text-right">

@@ -21,6 +21,8 @@ import AffiliateCommision from "@/shared/models/orderms/AffiliateCommisionModel"
 import {INSTANT_FORMAT} from "@/shared/filters";
 import OrderLineBeneficiary from "@/shared/models/orderms/OrderLineBeneficiaryModel";
 import coursesService from "@/shared/services/coursesService";
+import OrderProductPurchasedVoucher from "@/shared/models/orderms/OrderProductPurchasedVoucher";
+import OrderProductEvent from "@/shared/models/orderms/OrderProductEvent";
 
 @Component({
   props: {
@@ -60,6 +62,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public newOrderLineError: any
   public promotionToDelete: any
   public courseService: any
+  public selectedProductType: any
   public promotionsService: any
   public singleSelectConfigAffiliate: ISearchableSelectConfig
   public productService: any
@@ -93,6 +96,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.addPromotion = false
     this.usePaymentSchedule = false
     this.useProductSubscription = false
+    this.selectedProductType = ''
     this.isEditingOrderLine = false
     this.selectedProduct = null
     this.promotionToDelete = null
@@ -176,17 +180,24 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.selectedProduct = prod
     this.productAttributes = []
     this.allEvents = []
+    let typeVoucherProd:any = null
     this.productService.get(prod.value.id).then((resp: AxiosResponse) => {
       if (resp.data) {
-        if(resp.data.productType === 'COURSE'){
-          let allEvents:any = []
-          resp.data.typeCourse.course.events.forEach((e:any)=>{
+        if (resp.data.productType === 'COURSE') {
+          this.selectedProductType = 'COURSE'
+          let allEvents: any = []
+          resp.data.typeCourse.course.events.forEach((e: any) => {
             allEvents.push({
               label: self.getMultiLangName(e.eventLanguages).name,
               value: e
             })
           })
           self.allEvents = allEvents
+        } else if (resp.data.productType === 'VOUCHER') {
+          this.selectedProductType = 'VOUCHER'
+          typeVoucherProd = new OrderProductPurchasedVoucher(undefined, undefined, undefined, undefined, undefined,
+            this.cartOrderCopy.orderCustomer?.relationId, prod.value.id, undefined, resp.data.typeVoucher.value
+            , resp.data.typeVoucher.voucherType, undefined, undefined, undefined, resp.data.typeVoucher.daysValid)
         }
         if (resp.data.attributes && resp.data.attributes.length) {
           resp.data.attributes.forEach((item: any) => {
@@ -209,7 +220,8 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
           relationId: this.cartOrderCopy.orderCustomer?.relationId,
           productPrice: resp.data.price,
           taxPercentage: resp.data.tax,
-          orderProductAttributeValues: []
+          orderProductAttributeValues: [],
+          orderProductPurchasedVoucher: typeVoucherProd !== null ? typeVoucherProd : undefined,
         }
       }
       let ind = self.selectedBeneficiaries.findIndex((e: any) => e.id === self.$props.customerRelation.id)
@@ -229,13 +241,18 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     if (!attr) return
     this.selectedProductAttributes = attr
   }
+
   public eventsRemoved(event: any) {
     this.selectedEvents = null
+    this.newOrderLine.orderProduct.orderProductEvent = undefined
   }
 
   public eventsChanged(events: any) {
     if (!events) return
     this.selectedEvents = events
+    this.newOrderLine.orderProduct.orderProductEvent = new OrderProductEvent(undefined, undefined, undefined, undefined,
+      undefined, this.cartOrderCopy.orderCustomer?.relationId, events.value.id, this.selectedProduct.value.typeCourse.course.id,
+      events.value.eventStart, events.value.eventEnd, events.value.price, events.value.seats)
   }
 
   public productAttributeRemoved(attr: any) {
@@ -352,16 +369,22 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
             self.cartOrderCopy.orderCustomer?.relationId, moment(paymentDate).add(reminderDate, 'days'), paymentDate, self.newOrderLine.quantity, e.price)
         })
         self.newOrderLine.orderLinePaymentSchedules = paymentSchedules
+        //TODO change with the model
       }
-      let orderLinesToAdd:any = self.cartOrderCopy.orderLines ? self.cartOrderCopy.orderLines : []
+      let orderLinesToAdd: any = self.cartOrderCopy.orderLines ? self.cartOrderCopy.orderLines : []
       if (self.selectedBeneficiaries && self.selectedBeneficiaries.length >= 1) {
         let relId = self.cartOrderCopy.orderCustomer ? self.cartOrderCopy.orderCustomer.relationId : null
         let customerInd = self.selectedBeneficiaries.findIndex((e: any) => e.id === relId)
         this.selectedBeneficiaries.forEach((benef: any) => {
-            let currOrderLine = JSON.parse(JSON.stringify(self.newOrderLine))
+          let currOrderLine = JSON.parse(JSON.stringify(self.newOrderLine))
           if (customerInd === -1 || customerInd > -1 && benef.id !== self.selectedBeneficiaries[customerInd].id) {
             let benefFullName = `${benef.relationProfile.firstName} ${benef.relationProfile.middleName} ${benef.relationProfile.lastName}`
             currOrderLine.orderLineBeneficiary = new OrderLineBeneficiary(undefined, undefined, undefined, undefined, undefined, this.cartOrderCopy.orderCustomer?.relationId, benef.id, benef.email, benefFullName, benef.title)
+            if(this.selectedProductType === 'VOUCHER'){
+              if(currOrderLine.orderProduct.orderProductPurchasedVoucher){
+                currOrderLine.orderProduct.orderProductPurchasedVoucher.beneficiaryRelationId = benef.id
+              }
+            }
             let deliveryAddrInd = benef.relationAddresses.findIndex((addr: any) => addr.usedForDelivery)
             currOrderLine.beneficiaryDeliveryAddress = deliveryAddrInd > -1 ? benef.relationAddresses[deliveryAddrInd] : benef.relationAddresses[0]
             currOrderLine.beneficiaryDeliveryAddress.relationId = self.cartOrderCopy.orderCustomer?.relationId
@@ -372,9 +395,17 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
             currOrderLine.beneficiaryDeliveryAddress.createdOn = undefined
             currOrderLine.beneficiaryDeliveryAddress.updatedOn = undefined
             currOrderLine.beneficiaryDeliveryAddress.administrationId = undefined
-            orderLinesToAdd.push(currOrderLine)
+            if (!self.isEditingOrderLine) {
+              orderLinesToAdd.push(currOrderLine)
+            } else {
+              orderLinesToAdd[self.indexToEdit] = currOrderLine
+            }
           } else {
-            orderLinesToAdd.push(currOrderLine)
+            if (!self.isEditingOrderLine) {
+              orderLinesToAdd.push(currOrderLine)
+            } else {
+              orderLinesToAdd[self.indexToEdit] = currOrderLine
+            }
           }
         })
         self.createOrderLine(orderLinesToAdd)
@@ -383,19 +414,19 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       }
       this.$emit('onUpdate', {field: 'orderLines', payload: self.allOrderLines})
       this.addProduct = false
-      let prodInd = this.allProducts.findIndex((e:any)=> e.value.id === this.selectedProduct.value.id)
-      if(prodInd === -1)
-        this.allProducts.push(this.selectedProduct)
+      let prodInd = self.allProducts.findIndex((e: any) => e.value.id === self.selectedProduct.value.id)
+      if (prodInd === -1)
+        self.allProducts.push(self.selectedProduct)
       this.populatePromotions()
+      this.closeEditMode()
     })
   }
 
   public createOrderLine(orderLines: any) {
     if (this.allOrderLines) {
       if (this.isEditingOrderLine) {
-        this.allOrderLines[this.indexToEdit] = orderLines[0]
         this.indexToEdit = -1
-        this.closeEditMode()
+        this.allOrderLines = orderLines
         this.newOrderLine = new OrderLine()
       } else {
         this.allOrderLines = orderLines
@@ -409,7 +440,10 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
 
   public closeEditMode() {
     this.addProduct = false
+    this.isEditingOrderLine = false
     this.selectedBeneficiaries = []
+    this.allEvents = []
+    this.selectedEvents = null
     this.newOrderLine = new OrderLine()
     this.selectedProduct = null
     this.selectedProductAttributes = []
@@ -450,9 +484,9 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   public addSelectedPromotion(promo: any) {
     this.selectedPromotion = promo
     let self = this
-    if(promo && promo.value.promotionType === 'BUNDLE'){
-      let allDiscounts:any = []
-      promo.value.typeBundleBaseds.forEach((b:any)=>{
+    if (promo && promo.value.promotionType === 'BUNDLE') {
+      let allDiscounts: any = []
+      promo.value.typeBundleBaseds.forEach((b: any) => {
         allDiscounts.push({
           label: b.id,
           value: b
@@ -472,12 +506,15 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   }
 
   public addNewOrderPromotion() {
+    if(this.checkForDuplicateDiscount(this.allPromotions, this.selectedPromotion)){
+      return this.setAlert('youCanAddOnlyOnePercentageOrFixedPromotion', 'error')
+    }
     this.allPromotions.push(this.selectedPromotion)
     let discountType: any = this.getDiscountType(this.selectedPromotion.value).type
-    if(this.selectedPromotion && this.selectedPromotion.value.promotionType === "BUNDLE"){
-      this.selectedBundles.forEach((bundle:any)=>{
+    if (this.selectedPromotion && this.selectedPromotion.value.promotionType === "BUNDLE") {
+      this.selectedBundles.forEach((bundle: any) => {
         let discountLine = {
-          relationId: this.cartOrderCopy.orderCustomer? this.cartOrderCopy.orderCustomer.relationId : undefined,
+          relationId: this.cartOrderCopy.orderCustomer ? this.cartOrderCopy.orderCustomer.relationId : undefined,
           discountId: bundle.value.discount.id,
           percentage: bundle.value.discount.percentage,
           fixed: bundle.value.discount.fixed,
@@ -491,13 +528,13 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
         }
         if (this.cartOrderCopy.orderDiscountLines) {
           this.cartOrderCopy.orderDiscountLines.push(discountLine)
-        }else{
+        } else {
           this.cartOrderCopy.orderDiscountLines = [discountLine]
         }
       })
     } else if (this.cartOrderCopy.orderDiscountLines) {
       this.cartOrderCopy.orderDiscountLines.push({
-        relationId: this.cartOrderCopy.orderCustomer? this.cartOrderCopy.orderCustomer.relationId : undefined,
+        relationId: this.cartOrderCopy.orderCustomer ? this.cartOrderCopy.orderCustomer.relationId : undefined,
         discountId: this.selectedPromotion.value[discountType].discount.id,
         percentage: this.selectedPromotion.value[discountType].discount.percentage,
         fixed: this.selectedPromotion.value[discountType].discount.fixed,
@@ -511,7 +548,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
       })
     } else {
       this.cartOrderCopy.orderDiscountLines = [{
-        relationId: this.cartOrderCopy.orderCustomer? this.cartOrderCopy.orderCustomer.relationId : undefined,
+        relationId: this.cartOrderCopy.orderCustomer ? this.cartOrderCopy.orderCustomer.relationId : undefined,
         discountId: this.selectedPromotion.value[discountType].discount.id,
         percentage: this.selectedPromotion.value[discountType].discount.percentage,
         fixed: this.selectedPromotion.value[discountType].discount.fixed,
@@ -538,10 +575,13 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     this.newOrderLine = orderLine;
     this.useProductSubscription = orderLine.orderSubscription ? true : false
     this.usePaymentSchedule = orderLine.orderLinePaymentSchedules ? true : false
+
     let prodInd = this.allProducts.findIndex(e => e.value.id === orderLine.orderProduct.productId)
     if (prodInd > -1) this.selectedProduct = this.allProducts[prodInd]
-    let deliveryInd = this.$store.state.lookups.deliveryMethods.findIndex((e: any) => e.value.id === orderLine.orderLineDeliveryMethod.deliveryMethodId)
-    if (deliveryInd > -1) this.selectedOrderLineDeliveryMethod = this.$store.state.lookups.deliveryMethods[deliveryInd]
+    if(orderLine.orderLineDeliveryMethod){
+      let deliveryInd = this.$store.state.lookups.deliveryMethods.findIndex((e: any) => e.value.id === orderLine.orderLineDeliveryMethod.deliveryMethodId)
+      if (deliveryInd > -1) this.selectedOrderLineDeliveryMethod = this.$store.state.lookups.deliveryMethods[deliveryInd]
+    }
     if (orderLine.orderProduct.orderProductAttributeValues && orderLine.orderProduct.orderProductAttributeValues.length) {
       $.each(orderLine.orderProduct.orderProductAttributeValues, function (k, v) {
         $.each(self.productAttributes, function (i, j) {
@@ -635,10 +675,11 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
     })
   }
 
-  public changeSelectedBundles(bundles:any){
+  public changeSelectedBundles(bundles: any) {
     this.selectedBundles = bundles
   }
-  public removeSelectedBundles(bundles:any){
+
+  public removeSelectedBundles(bundles: any) {
     this.selectedBundles = bundles
   }
 }

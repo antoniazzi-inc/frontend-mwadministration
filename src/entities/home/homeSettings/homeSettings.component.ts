@@ -7,6 +7,8 @@ import DeliveryMethodsComponent from '@/entities/home/homeSettings/deliveryMetho
 import PaymentMethodsComponent from '@/entities/home/homeSettings/paymentMethods/paymentMethods.vue'
 import IntegrationsComponent from '@/entities/home/homeSettings/integrations/integrations.vue'
 import InvoiceTemplate from "@/entities/home/homeSettings/invoiceTemplate/invoiceTemplate.vue";
+import InvoicingComponent from "@/entities/home/homeSettings/invoicing/invoicing.vue";
+import TaxRulingsComponent from "@/entities/home/homeSettings/taxRulings/taxRulings.vue";
 
 @Component({
   components: {
@@ -16,7 +18,9 @@ import InvoiceTemplate from "@/entities/home/homeSettings/invoiceTemplate/invoic
     DeliveryMethodsComponent,
     PaymentMethodsComponent,
     IntegrationsComponent,
-    InvoiceTemplate
+    InvoiceTemplate,
+    InvoicingComponent,
+    TaxRulingsComponent
   }
 })
 export default class HomeSettingsComponent extends mixins(Vue) {

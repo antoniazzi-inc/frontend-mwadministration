@@ -27,6 +27,8 @@ import {IRelationEntity} from "@/shared/models/relationms/relationModel";
 import {Beneficiary} from "@/shared/models/beneficiary.model";
 import BeneficiaryDeliveryAddress from "@/shared/models/orderms/BeneficiaryDeliveryAddressModel";
 import CartOrder from "@/shared/models/orderms/CartOrderModel";
+import OrderProductEvent from "@/shared/models/orderms/OrderProductEvent";
+import OrderProductPurchasedVoucher from "@/shared/models/orderms/OrderProductPurchasedVoucher";
 
 @Component({
   props: {
@@ -84,6 +86,7 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public allPromotions: any[];
   public selectedPromotions: any[];
   public availablePrmotions: any[];
+  public allEvents: any[];
   public selectedPromotion: any;
   public multiSelectConfig: ISearchableSelectConfig;
   public singleSelectConfigAttribute: ISearchableSelectConfig;
@@ -91,13 +94,16 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
   public singleSelectConfigAffiliate: ISearchableSelectConfig;
   public multiSelectConfigBeneficiary: ISearchableSelectConfig;
   public singleSelectConfigDeliveryMethod: ISearchableSelectConfig;
+  public singleSelectConfigEvents: ISearchableSelectConfig;
   public productService: any;
   public cartOrderService: any;
+  public selectedEvent: any;
   public attributeService: any;
   public promotionService: any;
   public deliveryMethodService: any;
   public selectedAffiliate: any;
   public selectedBeneficiaries: any;
+  public selectedProductType: any;
   public relationService: any;
   public orderLineService: any;
   public orderDiscountLineService: any;
@@ -115,6 +121,9 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.orderLineService = OrderLinesService.getInstance()
     this.orderDiscountLineService = OrderDiscountLinesService.getInstance()
     this.allShippingMethods = [];
+    this.singleSelectConfigEvents = new SearchableSelectConfig('label',
+      'labels.chooseEvent', '', false,
+      false, true, false, false, false, true)
     this.singleSelectConfigBeneficiary = new SearchableSelectConfig('email',
       'labels.chooseBeneficiary', '', false,
       false, true, false, false)
@@ -123,9 +132,12 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
       false, true, true, false)
     this.allRelations = [];
     this.cartorderRelations = [];
+    this.allEvents = [];
     this.allShippingMethodsBackup = [];
     this.selectedShippingMethods = null;
     this.selectedPaymentMethod = null;
+    this.selectedProductType = null;
+    this.selectedEvent = null;
     this.timer = null;
     this.selectedAffiliate = null;
     this.orderCopy = null;
@@ -260,6 +272,8 @@ export default class OrderComponent extends mixins(Vue, CommonHelpers) {
     this.isProductSelected = true;
     this.addNewPromotion = false
     this.addProduct = true;
+    this.allEvents = []
+    this.selectedEvent = null
     this.selectedOrderLine = new OrderLine()
     this.selectedProduct = {
       name: null,
@@ -372,6 +386,7 @@ public getPromoName(item:any){
     this.$parent.errorMesage = '';
     this.allProductFeatures = [];
     this.selectedProductFeature = [];
+    let typeVoucherProd:any = null
     this.productService.get(prod.value.id).then((resp: AxiosResponse) => {
       let product = resp.data;
       //@ts-ignore
@@ -403,6 +418,21 @@ public getPromoName(item:any){
             }
           })
           this.selectedProductFeature = selectedFeatures
+        }
+      }
+      if(resp && resp.data){
+        if (resp.data.productType === 'COURSE') {
+          this.selectedProductType = 'COURSE'
+          let allEvents: any = []
+          resp.data.typeCourse.course.events.forEach((e: any) => {
+            allEvents.push({
+              label: self.getMultiLangName(e.eventLanguages).name,
+              value: e
+            })
+          })
+          self.allEvents = allEvents
+        } else if (resp.data.productType === 'VOUCHER') {
+          this.selectedProductType = 'VOUCHER'
         }
       }
       this.allPromotions = []
@@ -523,6 +553,9 @@ public getPromoName(item:any){
   }
 
   public addNewOrderPromotion() {
+    if(this.checkForDuplicateDiscount(this.selectedPromotions, this.selectedPromotion)){
+      return this.setAlert('youCanAddOnlyOnePercentageOrFixedPromotion', 'error')
+    }
     let discountType:any = this.getDiscountType(this.selectedPromotion.value)
     let discount:any = this.selectedPromotion.value[discountType.type]
     let dto = new OrderDiscountLine(undefined, undefined, undefined, undefined, undefined, this.orderCopy.orderCustomer.relationId,
@@ -581,6 +614,15 @@ public getPromoName(item:any){
           } else {
             this.deliveryMethodError = '';
           }
+          if(self.selectedEvent && self.selectedProduct.value.productType === 'COURSE'){
+            resp.orderProduct.orderProductEvent = new OrderProductEvent(undefined, undefined, undefined, undefined,
+              undefined, self.orderCopy.orderCustomer?.relationId, self.selectedEvent.value.id, this.selectedProduct.value.typeCourse.course.id,
+              self.selectedEvent.value.eventStart, self.selectedEvent.value.eventEnd, self.selectedEvent.value.price, self.selectedEvent.value.seats)
+          } else if(self.selectedProduct.value.productType === 'VOUCHER'){
+            resp.orderProduct.orderProductPurchasedVoucher = new OrderProductPurchasedVoucher(undefined, undefined, undefined, undefined, undefined,
+              this.orderCopy.orderCustomer?.relationId, self.selectedProduct.value.id, undefined, self.selectedProduct.value.typeVoucher.value
+              , self.selectedProduct.value.typeVoucher.voucherType, undefined, undefined, undefined, self.selectedProduct.value.typeVoucher.daysValid)
+          }
           this.createOrderLine(resp)
         });
       });
@@ -589,6 +631,15 @@ public getPromoName(item:any){
         resp.cartOrder = {
           id: this.$props.order.id,
           version: this.$props.order.version,
+        }
+        if(self.selectedEvent && self.selectedProduct.value.productType === 'COURSE'){
+          resp.orderProduct.orderProductEvent = new OrderProductEvent(undefined, undefined, undefined, undefined,
+            undefined, self.orderCopy.orderCustomer?.relationId, self.selectedEvent.value.id, this.selectedProduct.value.typeCourse.course.id,
+            self.selectedEvent.value.eventStart, self.selectedEvent.value.eventEnd, self.selectedEvent.value.price, self.selectedEvent.value.seats)
+        } else if(self.selectedProduct.value.productType === 'VOUCHER'){
+          resp.orderProduct.orderProductPurchasedVoucher = new OrderProductPurchasedVoucher(undefined, undefined, undefined, undefined, undefined,
+            this.orderCopy.orderCustomer?.relationId, self.selectedProduct.value.id, undefined, self.selectedProduct.value.typeVoucher.value
+            , self.selectedProduct.value.typeVoucher.voucherType, undefined, undefined, undefined, self.selectedProduct.value.typeVoucher.daysValid)
         }
         this.createOrderLine(resp)
       });
@@ -607,8 +658,6 @@ public getPromoName(item:any){
         this.useProductSubscription = false;
         this.deliveryMethodError = '';
         this.orderCopy.orderLines = this.orderLines;
-      } else {
-        this.setAlert('orderLineAddError', 'error')
       }
     })
   }
@@ -648,7 +697,7 @@ public getPromoName(item:any){
     } : undefined;
     this.orderLineService.put(this.selectedOrderLine).then((resp: AxiosResponse) => {
       if (!resp || !resp.data) {
-        return this.setAlert('errorUpdateOrderLine', 'error')
+        return
       }
       this.orderLines[this.indexToEdit] = JSON.parse(JSON.stringify(this.selectedOrderLine));
       this.closeEditMode();
@@ -718,7 +767,7 @@ public getPromoName(item:any){
           this.selectedProduct.value.taxLevel, this.selectedProduct.value.termsAndConditions, this.selectedProduct.value.points, this.selectedProduct.value.downloadUrl,
           this.selectedProduct.value.productType, this.selectedProduct.value.productTypeDetailsJson, allFeatures), beneficiaryAddress, newBeneficiary,
         self.selectedProduct.value.productType === 'PHYSICAL' ? new OrderLineDeliveryMethod(undefined, undefined, undefined, undefined, undefined, this.$props.order.orderCustomer.relationId, this.selectedShippingMethods.value.id, this.selectedShippingMethods.value.name, this.selectedShippingMethods.value.detailsJson) : undefined, this.usePaymentSchedule ? [this.selectedProduct.value.paymentSchedules[this.selectedPaymentSchedule]] : undefined, undefined, {
-        id: this.orderCopy.id, version: this.orderCopy.version})
+        id: this.orderCopy.id, version: this.orderCopy.version}, this.selectedOrderLine.payWithVoucher)
       resolve(orderLine);
     });
   }
@@ -823,8 +872,6 @@ public getPromoName(item:any){
           this.$emit('updateCart');
           this.orderCopy.orderLines = this.orderLines;
           this.setAlert('orderLineRemoved', 'success')
-        } else {
-          this.setAlert('orderLineRemoveError', 'error')
         }
       })
     }
@@ -842,8 +889,6 @@ public getPromoName(item:any){
           }
           this.$emit('updateCart', this.orderCopy);
           this.setAlert('orderDiscountLineRemoved', 'success')
-        } else {
-          this.setAlert('orderDiscountLineRemoveError', 'error')
         }
       })
 
@@ -951,10 +996,17 @@ public getPromoName(item:any){
         this.setAlert('newOrderLineCreated','success')
         this.$emit('updateCart', this.orderCopy)
         this.closeCopyModal();
-      } else {
-        this.setAlert('newOrderLineCreateError','error')
       }
     })
 
+  }
+
+  public eventChanged(event:any){
+    if (!event) return
+    this.selectedEvent = event
+
+  }
+  public eventRemoved(event:any){
+    this.selectedEvent = null
   }
 }

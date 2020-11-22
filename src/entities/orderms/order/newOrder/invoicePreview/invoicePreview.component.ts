@@ -33,6 +33,9 @@ export default class InvoicePreviewComponent extends mixins(CommonHelpers, Vue) 
       noShippingCost: false,
       totalProductsGross: 0,
       grandTotal: 0,
+      totalMoneyVoucher: 0,
+      totalPointsVoucher: 0,
+      totalMinutesVoucher: 0,
       totalTaxesMap: {}
     }
     this.allTaxes = []

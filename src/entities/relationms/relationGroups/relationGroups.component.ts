@@ -149,7 +149,7 @@ export default class RelationGroupsComponent extends mixins(CommonHelpers, Vue) 
   public deleteGroup (group: any) {
     const self = this
     if (group && group.id) {
-      this.relationGroupService.delete(group.id).then(async (resp: AxiosResponse) => {
+      this.relationGroupService.deleteGroup(group.id).then(async (resp: AxiosResponse) => {
         if (resp) {
           this.setAlert('relationGroupRemoved', 'success')
           // @ts-ignore

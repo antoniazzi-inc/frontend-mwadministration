@@ -27,6 +27,7 @@ import {FollowupAction} from '@/shared/models/productms/FollowupActionModel'
 import {DATE_FORMAT} from "@/shared/filters";
 import {ITaxRate} from "@/shared/models/administrationms/tax-rate.model";
 import {VoucherType} from "@/shared/models/orderms/OrderProductPurchasedVoucher";
+import ProductPriceComponent from "@/entities/productms/product/productPrice/productPrice.vue";
 
 @Component({
   components: {
@@ -34,7 +35,8 @@ import {VoucherType} from "@/shared/models/orderms/OrderProductPurchasedVoucher"
     MultiLanguageComponent,
     flatPickr,
     'toggle-switch': ToggleSwitch,
-    UploadWidget
+    UploadWidget,
+    'product-price': ProductPriceComponent
   },
   beforeRouteEnter(to, from, next) {
     next((vm: any) => {
@@ -627,5 +629,11 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
 
       })
     }
+  }
+
+  public changePrice(priceObj:any){
+    this.product.price = priceObj.price
+    this.product.priceRounding = priceObj.rounded
+    this.product.tax = priceObj.tax
   }
 }

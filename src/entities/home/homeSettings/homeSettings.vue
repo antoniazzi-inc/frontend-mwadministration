@@ -33,6 +33,14 @@
         <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'invoiceTemplates'}" id="invoiceTemplates-tab" data-toggle="tab"
            href="#invoiceTemplates" role="tab" aria-controls="invoiceTemplates" aria-selected="false">{{$t('labels.invoiceTemplates')}}</a>
       </li>
+      <li class="nav-item" @click="currentTab = 'invoicing'">
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'invoicing'}" id="invoicing-tab" data-toggle="tab"
+           href="#invoicing" role="tab" aria-controls="invoicing" aria-selected="false">{{$t('labels.invoicing')}}</a>
+      </li>
+      <li class="nav-item" @click="currentTab = 'taxRulings'">
+        <a :class="{'tab-nav': true, 'nav-link': true, 'active': currentTab === 'taxRulings'}" id="taxRulings-tab" data-toggle="tab"
+           href="#taxRulings" role="tab" aria-controls="taxRulings" aria-selected="false">{{$t('labels.taxRulings')}}</a>
+      </li>
 
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -56,6 +64,12 @@
       </div>
       <div  :class="{'tab-pane': true, active: currentTab === 'invoiceTemplates'}" id="invoiceTemplates" role="tabpanel" aria-labelledby="invoiceTemplates-tab">
         <invoice-template :active="currentTab==='invoiceTemplates'"/>
+      </div>
+      <div  :class="{'tab-pane': true, active: currentTab === 'invoicing'}" id="invoicing" role="tabpanel" aria-labelledby="invoicing-tab">
+        <invoicing-component :active="currentTab==='invoicing'"/>
+      </div>
+      <div  :class="{'tab-pane': true, active: currentTab === 'taxRulings'}" id="taxRulings" role="tabpanel" aria-labelledby="taxRulings-tab">
+        <tax-rulings-component :active="currentTab==='taxRulings'"/>
       </div>
     </div>
   </div>

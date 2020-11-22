@@ -1,28 +1,35 @@
-import { Moment } from 'moment';
-import { BaseEntity } from '../baseModel';
-import { IOrderProductAttributeValue } from './OrderProductAttributeValueModel'
+import {Moment} from 'moment';
+import {BaseEntity} from '../baseModel';
+import {IOrderProductAttributeValue} from './OrderProductAttributeValueModel'
+import {IOrderProductPurchasedVoucher} from "@/shared/models/orderms/OrderProductPurchasedVoucher";
+import {IOrderProductEvent} from "@/shared/models/orderms/OrderProductEvent";
+import {ServicePriceType} from "@/shared/models/productms/TypeServiceModel";
 
 export interface IOrderProduct extends BaseEntity {
-    version?: number;
-    administrationId?: number;
-    relationId?: number;
-    productId?: number;
-    sku?: string;
-    productName?: string;
-    productDescription?: string;
-    productPrice?: number;
-    taxPercentage?: number;
-    taxLevel?: number;
-    termsAndConditionsJson?: string;
-    points?: number;
-    downloadUrl?: string;
-    productType?: string;
-    productTypeDetailsJson?: string;
-    orderProductAttributeValues?: IOrderProductAttributeValue[];
+  version?: number;
+  administrationId?: number;
+  relationId?: number;
+  productId?: number;
+  sku?: string;
+  productName?: string;
+  productDescription?: string;
+  productPrice?: number;
+  taxPercentage?: number;
+  taxLevel?: number;
+  termsAndConditionsJson?: string;
+  points?: number;
+  downloadUrl?: string;
+  productType?: string;
+  productTypeDetailsJson?: string;
+  orderProductAttributeValues?: IOrderProductAttributeValue[];
+  orderProductPurchasedVoucher?: IOrderProductPurchasedVoucher;
+  orderProductEvent?: IOrderProductEvent;
+  paymentScheduleId?: number;
+  priceType?: ServicePriceType;
 }
 
 export default class OrderProduct implements IOrderProduct {
-constructor(
+  constructor(
     public createdOn?: Moment,
     public updatedOn?: Moment,
     public id?: number,
@@ -42,6 +49,10 @@ constructor(
     public productType?: string,
     public productTypeDetailsJson?: string,
     public orderProductAttributeValues?: IOrderProductAttributeValue[],
-  ){
+    public orderProductPurchasedVoucher?: IOrderProductPurchasedVoucher,
+    public orderProductEvent?: IOrderProductEvent,
+    public paymentScheduleId?: number,
+    public priceType?: ServicePriceType
+  ) {
   }
 };

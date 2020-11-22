@@ -14,4 +14,7 @@ export default class FreeFieldService extends BaseEntityService<ICustomField> {
     }
     return FreeFieldService.instance
   }
+  public deleteFreeField(id: number) {
+    return this.deleteRequest(`api/custom-fields/`+id)
+  }
 }

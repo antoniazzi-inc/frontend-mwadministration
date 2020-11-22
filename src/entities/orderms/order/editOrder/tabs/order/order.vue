@@ -26,7 +26,7 @@
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="row" v-if="allProductFeatures && allProductFeatures.length">
                   <div class="form-group col-md-12">
                     <label>{{$t('labels.selectProductAttribute')}}</label>
                     <searchable-select-component :config="singleSelectConfigAttribute"
@@ -36,7 +36,16 @@
                                                  @onDelete="removeProductFeature"/>
                   </div>
                 </div>
-
+                <div class="row">
+                <div class="form-group col-md-12" v-if="allEvents.length">
+                  <label>{{$t('labels.selectEvents')}}</label>
+                  <searchable-select-component :config="singleSelectConfigEvents"
+                                               :options="allEvents"
+                                               :value="selectedEvent"
+                                               @onChange="eventChanged"
+                                               @onDelete="eventRemoved"/>
+                </div>
+                </div>
                 <div class="row" v-if="selectedProduct">
                   <div class="form-group col-md-6">
                     <label class="form-control-label">{{$t('labels.price')}}</label>
@@ -80,7 +89,15 @@
                     </div>
                   </div>
                 </div>
-
+                <div class="form-row">
+                  <div class="form-group col-md-12">
+                    <label class="form-control-label">{{$t('labels.payWithVoucher')}}</label>
+                    <toggle-switch
+                      :on-text="$t('labels.yes')"
+                      :off-text="$t('labels.no')"
+                      :value.sync="selectedOrderLine.payWithVoucher"/>
+                  </div>
+                </div>
                 <div class="form-group" v-show="selectedProduct && selectedProduct.value.productType === 'PHYSICAL'">
                   <label class="form-control-label">{{$t('labels.shippingTitle')}}</label>
                   <searchable-select-component :config="singleSelectConfigDeliveryMethod"

@@ -51,7 +51,7 @@ export default class RolesComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public searchRole (query: string) {
-    const fields: string[] = ['name', 'code']
+    const fields: string[] = ['name', 'code', 'description']
     const q: string = this.searchQuery + ' and ' + this.makeSimpleSearchQuery(fields, query)
     this.refreshData(q)
   }

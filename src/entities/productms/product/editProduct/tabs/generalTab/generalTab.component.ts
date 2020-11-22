@@ -20,6 +20,7 @@ import { ProductLanguage } from '@/shared/models/productms/ProductLanguageModel'
 import Store from '@/store/index'
 import {ProductCategory} from "@/shared/models/productms/ProductCategoryModel";
 import {DATE_FORMAT} from "@/shared/filters";
+import ProductPriceComponent from "@/entities/productms/product/productPrice/productPrice.vue";
 @Component({
   props: {
     product: Object
@@ -30,13 +31,22 @@ import {DATE_FORMAT} from "@/shared/filters";
     money: Money,
     'toggle-switch': ToggleSwitch,
     'upload-widget': UploadWidget,
-    SearchableSelectComponent
+    SearchableSelectComponent,
+    ProductPriceComponent
   }
 })
 export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
     public typeServiceService: any = typeservicesService.getInstance()
     public productCategoryService: any = productcategoriesService.getInstance()
     public productService: any = ProductService.getInstance()
+  public moneyFixed = {
+    decimal: ',',
+    thousands: '.',
+    prefix: Store.state.currency,
+    suffix: '',
+    precision: 2,
+    masked: false
+  }
     public validFromConfig: any = {
       wrap: true,
       altInput: false,
@@ -51,6 +61,8 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
       minDate: moment().format(DATE_FORMAT)
     }
 
+    public voucherTimeType: any = 'hours';
+    public voucherTimeVal: any = 0;
     public availableFrom: any = null;
     public availableTo: any = null;
     public productCopy: IProduct = new Product();
@@ -95,6 +107,15 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
     @Watch('product', { immediate: true, deep: true })
     public updateProd (newVal: any) {
+      if(newVal && newVal.voucherSupport && newVal.voucherSupport === 'TIME'){
+        if(newVal.voucherValue >= 60){
+          this.voucherTimeType = 'hours'
+          this.voucherTimeVal = newVal.voucherValue / 60
+        } else {
+          this.voucherTimeType = 'minutes'
+          this.voucherTimeVal = newVal.voucherValue
+        }
+      }
       const self = this
       this.maxExceededMessage = []
       this.notAvailableMessage = []
@@ -239,6 +260,11 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
     public save () {
       const self = this
+      if(this.productCopy && this.productCopy.voucherSupport && this.productCopy.voucherSupport === 'TIME'){
+          this.productCopy.voucherValue = this.voucherTimeVal
+      } else if(this.productCopy && this.productCopy.voucherSupport && this.productCopy.voucherSupport === 'NONE'){
+        this.productCopy.voucherValue = undefined
+      }
       if (moment(this.availableTo).isBefore(this.availableFrom)) {
         this.availableToError = true
         return
@@ -345,4 +371,11 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
         this.isSaveDisabled = false
       }
     }
+
+
+  public changePrice(priceObj:any){
+    this.productCopy.price = priceObj.price
+    this.productCopy.priceRounding = priceObj.rounded
+    this.productCopy.tax = priceObj.tax
+  }
 }

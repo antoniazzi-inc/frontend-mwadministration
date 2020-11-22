@@ -114,9 +114,13 @@
                 <div class="form-group">
                   <label class="form-control-label">{{$t('labels.period')}}</label>
                   <select class="form-control" v-model="selectedPaymentSchedule.period">
-                    <option value="day">{{$t('labels.day')}}</option>
-                    <option value="week">{{$t('labels.week')}}</option>
-                    <option value="month">{{$t('labels.month')}}</option>
+                    <option value="DAY">{{$t('labels.day')}}</option>
+                    <option value="WEEK">{{$t('labels.week')}}</option>
+                    <option value="BI_WEEK">{{$t('labels.biWeek')}}</option>
+                    <option value="MONTH">{{$t('labels.month')}}</option>
+                    <option value="QUARTER">{{$t('labels.quarter')}}</option>
+                    <option value="HALF_YEAR">{{$t('labels.halfYear')}}</option>
+                    <option value="YEAR">{{$t('labels.year')}}</option>
                   </select>
                 </div>
                 <div class="form-group">

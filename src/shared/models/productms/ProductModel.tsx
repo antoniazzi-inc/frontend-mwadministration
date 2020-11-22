@@ -17,6 +17,7 @@ import { IProductLanguage } from './ProductLanguageModel'
 import { IMedia } from './MediaModel'
 import { IPromotion } from './PromotionModel'
 import {ITypeVoucher} from "@/shared/models/productms/TypeVoucherModel";
+import {VoucherSupport} from "@/shared/models/orderms/OrderProductPurchasedVoucher";
 export const enum productType {
     COURSE = 'COURSE',
     DIGITAL = 'DIGITAL',
@@ -76,6 +77,8 @@ export interface IProduct extends IBaseEntity {
     productLanguages?: IProductLanguage[];
     media?: IMedia[];
     promotions?: IPromotion[];
+    voucherSupport?: VoucherSupport;
+    voucherValue?: any;
 }
 
 export class Product implements IProduct {
@@ -130,6 +133,8 @@ constructor(
     public productLanguages?: IProductLanguage[],
     public media?: IMedia[],
     public promotions?: IPromotion[],
+    public voucherSupport?: VoucherSupport,
+    public voucherValue?: any,
   ){
   }
 };

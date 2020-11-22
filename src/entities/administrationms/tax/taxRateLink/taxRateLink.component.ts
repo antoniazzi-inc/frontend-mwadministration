@@ -26,7 +26,61 @@ export default class TaxRateLinkComponent extends mixins(Vue, CommonHelpers) {
   public mounted () {
     this.active = true
   }
-  public searchTaxRateLink (q: any) {}
+  public searchTaxRateLink (query: any) {
+    const fields:any [] = [{
+      mainOperator: 'or',
+      children: [{
+        key: 'fromTaxRate.country.enName',
+        value: query,
+        inBetweenOperator: '==',
+        afterOperator: 'or',
+        exactSearch: false
+      }]
+    },
+      {
+        mainOperator: 'or',
+        children: [{
+          key: 'toTaxRate.country.enName',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: false
+        }]
+      }]
+    if(parseInt(query) >= 0){
+      fields[0].children.push({
+          key: 'fromTaxRate.level',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: true
+        },
+        {
+          key: 'fromTaxRate.rate',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: true
+        })
+      fields[1].children.push({
+          key: 'fromTaxRate.level',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: true
+        },
+        {
+          key: 'fromTaxRate.rate',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: true
+        })
+    }
+    const q: string = this.queryBuilder(fields)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/administrationms/api/tax-rate-links', undefined, q)
+  }
   public editTaxRateLink (taxLink: any) {
     this.$router.push({ name: 'EditTaxRateLink', params: { id: taxLink.id } })
   }

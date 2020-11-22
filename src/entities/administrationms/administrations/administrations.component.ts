@@ -26,7 +26,44 @@ export default class AdministrationsComponent extends mixins(Vue, CommonHelpers)
   public mounted(){
     this.active = true
   }
-  public searchAdministration (q: any) {}
+  public searchAdministration (query: any) {
+    let fields: any[] = []
+    if(parseInt(query) >= 0){
+     fields = [{
+        mainOperator: 'or',
+        children: [{
+          key: 'id',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: true
+        }]
+      }]
+    } else {
+      fields = [{
+        mainOperator: 'or',
+        children: [{
+          key: 'accessCode',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: false
+        }]
+      },{
+        mainOperator: 'or',
+        children: [{
+          key: 'name',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: false
+        }]
+      }]
+    }
+    const q: string = this.queryBuilder(fields)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/administrationms/api/administrations', undefined, q)
+  }
   public editAdministration (tax: any) {
     this.$router.push({ name: 'EditAdministration', params: { id: tax.id } })
   }

@@ -108,13 +108,12 @@ export default class VoucherTabComponent extends mixins(Vue, CommonHelpers) {
           version: this.$props.product.version
        }
       }
-      debugger
       switch (this.voucherSettings.type) {
         case 'MONEY':
           dto.value = this.voucherSettings.moneyValue
           dto.voucherType = this.voucherTypes.MONEY
           break
-        case 'TIME':
+        case 'MINUTES':
           dto.value = this.voucherSettings.numberOfMinutes
           dto.voucherType = this.voucherTypes.MINUTES
           break

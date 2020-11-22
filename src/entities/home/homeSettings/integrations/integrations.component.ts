@@ -256,7 +256,18 @@ export default class IntegrationsComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public searchIntegrations (query: string) {
-    // TODO implement me
+    const fields: string[] = ['settingKey']
+    const q: string = this.makeSimpleSearchQuery(fields, query, 'or')
+    let pagination = {
+      page: 0,
+      size: 100000,
+      sort: 'id,desc'
+    }
+    this.externalSystemsService.getAll(pagination, q).then((resp:AxiosResponse)=>{
+      if(resp && resp.data){
+        this.allExternalSystems = resp.data.content
+      }
+    })
   }
 
   public cancel () {

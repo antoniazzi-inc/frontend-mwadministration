@@ -33,6 +33,7 @@ export interface IOrderLine extends BaseEntity {
     orderLinePaymentSchedules?: IOrderLinePaymentSchedule[];
     affiliateCommisions?: IAffiliateCommision[];
     cartOrder?: ICartOrder;
+    payWithVoucher?: boolean;
 }
 
 export default class OrderLine implements IOrderLine {
@@ -57,7 +58,9 @@ constructor(
     public orderLinePaymentSchedules?: IOrderLinePaymentSchedule[],
     public affiliateCommisions?: IAffiliateCommision[],
     public cartOrder?: ICartOrder,
+    public payWithVoucher?: boolean,
   ){
   this.quantity = this.quantity ? this.quantity : 1
+  this.payWithVoucher = this.payWithVoucher ? true : false
   }
 };

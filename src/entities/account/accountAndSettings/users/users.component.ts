@@ -39,7 +39,7 @@ export default class UsersComponent extends mixins(CommonHelpers, Vue) {
   }
 
   public searchUser (query: string) {
-    const fields: string[] = ['relationProfile.firstName', 'relationProfile.lastName']
+    const fields: string[] = ['relationProfile.firstName', 'relationProfile.lastName', 'username']
     const q: string = this.makeSimpleSearchQuery(fields, query, 'or')
     // @ts-ignore
     this.$refs.paginationTable.retrieveData('api/relationms/api/roles', undefined, q)

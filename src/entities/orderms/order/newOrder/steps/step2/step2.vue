@@ -62,6 +62,15 @@
                  @onDelete="removeAffiliate"/>
             </div>
           </div>
+          <div class="form-row" v-if="selectedProduct">
+            <div class="form-group col-md-12">
+              <label class="form-control-label">{{$t('labels.payWithVoucher')}}</label>
+              <toggle-switch
+                :on-text="$t('labels.yes')"
+                :off-text="$t('labels.no')"
+                :value.sync="newOrderLine.payWithVoucher"/>
+            </div>
+          </div>
           <div class="form-group" v-show="selectedProduct && selectedProduct.value.productType === 'PHYSICAL'">
             <label class="form-control-label">{{$t('labels.shippingTitle')}}</label>
             <searchable-select-component :config="singleSelectConfigDeliveryMethod"

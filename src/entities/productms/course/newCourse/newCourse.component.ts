@@ -288,6 +288,7 @@ export default class NewCourseComponent extends mixins(CommonHelpers, Vue) {
     }
   }
   public getCourse() {
+    if(this.course && this.course.id)
     this.courseService.get(this.course.id).then((resp:AxiosResponse) => {
       if(resp && resp.data) {
         this.course = resp.data

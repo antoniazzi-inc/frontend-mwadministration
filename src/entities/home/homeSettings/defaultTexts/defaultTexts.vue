@@ -96,12 +96,12 @@
                 </div>
               </div>
               <div v-if="selectedText.type === 'htmlPage'">
-                <multi-language-component
+                <!--<multi-language-component
                   :config="multiLangConfig"
                   :value="htmlPage.subject"
                   @onAdd="addNewHtmlPageSubject"
                   @onChange="changeNewHtmlPageSubject"
-                  @onRemove="removeNewHtmlPageSubject"></multi-language-component>
+                  @onRemove="removeNewHtmlPageSubject"></multi-language-component>-->
                 <div v-if="selectedHtmlPageTemplate && selectedHtmlPageTemplate.items">
                   <div class="form-group" v-for="(item, ind) in selectedHtmlPageTemplate.items" :key="ind">
                     <label>{{$t(item.name)}}</label>

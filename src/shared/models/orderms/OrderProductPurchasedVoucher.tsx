@@ -10,15 +10,19 @@ export enum VoucherType {
   POINTS = 'POINTS',
   MONEY = 'MONEY'
 }
+export enum VoucherSupport {
+  NONE='NONE', TIME='TIME', POINTS='POINTS', MONEY='MONEY'
+}
 export interface IOrderProductPurchasedVoucher extends BaseEntity {
   relationId?: number;
   typeVoucherId?: number;
   beneficiaryRelationId?: number;
   value?: number;
-  VoucherType?: VoucherType;
+  voucherType?: VoucherType;
   availableFrom?: Moment;
   availableTo?: Moment;
   OrderProduct?: IOrderProduct;
+  daysValid?: number;
 }
 
 export default class OrderProductPurchasedVoucher implements IOrderProductPurchasedVoucher {
@@ -32,10 +36,11 @@ export default class OrderProductPurchasedVoucher implements IOrderProductPurcha
     public typeVoucherId?: number,
     public beneficiaryRelationId?: number,
     public value?: number,
-    public VoucherType?: VoucherType,
+    public voucherType?: VoucherType,
     public availableFrom?: Moment,
     public availableTo?: Moment,
-    public OrderProduct?: IOrderProduct
+    public OrderProduct?: IOrderProduct,
+    public daysValid?: number
   ) {
   }
 };

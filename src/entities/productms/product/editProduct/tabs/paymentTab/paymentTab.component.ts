@@ -263,7 +263,7 @@ export default class PaymentTabComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public updateAnnouncement() {
-
+    this.closeModal()
   }
   public closeModal() {
     // @ts-ignore

@@ -84,49 +84,8 @@
               @onRemove="removeProductLang"/>
           </div>
 
-          <div class="form-row align-items-left price-row">
-            <div class="col-auto">
-              <div class="form-group">
-                <label class="control-label">{{$t('labels.exclusivePrice')}}</label>
-                <div class="input-group mb-3" style="padding-bottom:0; margin-bottom:0">
-                  <money @blur.native="calculateInclusive(true)" style="max-width:150px; height:40px;" v-model="product.price"
-                         :class="{'form-control': true, 'invalid': product.price <= 0.1}" v-bind="moneyConfig"/>
-                  <div class="input-group-append">
-                    <span class="btn btn-rounded btn-success input-group-text cursor-pointer" @click.prevent="changeIsInclusive" id="basic-addon2">
-                      <span v-if="!isInclusive">{{$t('labels.useInclPrice')}}</span>
-                      <span v-if="isInclusive">{{$t('labels.useExclPrice')}}</span>
-                    </span>
-                  </div>
-                </div>
-                <span v-if="product.price <= 0.1 && isValidatingStep2" class="text-danger small">{{$t('labels.priceIsRequired')}}</span>
-                <p v-show="inclusive() > 0" style="padding-top:2px;">{{$t('labels.inclusivePriceIs')}}: {{$store.state.currency}} {{inclusive()}}</p>
-              </div>
-            </div>
-            <div class="col-auto">
-              <div class="form-group" v-show="isInclusive">
-                <label class="control-label">{{$t('labels.inclusivePrice')}}</label>
-                <div class="input-group mb-3">
-                  <money @blur.native="calculateExclusive" style="max-width:150px; height:40px;" v-model="inclusivePrice" :class="{'form-control': true}" name="priceAmount"  v-bind="moneyConfig"></money>
-                </div>
-              </div>
-            </div>
-            <div class="col-auto">
-              <div class="form-group">
-                <label class="control-label">{{$t('labels.taxRate')}}</label>
-                <select :class="{'form-control': true, invalid: errors.has('tax')}" style="min-width:100px; height:40px;" v-model="product.tax" @change="calculateTax()" v-validate="'required'" name="tax">
-                  <option v-for="(item, index) in allTaxRates" :key="index" :value="item.rate">{{item.rate}}%</option>
-                </select>
-                <span class="small text-danger">{{errors.first('tax')}}</span>
-              </div>
-            </div>
-            <div class="col-auto">
-              <label class="control-label">{{$t('labels.roundedTotal')}}</label>
-              <toggle-switch
-                :on-text="$t('labels.yes')"
-                :off-text="$t('labels.no')"
-                :value.sync="product.priceRounding"/>
-              <p><small>{{$t('labels.finalCalculatedTotalMustBeRoundedTo5Cents')}}</small></p>
-            </div>
+          <div>
+            <product-price @priceChanged="changePrice"/>
           </div>
 
           <div class="form-row align-items-left">
@@ -150,10 +109,12 @@
               <div class="form-group">
                 <label class="control-label">{{$t('labels.priceType')}}</label>
                 <select :class="{'form-control': true}" v-model="product.typeService.priceType">
-                  <option value="fixed">{{$t('labels.fixed')}}</option>
-                  <option value="hourly">{{$t('labels.hourly')}}</option>
-                  <option value="15minutes">{{$t('labels.15minutes')}}</option>
-                  <option value="daily">{{$t('labels.daily')}}</option>
+                  <option value="FIXED">{{$t('labels.fixed')}}</option>
+                  <option value="MINUTES_15">{{$t('labels.15minutes')}}</option>
+                  <option value="MINUTES_30">{{$t('labels.30minutes')}}</option>
+                  <option value="MINUTES_45">{{$t('labels.45minutes')}}</option>
+                  <option value="HOUR">{{$t('labels.hourly')}}</option>
+                  <option value="DAY">{{$t('labels.daily')}}</option>
                 </select>
               </div>
             </div>

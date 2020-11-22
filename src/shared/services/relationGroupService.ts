@@ -15,4 +15,7 @@ export default class RelationGroupService extends BaseEntityService<IRelationGro
     }
     return RelationGroupService.instance
   }
+  public deleteGroup(id: number) {
+    return this.deleteRequest(`api/relation-groups/`+id)
+  }
 }

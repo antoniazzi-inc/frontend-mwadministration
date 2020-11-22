@@ -986,6 +986,26 @@ export default class CommonHelpers extends Vue {
       return query.children[index]
     } else return null
   }
+  /*
+  * Name: checkForDuplicateDiscount
+  * arg: allPromotions -> list of all promotions, newPromotion -> promotion to be compared
+  * description: Find if there is already fixed or percentage discount is in the list of all promotions
+  * Author: Nick Dam
+  */
+  public checkForDuplicateDiscount(allPromotions: any, newPromotion:any) {
+    debugger
+    let newPromotionDiscount = this.getDiscountType(newPromotion.value)
+    let hasFixedOrPercentage = false
+    if(newPromotionDiscount.discount.name === 'fixed' || newPromotionDiscount.discount.name === 'percentage'){
+      allPromotions.forEach((promo:any)=>{
+        let promoDiscount = this.getDiscountType(promo.value)
+        if(newPromotionDiscount.discount.name === promoDiscount.discount.name){
+          hasFixedOrPercentage = true
+        }
+      })
+    }
+    return hasFixedOrPercentage
+  }
 
   public updateRecentItemsAfterRead(an_id: number, a_label: string, a_type: string,) {
     let item = {

@@ -66,7 +66,7 @@
              :value.sync="sentAnnouncement"/>
         </div>
         <div class="form-group col-auto" style="padding-top:1.9em; margin-left:-100px;" v-if="isSubscription && sentAnnouncement">
-          <button tag="button" data-toggle="modal" data-target="#announcementModal" class="btn btn-link">
+          <button type="button" tag="button" data-toggle="modal" data-target="#announcementModal" class="btn btn-link">
             <small style="text-decoration: none">{{$t('labels.editor')}}</small>
           </button>
         </div>

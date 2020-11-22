@@ -26,7 +26,37 @@ export default class TaxRateComponent extends mixins(Vue, CommonHelpers) {
   public mounted () {
     this.active =true
   }
-  public searchTaxRate (q: any) {}
+  public searchTaxRate (query: any) {
+    const fields:any [] = [{
+      mainOperator: 'and',
+      children: [{
+        key: 'country.enName',
+        value: query,
+        inBetweenOperator: '==',
+        afterOperator: 'or',
+        exactSearch: false
+      }]
+    }]
+    if(parseInt(query) >= 0){
+      fields[0].children.push({
+          key: 'level',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: 'or',
+          exactSearch: true
+        },
+        {
+          key: 'rate',
+          value: query,
+          inBetweenOperator: '==',
+          afterOperator: '',
+          exactSearch: true
+        })
+    }
+    const q: string = this.queryBuilder(fields)
+    // @ts-ignore
+    this.$refs.paginationTable.retrieveData('api/administrationms/api/tax-rates', undefined, q)
+  }
   public editTaxRate (tax: any) {
     this.$router.push({ name: 'EditTaxRate', params: { id: tax.id } })
   }

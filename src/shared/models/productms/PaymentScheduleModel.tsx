@@ -3,7 +3,15 @@ import { IBaseEntity } from '../baseModel';
 import { IAnnouncement } from './AnnouncementModel'
 import { IProduct } from './ProductModel'
 import { IPaymentScheduleOption } from './PaymentScheduleOptionModel'
-
+export enum PaymentSchedulePeriod {
+  DAY='DAY',
+  WEEK='WEEK',
+  BI_WEEK='BI_WEEK',
+  MONTH='MONTH',
+  QUARTER='QUARTER',
+  HALF_YEAR='HALF_YEAR',
+  YEAR='YEAR'
+}
 export interface IPaymentSchedule extends IBaseEntity {
     createdOn?: Moment;
     updatedOn?: Moment;
@@ -11,7 +19,7 @@ export interface IPaymentSchedule extends IBaseEntity {
     version?: number;
     administrationId?: number;
     name?: string;
-    period?: string;
+    period?: PaymentSchedulePeriod;
     announcementJson?: IAnnouncement;
     availableForCustomers?: boolean;
     product?: IProduct;
@@ -26,7 +34,7 @@ constructor(
     public version?: number,
     public administrationId?: number,
     public name?: string,
-    public period?: string,
+    public period?: PaymentSchedulePeriod,
     public announcementJson?: IAnnouncement,
     public availableForCustomers?: boolean,
     public product?: IProduct,
