@@ -345,12 +345,16 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
           self.selectedAffiliate.id, undefined, undefined, undefined, undefined)] //TODO check if all values are correct
       }
       if (self.usePaymentSchedule) {
-        const reminderDateIndex = self.$store.state.administration.administrationSettings.findIndex((e: any) => e.settingKey === 'reminderDate')
-        let reminderDate: any = null
+        // const reminderDateIndex = self.$store.state.administration.administrationSettings.findIndex((e: any) => e.settingKey === 'reminderDate')
+        // let reminderDate: any = null
+        /*
         if (reminderDateIndex > -1) {
           reminderDate = this.$store.state.administration.administrationSettings[reminderDateIndex].settingValueJson
         }
+        */
+       self.newOrderLine.orderProduct.paymentScheduleId = self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].id;
         let paymentSchedules = self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].paymentScheduleOptions.map((e: any, i: number) => {
+          /*
           let paymentDate: any = moment().format(INSTANT_FORMAT)
           if (i > 0) {
             switch (self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].period) {
@@ -365,8 +369,9 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
                 break;
             }
           }
+          */
           return new OrderLinePaymentSchedule(undefined, undefined, undefined, undefined, undefined,
-            self.cartOrderCopy.orderCustomer?.relationId, moment(paymentDate).add(reminderDate, 'days'), paymentDate, self.newOrderLine.quantity, e.price)
+            self.cartOrderCopy.orderCustomer?.relationId, undefined, undefined, self.newOrderLine.quantity, e.price)
         })
         self.newOrderLine.orderLinePaymentSchedules = paymentSchedules
         //TODO change with the model
