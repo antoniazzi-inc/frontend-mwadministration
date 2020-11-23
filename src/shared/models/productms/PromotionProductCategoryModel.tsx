@@ -8,7 +8,7 @@ export interface IPromotionProductCategory extends IBaseEntity {
     id?: number;
     version?: number;
     administrationId?: number;
-    productCategoryId?: number;
+    categoryId?: number;
     promotion?: IPromotion;
 }
 
@@ -19,7 +19,7 @@ constructor(
     public id?: number,
     public version?: number,
     public administrationId?: number,
-    public productCategoryId?: number,
+    public ategoryId?: number,
     public promotion?: IPromotion,
   ){
   }

@@ -76,7 +76,7 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
     let allCat:any = [];
     if(this.promotionCopy.promotionProductCategories && this.promotionCopy.promotionProductCategories.length) {
       $.each(this.promotionCopy.promotionProductCategories, function (k, v) {
-        let catIndex = self.$store.state.lookups.categories.findIndex((e:any) => e.id === v.productCategoryId)
+        let catIndex = self.$store.state.lookups.categories.findIndex((e:any) => e.id === v.categoryId)
         if(catIndex > -1){
           allCat.push(self.$store.state.lookups.categories[catIndex])
         }
@@ -159,7 +159,7 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
     let index = null;
     let idToRemove = null;
     $.each(this.promotionCopy.promotionProductCategories, function (k, v:any) {
-      if(v.productCategoryId === cat.id){
+      if(v.categoryId === cat.id){
         idToRemove = v.id;
       }
     });
@@ -190,7 +190,7 @@ export default class ProductsTabComponent extends mixins(CommonHelpers, Vue) {
     let dto = {
       promotionId: this.promotionCopy.id,
       req:{
-        promotionProductCategories: [{productCategoryId: cat.id}]
+        promotionProductCategories: [{categoryId: cat.id}]
       }
     };
     this.promotionService.assign(dto).then((resp:AxiosResponse) => {
