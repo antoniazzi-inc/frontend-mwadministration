@@ -352,7 +352,9 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
           reminderDate = this.$store.state.administration.administrationSettings[reminderDateIndex].settingValueJson
         }
         */
-       self.newOrderLine.orderProduct.paymentScheduleId = self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].id;
+       if (self.selectedProduct.value.paymentSchedules && self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule] && self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].paymentScheduleOptions){
+        self.newOrderLine.orderProduct.paymentScheduleId = self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].id;
+       
         let paymentSchedules = self.selectedProduct.value.paymentSchedules[self.selectedPaymentSchedule].paymentScheduleOptions.map((e: any, i: number) => {
           /*
           let paymentDate: any = moment().format(INSTANT_FORMAT)
@@ -374,6 +376,7 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
             self.cartOrderCopy.orderCustomer?.relationId, undefined, undefined, self.newOrderLine.quantity, e.price)
         })
         self.newOrderLine.orderLinePaymentSchedules = paymentSchedules
+      }
         //TODO change with the model
       }
       let orderLinesToAdd: any = self.cartOrderCopy.orderLines ? self.cartOrderCopy.orderLines : []
