@@ -19,7 +19,7 @@ constructor(
     public id?: number,
     public version?: number,
     public administrationId?: number,
-    public ategoryId?: number,
+    public categoryId?: number,
     public promotion?: IPromotion,
   ){
   }

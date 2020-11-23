@@ -431,6 +431,9 @@ export default class Step2Component extends mixins(CommonHelpers, Vue) {
   }
 
   public createOrderLine(orderLines: any) {
+    this.usePaymentSchedule = false
+    this.selectedPaymentSchedule = null
+
     if (this.allOrderLines) {
       if (this.isEditingOrderLine) {
         this.indexToEdit = -1
