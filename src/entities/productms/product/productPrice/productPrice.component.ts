@@ -25,7 +25,8 @@ import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
   }
 })
 export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
-  public price: number
+  public price: any
+  public priceTemp: any
   public moneyConfig: IMoneyConfig
   public isInclusiveActive: boolean
   public inclusivePrice: number
@@ -35,6 +36,7 @@ export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
   constructor () {
     super()
     this.price = 0
+    this.priceTemp = 0
     this.moneyConfig = new MoneyConfig(undefined, undefined, '', Store.state.currency, 0, false)
     this.isInclusiveActive = false
     this.inclusivePrice = 0
@@ -60,44 +62,46 @@ export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
   }
   @Watch('priceProp')
   public updatePrice(newVal:any){
-    if(newVal !== undefined && newVal !== null && newVal >= 0) this.price = newVal
+    if(newVal !== undefined && newVal !== null && newVal >= 0 && !this.priceTemp) this.priceTemp = newVal
+  }
+  @Watch('priceTemp')
+  public updatePriceTemp(newVal:any){
+    if(this.isInclusiveActive){
+      this.price = (newVal * (1 / (1 + (this.tax / 100))))
+      this.inclusivePrice = newVal
+    } else {
+      this.price = newVal
+      this.inclusivePrice = newVal * (1 + (this.tax / 100))
+    }
+    this.changePriceRounding(this.priceRounding)
   }
   @Watch('priceRounding')
   public changePriceRounding(newVal:any){
     if(newVal){
-      let inclusive:any = this.getInclusivePrice()
-      inclusive = this.round5(inclusive)
-      let percent = inclusive * (this.tax / 100)
-      this.price = inclusive - percent
+      this.inclusivePrice = this.round5(this.inclusivePrice)
+      if(this.isInclusiveActive) {
+        this.priceTemp = this.inclusivePrice
+      }
+    } else {
+      this.inclusivePrice = this.price * (1 + (this.tax / 100))
     }
     this.$emit('priceChanged', {tax: this.tax, price: this.price, inclusive: this.inclusivePrice, isInclusive: this.isInclusiveActive, rounded: this.priceRounding})
   }
 
   @Watch('isInclusiveActive')
   public changeIsInclusive(newVal:any){
-    if(newVal) {
-      this.inclusivePrice = this.price + this.price * (this.tax / 100)
-    }
+    this.taxChanged()
   }
-  public changeInclusivePrice(){
-    if(this.isInclusiveActive)
-      this.price = this.inclusivePrice - this.inclusivePrice * (this.tax / 100)
-    this.$emit('priceChanged', {tax: this.tax, price: this.price, inclusive: this.inclusivePrice, isInclusive: this.isInclusiveActive, rounded: this.priceRounding})
-  }
-
   public taxChanged(){
     if(this.isInclusiveActive){
-      this.price = this.inclusivePrice - this.inclusivePrice * (this.tax / 100)
+      this.price = (this.priceTemp * (1 / (1 + (this.tax / 100))))
+      this.inclusivePrice = this.priceTemp
+    } else {
+      this.price = this.priceTemp
+      this.inclusivePrice = (this.priceTemp * (1 + (this.tax / 100)))
     }
-    this.$emit('priceChanged', {tax: this.tax, price: this.price, inclusive: this.inclusivePrice, isInclusive: this.isInclusiveActive, rounded: this.priceRounding})
-  }
-
-  public getInclusivePrice(){
-    if(this.isInclusiveActive)
-      return this.inclusivePrice
-    if(this.priceRounding)
-      return this.round5((this.price + this.price * (this.tax / 100)))
-    return (this.price + this.price * (this.tax / 100)).toFixed(2)
+    this.changePriceRounding(this.priceRounding)
+    //this.$emit('priceChanged', {tax: this.tax, price: this.price, inclusive: this.inclusivePrice, isInclusive: this.isInclusiveActive, rounded: this.priceRounding})
   }
 
   public round5(value:any) {
