@@ -29,7 +29,7 @@ export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
   public priceTemp: any
   public moneyConfig: IMoneyConfig
   public isInclusiveActive: boolean
-  public inclusivePrice: number
+  public inclusivePrice: any
   public tax: any
   public allTaxRates: any[]
   public priceRounding: boolean
@@ -64,44 +64,89 @@ export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
   public updatePrice(newVal:any){
     if(newVal !== undefined && newVal !== null && newVal >= 0 && !this.priceTemp) this.priceTemp = newVal
   }
-  @Watch('priceTemp')
-  public updatePriceTemp(newVal:any){
-    if(this.isInclusiveActive){
-      this.price = (newVal * (1 / (1 + (this.tax / 100))))
-      this.inclusivePrice = newVal
-    } else {
-      this.price = newVal
-      this.inclusivePrice = newVal * (1 + (this.tax / 100))
-    }
-    this.changePriceRounding(this.priceRounding)
-  }
-  @Watch('priceRounding')
-  public changePriceRounding(newVal:any){
-    if(newVal){
-      this.inclusivePrice = this.round5(this.inclusivePrice)
-      if(this.isInclusiveActive) {
-        this.priceTemp = this.inclusivePrice
-      }
-    } else {
-      this.inclusivePrice = this.price * (1 + (this.tax / 100))
-    }
-    this.$emit('priceChanged', {tax: this.tax, price: this.price, inclusive: this.inclusivePrice, isInclusive: this.isInclusiveActive, rounded: this.priceRounding})
-  }
+
 
   @Watch('isInclusiveActive')
-  public changeIsInclusive(newVal:any){
-    this.taxChanged()
-  }
-  public taxChanged(){
-    if(this.isInclusiveActive){
-      this.price = (this.priceTemp * (1 / (1 + (this.tax / 100))))
+  public changeInclusiveActive(value:any){
+    if(value) {
+      this.price = (this.priceTemp * (1 / (1 + (this.tax / 100)))).toFixed(2)
       this.inclusivePrice = this.priceTemp
     } else {
+      this.inclusivePrice = (this.priceTemp * (1 + (this.tax / 100))).toFixed(2)
       this.price = this.priceTemp
+    }
+    this.checkIfShouldBeRounded()
+  }
+  @Watch('priceTemp')
+  public changePriceTemp(value:any){
+    if(this.isInclusiveActive) {
+      this.price = (value * (1 / (1 + (this.tax / 100)))).toFixed(2)
+      this.inclusivePrice = value
+    } else {
+      this.inclusivePrice = (value * (1 + (this.tax / 100))).toFixed(2)
+      this.price = value
+    }
+    this.$emit('priceChanged', {price: this.price, tax: this.tax, priceRounding: this.priceRounding})
+  }
+
+  @Watch('priceRounding')
+  public changePriceRounding(isActive:any){
+    if(isActive) {
+      if (this.isInclusiveActive) {
+        this.priceTemp = this.round5(this.calculateExclusive() * (1 + (this.tax/100)))
+      } else {
+        this.priceTemp = this.round5((this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2))
+      }
+    } else {
+      if (this.isInclusiveActive) {
+        this.priceTemp = (this.calculateExclusive() * (1 + (this.tax/100))).toFixed(2)
+      } else {
+        this.priceTemp = (this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2)
+      }
+    }
+  }
+
+  public taxChanged() {
+    this.checkIfShouldBeRounded()
+    this.$emit('priceChanged', {price: this.price, tax: this.tax, priceRounding: this.priceRounding})
+  }
+
+  public checkIfShouldBeRounded() {
+    if(this.isInclusiveActive) {
+      let newInclusive = (this.calculateExclusive() * (1 + (this.tax / 100)))
+      if(newInclusive.toFixed(2) !== this.inclusivePrice.toFixed(2)) {
+        this.priceRounding = true
+      } else {
+        this.priceRounding = false
+      }
+    } else {
+        let newExclusive = (this.calculateInclusive() * (1 / (1+ (this.tax/100))))
+      if(newExclusive.toFixed(2) !== this.price.toFixed(2)) {
+        this.priceRounding = true
+      } else {
+        this.priceRounding = false
+      }
+    }
+  }
+
+  public calculateExclusive() {
+    if(this.isInclusiveActive){
+      this.price = (this.priceTemp * (1 / (1 + (this.tax / 100)))).toFixed(2)
+    } else {
+      let p = (this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2)
+      this.price = p
+    }
+    this.$emit('priceChanged', {price: this.price, tax: this.tax, priceRounding: this.priceRounding})
+    return this.price
+  }
+
+  public calculateInclusive() {
+    if(this.priceRounding) {
+      this.inclusivePrice = this.round5(this.priceTemp * (1 + (this.tax / 100)))
+    } else {
       this.inclusivePrice = (this.priceTemp * (1 + (this.tax / 100)))
     }
-    this.changePriceRounding(this.priceRounding)
-    //this.$emit('priceChanged', {tax: this.tax, price: this.price, inclusive: this.inclusivePrice, isInclusive: this.isInclusiveActive, rounded: this.priceRounding})
+    return this.inclusivePrice.toFixed(2)
   }
 
   public round5(value:any) {

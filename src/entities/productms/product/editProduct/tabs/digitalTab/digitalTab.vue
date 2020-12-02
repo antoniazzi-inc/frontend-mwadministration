@@ -77,7 +77,7 @@
           <div class="form-row">
             <div class="form-group col-12" v-if="uploadNewFile">
               <label class="form-control-label">{{$t('labels.FileUpload')}}</label>
-              <upload-widget v-if="clicked" @onError="digitalUploadError" @onUpload="uploadFile" @onRemove="digitalRemove" :accept="'*/*'" :extensions="'pdf,xls,zip,rar'"/>
+              <upload-widget v-if="clicked" @onError="digitalUploadError" @newImageAdded="uploadFile" :all-files="allDigitalFiles" @onRemove="digitalRemove" :accept="'*/*'" :extensions="'pdf,xls,zip,rar'"/>
             </div>
           </div>
         </div>

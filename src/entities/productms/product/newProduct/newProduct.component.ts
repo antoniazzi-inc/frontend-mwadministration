@@ -66,6 +66,8 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   public validToConfig: any;
   public allTaxRates: ITaxRate[];
   public previewImages: any[];
+  public allImages: any[];
+  public allDigitalFiles: any[];
   public typeCourses: any[];
   public inclusivePrice: any;
   public selectedCourse: any;
@@ -83,8 +85,10 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
     this.availableTo = null
     this.mediaService = mediasService.getInstance()
     this.allTaxRates = []
+    this.allImages = []
     this.typeCourses = []
     this.previewImages = []
+    this.allDigitalFiles = []
     this.productService = ProductService.getInstance()
     this.product = new Product(undefined, undefined, undefined, undefined,
       undefined, undefined, productType.DIGITAL)
@@ -205,7 +209,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
       return true
     }
     if (this.availableTo) {
-      if (moment(moment(this.availableTo)).isAfter(this.availableFrom)) {
+      if (moment(moment(this.availableTo, DATE_FORMAT)).isAfter(this.availableFrom)) {
         return true
       } else {
         return false
@@ -330,7 +334,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
               resolve(false)
               return
             }
-            if (self.availableTo && moment(moment(self.availableTo)).isAfter(moment(self.availableFrom))) {
+            if (self.availableTo && moment(moment(self.availableTo, DATE_FORMAT)).isAfter(moment(self.availableFrom))) {
               self.isValidatingStep2 = false
             } else {
               if (!self.availableTo) {
@@ -407,11 +411,20 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public imageLoaded(img: any) {
+    //this.previewImages.push(new BaseImage(img.blob, img.file.type, img.file.name))
+  }
+  public imageUploaded(img: any) {
+    this.allImages.push(img)
     this.previewImages.push(new BaseImage(img.blob, img.file.type, img.file.name))
+    this.isSaving = false
   }
 
-  public onImageRemove(img: any) {
-
+  public onImageRemove(imageToRemove: any) {
+    let ind = this.allImages.findIndex((img:any)=> img.id === imageToRemove.id)
+    if(ind > -1) {
+      this.allImages.splice(ind, 1)
+      this.previewImages.splice(ind, 1)
+    }
   }
 
   public addProductLang(lang: any) {
@@ -512,8 +525,8 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
       const dto: any = {
         productLanguages: self.product.productLanguages,
         productType: self.product.productType,
-        availableFrom: moment(this.availableFrom),
-        availableTo: moment(this.availableTo),
+        availableFrom: moment(this.availableFrom, DATE_FORMAT),
+        availableTo: moment(this.availableTo, DATE_FORMAT),
         price: self.product.price,
         tax: self.product.tax,
         media: self.product.media,
@@ -609,10 +622,18 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
   }
 
   public digitalLoaded(obj: any) {
-    this.uploadDigitalFile(obj)
+
   }
 
+  public digitalUploaded(img: any) {
+    this.allDigitalFiles.push(img)
+    this.uploadDigitalFile(img)
+  }
   public digitalRemove(obj: any) {
+    this.product.typeDigital.body = null
+    this.product.typeDigital.bodyContentType = null
+    this.product.typeDigital.bodyName = null
+    this.allDigitalFiles = []
   }
 
   public goBack() {

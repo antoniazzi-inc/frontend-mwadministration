@@ -163,7 +163,7 @@
       </tab-content>
 
       <tab-content  @click="step = 2" :title="$t('labels.thumbnail')" icon="fas fa-receipt" >
-        <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @onRemove="onImageRemove" v-if="step === 2"/>
+        <upload-widget @onError="imageUploadError" @onUpload="imageLoaded" @newImageAdded="imageUploaded" @onRemove="onImageRemove" :all-files="allImages" v-if="step === 2"/>
       </tab-content>
 
       <tab-content  @click="step = 3" :title="$t('labels.finalStep')" icon="fas fa-receipt" :before-change="validateStep">
@@ -195,7 +195,7 @@
           </div>
           <div class="form-group" v-if="product.productType === 'DIGITAL' && notUrl && step === 3">
             <label class="control-label">{{$t('labels.orUploadFile')}}</label>
-            <upload-widget @onError="digitalUploadError" @onUpload="digitalLoaded" @onRemove="digitalRemove" :accept="'application/*'" :extensions="'pdf,xls,zip,rar'"/>
+            <upload-widget @onError="digitalUploadError" @onUpload="digitalLoaded" @newImageAdded="digitalUploaded" :accept="'application/*'" :extensions="'pdf,xls,zip,rar'" @onRemove="digitalRemove" :all-files="allDigitalFiles"/>
           </div>
           <div class="form-group" v-if="product.productType === 'COURSE'">
             <label class="col-md-6 control-label">{{$t('labels.selectCourse')}}</label>

@@ -6,6 +6,7 @@
         <label class="control-label" v-else>{{ $t('labels.exclusivePrice') }}</label>
         <div class="input-group mb-3" style="padding-bottom:0; margin-bottom:0">
           <money style="max-width:150px; height:40px;" v-model="priceTemp"
+                 @blur.native="checkIfShouldBeRounded"
                  :class="{'form-control': true, 'invalid': priceTemp <= 0.1}" v-bind="moneyConfig"/>
           <div class="input-group-append">
                     <span class="btn btn-rounded btn-success input-group-text cursor-pointer" id="basic-addon2"
@@ -15,14 +16,14 @@
                     </span>
           </div>
         </div>
-        <span v-if="price <= 0.1" class="text-danger small">{{ $t('labels.priceIsRequired') }}</span>
+        <span v-if="priceTemp <= 0.1" class="text-danger small">{{ $t('labels.priceIsRequired') }}</span>
         <div v-if="isInclusiveActive">
           <p style="padding-top:2px;">{{ $t('labels.exclusivePrice') }}:
-            {{ $store.state.currency }} {{ price.toFixed(2) }}</p>
+            {{ $store.state.currency }} {{ calculateExclusive() }}</p>
         </div>
         <div v-else>
           <p style="padding-top:2px;">{{ $t('labels.inclusivePriceIs') }}:
-            {{ $store.state.currency }} {{ inclusivePrice.toFixed(2) }}</p>
+            {{ $store.state.currency }} {{ calculateInclusive() }}</p>
         </div>
       </div>
     </div>

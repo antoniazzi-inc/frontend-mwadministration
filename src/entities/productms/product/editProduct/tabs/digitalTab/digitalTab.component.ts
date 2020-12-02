@@ -30,6 +30,7 @@ export default class DigitalTabComponent extends mixins(CommonHelpers, Vue) {
   public productCopy: IProduct;
   public productCopyBackup: any;
   public fileToUpload: any;
+  public allDigitalFiles: any[];
   public typeDigitalService: any;
   public productService: any;
   public digitalEmail: any = {
@@ -58,6 +59,7 @@ export default class DigitalTabComponent extends mixins(CommonHelpers, Vue) {
     this.productCopy = new Product();
     this.productCopyBackup = null;
     this.fileToUpload = null;
+    this.allDigitalFiles = [];
     this.isSaving = false;
     this.uploadNewFile = false;
     this.errorDigitalContent = false
@@ -95,6 +97,7 @@ export default class DigitalTabComponent extends mixins(CommonHelpers, Vue) {
 
   public uploadFile(file: any) {
     this.fileToUpload = file
+    this.allDigitalFiles.push(file)
   }
 
   public digitalUploadError(file: any) {
