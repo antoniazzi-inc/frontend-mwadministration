@@ -375,7 +375,7 @@ export default class GeneralTabComponent extends mixins(CommonHelpers, Vue) {
 
   public changePrice(priceObj:any){
     this.productCopy.price = priceObj.price
-    this.productCopy.priceRounding = priceObj.rounded
+    this.productCopy.priceRounding = priceObj.priceRounding
     this.productCopy.tax = priceObj.tax
   }
 }

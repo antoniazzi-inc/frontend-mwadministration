@@ -15,7 +15,7 @@
 
       <div class="form-row align-items-left price-row" style="margin-bottom:0">
         <product-price-component @priceChanged="changePrice" :priceProp="productCopy.price"
-        :taxProp="productCopy.tax" :priceRoundingProp="productCopy.priceRounding"/>
+        :taxProp="productCopy.tax" :priceRoundingProp="productCopy.priceRounding" :mode="'edit'"/>
       </div>
 
       <div class="form-row align-items-left">

@@ -75,7 +75,7 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         agreeConditions: false,
         agreePrivacyStatement: false,
         linkToConditions: '',
-        privacyStatement: '',
+        linkToPrivacyStatement: '',
         privacyStatementLinkText: [],
         conditionsLinkText: []
       }
@@ -87,7 +87,7 @@ export default class CheckoutTabComponent extends mixins(CommonHelpers) {
         agreeConditions: false,
         agreePrivacyStatement: false,
         linkToConditions: '',
-        privacyStatement: '',
+        linkToPrivacyStatement: '',
         privacyStatementLinkText: [],
         conditionsLinkText: []
       }

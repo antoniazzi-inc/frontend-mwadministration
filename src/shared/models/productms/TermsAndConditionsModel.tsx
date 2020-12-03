@@ -7,7 +7,7 @@ export interface ITermsAndConditions extends IBaseEntity {
     conditionsLinkText?: ILanguage[];
     privacyStatementLinkText?: ILanguage[];
     linkToConditions?: string;
-    privacyStatement?: string;
+    linkToPrivacyStatement?: string;
 }
 
 export class TermsAndConditions implements ITermsAndConditions {
@@ -17,7 +17,7 @@ constructor(
     public conditionsLinkText?: ILanguage[],
     public privacyStatementLinkText?: ILanguage[],
     public linkToConditions?: string,
-    public privacyStatement?: string,
+    public linkToPrivacyStatement?: string,
   ){
   }
 };

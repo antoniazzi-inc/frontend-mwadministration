@@ -167,7 +167,7 @@
       </tab-content>
 
       <tab-content  @click="step = 3" :title="$t('labels.finalStep')" icon="fas fa-receipt" :before-change="validateStep">
-        <h5 class="text-danger" v-if="product.productType === 'DIGITAL'">{{$t('labels.pleaseUploadAfileOrProvideALink')}}</h5>
+        <h5 class="text-danger" v-if="product.productType === 'DIGITAL' && isSaving === false">{{$t('labels.pleaseUploadAfileOrProvideALink')}}</h5>
         <div class="row m-5" v-if="isSaving">
           <div class="col-md-12 m-5 p-5 text-center">
             <div class="spinner-border text-primary" role="status">

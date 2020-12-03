@@ -654,7 +654,7 @@ export default class NewProductComponent extends mixins(Vue, CommonHelpers) {
 
   public changePrice(priceObj:any){
     this.product.price = priceObj.price
-    this.product.priceRounding = priceObj.rounded
+    this.product.priceRounding = priceObj.priceRounding
     this.product.tax = priceObj.tax
   }
 }

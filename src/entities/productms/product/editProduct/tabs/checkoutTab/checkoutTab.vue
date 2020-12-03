@@ -257,8 +257,8 @@
           <div class="row">
             <div class="form-group col-md-6">
               <label class="form-control-label">{{$t('labels.linkToConditions')}}</label>
-              <input type="text" class="form-control" @blur="checkForHttps($event, 'linkToConditions')"
-                     v-model="termsAndConditions.linkToConditions"/>
+              <input type="text" class="form-control" @blur="checkForHttps($event, 'linkToPrivacyStatement')"
+                     v-model="termsAndConditions.linkToPrivacyStatement"/>
             </div>
             <div class="form-group col-md-6">
               <label class="form-control-label">{{$t('labels.linkToPrivacyStatement')}}</label>

@@ -22,6 +22,10 @@ import ToggleSwitch from "@/components/toggleSwitch/toggleSwitch.vue";
       type: Number,
       required: false
     },
+    mode: {
+      type: String,
+      required: false
+    },
   }
 })
 export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
@@ -86,29 +90,46 @@ export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
       this.inclusivePrice = (value * (1 + (this.tax / 100))).toFixed(2)
       this.price = value
     }
-    this.$emit('priceChanged', {price: this.price, tax: this.tax, priceRounding: this.priceRounding})
+    this.emitPrice()
   }
 
   @Watch('priceRounding')
   public changePriceRounding(isActive:any){
     if(isActive) {
       if (this.isInclusiveActive) {
-        this.priceTemp = this.round5(this.calculateExclusive() * (1 + (this.tax/100)))
+        if(this.$props.mode && this.$props.mode === 'edit'){
+          this.inclusivePrice = this.round5(this.calculateExclusive() * (1 + (this.tax/100)))
+        } else {
+          this.priceTemp = this.round5(this.calculateExclusive() * (1 + (this.tax/100)))
+        }
       } else {
-        this.priceTemp = this.round5((this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2))
+        if(this.$props.mode && this.$props.mode === 'edit') {
+          this.inclusivePrice = this.round5((this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2))
+        } else {
+          this.priceTemp = this.round5((this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2))
+        }
       }
     } else {
       if (this.isInclusiveActive) {
-        this.priceTemp = (this.calculateExclusive() * (1 + (this.tax/100))).toFixed(2)
+        if(this.$props.mode && this.$props.mode === 'edit') {
+          this.inclusivePrice = (this.calculateExclusive() * (1 + (this.tax / 100))).toFixed(2)
+        } else {
+          this.priceTemp = (this.calculateExclusive() * (1 + (this.tax / 100))).toFixed(2)
+        }
       } else {
-        this.priceTemp = (this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2)
+        if(this.$props.mode && this.$props.mode === 'edit') {
+          this.inclusivePrice = (this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2)
+        } else {
+          this.priceTemp = (this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2)
+        }
       }
     }
+    this.emitPrice()
   }
 
   public taxChanged() {
     this.checkIfShouldBeRounded()
-    this.$emit('priceChanged', {price: this.price, tax: this.tax, priceRounding: this.priceRounding})
+    this.emitPrice()
   }
 
   public checkIfShouldBeRounded() {
@@ -136,7 +157,7 @@ export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
       let p = (this.calculateInclusive() * (1 / (1 + (this.tax / 100)))).toFixed(2)
       this.price = p
     }
-    this.$emit('priceChanged', {price: this.price, tax: this.tax, priceRounding: this.priceRounding})
+    this.emitPrice()
     return this.price
   }
 
@@ -159,5 +180,9 @@ export default class ProductPriceComponent extends mixins(CommonHelpers, Vue) {
     } else {
       return (parseInt(converted, 10)+0.5);
     }
+  }
+
+  public emitPrice(){
+    this.$emit('priceChanged', {price: this.price, tax: this.tax, priceRounding: this.priceRounding})
   }
 }
