@@ -140,7 +140,8 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
         this.totalPages = resp.data.totalPages
         this.isLoading = false
         this.data = resp.data.content
-        this.itemsPerPage = resp.data.pageable.pageSize
+        if(resp.data && resp.data.pageable && resp.data.pageable.pageSize)
+          this.itemsPerPage = resp.data.pageable.pageSize
         if(this.selectAll) {
           this.selectAllVisible({currentTarget: {checked: true}})
         }
@@ -152,7 +153,11 @@ export default class PaginationTableComponent extends mixins(Vue, CommonHelpers)
 
   public created() {
     this.tableFields = this.getTableVisibilityFields(this.$props.table)
-    this.itemsPerPage = (this.tableFields) ? this.tableFields.itemsPerPage : 10
+    if(this.tableFields){
+      this.itemsPerPage = this.tableFields.itemsPerPage
+    } else {
+      this.itemsPerPage = 10
+    }
   }
 
   public itemAction(action: string, item: any) {

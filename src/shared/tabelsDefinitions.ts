@@ -1972,6 +1972,60 @@ export const relationOrders = {
     }
   ]
 }
+export const emailTexts = {
+  actions: {
+    copy: false,
+    edit: true,
+    delete: false,
+    info: false
+  },
+  itemsPerPage: 20,
+  cols: [
+    {
+      name: 'labels.date',
+      field: 'createdOn',
+      authorities: ['*'],
+      type: 'date',
+      subField: null,
+      sort: false,
+      method: null
+    }, {
+      name: 'labels.invoiceNumber',
+      field: 'invoice',
+      authorities: ['*'],
+      type: 'subField',
+      subField: 'invoiceNumber',
+      sort: false,
+      method: null
+    },
+    {
+      name: 'labels.amount',
+      field: 'nettoAmount',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: null
+
+    },
+    {
+      name: 'labels.productName',
+      field: '',
+      authorities: ['*'],
+      type: '',
+      subField: null,
+      sort: false,
+      method: function (item:any) {
+        let productNames:any = []
+        item.orderLines.forEach((item:any)=>{
+          if(item.orderProduct && item.orderProduct.productName)
+            productNames.push(item.orderProduct.productName)
+        })
+        return productNames.join()
+      }
+    }
+  ]
+}
 export const relation = {
   actions: {
     copy: false,
@@ -2380,6 +2434,15 @@ export const columnsVisibility = {
     itemsPerPage: 10
   },
   workflow: {
+    id: true,
+    name: true,
+    description: true,
+    status: true,
+    category: true,
+    createdOn: true,
+    itemsPerPage: 10
+  },
+  emailTexts: {
     id: true,
     name: true,
     description: true,

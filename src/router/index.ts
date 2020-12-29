@@ -51,6 +51,8 @@ import EditWorkflowComponent from '@/entities/workflowms/workflow/editWorkflow/e
 import MasterTemplateComponent from '@/entities/orderms/masterTemplate/masterTemplate.vue'
 import NewMasterTemplateComponent
   from "@/entities/orderms/masterTemplate/newMasterTemplate/newMasterTemplate.vue";
+import EmailTextsComponent from "@/entities/actions/emailTexts/emailTexts.vue";
+import NewEmailTextsComponent from "@/entities/actions/emailTexts/newEmailText/newEmailTexts.vue";
 
 Vue.use(VueRouter)
 
@@ -179,7 +181,11 @@ const routes = [
   }, {
     path: '/content-email-texts',
     name: 'ContentEmailTexts',
-    component: HomeDashboard
+    component: EmailTextsComponent
+  }, {
+    path: '/actions/emailTexts/new',
+    name: 'NewContentEmailTexts',
+    component: NewEmailTextsComponent
   }, {
     path: '/content-landing-pages',
     name: 'ContentLandingPages',
