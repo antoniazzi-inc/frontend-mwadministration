@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@xkeshi/image-compressor": "0.5.3",
-    "axios": "0.19.2",
+    "axios": "^0.21.1",
     "autorespond-email-template-editor": "0.1.6",
     "bootstrap": "4.5.3",
     "copy-webpack-plugin": "5.1.1",
